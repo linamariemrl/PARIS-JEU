@@ -1,6 +1,7 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
 import earcut from 'earcut';
 import { createFacadeTextures, type FacadeCategory, type SurfaceCategory } from './facadeTexture';
+import { WALL_SURFACES, ROOF_SURFACES, surfaceForCode } from './materialCatalog';
 import { project } from './geo';
 import type { Building, Point, TileFile } from './types';
 
@@ -15,7 +16,10 @@ interface Batch {
   faceToBuilding: number[];
 }
 export type BuildingMaterials = Record<SurfaceCategory, StandardMaterial>;
-const TYPES: FacadeCategory[] = ['residential', 'commercial', 'religious', 'neutral'];
+const TYPES: SurfaceCategory[] = [
+  'residential','commercial','religious','neutral','roof',
+  ...WALL_SURFACES,...ROOF_SURFACES
+];
 const WALLS: RGB[] = [
   [0.98,0.95,0.91],[1.0,0.98,0.94],[0.95,0.95,0.91],
   [0.91,0.91,0.87],[0.99,0.96,0.92],[0.96,0.93,0.90]
@@ -92,7 +96,7 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
 export function createMaterials(scene:Scene): BuildingMaterials {
   const textures=createFacadeTextures(scene);
   const result={} as BuildingMaterials;
-  for (const type of [...TYPES,'roof'] as SurfaceCategory[]) {
+  for (const type of TYPES) {
     const mat=new StandardMaterial('revetement-'+type,scene);
     mat.diffuseTexture=textures[type];
     mat.diffuseColor=Color3.White();
@@ -121,12 +125,15 @@ function asMesh(scene:Scene,tile:TileFile,kind:SurfaceCategory,
 }
 export function createTile(scene:Scene,tile:TileFile,
                            materials:BuildingMaterials):Mesh[] {
-  const batches:Record<SurfaceCategory,Batch>={
-    residential:empty(),commercial:empty(),religious:empty(),neutral:empty(),roof:empty()
-  };
-  tile.buildings.forEach((b,index)=>addBuilding(batches[facadeCategory(b)],batches.roof,b,index));
+  const batches={} as Record<SurfaceCategory,Batch>;
+  for(const type of TYPES)batches[type]=empty();
+  tile.buildings.forEach((building,index)=>{
+    const wallKind=surfaceForCode(building.wallCode,false)??facadeCategory(building);
+    const roofKind=surfaceForCode(building.roofCode,true)??'roof';
+    addBuilding(batches[wallKind],batches[roofKind],building,index);
+  });
   const meshes:Mesh[]=[];
-  for (const kind of [...TYPES,'roof'] as SurfaceCategory[]) {
+  for (const kind of TYPES) {
     const mesh=asMesh(scene,tile,kind,batches[kind],materials[kind]);
     if(mesh)meshes.push(mesh);
   }

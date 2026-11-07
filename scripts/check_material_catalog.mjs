@@ -1,0 +1,12 @@
+import assert from 'node:assert/strict';
+import { decodeMaterial,describeMaterial,surfaceForCode } from '../src/materialCatalog.ts';
+assert.deepEqual(decodeMaterial('10',false),['pierre']);
+assert.deepEqual(decodeMaterial('14',false),['pierre','brique']);
+assert.deepEqual(decodeMaterial('23',true),['ardoise','zinc/aluminium']);
+assert.deepEqual(decodeMaterial('00',false),[]);
+assert.equal(surfaceForCode('30',true),'roof-zinc');
+assert.equal(surfaceForCode('20',true),'roof-slate');
+assert.equal(surfaceForCode('40',false),'wall-brick');
+assert.equal(surfaceForCode('00',true),null);
+assert.equal(describeMaterial('00',true),'matériau non documenté');
+console.log('Correspondance des codes fiscaux Cerema vérifiée.');

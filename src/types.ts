@@ -5,6 +5,9 @@ export interface Building {
   estimatedHeight: boolean;
   usage: string;
   polygons: Point[][][];
+  wallCode?: string;
+  roofCode?: string;
+  floors?: number;
 }
 export interface TileInfo { id: string; ix: number; iz: number; count: number; }
 export interface Manifest {

@@ -1,8 +1,9 @@
 import { Color3, DynamicTexture, Scene, StandardMaterial, Texture } from '@babylonjs/core';
 import type { BuildingMaterials } from './buildings';
-import type { FacadeCategory } from './facadeTexture';
+import type { FacadeCategory, SurfaceCategory } from './facadeTexture';
+import { WALL_SURFACES } from './materialCatalog';
 
-const TYPES:FacadeCategory[]=['residential','commercial','religious','neutral'];
+const TYPES:SurfaceCategory[]=['residential','commercial','religious','neutral',...WALL_SURFACES];
 function emission(scene:Scene,category:FacadeCategory):DynamicTexture{
   const texture=new DynamicTexture('fenetres-nocturnes-'+category,
                                    {width:256,height:256},scene,true);
@@ -37,9 +38,9 @@ function emission(scene:Scene,category:FacadeCategory):DynamicTexture{
  * La répartition représente une occupation simulée, pas la réalité des logements.
  */
 export function installNightWindows(scene:Scene,materials:BuildingMaterials){
-  const maps={} as Record<FacadeCategory,DynamicTexture>;
+  const maps={} as Record<SurfaceCategory,DynamicTexture>;
   for(const type of TYPES){
-    maps[type]=emission(scene,type);
+    maps[type]=emission(scene, WALL_SURFACES.includes(type as typeof WALL_SURFACES[number])?'residential':type as FacadeCategory);
     const material:StandardMaterial=materials[type];
     material.emissiveTexture=maps[type];
     material.emissiveColor=Color3.Black();
@@ -58,7 +59,7 @@ export function installNightWindows(scene:Scene,materials:BuildingMaterials){
       religious:0,neutral:occupationNeutral
     };
     for(const type of TYPES){
-      const p=factor*strength[type]*1.4;
+      const p=factor*(type in strength ? strength[type as FacadeCategory] : occupationResidential)*1.4;
       materials[type].emissiveColor.set(p,p*0.92,p*0.7);
     }
   };
