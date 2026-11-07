@@ -1,0 +1,714 @@
+{
+  "schema": 1,
+  "source": "https://data.geopf.fr/wfs/ows",
+  "layer": "IGNF_LIDAR-HD_METADONNEE:metadata",
+  "bbox": "2.327,48.838,2.372,48.869,CRS:84",
+  "retrievedAt": "2026-11-07T21:14:21.700746+00:00",
+  "metadataCount": 20,
+  "tilesWithMNH": 20,
+  "available": true,
+  "fieldNames": [
+    "capteur",
+    "code_mission",
+    "coordonnees_nw",
+    "date_debut_acquisition",
+    "date_edition",
+    "date_fin_acquisition",
+    "moa_acquisition",
+    "moe_acquisition",
+    "moe_classement_automatique",
+    "moe_classement_manuel",
+    "nombre_points",
+    "procede_classement",
+    "systeme_altimetrique",
+    "systeme_planimetrique",
+    "url_mnh",
+    "url_mns",
+    "url_mnt",
+    "url_npl"
+  ],
+  "tiles": [
+    {
+      "id": "metadata.10615",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=651999.75,6863000.25,652999.75,6864000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0652_6864_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.34558606,
+                48.8742338
+              ],
+              [
+                2.35921908,
+                48.87430756
+              ],
+              [
+                2.35932969,
+                48.86531475
+              ],
+              [
+                2.34569903,
+                48.86524101
+              ],
+              [
+                2.34558606,
+                48.8742338
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.10616",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=650999.75,6862000.25,651999.75,6863000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0651_6863_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.3320684,
+                48.86516571
+              ],
+              [
+                2.34569903,
+                48.86524101
+              ],
+              [
+                2.34581196,
+                48.85624814
+              ],
+              [
+                2.33218368,
+                48.85617286
+              ],
+              [
+                2.3320684,
+                48.86516571
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.10626",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=650999.75,6859000.25,651999.75,6860000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0651_6860_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.33241413,
+                48.83818693
+              ],
+              [
+                2.3460377,
+                48.83826219
+              ],
+              [
+                2.34615051,
+                48.8292691
+              ],
+              [
+                2.33252929,
+                48.82919386
+              ],
+              [
+                2.33241413,
+                48.83818693
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.10919",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=652999.75,6863000.25,653999.75,6864000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0653_6864_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.35921908,
+                48.87430756
+              ],
+              [
+                2.37285214,
+                48.87437976
+              ],
+              [
+                2.3729604,
+                48.86538694
+              ],
+              [
+                2.35932969,
+                48.86531475
+              ],
+              [
+                2.35921908,
+                48.87430756
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.11036",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=649999.75,6860000.25,650999.75,6861000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0650_6861_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.31867304,
+                48.84710311
+              ],
+              [
+                2.33229893,
+                48.84717993
+              ],
+              [
+                2.33241413,
+                48.83818693
+              ],
+              [
+                2.3187906,
+                48.83811012
+              ],
+              [
+                2.31867304,
+                48.84710311
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.11080",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=649999.75,6861000.25,650999.75,6862000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0650_6862_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.31855545,
+                48.85609602
+              ],
+              [
+                2.33218368,
+                48.85617286
+              ],
+              [
+                2.33229893,
+                48.84717993
+              ],
+              [
+                2.31867304,
+                48.84710311
+              ],
+              [
+                2.31855545,
+                48.85609602
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.11133",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=652999.75,6860000.25,653999.75,6861000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0653_6861_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.35955081,
+                48.84732892
+              ],
+              [
+                2.37317681,
+                48.84740109
+              ],
+              [
+                2.37328496,
+                48.83840805
+              ],
+              [
+                2.35966131,
+                48.83833589
+              ],
+              [
+                2.35955081,
+                48.84732892
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.11268",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=649999.75,6863000.25,650999.75,6864000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0650_6864_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.31832014,
+                48.87408163
+              ],
+              [
+                2.33195308,
+                48.87415849
+              ],
+              [
+                2.3320684,
+                48.86516571
+              ],
+              [
+                2.31843782,
+                48.86508887
+              ],
+              [
+                2.31832014,
+                48.87408163
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.11924",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=651999.75,6861000.25,652999.75,6862000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0652_6862_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.34581196,
+                48.85624814
+              ],
+              [
+                2.35944027,
+                48.85632187
+              ],
+              [
+                2.35955081,
+                48.84732892
+              ],
+              [
+                2.34592485,
+                48.8472552
+              ],
+              [
+                2.34581196,
+                48.85624814
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.11956",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=650999.75,6860000.25,651999.75,6861000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0651_6861_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.33229893,
+                48.84717993
+              ],
+              [
+                2.34592485,
+                48.8472552
+              ],
+              [
+                2.3460377,
+                48.83826219
+              ],
+              [
+                2.33241413,
+                48.83818693
+              ],
+              [
+                2.33229893,
+                48.84717993
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.12223",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=649999.75,6862000.25,650999.75,6863000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0650_6863_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.31843782,
+                48.86508887
+              ],
+              [
+                2.3320684,
+                48.86516571
+              ],
+              [
+                2.33218368,
+                48.85617286
+              ],
+              [
+                2.31855545,
+                48.85609602
+              ],
+              [
+                2.31843782,
+                48.86508887
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.12373",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=649999.75,6859000.25,650999.75,6860000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0650_6860_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.3187906,
+                48.83811012
+              ],
+              [
+                2.33241413,
+                48.83818693
+              ],
+              [
+                2.33252929,
+                48.82919386
+              ],
+              [
+                2.31890811,
+                48.82911706
+              ],
+              [
+                2.3187906,
+                48.83811012
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.12435",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=651999.75,6859000.25,652999.75,6860000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0652_6860_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.3460377,
+                48.83826219
+              ],
+              [
+                2.35966131,
+                48.83833589
+              ],
+              [
+                2.35977178,
+                48.8293428
+              ],
+              [
+                2.34615051,
+                48.8292691
+              ],
+              [
+                2.3460377,
+                48.83826219
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.12449",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=652999.75,6861000.25,653999.75,6862000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0653_6862_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.35944027,
+                48.85632187
+              ],
+              [
+                2.37306862,
+                48.85639405
+              ],
+              [
+                2.37317681,
+                48.84740109
+              ],
+              [
+                2.35955081,
+                48.84732892
+              ],
+              [
+                2.35944027,
+                48.85632187
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.12459",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=652999.75,6862000.25,653999.75,6863000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0653_6863_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.35932969,
+                48.86531475
+              ],
+              [
+                2.3729604,
+                48.86538694
+              ],
+              [
+                2.37306862,
+                48.85639405
+              ],
+              [
+                2.35944027,
+                48.85632187
+              ],
+              [
+                2.35932969,
+                48.86531475
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.12498",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=652999.75,6859000.25,653999.75,6860000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0653_6860_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.35966131,
+                48.83833589
+              ],
+              [
+                2.37328496,
+                48.83840805
+              ],
+              [
+                2.37339307,
+                48.82941494
+              ],
+              [
+                2.35977178,
+                48.8293428
+              ],
+              [
+                2.35966131,
+                48.83833589
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.12528",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=650999.75,6863000.25,651999.75,6864000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0651_6864_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.33195308,
+                48.87415849
+              ],
+              [
+                2.34558606,
+                48.8742338
+              ],
+              [
+                2.34569903,
+                48.86524101
+              ],
+              [
+                2.3320684,
+                48.86516571
+              ],
+              [
+                2.33195308,
+                48.87415849
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.12703",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=650999.75,6861000.25,651999.75,6862000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0651_6862_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.33218368,
+                48.85617286
+              ],
+              [
+                2.34581196,
+                48.85624814
+              ],
+              [
+                2.34592485,
+                48.8472552
+              ],
+              [
+                2.33229893,
+                48.84717993
+              ],
+              [
+                2.33218368,
+                48.85617286
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.57713",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=651999.75,6862000.25,652999.75,6863000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0652_6863_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.34569903,
+                48.86524101
+              ],
+              [
+                2.35932969,
+                48.86531475
+              ],
+              [
+                2.35944027,
+                48.85632187
+              ],
+              [
+                2.34581196,
+                48.85624814
+              ],
+              [
+                2.34569903,
+                48.86524101
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    },
+    {
+      "id": "metadata.90024",
+      "url": "https://data.geopf.fr/wms-r?SERVICE=WMS&VERSION=1.3.0&EXCEPTIONS=text/xml&REQUEST=GetMap&LAYERS=IGNF_LIDAR-HD_MNH_ELEVATION.ELEVATIONGRIDCOVERAGE.LAMB93&FORMAT=image/geotiff&STYLES=&CRS=EPSG:2154&BBOX=651999.75,6860000.25,652999.75,6861000.25&WIDTH=2000&HEIGHT=2000&FILENAME=LHD_FXX_0652_6861_MNH_O_0M50_LAMB93_IGN69.tif",
+      "geometry": {
+        "type": "MultiPolygon",
+        "coordinates": [
+          [
+            [
+              [
+                2.34592485,
+                48.8472552
+              ],
+              [
+                2.35955081,
+                48.84732892
+              ],
+              [
+                2.35966131,
+                48.83833589
+              ],
+              [
+                2.3460377,
+                48.83826219
+              ],
+              [
+                2.34592485,
+                48.8472552
+              ]
+            ]
+          ]
+        ]
+      },
+      "date": "2025-06-06Z"
+    }
+  ],
+  "status": "LiDAR MNH indexed only; roofs have not been reconstructed",
+  "licence": "Licence Ouverte 2.0"
+}
