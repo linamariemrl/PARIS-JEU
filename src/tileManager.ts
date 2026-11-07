@@ -5,88 +5,78 @@ import type { Manifest, TileFile, TileInfo } from './types';
 const root = import.meta.env.BASE_URL + 'data/4e/';
 interface Loaded { meshes: Mesh[]; count: number; }
 
+/**
+ * Mode pilote 4e : les 27 tuiles de bâtiments sont conservées en mémoire.
+ * Le zoom, le niveau de qualité et la position de la caméra ne changent
+ * JAMAIS le nombre de bâtiments présents dans la scène.
+ * À l'échelle de Paris entier, cette règle sera conservée via des LOD
+ * géométriques et des représentations de loin, pas par disparition de tuiles.
+ */
 export class TileManager {
   private manifest: Manifest | null = null;
   private active = new Map<string, Loaded>();
-  private pending = new Map<string, AbortController>();
   private failed = new Set<string>();
-  private lastRefresh = 0;
-  private quality: 'low' | 'medium' | 'high' = 'medium';
+  private ready = false;
 
   constructor(
     private scene: Scene,
-    private material: StandardMaterial,
+    private materials: ReturnType<typeof import('./buildings').createMaterials>,
     private onStatus: (message: string, count: number) => void
   ) {}
 
   async init() {
     const response = await fetch(root + 'manifest.json');
-    if (!response.ok) throw new Error('Données IGN absentes. Exécutez « Préparer les données IGN » dans GitHub Actions.');
+    if (!response.ok) throw new Error('Manifeste des bâtiments IGN indisponible.');
     const manifest = await response.json() as Manifest;
     if (manifest.schema !== 1 || !Array.isArray(manifest.tiles) || !manifest.tiles.length) {
-      throw new Error('Fichier manifeste IGN absent ou invalide.');
+      throw new Error('Manifeste IGN invalide.');
     }
     this.manifest = manifest;
-    this.refresh(0, 0);
-  }
-  setQuality(q: 'low' | 'medium' | 'high') {
-    this.quality = q;
-    this.lastRefresh = 0;
-  }
-  update(x: number, z: number) {
-    if (!this.manifest || performance.now() - this.lastRefresh < 550) return;
-    this.refresh(x, z);
-  }
-  private refresh(x: number, z: number) {
-    this.lastRefresh = performance.now();
-    if (!this.manifest) return;
-    const radius = this.quality === 'low' ? 630 : this.quality === 'medium' ? 840 : 1170;
-    const tileSize = this.manifest.tileMeters;
-    const distance = (tile: TileInfo) => {
-      const dx = tile.ix * tileSize + tileSize / 2 - x;
-      const dz = tile.iz * tileSize + tileSize / 2 - z;
-      return dx * dx + dz * dz;
-    };
-    const needed = this.manifest.tiles.filter(tile => distance(tile) < radius * radius).sort((a,b) => distance(a) - distance(b));
-    const neededIds = new Set(needed.map(t => t.id));
-    for (const [id, loaded] of this.active) {
-      if (!neededIds.has(id)) {
-        loaded.meshes.forEach(mesh => mesh.dispose());
-        this.active.delete(id);
+    // Jusqu'à trois téléchargements simultanés sans saturation du téléphone.
+    const queue = manifest.tiles.slice();
+    const worker = async () => {
+      while (queue.length) {
+        const info = queue.shift();
+        if (!info) break;
+        await this.load(info);
       }
-    }
-    for (const [id, controller] of this.pending) {
-      if (!neededIds.has(id)) { controller.abort(); this.pending.delete(id); }
-    }
-    const slots = Math.max(0, 3 - this.pending.size);
-    for (const tile of needed.filter(t => !this.active.has(t.id) && !this.pending.has(t.id) && !this.failed.has(t.id)).slice(0, slots)) {
-      void this.load(tile);
+    };
+    await Promise.all([worker(), worker(), worker()]);
+    this.ready = this.failed.size === 0 && this.active.size === manifest.tiles.length;
+    this.report();
+  }
+
+  // L'échelle graphique peut changer, mais jamais la présence des bâtiments.
+  setQuality(_quality: 'low' | 'medium' | 'high') {}
+  update(_x: number, _z: number) {}
+
+  private async load(tile: TileInfo) {
+    try {
+      const response = await fetch(root + 'tiles/' + tile.id + '.json');
+      if (!response.ok) throw new Error('Tuile indisponible : ' + tile.id);
+      const data = await response.json() as TileFile;
+      if (data.schema !== 1 || !Array.isArray(data.buildings) || data.buildings.length !== tile.count) {
+        throw new Error('Tuile IGN invalide : ' + tile.id);
+      }
+      this.active.set(tile.id, {
+        meshes: createTile(this.scene, data, this.materials),
+        count: data.buildings.length,
+      });
+    } catch (e) {
+      this.failed.add(tile.id);
+      console.warn('Tuile des bâtiments', tile.id, e);
     }
     this.report();
   }
-  private async load(tile: TileInfo) {
-    const controller = new AbortController();
-    this.pending.set(tile.id, controller);
-    try {
-      const response = await fetch(root + 'tiles/' + tile.id + '.json', {signal: controller.signal});
-      if (!response.ok) throw new Error('Tuile indisponible : ' + tile.id);
-      const data = await response.json() as TileFile;
-      if (data.schema !== 1 || !Array.isArray(data.buildings)) throw new Error('Format de tuile invalide');
-      if (!controller.signal.aborted) {
-        this.active.set(tile.id, { meshes: createTile(this.scene, data, this.material), count: data.buildings.length });
-      }
-    } catch (e) {
-      if (!controller.signal.aborted) { this.failed.add(tile.id); console.warn('Tuile IGN', tile.id, e); }
-    } finally {
-      this.pending.delete(tile.id);
-      this.lastRefresh = 0;
-      this.report();
-    }
-  }
+
   private report() {
-    const count = [...this.active.values()].reduce((s, t) => s + t.count, 0);
-    const state = this.failed.size ? this.failed.size + ' tuile(s) indisponible(s)' :
-      this.pending.size ? 'Chargement des bâtiments IGN...' : 'Données IGN BD TOPO';
-    this.onStatus(state, count);
+    const count = [...this.active.values()].reduce((n, v) => n + v.count, 0);
+    const expected = this.manifest?.buildings ?? 0;
+    let status = this.failed.size ? this.failed.size + ' tuile(s) IGN indisponibles' :
+      this.ready ? 'Tous les bâtiments du 4e chargés' : 'Chargement intégral des bâtiments IGN…';
+    if (expected && !this.ready && !this.failed.size) {
+      status += ' ' + count.toLocaleString('fr-FR') + '/' + expected.toLocaleString('fr-FR');
+    }
+    this.onStatus(status, count);
   }
 }
