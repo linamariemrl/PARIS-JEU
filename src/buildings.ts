@@ -1,117 +1,151 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
 import earcut from 'earcut';
-import { createFacadeTexture } from './facadeTexture';
+import { createFacadeTextures, type FacadeCategory, type SurfaceCategory } from './facadeTexture';
 import { project } from './geo';
 import type { Building, Point, TileFile } from './types';
 
 type XYZ = [number, number, number];
 type RGB = [number, number, number];
-interface Batch { positions: number[]; indices: number[]; colors: number[]; uvs: number[]; faceToBuilding: number[]; }
+type UV = [number, number];
+interface Batch {
+  positions: number[];
+  indices: number[];
+  colors: number[];
+  uvs: number[];
+  faceToBuilding: number[];
+}
+export type BuildingMaterials = Record<SurfaceCategory, StandardMaterial>;
+const TYPES: FacadeCategory[] = ['residential', 'commercial', 'religious', 'neutral'];
 const WALLS: RGB[] = [
-  [0.82, 0.76, 0.66], [0.89, 0.84, 0.76], [0.76, 0.74, 0.67],
-  [0.91, 0.86, 0.74], [0.74, 0.74, 0.74], [0.86, 0.79, 0.72]
+  [0.98,0.95,0.91],[1.0,0.98,0.94],[0.95,0.95,0.91],
+  [0.91,0.91,0.87],[0.99,0.96,0.92],[0.96,0.93,0.90]
 ];
-const ROOF: RGB = [0.39, 0.48, 0.55];
-const empty = (): Batch => ({ positions: [], indices: [], colors: [], uvs: [], faceToBuilding: [] });
+const ROOF: RGB = [0.95, 0.95, 0.95];
+const empty=():Batch=>({positions:[],indices:[],colors:[],uvs:[],faceToBuilding:[]});
 
-function triangle(out: Batch, a: XYZ, b: XYZ, c: XYZ, rgb: RGB, id: number,
-                  uv: [number, number][] = [[0.98, 0.98], [0.98, 0.98], [0.98, 0.98]]) {
-  const start = out.positions.length / 3;
-  out.positions.push(...a, ...b, ...c);
-  out.indices.push(start, start + 1, start + 2);
-  for (let i = 0; i < 3; i++) { out.colors.push(...rgb, 1); out.uvs.push(...uv[i]); }
+function tri(out: Batch,a:XYZ,b:XYZ,c:XYZ,rgb:RGB,id:number,
+             uv:[UV,UV,UV]) {
+  const start=out.positions.length/3;
+  out.positions.push(...a,...b,...c);
+  out.indices.push(start,start+1,start+2);
+  for (let i=0;i<3;i++) {
+    out.colors.push(...rgb,1);
+    out.uvs.push(...uv[i]);
+  }
   out.faceToBuilding.push(id);
 }
-function hash(s: string): number {
-  let n = 2166136261;
-  for (const c of s) n = Math.imul(n ^ c.charCodeAt(0), 16777619);
-  return n >>> 0;
+function hash(str:string) {
+  let value=2166136261;
+  for(const char of str)value=Math.imul(value ^ char.charCodeAt(0),16777619);
+  return value>>>0;
 }
-function projected(ring: Point[]) {
-  const out = ring.map(project);
-  if (out.length > 2 && Math.hypot(out[0].x - out[out.length - 1].x, out[0].z - out[out.length - 1].z) < 0.01) out.pop();
-  return out;
+function projected(ring:Point[]) {
+  const pts=ring.map(project);
+  if(pts.length>2 && Math.hypot(pts[0].x-pts[pts.length-1].x,
+                               pts[0].z-pts[pts.length-1].z)<0.01)pts.pop();
+  return pts;
 }
-function addBuilding(out: Batch, b: Building, featureIndex: number) {
-  const h = Math.min(220, Math.max(2, b.height));
-  const wall = WALLS[hash(b.id) % WALLS.length];
+/** Usage connu par IGN. Le matériau exact et la période ne sont PAS déduits. */
+export function facadeCategory(building:Building): FacadeCategory {
+  const usage=building.usage.toLowerCase();
+  if (/relig|culte|église|eglise|cathédr|cathedr/.test(usage)) return 'religious';
+  if (/commercial|service|bureau|industri|artisan/.test(usage)) return 'commercial';
+  if (/résident|resident|habitation|logement/.test(usage)) return 'residential';
+  return 'neutral';
+}
+function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
+  const height=Math.min(220,Math.max(2,b.height));
+  const wallColor=WALLS[hash(b.id)%WALLS.length];
   for (const polygon of b.polygons) {
-    const rings = polygon.map(projected).filter(x => x.length >= 3);
-    if (!rings.length) continue;
-    const vertices: { x: number; z: number }[] = [];
-    const holes: number[] = [];
-    for (let r = 0; r < rings.length; r++) {
-      if (r > 0) holes.push(vertices.length);
-      vertices.push(...rings[r]);
+    const rings=polygon.map(projected).filter(x=>x.length>=3);
+    if (!rings.length)continue;
+    const points:{x:number;z:number}[]=[];
+    const holes:number[]=[];
+    for(let r=0;r<rings.length;r++) {
+      if(r>0) holes.push(points.length);
+      points.push(...rings[r]);
     }
-    // Les murs des anneaux intérieurs sont également représentés.
-    for (const ring of rings) {
-      for (let j = 0; j < ring.length; j++) {
-        const p = ring[j], q = ring[(j + 1) % ring.length];
-        const a: XYZ = [p.x, 0, p.z], bb: XYZ = [q.x, 0, q.z];
-        const c: XYZ = [q.x, h, q.z], d: XYZ = [p.x, h, p.z];
-        const spanU = Math.hypot(q.x - p.x, q.z - p.z) / 6.4;
-        const spanV = h / 3.1;
-        const uv0: [number, number] = [0.01, 0.01];
-        const uv1: [number, number] = [spanU + 0.01, 0.01];
-        const uv2: [number, number] = [spanU + 0.01, spanV + 0.01];
-        const uv3: [number, number] = [0.01, spanV + 0.01];
-        triangle(out, a, bb, c, wall, featureIndex, [uv0, uv1, uv2]);
-        triangle(out, a, c, d, wall, featureIndex, [uv0, uv2, uv3]);
+    // Toutes les emprises et les cours intérieures sont conservées.
+    for(const ring of rings) {
+      for(let j=0;j<ring.length;j++) {
+        const p=ring[j],q=ring[(j+1)%ring.length];
+        const a:XYZ=[p.x,0,p.z], bb:XYZ=[q.x,0,q.z];
+        const c:XYZ=[q.x,height,q.z],d:XYZ=[p.x,height,p.z];
+        const u=Math.hypot(q.x-p.x,q.z-p.z)/6;
+        const v=height/3.0;
+        const uv0:UV=[0,0],uv1:UV=[u,0],uv2:UV=[u,v],uv3:UV=[0,v];
+        tri(walls,a,bb,c,wallColor,index,[uv0,uv1,uv2]);
+        tri(walls,a,c,d,wallColor,index,[uv0,uv2,uv3]);
       }
     }
-    const flat = vertices.flatMap(p => [p.x, p.z]);
-    const t = earcut(flat, holes, 2);
-    for (let k = 0; k < t.length; k += 3) {
-      const a = vertices[t[k]], bb = vertices[t[k + 1]], c = vertices[t[k + 2]];
-      triangle(out, [a.x, h, a.z], [bb.x, h, bb.z], [c.x, h, c.z], ROOF, featureIndex);
+    const flat=points.flatMap(p=>[p.x,p.z]);
+    const t=earcut(flat,holes,2);
+    for(let k=0;k<t.length;k+=3) {
+      const a=points[t[k]],bb=points[t[k+1]],c=points[t[k+2]];
+      // Les toits restent à l'altitude IGN ; leur pente n'est pas inventée.
+      tri(roofs,[a.x,height,a.z],[bb.x,height,bb.z],[c.x,height,c.z],
+          ROOF,index,
+          [[a.x/3,a.z/3],[bb.x/3,bb.z/3],[c.x/3,c.z/3]]);
     }
   }
 }
-export function createMaterials(scene: Scene) {
-  const mat = new StandardMaterial('facades-et-toits', scene);
-  mat.diffuseColor = Color3.White();
-  mat.specularColor = new Color3(0.05, 0.05, 0.05);
-  mat.backFaceCulling = false;
-  mat.diffuseTexture = createFacadeTexture(scene);
-  return mat;
+export function createMaterials(scene:Scene): BuildingMaterials {
+  const textures=createFacadeTextures(scene);
+  const result={} as BuildingMaterials;
+  for (const type of [...TYPES,'roof'] as SurfaceCategory[]) {
+    const mat=new StandardMaterial('revetement-'+type,scene);
+    mat.diffuseTexture=textures[type];
+    mat.diffuseColor=Color3.White();
+    mat.specularColor=type==='roof'?new Color3(.13,.14,.16):new Color3(.02,.02,.02);
+    mat.backFaceCulling=false;
+    result[type]=mat;
+  }
+  return result;
 }
-export function createTile(scene: Scene, tile: TileFile, material: StandardMaterial): Mesh[] {
-  const out = empty();
-  tile.buildings.forEach((b, i) => addBuilding(out, b, i));
-  if (!out.indices.length) return [];
-  const vd = new VertexData();
-  vd.positions = out.positions;
-  vd.indices = out.indices;
-  vd.colors = out.colors;
-  vd.uvs = out.uvs;
-  const normals: number[] = [];
-  VertexData.ComputeNormals(out.positions, out.indices, normals);
-  vd.normals = normals;
-  const mesh = new Mesh('bâtiments-' + tile.id, scene);
+function asMesh(scene:Scene,tile:TileFile,kind:SurfaceCategory,
+                batch:Batch,mat:StandardMaterial):Mesh|null {
+  if(!batch.indices.length)return null;
+  const vd=new VertexData();
+  vd.positions=batch.positions;vd.indices=batch.indices;
+  vd.colors=batch.colors;vd.uvs=batch.uvs;
+  const normals:number[]=[];
+  VertexData.ComputeNormals(batch.positions,batch.indices,normals);
+  vd.normals=normals;
+  const mesh=new Mesh('batiments-'+kind+'-'+tile.id,scene);
   vd.applyToMesh(mesh);
-  mesh.material = material;
-  mesh.useVertexColors = true;
-  mesh.isPickable = true;
-  mesh.metadata = { buildings: tile.buildings, faceToBuilding: out.faceToBuilding };
+  mesh.material=mat;mesh.useVertexColors=true;
+  mesh.isPickable=true;
+  mesh.metadata={buildings:tile.buildings,faceToBuilding:batch.faceToBuilding};
   mesh.freezeWorldMatrix();
-  return [mesh];
+  return mesh;
 }
-export function getPickedBuilding(mesh: Mesh, faceId: number): Building | null {
-  const data = mesh.metadata as { buildings?: Building[]; faceToBuilding?: number[] } | undefined;
-  const id = data?.faceToBuilding?.[faceId];
-  return id === undefined ? null : data?.buildings?.[id] ?? null;
+export function createTile(scene:Scene,tile:TileFile,
+                           materials:BuildingMaterials):Mesh[] {
+  const batches:Record<SurfaceCategory,Batch>={
+    residential:empty(),commercial:empty(),religious:empty(),neutral:empty(),roof:empty()
+  };
+  tile.buildings.forEach((b,index)=>addBuilding(batches[facadeCategory(b)],batches.roof,b,index));
+  const meshes:Mesh[]=[];
+  for (const kind of [...TYPES,'roof'] as SurfaceCategory[]) {
+    const mesh=asMesh(scene,tile,kind,batches[kind],materials[kind]);
+    if(mesh)meshes.push(mesh);
+  }
+  return meshes;
 }
-export function highlightBuilding(scene: Scene, b: Building): Mesh[] {
-  const result: Mesh[] = [];
-  for (const polygon of b.polygons) {
-    const exterior = polygon[0];
-    if (!exterior || exterior.length < 3) continue;
-    const points = exterior.map(project).map(p => new Vector3(p.x, b.height + 0.12, p.z));
-    if (Vector3.Distance(points[0], points[points.length - 1]) > 0.01) points.push(points[0].clone());
-    const line = MeshBuilder.CreateLines('selection', { points }, scene);
-    line.color = new Color3(1, 0.69, 0.2);
-    line.isPickable = false;
+export function getPickedBuilding(mesh:Mesh,faceId:number):Building|null {
+  const data=mesh.metadata as {buildings?:Building[];faceToBuilding?:number[]} | undefined;
+  const id=data?.faceToBuilding?.[faceId];
+  return id===undefined?null:data?.buildings?.[id]??null;
+}
+export function highlightBuilding(scene:Scene,b:Building):Mesh[] {
+  const result:Mesh[]=[];
+  for(const polygon of b.polygons) {
+    const exterior=polygon[0];
+    if(!exterior || exterior.length<3)continue;
+    const pts=exterior.map(project).map(p=>new Vector3(p.x,b.height+0.12,p.z));
+    if(Vector3.Distance(pts[0],pts[pts.length-1])>0.01)pts.push(pts[0].clone());
+    const line=MeshBuilder.CreateLines('selection',{points:pts},scene);
+    line.color=new Color3(1,.69,.2);line.isPickable=false;
     result.push(line);
   }
   return result;
