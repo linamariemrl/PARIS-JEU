@@ -23,3 +23,10 @@
 - Les constellations décoratives ne reproduisent pas un catalogue d'étoiles.
 - Les lampadaires sont des éléments stylisés placés à partir des voies de Paris Data et ne correspondent pas à des positions vérifiées d'éclairage public.
 - Les fenêtres allumées indiquent une hypothèse d'occupation par usage IGN, et ne permettent aucune inférence sur les occupants.
+
+## Fidélité architecturale, sources envisagées
+
+- Données de matériaux potentiellement présentes dans les attributs BD TOPO : `materiaux_des_murs`, `materiaux_de_la_toiture`, codes issus des fichiers fonciers. Les valeurs sont facultatives et leur couverture doit être auditée avant usage.
+- Reconstruction des formes de toitures : LiDAR HD IGN, à exploiter dans une phase ultérieure avec contrôle de la qualité des dalles et de leur licence.
+- Références de façades : photographies Panoramax, dont les licences varient selon l'instance ; attribution et droits de réutilisation à contrôler image par image.
+- Aucun modèle, matériau ou relevé 3D du jeu ne doit être copié, extrait ou dérivé de Google Maps / Google Earth sans autorisation contractuelle explicite. L'API Google Maps 3D est facturable et incompatible avec le cahier de gratuité tel qu'établi.

@@ -4,6 +4,14 @@ Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans u
 
 
 
+## Priorité architecturale : formes et matériaux réels
+
+Les revêtements génériques et les toits plats du prototype ne représentent pas les bâtiments réels dans le détail. Ils doivent être remplacés progressivement par les matériaux renseignés dans la BD TOPO, les formes de toits mesurées avec le LiDAR HD et les détails visibles dans les photographies libres dont la licence permet la réutilisation.
+
+Les champs `materiaux_des_murs` et `materiaux_de_la_toiture` de la BD TOPO ne sont pas obligatoires. Une prochaine étape déterminera leur taux de présence avant de les appliquer. La géométrie des toits n'est pas non plus garantie complète partout.
+
+L'objectif est un niveau visuel comparable à la carte 3D de Google, **sans copier de modèles ou de textures Google**, conformément aux restrictions de licence et à la gratuité absolue du projet.
+
 ## Noms de rues discrets
 
 Les voies officielles sont toujours disponibles, mais leurs étiquettes ne sont affichées

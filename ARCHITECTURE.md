@@ -399,3 +399,37 @@ Les noms officiels restent conservés dans les données et dans le moteur, mais 
 - Une étiquette non visible ne signifie jamais que la rue manque du référentiel. La géométrie des bâtiments et leurs règles de chargement sont inchangées.
 
 Ces valeurs peuvent être affinées après le test sur Android. Les portions de rue couvertes par des bâtiments ou par des superpositions de texte peuvent ne pas présenter d'étiquette visible à chaque instant. Cette restriction est nécessaire pour conserver une carte lisible.
+
+## 21. Objectif de fidélité architecturale, formes et revêtements documentés
+
+### Exigence et limites juridiques
+
+La cible est de reproduire, bâtiment par bâtiment, la forme réelle, la toiture, les matériaux visibles et, dans les zones suffisamment documentées, les façades du Paris existant, avec un niveau de réalisme visant la qualité d'une cartographie 3D photoréaliste. Les textures procédurales génériques de la version 0.5 sont uniquement provisoires.
+
+Les modèles 3D, les images et les textures de Google Maps / Google Earth ne doivent PAS être extraits, copiés, redessinés à partir de ces contenus, stockés pour un usage hors ligne ni redistribués dans notre moteur Babylon.js. Les règles de l'API Google Map Tiles interdisent notamment l'extraction et la création de modèles dérivés de son contenu. Cette API est facturable et ne garantit pas la gratuité permanente. Il faut conserver la politique stricte « zéro service payant et réutilisation autorisée ».
+
+### Sources prioritaires gratuites
+
+1. IGN BD TOPO : emprises, hauteurs, géométries 3D lorsqu'elles sont suffisamment renseignées, niveaux, et champs **materiaux_des_murs** et **materiaux_de_la_toiture** lorsqu'ils sont présents. Ces deux champs existent dans le descriptif officiel de la BD TOPO, mais sont facultatifs et portent des codes de fichiers fonciers. Avant affichage, vérifier leur présence dans le WFS actuel, la proportion des valeurs renseignées à Paris, et la table de correspondance officielle des codes. **Ne jamais les présenter comme exhaustifs ni comme la mesure visuelle de chaque façade.**
+2. IGN LiDAR HD : modèles numériques de terrain, de surface et de hauteur, ou nuages de points, pour restituer progressivement les pentes, faîtages, toits mansardés, volumes et relief. Contrôler la disponibilité précise des dalles et leur capacité à décrire les arêtes du toit. Si la qualité est insuffisante, conserver une géométrie neutre signalée comme non vérifiée.
+3. Photographies au sol librement réutilisables, notamment Panoramax, selon la licence attachée à chaque image et sa couverture locale, pour vérifier les détails de façades. Conserver les attributions, contrôler les contraintes de redistribution et éviter toute reproduction de visages, plaques d'immatriculation ou éléments privés.
+4. OpenStreetMap : attributs roof:shape, roof:material, building:material et autres attributs utiles **uniquement lorsqu'ils existent réellement** et sont compatibles avec les sources officielles. Conserver attribution et licence ODbL.
+5. Monuments : modèles spécifiques indépendants, obtenus sous licence libre compatible ou modélisés sur des mesures et sources autorisées.
+
+### Ordre d'exécution, avant extension massive à Paris
+
+- Phase A : auditer les champs de matériaux et les géométries disponibles sur l'échantillon du 4e, par identifiant IGN. Publier un bilan de couverture : nombre connu, inconnu, ambigu. Aucune valeur « réelle » inventée.
+- Phase B : conserver les codes matériaux des murs et de couverture avec provenance dans les tuiles. Associer des variantes visuelles au matériau seulement lorsque le code a une signification officiellement vérifiée.
+- Phase C : reconstruire les formes réelles des toitures d'après les données 3D et LiDAR HD lorsque la précision est suffisante. Préserver les bâtiments existants et l'invariance du zoom.
+- Phase D : enrichir les façades avec des références photographiques libres et documentées, par bâtiment et par rue, puis construire les monuments en détail.
+- Phase E : optimiser l'ensemble pour Android avec LOD, géométries groupées, textures compressées et chargement progressif, sans modifier la présence géographique des bâtiments.
+
+**Définition d'une représentation fidèle :** géométrie et matériau attribués à un bâtiment déterminé avec source vérifiable. Sinon, l'apparence reste « provisoire / non documentée ». Ne pas transformer une hypothèse haussmannienne en donnée prétendument officielle. Viser 30 FPS minimum sur le téléphone de test.
+
+### Références de conformité
+
+- Google : https://developers.google.com/maps/documentation/tile/policies
+- IGN BD TOPO (descriptif version 3.3) : https://geoservices.ign.fr/sites/default/files/2023-10/DC_BDTOPO_3-3.pdf
+- IGN LiDAR HD : https://geoservices.ign.fr/
+- Panoramax : https://panoramax.fr/
+
