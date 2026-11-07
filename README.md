@@ -19,6 +19,14 @@ La vue conserve les bâtiments Babylon.js ; quatre flèches permettent de se
 déplacer de manière continue. Le mode Carte reste accessible par le même bouton.
 Il ne s'agit pas encore d'un système de collisions ou de promenade physique.
 
+## Inspiration Cities: Skylines, sans imitation de sa ville fictive
+
+PARIS suit son propre objectif : géographie réelle, bâtis documentés, compétences
+réelles de la mairie et bac à sable sans niveaux. Nous étudions les méthodes
+de rendu, de réseau et de mods ouverts des Cities: Skylines I et II, en
+sélectionnant uniquement les composants librement réutilisables et compatibles
+avec notre moteur mobile. Voir [référence technique](docs/REFERENCE_CITIES_SKYLINES.md).
+
 ## Prototype 0.9 : premiers volumes architecturaux officiels
 
 - Le fond aérien demeure une vraie photographie IGN, mais ne remplace pas le relief 3D.

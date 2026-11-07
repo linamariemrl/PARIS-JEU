@@ -1,0 +1,51 @@
+{
+  "schema": 1,
+  "date": "2026-11-07",
+  "scope": "Sources de mods étudiées pour architecture PARIS; aucun code ni asset importé",
+  "targets": [
+    {
+      "id": "cs1-moveit",
+      "repo": "Quboid/CS-MoveIt",
+      "license": "MIT",
+      "language": "C#",
+      "status": "reference-only",
+      "idea": "sélection, manipulation et modes de précision sur Android",
+      "targetPhase": "navigation"
+    },
+    {
+      "id": "cs2-moveit",
+      "repo": "Quboid/CS2-MoveIt",
+      "license": "MIT",
+      "language": "C#",
+      "status": "reference-only",
+      "idea": "interaction et séparation commande/état",
+      "targetPhase": "navigation"
+    },
+    {
+      "id": "tmpe",
+      "repo": "CitiesSkylinesMods/TMPE",
+      "license": "MIT",
+      "language": "C#",
+      "status": "reference-only",
+      "idea": "contrôle des priorités, règles de voies et coûts de trafic",
+      "targetPhase": "transports"
+    },
+    {
+      "id": "intersection-marking-tool",
+      "url": "https://www.nexusmods.com/citiesskylines/mods/160",
+      "license": "MIT indiqué par auteur, vérifier version et dépôt d'origine",
+      "language": "C#",
+      "status": "reference-only",
+      "idea": "marquages routiers procéduraux à faible coût",
+      "targetPhase": "voirie"
+    }
+  ],
+  "compliance": {
+    "proprietaryGameCode": "never",
+    "proprietaryGameModels": "never",
+    "assetAndTexturesWithoutExplicitLicense": "never",
+    "attributionOnAdaptation": "required",
+    "directBinaryReuse": "incompatible; Unity/C# mods are not Babylon.js/TypeScript modules",
+    "safeContributionFormats": "declarative reviewed files; no arbitrary JS downloaded for mobile"
+  }
+}

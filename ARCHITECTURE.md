@@ -524,3 +524,14 @@ La cible réaliste pour Android récent reste 30 FPS au minimum sur l'appareil d
 Un bouton Rue / Carte permet d'abaisser la caméra à une hauteur indicative de 2,3 m dans le modèle, puis de revenir à la navigation aérienne sans changer de quartier. La transition est interpolée sur 620 ms. En vue proche, le glissement à un doigt oriente le regard ; quatre commandes tactiles continues permettent d'avancer, reculer et se déplacer latéralement selon l'orientation effective. Les boutons carte, zoom, Nord et qualité sont conservés.
 
 Ce n'est pas un personnage physique et aucune collision terrain/bâtiment n'est encore intégrée : le mode est une première approche d'exploration de rue. L'objectif est un contrôleur libre avec collisions, inclinaison et navigation multimodale, validé exclusivement sur téléphone Android.
+
+## 29. Inspirations Cities: Skylines et cadrage des adaptations autorisées
+
+Référence de travail : `docs/REFERENCE_CITIES_SKYLINES.md`.
+Inventaire des mods vérifiés : `data/sources/mods-cities-skylines.json`.
+
+Nous reprenons les méthodes de rendu LOD, d'assets modularisés, de simulation par secteurs, d'interface et de coûts de déplacement. Le jeu conserve toutefois l'objectif initial : représentation fidèle du Paris réel, gestion par le maire dans les limites de compétences réelles, développement gratuit sur GitHub et rendu Babylon.js sur Android.
+
+Le moteur de Cities: Skylines et ses assets sont propriétaires. Seules les portions explicitement couvertes par une licence ouverte de mods indépendants pourront être réutilisées ou adaptées, à condition de conserver leurs notices, respecter leurs dépendances et vérifier la licence de chaque asset. Move It! (MIT) est la référence pour la précision des manipulations, TM:PE (MIT) pour le futur graphe de transport, Intersection Marking Tool pour les marquages, sous réserve de son dépôt source. Le code original C# Unity n'est pas transférable directement au moteur Babylon.js TypeScript.
+
+Cette étude n'autorise pas à ignorer la feuille de route : améliorer d'abord les modèles du 4e et les déplacements, valider sur Android, puis étendre la carte, avant d'ouvrir les modules de simulation autonome.
