@@ -21,7 +21,12 @@
   </div>
 </aside>
 <details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt déplace la maquette. Le bouton 360° transforme le glissement en rotation libre. Deux doigts tournent, inclinent ou zooment. Rue : un doigt regarde partout, flèches pour marcher. Un appui bref sélectionne un immeuble.</p>
-<label class="precision-switch"><input type="checkbox" id="precision-mode"/> Mode précision, gestes plus lents (35 %)</label></details>
+<label class="precision-switch"><input type="checkbox" id="precision-mode"/> Mode précision, gestes plus lents (35 %)</label>
+<label class="territory-select">Aller directement à une zone
+  <select id="territory-jump" aria-label="Choisir une zone de Paris">
+    <option value="">Choisir un arrondissement ou une commune…</option>
+  </select>
+</label></details>
 <nav aria-label="Commandes de caméra">
 <button id="home" aria-label="Recentrer">⌂</button>
 <button id="plus" aria-label="Zoomer">+</button>
