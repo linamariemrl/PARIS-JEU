@@ -1,0 +1,149 @@
+{
+  "n_ar=4": {
+    "total": 8664,
+    "fields": [
+      "b_rdc",
+      "c_nat_b",
+      "c_plan_h_i",
+      "c_src",
+      "d_cre",
+      "d_maj",
+      "geom",
+      "geom_x_y",
+      "h_et_max",
+      "l_b_u",
+      "l_nat_b",
+      "l_plan_h",
+      "l_plan_h_i",
+      "l_src",
+      "m2",
+      "m2_pl_tot",
+      "n_ar",
+      "n_qu",
+      "n_sq_ar",
+      "n_sq_pf",
+      "n_sq_qu",
+      "n_sq_vb",
+      "nb_pl",
+      "objectid",
+      "st_area_shape",
+      "st_perimeter_shape",
+      "x",
+      "y"
+    ],
+    "samples": [
+      {
+        "geom_x_y": {
+          "lon": 2.3623178860824323,
+          "lat": 48.8530006211189
+        },
+        "c_nat_b": "V",
+        "l_nat_b": "Volume bâti simple",
+        "c_src": "T",
+        "l_src": "Fiche parcellaire et terrain certifié",
+        "m2": 95.8972505,
+        "nb_pl": 5.0,
+        "m2_pl_tot": 479.4862524,
+        "b_rdc": 1.0,
+        "c_plan_h_i": 3.0,
+        "y": 128060.9197709,
+        "l_plan_h_i": "Bâti de 4 à 8 étages",
+        "x": 601893.1780105,
+        "d_cre": "1900-01-01T00:09:21+00:00",
+        "l_b_u": null,
+        "d_maj": "2010-07-21T02:00:00+00:00",
+        "n_ar": 4,
+        "l_plan_h": "R+4",
+        "h_et_max": 4.0,
+        "n_qu": 15.0,
+        "objectid": 2194510,
+        "n_sq_vb": 750023012,
+        "n_sq_ar": 75000004,
+        "n_sq_pf": 750005029,
+        "n_sq_qu": 750000015,
+        "st_area_shape": 95.88867174508769,
+        "st_perimeter_shape": 50.41865557225035
+      },
+      {
+        "geom_x_y": {
+          "lon": 2.361597098754315,
+          "lat": 48.8499656125378
+        },
+        "c_nat_b": "U",
+        "l_nat_b": "Volume bâti avec surplomb",
+        "c_src": "T",
+        "l_src": "Fiche parcellaire et terrain certifié",
+        "m2": 14.3516019,
+        "nb_pl": 7.0,
+        "m2_pl_tot": 100.4612131,
+        "b_rdc": 0.0,
+        "c_plan_h_i": 3.0,
+        "y": 127723.093273,
+        "l_plan_h_i": "Bâti de 4 à 8 étages",
+        "x": 601839.8012338,
+        "d_cre": "1959-04-01T01:00:00+00:00",
+        "l_b_u": "1a7",
+        "d_maj": "2010-07-21T02:00:00+00:00",
+        "n_ar": 4,
+        "l_plan_h": null,
+        "h_et_max": 7.0,
+        "n_qu": 15.0,
+        "objectid": 2194577,
+        "n_sq_vb": 750023080,
+        "n_sq_ar": 75000004,
+        "n_sq_pf": 750005483,
+        "n_sq_qu": 750000015,
+        "st_area_shape": 14.349987298422935,
+        "st_perimeter_shape": 26.72875281632857
+      }
+    ],
+    "geometryType": "Polygon"
+  },
+  "n_sq_ar=4": {
+    "total": 0,
+    "fields": [],
+    "samples": [],
+    "geometryType": null
+  },
+  "osm_roofs": {
+    "count": 167,
+    "shapes": {
+      "side_hipped": 2,
+      "gambrel": 62,
+      "mansard": 15,
+      "round": 3,
+      "gabled": 19,
+      "hipped": 23,
+      "skillion": 7,
+      "many": 2,
+      "quadruple_saltbox": 3,
+      "pyramidal": 4,
+      "double_saltbox": 4,
+      "saltbox": 1,
+      "flat": 22
+    },
+    "examples": [
+      {
+        "roof:shape": "flat",
+        "roof:height": null
+      },
+      {
+        "roof:shape": "flat",
+        "roof:height": null
+      },
+      {
+        "roof:shape": "gambrel",
+        "roof:height": null
+      },
+      {
+        "roof:shape": "many",
+        "roof:height": null
+      },
+      {
+        "roof:shape": "gambrel",
+        "roof:height": null
+      }
+    ],
+    "source": "© OpenStreetMap contributors, ODbL 1.0"
+  }
+}
