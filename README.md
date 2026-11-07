@@ -4,13 +4,19 @@ Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans u
 
 
 
-## Priorité architecturale : formes et matériaux réels
+## Version 0.6 : matériaux et toitures issus de données réutilisables
 
-Les revêtements génériques et les toits plats du prototype ne représentent pas les bâtiments réels dans le détail. Ils doivent être remplacés progressivement par les matériaux renseignés dans la BD TOPO, les formes de toits mesurées avec le LiDAR HD et les détails visibles dans les photographies libres dont la licence permet la réutilisation.
+Le prototype conserve 2 696 bâtiments IGN, indépendamment de la caméra et du zoom.
 
-Les champs `materiaux_des_murs` et `materiaux_de_la_toiture` de la BD TOPO ne sont pas obligatoires. Une prochaine étape déterminera leur taux de présence avant de les appliquer. La géométrie des toits n'est pas non plus garantie complète partout.
+- 1 315 bâtiments disposent d'un matériau des gros murs déclaré dans la BD TOPO.
+- 1 334 bâtiments disposent d'un matériau de toiture déclaré dans la BD TOPO.
+- 2 002 bâtiments disposent d'un nombre d'étages renseigné.
+- Les textures de pierre, meulière, brique, béton, bois, tuile, ardoise et zinc sont associées à ces matériaux lorsque le code cadastral est exploitable.
+- Les formes de 59 toitures ont été rapprochées d'OpenStreetMap après contrôle de la correspondance des emprises avec l'IGN. Seules huit hauteurs de toiture sont renseignées par OSM. Les autres pentes sont estimées et identifiées comme telles.
 
-L'objectif est un niveau visuel comparable à la carte 3D de Google, **sans copier de modèles ou de textures Google**, conformément aux restrictions de licence et à la gratuité absolue du projet.
+Les emprises sont de vraies géométries IGN. Les matériaux décrivent la structure fiscale, qui peut différer du parement visible. Les motifs et les fenêtres sont des créations procédurales, pas des photographies de chaque façade. La forme du toit est effectivement documentée dans les 59 cas cités, mais ses proportions ne sont pas toujours mesurées.
+
+Les futurs détails architecturaux devront être reconstitués à partir de sources ouvertes autorisant la réutilisation, en particulier LiDAR HD IGN, les 8 664 volumes bâtis du 4e publiés par la Ville de Paris et des photographies Panoramax sous licence compatible. Il est interdit d'extraire les maillages et textures protégés de Google Maps.
 
 ## Noms de rues discrets
 
