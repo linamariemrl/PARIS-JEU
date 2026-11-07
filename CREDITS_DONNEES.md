@@ -14,3 +14,7 @@
 - La base municipale n'inclut pas tous les arbres de Paris, notamment les espaces privés et les bosquets ; elle n'est pas mise à jour en temps réel.
 - Les formes des arbres et des façades sont des représentations graphiques produites pour le jeu, pas des relevés architecturaux ou botaniques détaillés.
 - Les ponts 3D ont des hauteurs, profils et parapets provisoires. Seules les emprises et positions proviennent des données IGN.
+
+
+- Noms et emprises des voies, au nombre de 205 pour le 4e : Ville de Paris, « Dénominations des emprises des voies actuelles », licence ODbL, https://opendata.paris.fr/explore/dataset/denominations-emprises-voies-actuelles/
+- Les matériaux et motifs de fenêtres par catégorie d'usage sont des créations procédurales, pas un inventaire architectural exhaustif. Les matériaux précis des murs et des toitures demeurent non déterminés.
