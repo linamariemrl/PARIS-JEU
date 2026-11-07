@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+<meta name="theme-color" content="#0c1723"/>
+<meta name="description" content="PARIS, prototype 3D du quatrième arrondissement."/>
+<title>PARIS | Le jeu de la ville</title>
+</head>
+<body>
+<canvas id="scene" aria-label="Vue 3D tactile de Paris"></canvas>
+<header><strong>PARIS</strong><span>PROTOTYPE 01 | 4e ARRONDISSEMENT</span></header>
+<div class="instructions">Un doigt : déplacer | Deux doigts : zoomer, tourner et incliner | Toucher un bâtiment : informations</div>
+<nav aria-label="Commandes de caméra">
+<button id="home" aria-label="Recentrer">⌂</button>
+<button id="plus" aria-label="Zoomer">+</button>
+<button id="minus" aria-label="Dézoomer">−</button>
+<button id="north" aria-label="Nord">N</button>
+<label>Qualité <select id="quality" aria-label="Qualité graphique"><option value="low">Basse</option><option value="medium" selected>Moyenne</option><option value="high">Haute</option></select></label>
+</nav>
+<aside id="selection" class="hidden"><button id="close" aria-label="Fermer">×</button><h2>Bâtiment sélectionné</h2><p>Hauteur : <span id="height"></span></p><p>Usage : <span id="usage"></span></p><p>Identifiant IGN : <span id="identifier"></span></p><small id="caveat"></small></aside>
+<div id="error" class="hidden" role="alert"></div>
+<footer><span id="state">Chargement de la carte...</span><span id="count">0 bâtiment</span><span id="fps">FPS : ...</span></footer>
+<script type="module" src="/src/main.ts"></script>
+</body>
+</html>
