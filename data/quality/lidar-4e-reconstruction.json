@@ -1,35 +1,10 @@
 {
   "schema": 1,
   "testedTiles": 6,
-  "downloadFailures": [
-    {
-      "tile": "metadata.12449",
-      "error": "Projection MNH inattendue: PROJCS[\"EPSG:2154\",GEOGCS[\"unknown\",DATUM[\"unnamed\",SPHEROID[\"unretrievable - using WGS84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0."
-    },
-    {
-      "tile": "metadata.11924",
-      "error": "Projection MNH inattendue: PROJCS[\"EPSG:2154\",GEOGCS[\"unknown\",DATUM[\"unnamed\",SPHEROID[\"unretrievable - using WGS84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0."
-    },
-    {
-      "tile": "metadata.57713",
-      "error": "Projection MNH inattendue: PROJCS[\"EPSG:2154\",GEOGCS[\"unknown\",DATUM[\"unnamed\",SPHEROID[\"unretrievable - using WGS84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0."
-    },
-    {
-      "tile": "metadata.12459",
-      "error": "Projection MNH inattendue: PROJCS[\"EPSG:2154\",GEOGCS[\"unknown\",DATUM[\"unnamed\",SPHEROID[\"unretrievable - using WGS84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0."
-    },
-    {
-      "tile": "metadata.11133",
-      "error": "Projection MNH inattendue: PROJCS[\"EPSG:2154\",GEOGCS[\"unknown\",DATUM[\"unnamed\",SPHEROID[\"unretrievable - using WGS84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0."
-    },
-    {
-      "tile": "metadata.12703",
-      "error": "Projection MNH inattendue: PROJCS[\"EPSG:2154\",GEOGCS[\"unknown\",DATUM[\"unnamed\",SPHEROID[\"unretrievable - using WGS84\",6378137,298.257223563]],PRIMEM[\"Greenwich\",0],UNIT[\"degree\",0."
-    }
-  ],
-  "coveredBuildings": 0,
-  "validatedBuildings": 0,
-  "rejectedBuildings": 0,
+  "downloadFailures": [],
+  "coveredBuildings": 2696,
+  "validatedBuildings": 1051,
+  "rejectedBuildings": 1645,
   "totalBuildings": 2696,
   "note": "Reconstruction partielle basée sur mesures MNH; autres toitures restent dans leur état IGN/OSM"
 }
