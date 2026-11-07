@@ -7,6 +7,7 @@ import { MobileCamera } from './mobileCamera';
 import { loadInfrastructure, addAdministrativeOutline, loadMetropolitanOutlines } from './infrastructure';
 import { TileManager } from './tileManager';
 import { MetroTileManager } from './metroTiles';
+import { MetroOverview } from './metroOverview';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
@@ -29,23 +30,23 @@ const urban=el<HTMLElement>('urban');
 
 try{
   const engine=new Engine(canvas,true,{
-    preserveDrawingBuffer:false,stencil:false,antialias:false
+    preserveDrawingBuffer:false,stencil:false,antialias:true
   },true);
   const scene=new Scene(engine);
   scene.fogMode=Scene.FOGMODE_NONE;
-  scene.clearColor=new Color4(.94,.94,.94,1);
+  scene.clearColor=new Color4(.89,.89,.89,1);
   const ambient=new HemisphericLight('éclairage-fixe',new Vector3(0,1,0),scene);
-  ambient.intensity=.92;
-  ambient.groundColor=new Color3(.45,.45,.45);
+  ambient.intensity=.69;
+  ambient.groundColor=new Color3(.62,.62,.62);
   const directional=new DirectionalLight('lumière-fixe',
     new Vector3(-.45,-1,-.28),scene);
-  directional.intensity=.60;
+  directional.intensity=.42;
   const clock=new GameClock();
 
   const ground=MeshBuilder.CreateGround('sol-neutre',
     {width:40000,height:40000},scene);
   const mat=new StandardMaterial('sol-gris-clair',scene);
-  mat.diffuseColor=new Color3(.94,.94,.94);
+  mat.diffuseColor=new Color3(.90,.90,.90);
   mat.specularColor=Color3.Black();
   mat.freeze();
   ground.material=mat;ground.isPickable=false;
@@ -53,19 +54,24 @@ try{
   const camera=new MobileCamera(scene,canvas);
   const materials=createMaterials(scene);
   let metroCount=0;
+  let overviewCount=0;
   let fourthCount=0;
   const showCounts=()=>{
-    counter.textContent=(fourthCount+metroCount).toLocaleString('fr-FR')+
-      ' bâtiments 3D chargés';
+    counter.textContent=(fourthCount+metroCount+overviewCount)
+      .toLocaleString('fr-FR')+' bâtiments représentés';
   };
   const manager=new TileManager(scene,materials,(message,count)=>{
     state.textContent=message;
     fourthCount=count;showCounts();
   });
+  const overview=new MetroOverview(scene,materials,(message,count)=>{
+    overviewCount=count;showCounts();
+    el('overview-status').textContent=message;
+  });
   const metro=new MetroTileManager(scene,materials,(message,count)=>{
     metroCount=count;showCounts();
     el('metropole-status').textContent=message;
-  });
+  },overview);
   const selection:Mesh[]=[];
   const clear=()=>{
     el('selection').classList.add('hidden');
@@ -203,6 +209,7 @@ try{
       lastClock=now;
     }
     manager.update(camera.camera.target.x,camera.camera.target.z);
+    overview.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     scene.render();
     if(now-lastFps>=1000){
@@ -222,6 +229,7 @@ try{
     console.warn('Réseau des rues non disponible',e);
     urban.textContent='Voirie non disponible';
   });
+  void overview.init().catch(console.warn);
   void metro.init().catch(console.warn);
   void manager.init().catch((e:unknown)=>{
     error.textContent=e instanceof Error?e.message:'Données IGN non disponibles';
