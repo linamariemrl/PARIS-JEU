@@ -26,9 +26,12 @@ const urban = el<HTMLElement>('urban');
 try {
   const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: false }, true);
   const scene = new Scene(engine);
-  scene.clearColor = new Color4(0.74, 0.82, 0.86, 1);
+  scene.clearColor = new Color4(0.69, 0.79, 0.84, 1);
+  scene.fogMode = Scene.FOGMODE_EXP2;
+  scene.fogDensity = 0.00024;
+  scene.fogColor = new Color3(0.69, 0.79, 0.84);
   const ambient = new HemisphericLight('ciel', new Vector3(0, 1, 0), scene);
-  ambient.intensity = 0.95;
+  ambient.intensity = 0.90;
   ambient.groundColor = new Color3(0.45, 0.51, 0.55);
   const sunlight = new DirectionalLight('soleil', new Vector3(-0.5, -1, -0.4), scene);
   sunlight.intensity = 0.6;
