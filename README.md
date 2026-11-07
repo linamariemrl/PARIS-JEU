@@ -2,6 +2,17 @@
 
 Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans un dépôt GitHub public.
 
+## Version 0.3 : premiers détails de la ville
+
+- Ponts simplifiés en volume, avec tabliers et parapets. Ces volumes ne reproduisent pas encore la hauteur ni la silhouette de chaque ouvrage réel.
+- Façades illustrées de fenêtres, encadrements et garde-corps par texture procédurale. Les styles et les périodes de construction individuelles ne sont pas encore attribués aux bâtiments.
+- Arbres géolocalisés d'après les enregistrements de la Ville de Paris, instanciés pour limiter la charge GPU.
+- Arbres lointains masqués et densité modulée par le réglage de qualité.
+- Horizon progressivement fondu dans une brume légère, sans coût élevé en ombres dynamiques.
+- Aucune donnée de végétation ou de patrimoine fictive présentée comme un relevé officiel.
+
+La version 0.3 reste une étape visuelle. Le moteur d'arbre est optionnel si la ressource municipale n'est pas disponible. Les fichiers sont toujours distribués gratuitement par GitHub Pages.
+
 ## Version 0.2 : infrastructures du 4e
 
 - Voiries, trottoirs, chemins et places issus des tracés OpenStreetMap.
