@@ -4,6 +4,13 @@ Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans u
 
 
 
+## Noms de rues discrets
+
+Les voies officielles sont toujours disponibles, mais leurs étiquettes ne sont affichées
+qu'à proximité. Police fixe 9 px, faible opacité, orientation sur la chaussée et répétition
+sur les grandes rues. Les superpositions sont évitées pour ne pas encombrer l'écran Android.
+Le zoom arrière masque les étiquettes, jamais les bâtiments.
+
 ## Version 0.5 : Paris au fil des heures
 
 La simulation dispose d'une horloge en temps parisien et d'un cycle visuel jour et nuit.

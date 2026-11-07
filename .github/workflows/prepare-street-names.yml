@@ -36,7 +36,8 @@ jobs:
           d=json.loads(f.read_text(encoding='utf-8'))
           assert d['schema']==1
           assert d['namedStreets'] >= 130
-          assert d['namedStreets']==len(d['labels'])
+          assert len(d['labels']) >= d['namedStreets']
+          assert len({x['streetId'] for x in d['labels']}) == d['namedStreets']
           assert d['source'].startswith('Ville de Paris')
           assert len({x['id'] for x in d['labels']})==len(d['labels'])
           print('Voies officielles nommées:',d['namedStreets'],'/',d['officialCount'])

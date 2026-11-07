@@ -386,3 +386,16 @@ L'éclairage public est approché par des instances graphiques de poteaux et de 
 Les fenêtres utilisent des textures nocturnes procédurales mutualisées par usage du bâtiment. Leur état suit une hypothèse d'occupation résidentielle ou professionnelle. Il ne décrit pas les habitudes des occupants réels et ne modifie pas les informations IGN. Les décisions budgétaires concernant l'éclairage seront raccordées au simulateur à partir de l'étape 4.
 
 Les tests automatiques couvrent la position du Soleil aux solstices, les conditions d'allumage et les changements d'heure de Paris. L'acceptation des performances exige ensuite une vérification réelle sur le téléphone Android, notamment 30 images par seconde au minimum.
+
+## 20. Affichage cartographique discret des odonymes
+
+Les noms officiels restent conservés dans les données et dans le moteur, mais ne sont **pas visibles en vue d'ensemble**. Ils apparaissent seulement lorsque la caméra s'approche de la rue concernée. Le rendu vise celui d'une carte numérique, sans encombrer la vue.
+
+- Taille fixe de 9 pixels CSS, sans agrandissement ou étirement avec le zoom.
+- Opacité réduite, sans cartouche opaque, orientation suivant la voie et ancrage sur son emprise géographique officielle.
+- Masquage lorsque le rayon de caméra dépasse 720 mètres, avec fondu progressif et critère de proximité locale.
+- Répétition d'un nom sur les voies longues à intervalles proportionnels à l'emprise, avec points systématiquement situés dans la géométrie officielle.
+- Évitement automatique des collisions à l'écran, plafond de 28 textes simultanés et absence de texte sur les commandes.
+- Une étiquette non visible ne signifie jamais que la rue manque du référentiel. La géométrie des bâtiments et leurs règles de chargement sont inchangées.
+
+Ces valeurs peuvent être affinées après le test sur Android. Les portions de rue couvertes par des bâtiments ou par des superpositions de texte peuvent ne pas présenter d'étiquette visible à chaque instant. Cette restriction est nécessaire pour conserver une carte lisible.

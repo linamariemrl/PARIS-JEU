@@ -66,3 +66,14 @@ En cas de chute durable sous 30 FPS, réduire d'abord la distance des arbres, pu
 10. Faire une capture de jour et une de nuit avec les FPS visibles, puis signaler toute différence anormale.
 
 Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les états réels des logements, ni les horaires des monuments ne sont encore reproduits.
+
+## Affichage cartographique des noms de rue : réglage discret
+
+1. Ouvrir la vue d'ensemble du 4e : aucun nom de rue ne doit encombrer le paysage.
+2. Zoomer vers une rue. Son nom doit apparaître seulement à proximité, petit, semi-transparent et posé visuellement sur la voie.
+3. Continuer à zoomer : la police garde la même taille en pixels ; aucun texte ne s'étire.
+4. Explorer un boulevard ou un long quai : le même nom peut réapparaître à plusieurs points, sans inventer de nouvelles voies.
+5. Incliner, tourner et déplacer la caméra : l'étiquette suit sa position sur la rue.
+6. Vérifier que plusieurs noms proches ne se chevauchent pas et ne passent pas sur les commandes.
+7. Dézoomer : les étiquettes disparaissent progressivement sans modifier le nombre de bâtiments.
+8. Vérifier que le compteur conserve les 205 voies officielles et que le jeu reste fluide (objectif 30 FPS minimum).

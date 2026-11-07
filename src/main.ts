@@ -123,7 +123,7 @@ try {
     manager.update(camera.camera.target.x, camera.camera.target.z);
     trees.update(camera.camera.target.x, camera.camera.target.z);
     streetLighting.updatePosition(camera.camera.target.x, camera.camera.target.z);
-    streetLabels.update(camera.camera.radius);
+    streetLabels.update(camera.camera.radius, camera.camera.target.x, camera.camera.target.z);
     if (now - lastFpsUpdate > 1000) {
       fps.textContent = Math.round(engine.getFps()) + ' FPS';
       lastFpsUpdate = now;

@@ -27,7 +27,12 @@ class SceneInvariants(unittest.TestCase):
             self.skipTest("Génération des voies officielles non encore effectuée")
         data=json.loads(file.read_text(encoding="utf-8"))
         self.assertEqual(data["officialCount"],data["namedStreets"])
-        self.assertEqual(data["namedStreets"],len(data["labels"]))
+        self.assertGreaterEqual(len(data["labels"]),data["namedStreets"])
+        if any("streetId" in item for item in data["labels"]):
+            self.assertEqual(
+                len({item["streetId"] for item in data["labels"]}),
+                data["namedStreets"]
+            )
         self.assertEqual(len({x["id"] for x in data["labels"]}),len(data["labels"]))
         self.assertGreaterEqual(data["namedStreets"],150)
 

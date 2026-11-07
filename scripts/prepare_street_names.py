@@ -2,8 +2,9 @@
 """Noms de voies géolocalisés, référentiel officiel des voies actuelles de Paris.
 
 Les noms et emprises viennent de la Ville de Paris, sans génération fictive.
-Chaque voie du 4e possédant un nom et une géométrie dispose d'une étiquette.
-La projection écran est effectuée côté navigateur, indépendamment du zoom.
+Chaque voie du 4e possédant un nom et une géométrie dispose d'un repère.
+Les voies longues reçoivent des repères répétés, tous dans leur emprise réelle.
+L'affichage côté téléphone ne commence qu'en vue rapprochée.
 """
 from __future__ import annotations
 
@@ -16,7 +17,8 @@ from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 from urllib.error import HTTPError, URLError
 
-from shapely.geometry import shape
+from shapely.geometry import box, shape
+from shapely.affinity import rotate
 from shapely.ops import transform
 
 CENTER_LON, CENTER_LAT = 2.3537, 48.8545
@@ -82,6 +84,55 @@ def street_angle(geom):
     a,b=edge[1:]
     return round(math.degrees(math.atan2(b[1]-a[1],b[0]-a[0])), 1)
 
+
+def road_anchors(geom):
+    """Répéter les étiquettes sur les emprises officielles, sans inventer d'axe.
+
+    Les bandes transversales sont intersectées avec la chaussée cadastrée.
+    Le point de référence reste donc toujours dans l'emprise de la voie.
+    Le tracé local est approximé par l'orientation du tronçon géométrique.
+    """
+    projected=transform(local,geom)
+    parts=sorted(polygon_parts(projected),key=lambda p:p.area,reverse=True)
+    anchors=[]
+    if not parts:
+        return anchors
+    largest=parts[0].area
+    for part_index,part in enumerate(parts[:12]):
+        if part_index>0 and part.area<max(12.,largest*.055):
+            continue
+        angle=street_angle(part)
+        origin=part.centroid
+        straight=rotate(part,-angle,origin=origin)
+        xmin,ymin,xmax,ymax=straight.bounds
+        span=xmax-xmin
+        # Une rue de moins de 120 m a une seule étiquette.
+        # Sur les longues emprises, une occurrence environ tous les 145 m.
+        count=min(12,max(1,int((span+55)/145)))
+        for i in range(count):
+            px=xmin+(i+.5)*span/count
+            slab=straight.intersection(box(px-22,ymin-5,px+22,ymax+5))
+            if slab.is_empty:
+                continue
+            core=max(polygon_parts(slab),key=lambda p:p.area,default=None)
+            if core is None or core.area<.7:
+                continue
+            sample=rotate(core.representative_point(),angle,origin=origin)
+            if anchors and any(math.hypot(a["x"]-sample.x,a["z"]-sample.y)<65 for a in anchors):
+                continue
+            anchors.append({"x":round(sample.x,1),
+                            "z":round(sample.y,1),
+                            "angle":angle,
+                            "length":round(span,1)})
+            if len(anchors)>=20:
+                return anchors
+    if not anchors:
+        point=parts[0].representative_point()
+        anchors.append({"x":round(point.x,1),"z":round(point.y,1),
+                        "angle":street_angle(parts[0]),
+                        "length":round(parts[0].length,1)})
+    return anchors
+
 def encode_record(record, boundary):
     arr=record.get("arrdt") or []
     if isinstance(arr,str): arr=[arr]
@@ -95,19 +146,18 @@ def encode_record(record, boundary):
     if not geo.is_valid: geo=geo.buffer(0)
     if geo.is_empty or not geo.intersects(boundary): return None
     geo=geo.intersection(boundary)
-    parts=polygon_parts(geo)
-    if not parts: return None
-    parts.sort(key=lambda x:x.area,reverse=True)
-    anchor=transform(local,parts[0])
-    point=anchor.representative_point()
+    anchors=road_anchors(geo)
+    if not anchors: return None
+    first=anchors[0]
     return {
         "id":str(record.get("id") or record.get("cvoie") or label),
         "name":label,
-        "x":round(point.x,1),
-        "z":round(point.y,1),
-        "angle":street_angle(anchor),
+        "x":first["x"],
+        "z":first["z"],
+        "angle":first["angle"],
         "kind":normalize(record.get("typvoie")),
-        "length":round(float(anchor.length),1),
+        "length":first["length"],
+        "placements":anchors,
     }
 
 def main():
@@ -134,22 +184,33 @@ def main():
     for row in all_records:
         item=encode_record(row,boundary)
         if item:
-            if item["id"] in seen:
+            street_id=item["id"]
+            if street_id in seen:
                 continue
-            seen.add(item["id"])
-            labels.append(item)
+            seen.add(street_id)
+            for i,anchor in enumerate(item["placements"]):
+                labels.append({
+                    "id":street_id+":"+str(i),
+                    "streetId":street_id,
+                    "name":item["name"],
+                    "x":anchor["x"],
+                    "z":anchor["z"],
+                    "angle":anchor["angle"],
+                    "kind":item["kind"],
+                    "length":anchor["length"],
+                })
         elif not street_name(row):
             no_name+=1
         else:
             no_geometry+=1
-    if len(labels)<130:
-        raise RuntimeError(f"Seulement {len(labels)} voies géolocalisées sur {total}")
+    if len(seen)<130:
+        raise RuntimeError(f"Seulement {len(seen)} voies géolocalisées sur {total}")
     labels.sort(key=lambda a:(a["name"].casefold(),a["id"]))
     result={
       "schema":1, "source":"Ville de Paris, dénominations des emprises des voies actuelles",
       "sourceUrl":"https://opendata.paris.fr/explore/dataset/denominations-emprises-voies-actuelles/",
       "license":LICENSE, "extractedAt":datetime.now(timezone.utc).isoformat(),
-      "officialCount":total, "namedStreets":len(labels),
+      "officialCount":total, "namedStreets":len(seen),
       "unnamedOfficialRecords":no_name,"unlocatedOfficialRecords":no_geometry,
       "count":len(labels), "labels":labels,
     }
@@ -157,7 +218,7 @@ def main():
     temp=DEST.with_suffix(".tmp")
     temp.write_text(json.dumps(result,ensure_ascii=False,separators=(",",":")),encoding="utf-8")
     temp.replace(DEST)
-    print(f"Voies nommées du 4e : {len(labels)} étiquettes / {total} enregistrements officiels")
+    print(f"Voies nommées du 4e : {len(seen)} voies, {len(labels)} étiquettes / {total} enregistrements officiels")
     print(f"Sans nom : {no_name}, sans géométrie exploitable : {no_geometry}")
 
 if __name__=="__main__":
