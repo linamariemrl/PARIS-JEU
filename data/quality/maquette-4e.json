@@ -1,0 +1,38 @@
+{
+  "schema": 1,
+  "region": "Paris, 4e arrondissement",
+  "renderer": "maquette 3D monochrome Babylon.js",
+  "source": "IGN BD TOPO, Ville de Paris Volumes bâtis, OpenStreetMap",
+  "tileCount": 27,
+  "buildingCount": 2696,
+  "polygonRings": 2962,
+  "ringCoordinates": 28830,
+  "heightMeasuredCount": 2520,
+  "heightEstimatedCount": 176,
+  "minimumIGNHeightMeters": 2.1,
+  "maximumIGNHeightMeters": 66.0,
+  "cityVolumesInSource": 8664,
+  "cityVolumeMatches": 894,
+  "eligibleRefinedBuildings": 584,
+  "eligibleRefinedParts": 2102,
+  "roofsWithDocumentedShape": 59,
+  "roofsWithDocumentedHeight": 8,
+  "roofsWithoutDocumentedShape": 2637,
+  "materials": {
+    "wallMaterialDeclarations": 1315,
+    "roofMaterialDeclarations": 1334
+  },
+  "limitations": [
+    "Les formes de couverture manquantes nécessitent LiDAR HD, pas une extrapolation visuelle",
+    "Les subdivisions bâties ont des contours mesurés, mais leur hauteur intermédiaire est estimée",
+    "La hauteur des ponts et certaines largeurs de chaussée restent schématiques",
+    "Une orthophoto ne permet pas de reconstruire une façade ni une toiture 3D"
+  ],
+  "nextDataSteps": [
+    "Télécharger les dalles LiDAR HD limitées au 4e, préparer hors navigateur et comparer par identifiant IGN",
+    "Associer un niveau de confiance à chaque toit et vérifier les raccords entre parties de bâtiments",
+    "Obtenir les 20 limites d'arrondissements et calculer les communes limitrophes par ADMIN EXPRESS",
+    "Étendre l'index des tuiles sans téléchargement de tout Paris sur un téléphone",
+    "Construire l'état de simulation et les sauvegardes à l'étape 4"
+  ]
+}
