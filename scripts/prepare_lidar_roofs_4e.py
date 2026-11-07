@@ -184,8 +184,19 @@ def run():
                 with rasterio.open(file) as raster:
                     if raster.crs is None or raster.count!=1:
                         raise RuntimeError("Référencement raster absent")
-                    if str(raster.crs)!="EPSG:2154":
-                        raise RuntimeError("Projection MNH inattendue: "+str(raster.crs))
+                    # Les GeoTIFF issus du WMS IGN portent parfois un WKT
+                    # "PROJCS[EPSG:2154,...]" sans autorité EPSG reconnue
+                    # par GDAL. Vérifier également les bornes et le pixel,
+                    # jamais la seule chaîne de caractères.
+                    crs=str(raster.crs)
+                    if raster.crs.to_epsg()!=2154 and "EPSG:2154" not in crs:
+                        raise RuntimeError("Projection MNH inattendue: "+crs[:150])
+                    bounds=raster.bounds
+                    if not (630000<bounds.left<680000 and
+                            6840000<bounds.bottom<6900000 and
+                            .45<abs(raster.res[0])<.60 and
+                            .45<abs(raster.res[1])<.60):
+                        raise RuntimeError("Géoréférencement MNH suspect")
                     arr=raster.read(1)
                     source=None
                     for ident,b in buildings.items():
