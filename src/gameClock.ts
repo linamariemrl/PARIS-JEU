@@ -24,6 +24,10 @@ export class GameClock{
     return true;
   }
   get current():number{return this.timestamp;}
+  restore(timestamp:number,rate:TimeSpeed){
+    if(!Number.isFinite(timestamp))throw Error('Date de sauvegarde invalide');
+    this.timestamp=timestamp;this.setRate(rate);
+  }
   get rate():TimeSpeed{return this.speed;}
   setRate(speed:TimeSpeed):void{this.speed=speed;this.previous=null;}
   localHour():number {

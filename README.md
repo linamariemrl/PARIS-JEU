@@ -200,3 +200,15 @@ Palette neutre raffinée, traits de berges et limite officielle du 4e
 arrondissement. Aucun retour aux photographies ni aux façades décoratives.
 La maquette continue à distinguer les mesures d'emprises des largeurs
 schématiques de certaines voies ou des profils de ponts.
+
+## Premier module de gestion et sauvegardes
+
+Le bouton € donne accès au budget de fonctionnement et d'investissement
+de la Ville-département, une fois les montants récupérés depuis le jeu de
+données officiel Paris Data. Aucun chiffre n'est substitué si la récupération
+échoue. Une proposition budgétaire enregistrée dans le jeu n'a pas encore fait
+l'objet d'un vote du Conseil de Paris.
+
+Le panneau permet de sauvegarder plusieurs parties en IndexedDB, de charger
+l'une d'elles, d'exporter et importer un fichier JSON. Les dates, les
+indicateurs partagés et les propositions budgétaires sont conservés.

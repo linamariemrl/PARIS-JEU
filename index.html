@@ -28,6 +28,7 @@
 <button id="minus" aria-label="Dézoomer">−</button>
 <button id="north" aria-label="Nord">N</button>
 <button id="orbit-view" aria-label="Activer le déplacement orbital à 360 degrés" aria-pressed="false">360°</button>
+<button id="finance-open" aria-label="Gérer les finances et les sauvegardes" title="Finances et sauvegardes">€</button>
 <button id="street-view" aria-label="Basculer entre carte et vue proche de la rue" aria-pressed="false">Rue</button>
 <label>Qualité <select id="quality" aria-label="Qualité graphique"><option value="low">Basse</option><option value="medium" selected>Moyenne</option><option value="high">Haute</option></select></label>
 </nav>
@@ -39,6 +40,37 @@
     <button data-move="right" aria-label="Aller à droite">▶</button>
   </div>
 </div>
+
+<section id="finance-panel" class="hidden" role="dialog" aria-label="Finances de la Ville et sauvegardes">
+  <div class="finance-head"><div><strong>PARIS</strong><small>FINANCES ET PARTIES</small></div>
+    <button id="finance-close" aria-label="Fermer le panneau">×</button></div>
+  <p id="finance-year" class="finance-sub">Chargement des données officielles…</p>
+  <h3>Budget de fonctionnement</h3>
+  <div class="finance-line"><span>Recettes votées</span><b id="fin-op-revenue">…</b></div>
+  <div class="finance-line"><span>Dépenses votées</span><b id="fin-op-expense">…</b></div>
+  <h3>Budget d’investissement</h3>
+  <div class="finance-line"><span>Recettes votées</span><b id="fin-cap-revenue">…</b></div>
+  <div class="finance-line"><span>Dépenses votées</span><b id="fin-cap-expense">…</b></div>
+  <h3>Dette</h3>
+  <p id="fin-debt">Non disponible dans le budget</p>
+  <details class="finance-actions"><summary>Préparer un scénario budgétaire</summary>
+    <p>Variations hypothétiques des crédits de dépenses, à soumettre au Conseil de Paris. Aucune décision n'est appliquée automatiquement à la Ville réelle.</p>
+    <label>Fonctionnement, variation en % <input id="op-change" type="number" min="-20" max="20" step=".5" value="0"/></label>
+    <label>Investissement, variation en % <input id="cap-change" type="number" min="-40" max="40" step=".5" value="0"/></label>
+    <label>Nouvel emprunt envisagé, en M€ <input id="borrow-change" type="number" min="0" max="5000" step="10" value="0"/></label>
+    <p>Solde de fonctionnement envisagé : <b id="fin-balance">…</b></p>
+    <button id="budget-propose">Enregistrer la proposition</button>
+  </details>
+  <p id="finance-reference" class="finance-source">Source en attente</p>
+  <div class="finance-divider"></div>
+  <h3>Sauvegardes de parties</h3>
+  <p>Partie active : <strong id="current-slot">Partie principale</strong></p>
+  <div class="finance-buttons"><button id="save-now">Sauvegarder</button><button id="save-new">Nouvelle case</button><button id="save-export">Exporter</button></div>
+  <label class="file-label">Importer une partie JSON <input id="save-import" type="file" accept=".json,application/json"/></label>
+  <div id="save-list"></div>
+  <p class="finance-source">Conservation locale IndexedDB. Une suppression des données du navigateur peut effacer les parties non exportées.</p>
+  <p id="finance-status" role="status">Prêt.</p>
+</section>
 <aside id="selection" class="hidden"><button id="close" aria-label="Fermer">×</button><h2>Bâtiment sélectionné</h2><p>Hauteur : <span id="height"></span></p><p>Usage : <span id="usage"></span></p><p>Façade : <span id="skin"></span></p>
 <p>Gros murs : <span id="wall-real"></span></p>
 <p>Couverture : <span id="roof-real"></span></p>

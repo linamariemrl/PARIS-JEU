@@ -579,3 +579,13 @@ Le code des photographies reste dans l'historique de recherche mais le JavaScrip
 Version 0.12 : palette strictement achromatique. Bâtiments en blanc mat, toits en gris clair, eau en gris moyen, chaussées plus foncées que les trottoirs. Les berges reçoivent un filet discret et les ponts conservent des parapets légèrement plus clairs. Les frontières administratives affichées utilisent le contour officiel GeoJSON du 4e arrondissement, jamais une frontière calculée depuis une capture d'écran. Elles sont tracées en géométrie du monde à une élévation minimale. Leur continuité est indépendante du zoom.
 
 Les descriptions distinguent les surfaces déduites de la source de voirie et les cotes de pont estimées. Aucune mesure LiDAR ou archive d'autres arrondissements n'est annoncée comme intégrée avant extraction et validation. Le cahier initial demeure : vingt arrondissements, deux bois et communes limitrophes, puis simulation financière, transport et modules suivants.
+
+## 33. Socle de simulation mobile et finances, version 0.13
+
+Un état commun strictement typé enregistre des indicateurs par échelle administrative (Paris, arrondissement, quartier, îlot, commune). Les valeurs portent une provenance, une date et une unité. L'horloge continue de progresser à la vitesse ×1, ×10, ×60 ou en pause, sans effet sur la lumière. Le premier module est Finances.
+
+La base ne contient aucun chiffre inventé. Le fichier officiel `public/data/finance/budget-paris.json`, quand sa préparation officielle aura réussi, fournira le budget primitif pour l'exercice et les sections fonctionnement/investissement. Les montants sont ceux du vote en crédits de paiement, pas des flux de trésorerie ni des comptes administratifs. La dette constatée n'est pas inférée du budget primitif et reste `null` tant qu'une source officielle spécifique n'est pas intégrée. Une hausse projetée de dépenses ou d'emprunts est uniquement un **scénario**, pas une décision applicable sans Conseil de Paris ou autres partenaires compétents. La fonctionnalité de vote réel est à ajouter.
+
+Les parties sont enregistrées en IndexedDB, avec plusieurs cases nommées, export/import JSON pour partage entre téléphones et restauration de la date, de la vitesse, des propositions financières et des indicateurs. Le navigateur n'est pas un coffre-fort permanent : recommander l'export JSON. La validation de schéma de sauvegarde est minimale et devra être renforcée avec les modules suivants.
+
+Ces fichiers de simulation ne modifient pas les emprises ni le rendu. Le socle n'implémente encore ni bilan consolidé de dette ni fiscalité municipale détaillée, ni débats/majorités. Il est un premier système opérationnel extensible.

@@ -107,3 +107,40 @@ header{background:linear-gradient(#273543dd,#273543aa)}
    l'horloge restent lisibles, sans ajout de photographie. */
 #scene{background:#f0f0f0}
 #time-panel{backdrop-filter:blur(6px)}
+
+/* Gestion municipale, taille adaptée à Android, sans couvrir toute la ville. */
+#finance-open{font-size:23px;height:42px}
+#finance-panel{
+ position:fixed;top:calc(env(safe-area-inset-top) + 55px);
+ left:8px;bottom:calc(env(safe-area-inset-bottom) + 52px);
+ width:min(360px,calc(100vw - 88px));
+ overflow-y:auto;z-index:9;border-radius:13px;
+ background:#f3f3f3;color:#242424;border:1px solid #bcbcbc;
+ box-shadow:0 10px 36px #1116;padding:14px;
+ font-size:12px;line-height:1.35;overscroll-behavior:contain;
+}
+#finance-panel h3{font-size:13px;margin:15px 0 7px}
+#finance-panel p{margin:8px 0}
+.finance-head{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ddd;padding-bottom:7px}
+.finance-head>div{display:flex;flex-direction:column;gap:3px}
+.finance-head strong{letter-spacing:4px;font-size:17px}
+.finance-head small{font-size:9px;letter-spacing:1.5px}
+#finance-close{width:33px;height:33px;font-size:20px;background:#3c434a}
+.finance-sub,.finance-source{font-size:10px;color:#626262}
+.finance-line{display:flex;justify-content:space-between;align-items:start;gap:8px;padding:5px 0;border-bottom:1px solid #d9d9d9;font-variant-numeric:tabular-nums}
+.finance-line b{text-align:right;font-size:11px}
+.finance-actions{padding:8px;background:#e6e6e6;border-radius:9px;margin-top:13px}
+.finance-actions summary{font-weight:700;cursor:pointer}
+.finance-actions label{display:flex;align-items:center;justify-content:space-between;gap:9px;padding:6px 0}
+.finance-actions input{background:white;width:75px;border:1px solid #aaa;border-radius:4px;padding:6px;color:#222}
+.finance-actions button,.finance-buttons button,.save-row button{width:auto;height:32px;padding:5px 9px;font-size:11px}
+.finance-divider{margin:15px 0;border-top:1px solid #bbb}
+.finance-buttons{display:flex;gap:6px;flex-wrap:wrap;margin:9px 0}
+#save-list{display:flex;flex-direction:column;gap:5px;margin-top:10px}
+.save-row{display:flex;gap:6px;align-items:center;justify-content:space-between;background:#e2e2e2;border-radius:5px;padding:4px}
+.save-row span{flex:1;min-width:0;overflow-wrap:anywhere}
+.save-row small{display:block;font-size:9px;color:#777}
+.save-row button{flex:none}
+.file-label{font-weight:600;display:block}
+.file-label input{margin-top:5px;width:100%;font-size:11px}
+#finance-status{font-size:11px;color:#495c62;border-top:1px solid #ddd;padding-top:7px}

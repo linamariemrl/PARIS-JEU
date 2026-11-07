@@ -163,6 +163,8 @@ try{
   for(const item of speedButtons)
     el<HTMLButtonElement>(item.id).addEventListener('click',()=>selectRate(item.rate));
   selectRate(1);
+  const management=new GameManagement(clock,selectRate);
+  void management;
   window.addEventListener('resize',()=>engine.resize());
   let lastFps=0,lastClock=0,previous=performance.now();
   engine.runRenderLoop(()=>{
