@@ -154,3 +154,14 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 5. Comparer le FPS en qualité Moyenne puis Haute. Le seuil à respecter reste au moins 30 FPS sur le téléphone Android du joueur.
 6. Vérifier l'orthophotographie IGN au sol, la sélection et les nouveaux volumes à étages du prototype 0.9.
 7. Envoyer une capture rapprochée des toitures et façades si un relief paraît disproportionné.
+
+## Prototype 0.11 : maquette monochrome et navigation à 360°
+
+1. Voir « PROTOTYPE 0.11 » et les 2 696 bâtiments IGN.
+2. Aucun fond satellite ni texture de façades, tout blanc ou gris. La Seine et les ponts sont des formes grises.
+3. Tourner librement avec 360°, puis toucher Pan pour déplacer la carte.
+4. Faire un tour complet de l'îlot en rotation. Vérifier les gestes dans toutes les orientations.
+5. En vue Rue, faire glisser vers le haut pour lever le regard, sans traverser le sol. Les flèches déplacent la caméra.
+6. Passer de Carte à Rue, puis de Rue à Carte sans saut. Zoomer/dézoomer, utiliser Nord et Recentrer.
+7. Essayer les vitesses d'horloge. Aucun changement visuel de jour ou nuit ne doit se produire.
+8. Comparer Moyen et Haut, objectif minimum 30 FPS. Contrôler la stabilité après plusieurs minutes.

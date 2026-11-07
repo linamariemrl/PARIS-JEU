@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "python scripts/generate_icons.py && tsc --noEmit && npm run test:astronomy && npm run test:street-labels && npm run test:material-catalog && npm run test:roof-geometry && npm run test:camera && npm run test:city-volumes && npm run test:architecture && vite build && python scripts/check_site_size.py dist",
+    "build": "python scripts/generate_icons.py && tsc --noEmit && npm run test:astronomy && npm run test:street-labels && npm run test:material-catalog && npm run test:roof-geometry && npm run test:camera && npm run test:city-volumes && npm run test:architecture && npm run test:monochrome && vite build && python scripts/check_site_size.py dist",
     "preview": "vite preview --host 0.0.0.0",
     "test:astronomy": "node --experimental-strip-types scripts/check_astronomy.mjs",
     "test:street-labels": "node --experimental-strip-types scripts/check_street_labels.mjs",
@@ -13,7 +13,8 @@
     "test:roof-geometry": "node --experimental-strip-types scripts/check_roof_geometry.mjs",
     "test:camera": "node --experimental-strip-types scripts/check_camera.mjs",
     "test:city-volumes": "node --experimental-strip-types scripts/check_city_volumes.mjs",
-    "test:architecture": "node --experimental-strip-types scripts/check_architectural_detail.mjs"
+    "test:architecture": "node --experimental-strip-types scripts/check_architectural_detail.mjs",
+    "test:monochrome": "node --experimental-strip-types scripts/check_monochrome_camera.mjs"
   },
   "dependencies": {
     "@babylonjs/core": "^8.0.0",

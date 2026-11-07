@@ -1,3 +1,22 @@
+## Prototype 0.11 : maquette géométrique blanche et grise
+
+Le rendu satellite, les textures, les arbres décoratifs et le cycle de
+lumière ont été désactivés. L'horloge et les contrôles temporels fonctionnent.
+Chaque bâtiment conserve son emprise IGN et ses subdivisions municipales
+validées. L'apparence de la ville est désormais monochrome. Les toits sans
+forme connue restent plats en attendant les mesures LiDAR, au lieu d'inventer
+une silhouette historique.
+
+Pour naviguer : en mode Carte, faites glisser la maquette à un doigt.
+Appuyez sur 360° pour orienter librement la caméra avec un doigt; touchez
+Pan pour revenir au déplacement. Deux doigts effectuent le zoom, la
+rotation et l'inclinaison. Le mode Rue permet de regarder autour de soi
+et d'avancer à l'aide des commandes. Les gestes sont amortis.
+
+Le terrain, la Seine et les ponts utilisent des maillages gris; certaines
+largeurs et hauteurs restent schématiques, ce qui est indiqué dans Détails.
+Cette version favorise la fidélité géométrique plutôt que les textures.
+
 # PARIS, le jeu de la ville
 
 Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans un dépôt GitHub public.

@@ -91,3 +91,14 @@ footer #materials-status{font-size:10px;color:#d5dde1}
   font-size:12px;line-height:1.35;
 }
 .help .precision-switch input{width:19px;height:19px;accent-color:#b7dbea;flex:none}
+
+/* Mode maquette : panneaux peu encombrants, touches larges, fond neutre. */
+#scene{background:#dddddd}
+#orbit-view{font-size:13px}
+#orbit-view[aria-pressed="true"]{background:#637585}
+#orbit-view:disabled{opacity:.42}
+nav{gap:6px}
+nav button{height:45px}
+header{background:linear-gradient(#273543dd,#273543aa)}
+#time-panel{background:#263643e5}
+#map-hud{background:#25323fe8}

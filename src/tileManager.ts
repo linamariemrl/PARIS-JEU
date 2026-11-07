@@ -41,9 +41,6 @@ export class TileManager {
   private active = new Map<string, Loaded>();
   private failed = new Set<string>();
   private ready = false;
-  private quality:'low'|'medium'|'high'='medium';
-  private lastDetailX=Infinity;
-  private lastDetailZ=Infinity;
   private overlay:Record<string,BuildingMaterialRecord>={};
   private roofOverlay:Record<string,RoofInfo>={};
   private cityVolumeOverlay:Record<string,CityVolumeGroup>={};
@@ -136,27 +133,11 @@ export class TileManager {
     this.report();
   }
 
-  // L'échelle graphique peut changer, mais jamais la présence des bâtiments.
-  setQuality(quality:'low'|'medium'|'high'){
-    this.quality=quality;
-    this.lastDetailX=Infinity;
-  }
-  update(x:number,z:number) {
-    if(Math.hypot(x-this.lastDetailX,z-this.lastDetailZ)<40)return;
-    this.lastDetailX=x;
-    this.lastDetailZ=z;
-    const radius=this.quality==='high'?1150:this.quality==='medium'?720:0;
-    for(const [id,loaded] of this.active){
-      const info=this.manifest?.tiles.find(t=>t.id===id);
-      if(!info)continue;
-      const cx=(info.ix+.5)*(this.manifest?.tileMeters??300);
-      const cz=(info.iz+.5)*(this.manifest?.tileMeters??300);
-      const detail=radius>0&&Math.hypot(cx-x,cz-z)<radius;
-      for(const mesh of loaded.meshes){
-        if(mesh.name.startsWith('batiments-cornice-'))mesh.setEnabled(detail);
-      }
-    }
-  }
+  // Maquette de géométrie inchangée à toutes les échelles.
+  // Le mode qualité agit uniquement sur la résolution GPU et non sur les
+  // bâtiments réels. LOD géométriques à tester lors de l'extension à Paris.
+  setQuality(_quality:'low'|'medium'|'high'){}
+  update(_x:number,_z:number){}
 
   private async load(tile: TileInfo) {
     try {
@@ -183,13 +164,7 @@ export class TileManager {
         }
       }
       const meshes=createTile(this.scene,data,this.materials);
-      // Activation des détails uniquement à proximité, sans changer le
-      // nombre d'immeubles chargés, quel que soit le niveau de zoom.
-      for(const mesh of meshes){
-        if(mesh.name.startsWith('batiments-cornice-'))mesh.setEnabled(false);
-      }
-      this.active.set(tile.id, {meshes,count:data.buildings.length});
-      this.lastDetailX=Infinity;
+      this.active.set(tile.id,{meshes,count:data.buildings.length});
     } catch (e) {
       this.failed.add(tile.id);
       console.warn('Tuile des bâtiments', tile.id, e);

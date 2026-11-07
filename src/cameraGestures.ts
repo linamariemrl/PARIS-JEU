@@ -30,3 +30,8 @@ export function gestureRatio(precision:boolean):number {
 export function gestureApply(previous:number,current:number,precision:boolean):number {
   return previous + (current-previous)*gestureRatio(precision);
 }
+
+/** Autour du cercle, on choisit le plus court mouvement angulaire. */
+export function shortestYaw(current:number,target:number):number{
+  return current+wrapTwist(target-current);
+}

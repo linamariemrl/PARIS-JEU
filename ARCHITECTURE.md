@@ -545,3 +545,31 @@ Le motif des façades est rééquilibré en faveur de la maçonnerie et de baies
 Les couronnements sont regroupés par tuile géographique en un seul maillage additionnel par tuile, non sélectionnable, masqué au niveau Bas et affiché uniquement dans les zones proches en Moyen/Haut. L'ensemble des 2 696 bâtiments IGN demeure chargé à tous les zooms. La fluidité Android 30 FPS reste une condition à valider avec le téléphone de l'utilisateur.
 
 L'étape suivante ne sera pas une simple texture supplémentaire : reconstruire les profils géométriques des toits par LiDAR HD, en coordonnant nuages de points ou MNS/MNH avec le 4e, tout en excluant les éléments non mesurés. L'IGN diffuse le nuage de points, le MNT, le MNS et le MNH en données ouvertes (Licence Ouverte 2.0). Le volume des COPC impose une préparation hors téléphone dans GitHub Actions et une sortie simplifiée par bâtiment; les fichiers LiDAR bruts ne seront pas livrés au navigateur.
+
+## 31. Protocole du prototype 0.11 : maquette blanche-grise
+
+Décision de conception validée le 7 novembre 2026 : arrêt temporaire de la recherche du photoréalisme. La vue est désormais une **maquette numérique monochrome 3D** sans photographie satellite, sans texture architecturale, sans arbre décoratif et sans effets météo ou cycle d'éclairage. Le temps du jeu continue de fonctionner et reste affiché en permanence au format français.
+
+Les 2 696 bâtiments du 4e utilisent la BD TOPO, y compris les subdivisions géométriques municipale validées. Seuls les profils de toiture documentés dans OSM sont représentés avec pente; lorsqu'aucune forme n'est connue, le toit est laissé plat et déclaré comme approximation (en attente LiDAR). Les anciens couronnements purement illustratifs ont été désactivés pour privilégier les formes documentées. Deux matériaux non texturés suffisent aux maillages des bâtiments, une nuance blanche pour les façades et une gris clair pour les toits. Les rues, espaces publics, Seine et tabliers de pont restent présents sous forme géométrique gris sur gris, sans coloration réaliste. Les largeurs de voirie et les hauteurs de pont précédemment estimées le restent. Le moteur ne doit pas prétendre que leurs profils sont mesurés.
+
+Un bouton **360°** active le déplacement orbital à un doigt autour de la cible; le mode normal conserve le déplacement libre de la carte. Les rotations, inclinaisons et zooms à deux doigts restent actifs. Les gestes disposent d'une inertie amortie pour lisser les mouvements, d'une interpolation des transitions, et du mode Rue permettant de regarder librement sur 360° en hauteur constante. Les gestes à deux doigts inclinent vers le haut ou vers le bas sans inverser les axes. La carte conserve sa position géographique pendant les transitions. Sur Android, la sensibilité réduite peut être activée dans l'aide.
+
+Le cycle solaire et nocturne est entièrement déconnecté du rendu, y compris les fenêtres et lampadaires. La scène utilise une lumière ambiante/directionnelle **constante** pour faire percevoir les volumes quelle que soit l'heure du jeu.
+
+Le code des photographies reste dans l'historique de recherche mais le JavaScript de la maquette ne le charge plus; les éléments d'orthophotos ne doivent pas être téléchargés au mobile et sont exclus de la distribution finale. Le recours à des photos n'est pas prévu tant que l'utilisateur ne le demande pas.
+
+### Critères de contrôle sur le seul Android
+
+1. Les 2 696 bâtiments restent chargés à tous les zooms, sans disparition.
+2. Sur le 4e, pas de textures de façades, pas de photographies, et une scène intégralement blanc-gris.
+3. L'horloge change selon pause, ×1, ×10, ×60, sans effet sur les ombres ou les couleurs.
+4. Le bouton 360° permet une rotation continue libre en vue générale; en mode Rue, le regard peut se lever vers le haut sans placer la caméra sous la chaussée.
+5. Le balayage, le zoom et la rotation ne s'inversent pas et restent réactifs. Cible au moins 30 FPS en qualité Moyenne, puis Haute si possible.
+6. Les descriptions distinguent données IGN, subdivisions de la Ville, formes OSM et éléments provisoires. La précision intégrale des toits attend le LiDAR HD.
+
+### Suite du programme original
+
+- Terminer la vérification de la vraie volumétrie avec les surfaces et pentes LiDAR, sans texture.
+- Industrialiser les tuiles pour tous les arrondissements, bois de Boulogne/Vincennes et communes limitrophes issues des frontières ADMIN EXPRESS.
+- Mettre en place une lecture légère des couches de voirie et de bâtiment, sans trou visuel lors des changements de LOD.
+- Étape 4 : instaurer l'état partagé et le temps de simulation, plusieurs sauvegardes IndexedDB, puis les finances municipales, avant un module fonctionnel à la fois. Aucun système fictif de niveau ou déblocage.
