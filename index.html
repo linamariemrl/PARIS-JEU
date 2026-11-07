@@ -4,7 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#0c1723"/>
-<meta name="description" content="PARIS, prototype 3D du quatrième arrondissement."/>
+<meta name="description" content="PARIS SKYLINES : maquette 3D monochrome de Paris, gestion municipale et simulation."/>
 <title>PARIS | Le jeu de la ville</title>
 </head>
 <body>
@@ -45,6 +45,7 @@
   <div class="finance-head"><div><strong>PARIS</strong><small>FINANCES ET PARTIES</small></div>
     <button id="finance-close" aria-label="Fermer le panneau">×</button></div>
   <p id="finance-year" class="finance-sub">Chargement des données officielles…</p>
+   <p class="finance-source">Montants des sections du budget primitif voté, incluant les opérations d’ordre. Ils ne représentent pas les encaissements et décaissements réalisés.</p>
   <h3>Budget de fonctionnement</h3>
   <div class="finance-line"><span>Recettes votées</span><b id="fin-op-revenue">…</b></div>
   <div class="finance-line"><span>Dépenses votées</span><b id="fin-op-expense">…</b></div>
@@ -53,12 +54,17 @@
   <div class="finance-line"><span>Dépenses votées</span><b id="fin-cap-expense">…</b></div>
   <h3>Dette</h3>
   <p id="fin-debt">Non disponible dans le budget</p>
+   <p class="finance-source">La dette de référence en début d’exercice n’est pas le stock de dette à la date du jeu.</p>
   <details class="finance-actions"><summary>Préparer un scénario budgétaire</summary>
     <p>Variations hypothétiques des crédits de dépenses, à soumettre au Conseil de Paris. Aucune décision n'est appliquée automatiquement à la Ville réelle.</p>
     <label>Fonctionnement, variation en % <input id="op-change" type="number" min="-20" max="20" step=".5" value="0"/></label>
     <label>Investissement, variation en % <input id="cap-change" type="number" min="-40" max="40" step=".5" value="0"/></label>
     <label>Nouvel emprunt envisagé, en M€ <input id="borrow-change" type="number" min="0" max="5000" step="10" value="0"/></label>
     <p>Solde de fonctionnement envisagé : <b id="fin-balance">…</b></p>
+     <div class="finance-line"><span>Besoin d’investissement simulé</span><b id="fin-investment-need">…</b></div>
+     <div class="finance-line"><span>Nouvel emprunt proposé</span><b id="fin-borrowing">…</b></div>
+     <div class="finance-line"><span>Besoin restant non couvert</span><b id="fin-uncovered">…</b></div>
+     <p class="finance-source">Calcul simplifié à crédits constants : ni réalisation comptable, ni capacité d’emprunt, ni dette future constatée.</p>
     <button id="budget-propose">Enregistrer la proposition</button>
   </details>
   <p id="finance-reference" class="finance-source">Source en attente</p>
