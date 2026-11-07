@@ -9,7 +9,7 @@
 </head>
 <body>
 <canvas id="scene" aria-label="Vue 3D tactile de Paris"></canvas>
-<header><strong>PARIS</strong><span>PROTOTYPE 02 | 4e ARRONDISSEMENT</span></header>
+<header><strong>PARIS</strong><span>PROTOTYPE 03 | 4e ARRONDISSEMENT</span></header>
 <details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Un doigt : déplacer. Deux doigts : zoomer, tourner et incliner. Toucher un bâtiment : informations.</p></details>
 <nav aria-label="Commandes de caméra">
 <button id="home" aria-label="Recentrer">⌂</button>
@@ -20,7 +20,7 @@
 </nav>
 <aside id="selection" class="hidden"><button id="close" aria-label="Fermer">×</button><h2>Bâtiment sélectionné</h2><p>Hauteur : <span id="height"></span></p><p>Usage : <span id="usage"></span></p><p>Identifiant IGN : <span id="identifier"></span></p><small id="caveat"></small></aside>
 <div id="error" class="hidden" role="alert"></div>
-<footer><span id="state">Chargement de la carte...</span><span id="count">0 bâtiment</span><span id="urban">Chargement des rues...</span><span id="fps">FPS : ...</span><a id="map-credits" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a></footer>
+<footer><span id="state">Chargement de la carte...</span><span id="count">0 bâtiment</span><span id="urban">Chargement des rues...</span><span id="vegetation">Arbres : chargement...</span><span id="fps">FPS : ...</span><a id="map-credits" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a></footer>
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
