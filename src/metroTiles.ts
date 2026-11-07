@@ -102,6 +102,7 @@ export class MetroTileManager{
       this.failures.add(info.id);
     }finally{
       this.inFlight.delete(info.id);
+      this.lastPointX=Infinity;
       this.report();
     }
   }

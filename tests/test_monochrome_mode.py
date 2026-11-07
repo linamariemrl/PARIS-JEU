@@ -23,4 +23,5 @@ class MonochromeInvariants(unittest.TestCase):
         s=(ROOT/"package.json").read_text(encoding="utf8")
         self.assertIn("strip_aerial_dist.py dist",s)
         v=(ROOT/"vite.config.ts").read_text(encoding="utf8")
-        self.assertIn("globIgnores: ['**/data/4e/aerial/**']",v)
+        self.assertIn("'**/data/4e/aerial/**'",v)
+        self.assertIn("'**/data/metropole/buildings/tiles/**'",v)
