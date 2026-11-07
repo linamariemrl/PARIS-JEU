@@ -24,3 +24,17 @@
 7. Vérifier que le lien de crédits OpenStreetMap est visible.
 
 La largeur exacte des rues, l'élévation des ponts, le détail des trottoirs et la précision hydrologique doivent encore faire l'objet de validations supplémentaires. Aucune mesure de performance ne peut être extrapolée d'une capture isolée.
+
+## Version 0.3, vérification sur le téléphone Android
+
+1. Ouvrir l'application publiée puis actualiser pour charger la nouvelle version PWA.
+2. Vérifier que les arbres sont visibles près des rues et dans les espaces verts, sans être systématiquement répartis au hasard.
+3. Vérifier qu'un pont a désormais un tablier épais et des parapets, en conservant des passages ouverts aux extrémités.
+4. Zoomer sur les façades et contrôler l'apparition des fenêtres procédurales ; ne pas les confondre avec une reconstitution architecturale certifiée.
+5. Déplacer la caméra dans plusieurs directions. Les arbres distants doivent pouvoir disparaître de la zone dessinée sans immobiliser la caméra.
+6. Tester basse, moyenne puis haute qualité, contrôler l'absence de fermeture et viser au moins 30 FPS en usage normal.
+7. Vérifier que le bouton de sélection d'un bâtiment conserve le bon identifiant et la bonne hauteur.
+8. Observer l'horizon et vérifier que la brume n'efface pas complètement les immeubles à proximité.
+9. Vérifier la présence des attributions IGN et Ville de Paris.
+
+En cas de chute durable sous 30 FPS, réduire d'abord la distance des arbres, puis leur densité et la qualité des façades.
