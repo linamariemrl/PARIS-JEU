@@ -1,4 +1,4 @@
-import {Mesh, MeshBuilder, Scene} from '@babylonjs/core';
+import {Color3,Color4,Mesh,MeshBuilder,Scene,StandardMaterial} from '@babylonjs/core';
 import type {BuildingMaterials} from './buildings';
 
 const PREFIX=import.meta.env.BASE_URL+'data/metropole/overview/';
@@ -34,6 +34,7 @@ export class MetroOverview {
  private failures=new Map<string,number>();
  private detailed=new Set<string>();
  private currentCount=0;
+ private overviewMaterial:StandardMaterial;
  private lastUpdate=0;
  private lastX=Infinity;
  private lastZ=Infinity;
@@ -42,8 +43,15 @@ export class MetroOverview {
   private scene:Scene,
   private materials:BuildingMaterials,
   private onStatus:(label:string,count:number)=>void
- ){}
-
+ ){
+   // Matériau unique pour toutes les silhouettes éloignées.
+   // Teintes de face directement dans la géométrie, aucune texture.
+   this.overviewMaterial=new StandardMaterial('volume-eloigne-pierre',scene);
+   this.overviewMaterial.diffuseColor=new Color3(.93,.93,.93);
+   this.overviewMaterial.specularColor=Color3.Black();
+   this.overviewMaterial.useVertexColors=true;
+   this.overviewMaterial.freeze();
+ }
  async init():Promise<void>{
   try{
    const response=await fetch(PREFIX+'manifest.json');
@@ -165,9 +173,11 @@ export class MetroOverview {
    for(const tile of group.tiles){
     this.writeTile(matrices,source,tile,false);
    }
+   const c=(value:number)=>new Color4(value,value,value,1);
    const mesh=MeshBuilder.CreateBox('enveloppes-metropole-'+group.id,
-    {size:1},this.scene);
-   mesh.material=this.materials.roof;
+    {size:1,faceColors:[c(.80),c(.80),c(.84),c(.84),c(.98),c(.77)]},
+    this.scene);
+   mesh.material=this.overviewMaterial;
    mesh.isPickable=false;
    // Matrices dynamiques : les substitutions IGN/LOD doivent mettre à jour
    // le GPU. Un buffer statique provoque des superpositions scintillantes.
