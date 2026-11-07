@@ -1,5 +1,4 @@
 import {Color3,Color4,Mesh,MeshBuilder,Scene,StandardMaterial} from '@babylonjs/core';
-import type {BuildingMaterials} from './buildings';
 
 const PREFIX=import.meta.env.BASE_URL+'data/metropole/overview/';
 interface TileRef {id:string;ix:number;iz:number;offset:number;count:number;}
@@ -41,7 +40,6 @@ export class MetroOverview {
  private lastRadius=Infinity;
  constructor(
   private scene:Scene,
-  private materials:BuildingMaterials,
   private onStatus:(label:string,count:number)=>void
  ){
    // Matériau unique pour toutes les silhouettes éloignées.
