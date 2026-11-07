@@ -17,6 +17,7 @@ export class GameManagement {
  readonly saves=new SaveStore();
  private currentName='Partie principale';
  private currentSlot='principal';
+ private createdAt=new Date().toISOString();
  constructor(private clock:GameClock, private onRateChange:(rate:0|1|10|60)=>void){
   node<HTMLButtonElement>('finance-open').addEventListener('click',()=>this.open());
   node<HTMLButtonElement>('finance-close').addEventListener('click',()=>this.close());
@@ -57,6 +58,12 @@ export class GameManagement {
     money(b.operating.revenueEUR-
       b.operating.expenseEUR*(1+this.finance.plan.operatingExpenseChangePct/100)):
     'Indisponible';
+  const need=b?Math.max(0,b.capital.expenseEUR*
+     (1+this.finance.plan.capitalExpenseChangePct/100)-b.capital.revenueEUR):null;
+  node('fin-investment-need').textContent=need===null?'Indisponible':money(need);
+  node('fin-borrowing').textContent=money(this.finance.plan.projectedBorrowingEUR);
+  node('fin-uncovered').textContent=need===null?'Indisponible':
+    money(Math.max(0,need-this.finance.plan.projectedBorrowingEUR));
   const list=await this.saves.list().catch(()=>[]);
   const target=node<HTMLDivElement>('save-list');
   target.replaceChildren();
@@ -82,7 +89,7 @@ export class GameManagement {
  private snapshot():GameSave{
   const now=new Date().toISOString();
   return {
-    schema:1,name:this.currentName,createdAt:now,updatedAt:now,
+    schema:1,name:this.currentName,createdAt:this.createdAt,updatedAt:now,
     gameTimestamp:this.clock.current,timeRate:this.clock.rate,
     plan:this.finance.plan,indicators:this.indicators.list()
   };
@@ -94,6 +101,7 @@ export class GameManagement {
       if(!name)return;
       this.currentName=name.trim().slice(0,80)||'Nouvelle partie';
       this.currentSlot='partie-'+Date.now();
+      this.createdAt=new Date().toISOString();
     }
     await this.saves.put(this.currentSlot,this.snapshot());
     this.status('Sauvegarde enregistrée localement sur ce téléphone.');
@@ -106,6 +114,7 @@ export class GameManagement {
     if(!s)return;
     const v=validateSave(s);
     this.currentSlot=slot;this.currentName=v.name;
+    this.createdAt=v.createdAt;
     this.clock.restore(v.gameTimestamp,v.timeRate);
     this.onRateChange(v.timeRate);
     this.indicators.restore(v.indicators);
@@ -118,7 +127,10 @@ export class GameManagement {
   if(!window.confirm('Supprimer cette sauvegarde locale ?'))return;
   try{
     await this.saves.remove(slot);
-    if(slot===this.currentSlot){this.currentSlot='principal';this.currentName='Partie principale';}
+    if(slot===this.currentSlot){
+      this.currentSlot='principal';this.currentName='Partie principale';
+      this.createdAt=new Date().toISOString();
+    }
     this.status('Sauvegarde supprimée.');
     await this.render();
   }catch(e){this.status('Suppression impossible : '+String(e));}
