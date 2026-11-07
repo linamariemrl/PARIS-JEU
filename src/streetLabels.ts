@@ -17,11 +17,6 @@ interface StreetLabel extends StreetAnchor {
 }
 interface StreetPayload {schema:number;namedStreets:number;labels:StreetLabel[];}
 interface AtlasEntry {u0:number;u1:number;v0:number;v1:number;aspect:number;}
-interface Candidate {
-  street:StreetLabel;
-  distance:number;
-  visibility:number;
-}
 /** Noms de rues inscrits sur des quads physiques HORIZONTAUX.
  * Un maillage, une texture-atlas, 28 inscriptions au plus par vue.
  * AUCUN canvas 2D au-dessus de la scène et aucune position calculée
@@ -32,13 +27,11 @@ interface Candidate {
 export class StreetLabels {
   private entries:StreetLabel[]=[];
   private atlas:DynamicTexture|null=null;
-  private material:StandardMaterial|null=null;
   private mesh:Mesh|null=null;
   private slots=new Map<string,AtlasEntry>();
   private readonly identity=Matrix.Identity();
   private readonly positions=new Float32Array(STREET_LABEL_LIMIT*12);
   private readonly uvs=new Float32Array(STREET_LABEL_LIMIT*8);
-  private readonly colors=new Float32Array(STREET_LABEL_LIMIT*16);
 
   constructor(private scene:Scene,private engine:Engine){}
 
@@ -112,7 +105,6 @@ export class StreetLabels {
     data.positions=this.positions;
     data.uvs=this.uvs;
     data.normals=normals;
-    data.colors=this.colors;
     data.indices=indices;
     data.applyToMesh(mesh,true);
     const mat=new StandardMaterial('encre-des-noms-de-voies',this.scene);
@@ -123,14 +115,11 @@ export class StreetLabels {
     mat.transparencyMode=Material.MATERIAL_ALPHABLEND;
     mat.backFaceCulling=false;
     mat.disableDepthWrite=true;
-    mat.useVertexColors=true;
-    mat.alpha=.68;
+    mat.alpha=.42;
     mesh.material=mat;
     mesh.isPickable=false;
-    mesh.hasVertexAlpha=true;
     mesh.alwaysSelectAsActiveMesh=true;
     mesh.setEnabled(false);
-    this.material=mat;
     this.mesh=mesh;
   }
 
@@ -159,7 +148,6 @@ export class StreetLabels {
     let count=0;
     this.positions.fill(0);
     this.uvs.fill(0);
-    this.colors.fill(0);
     for(const item of available){
       if(count>=STREET_LABEL_LIMIT)break;
       const label=item.street;
@@ -192,21 +180,12 @@ export class StreetLabels {
         atlas.u0,atlas.v0, atlas.u1,atlas.v0,
         atlas.u1,atlas.v1, atlas.u0,atlas.v1
       ],uv);
-      const alpha=Math.min(.65,item.visibility*.65);
-      for(let vertex=0;vertex<4;vertex++){
-        const p=count*16+vertex*4;
-        this.colors[p]=1;
-        this.colors[p+1]=1;
-        this.colors[p+2]=1;
-        this.colors[p+3]=alpha;
-      }
       occupied.push(rect);
       count++;
     }
     if(!count){mesh.setEnabled(false);return;}
     mesh.updateVerticesData(VertexBuffer.PositionKind,this.positions,false,false);
     mesh.updateVerticesData(VertexBuffer.UVKind,this.uvs,false,false);
-    mesh.updateVerticesData(VertexBuffer.ColorKind,this.colors,false,false);
     mesh.setEnabled(true);
   }
 }
