@@ -1,0 +1,102 @@
+{
+  "schema": 1,
+  "policy": "Aucune copie de textures ou modèles Google Maps / Street View; photographies importées seulement après vérification individuelle des droits.",
+  "sources": [
+    {
+      "id": "ign_bdtopo",
+      "name": "IGN BD TOPO",
+      "url": "https://geoservices.ign.fr/bdtopo",
+      "license": "Licence Ouverte 2.0",
+      "status": "utilisé",
+      "role": "bâtiments, hauteurs, attributs cadastraux"
+    },
+    {
+      "id": "osm",
+      "name": "OpenStreetMap",
+      "url": "https://www.openstreetmap.org/copyright",
+      "license": "ODbL 1.0",
+      "status": "utilisé",
+      "role": "toitures documentées, voirie, ponts"
+    },
+    {
+      "id": "paris_voies",
+      "name": "Ville de Paris, dénominations des emprises des voies actuelles",
+      "url": "https://opendata.paris.fr/explore/dataset/denominations-emprises-voies-actuelles/",
+      "license": "ODbL",
+      "status": "utilisé",
+      "role": "voies et noms"
+    },
+    {
+      "id": "paris_arbres",
+      "name": "Ville de Paris, arbres",
+      "url": "https://opendata.paris.fr/explore/dataset/les-arbres/",
+      "license": "ODbL",
+      "status": "utilisé",
+      "role": "localisation des arbres"
+    },
+    {
+      "id": "paris_volumes",
+      "name": "Ville de Paris, volumes bâtis",
+      "url": "https://opendata.paris.fr/explore/dataset/volumesbatisparis/",
+      "license": "ODbL",
+      "status": "audité, non intégré au rendu",
+      "role": "subdivisions et morphologie du bâti"
+    },
+    {
+      "id": "apur",
+      "name": "Apur, emprise bâtie Paris",
+      "url": "https://opendata.apur.org/datasets/Apur::emprise-batie-paris/about",
+      "license": "ODbL selon catalogue; vérifier la notice du jeu de données au téléchargement",
+      "status": "non importé",
+      "role": "période, forme et couverture de toiture"
+    },
+    {
+      "id": "ign_lidar",
+      "name": "IGN LiDAR HD",
+      "url": "https://www.data.gouv.fr/datasets/nuages-de-points-lidar-hd",
+      "license": "Licence Ouverte 2.0",
+      "status": "non importé",
+      "role": "vraies altitudes des couvertures"
+    },
+    {
+      "id": "panoramax",
+      "name": "Panoramax",
+      "url": "https://explore.panoramax.fr/",
+      "license": "variable par image et instance",
+      "status": "non importé",
+      "role": "photographies de façades"
+    },
+    {
+      "id": "wikimedia",
+      "name": "Wikimedia Commons",
+      "url": "https://commons.wikimedia.org/wiki/Category:Facades_in_Paris",
+      "license": "variable par fichier",
+      "status": "non importé",
+      "role": "photographies ciblées de façades"
+    },
+    {
+      "id": "ambientcg",
+      "name": "ambientCG",
+      "url": "https://ambientcg.com/",
+      "license": "CC0",
+      "status": "non importé",
+      "role": "textures de matériaux"
+    },
+    {
+      "id": "polyhaven",
+      "name": "Poly Haven",
+      "url": "https://polyhaven.com/",
+      "license": "CC0",
+      "status": "non importé",
+      "role": "textures et modèles architecturaux"
+    }
+  ],
+  "importedPhotographs": [],
+  "externalTextureAssets": [],
+  "requirements": {
+    "photo": "exiger URL précise, auteur, licence, date, preuve d'appariement à un segment de façade",
+    "observed": "statut observed seulement avec une observation attribuable à ce segment",
+    "noRights": "exclure les images sans licence de réutilisation confirmée",
+    "attribution": "conserver la traçabilité lors des rendus exportés"
+  }
+}

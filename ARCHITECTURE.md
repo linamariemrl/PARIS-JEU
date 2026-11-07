@@ -478,3 +478,13 @@ Le zoom n'agit jamais sur les coordonnées centrales de l'inscription, seulement
 Les libellés sont discrets (alpha faible), masqués loin de la voie ou à la vue d'ensemble, répétés selon les emprises disponibles, et évitent les commandes et chevauchements importants. Le test d'invariance de leur centre est exécuté dans GitHub Actions pour plusieurs zooms et orientations.
 
 Il reste à valider visuellement sur Android, notamment sur le pont Notre-Dame, le quai de Gesvres et les voies étroites de l'île de la Cité. La publication du site et les tests automatisés ne remplacent pas cette validation.
+
+## 25. Dossier architectural et chaîne de preuves
+
+La méthode détaillée approuvée est conservée dans `docs/FACADES_PARIS.md`, issue du dossier « FACADES_PARIS_SOURCES_INTEGRATION.md » transmis le 7 novembre 2026.
+
+Les exigences de preuve sont explicitement distinctes : emprise IGN / volumes municipaux pour la géométrie, matériaux cadastraux et attributs Apur pour la description non photographique, photographie réutilisable géolocalisée et orientée pour le statut « observée », style procédural pour « reconstituée » lorsque les données le permettent, et « inconnue » dans les autres cas.
+
+Les sources et licences sont suivies dans `data/sources/licences.json`. Aucune photographie externe n'est actuellement incorporée ; la disponibilité libre de Panoramax ou Wikimedia ne suffit pas à justifier la réutilisation d'un fichier particulier. Le rapport automatisé `data/quality/coverage-4e.json` compte les matériaux cadastraux et les formes de toit effectivement associés aux 2 696 identifiants IGN, tout en déclarant zéro façade photographiquement vérifiée tant que la chaîne d'appariement et de calage des photographies n'est pas opérationnelle.
+
+Les prochaines actions sont la jointure conservatrice des 8 664 volumes de la Ville de Paris aux bâtiments IGN, l'extraction des vraies arêtes exposées et le filtrage des mitoyennetés, puis l'appariement aux informations Apur et aux photographies dont la réutilisation est autorisée. Aucune substitution prématurée aux 2 696 bâtiments existants ne doit intervenir avant les contrôles Android.

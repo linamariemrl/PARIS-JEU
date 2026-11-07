@@ -1,0 +1,39 @@
+name: Auditer la couverture des façades du 4e
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/facade-coverage.yml'
+      - 'scripts/prepare_facade_coverage.py'
+      - 'data/sources/licences.json'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  coverage:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Calculer les chiffres réellement documentés
+        run: python scripts/prepare_facade_coverage.py
+      - name: Contrôler le statut des façades
+        run: python -m unittest discover -s tests -p 'test_facade_coverage.py'
+      - name: Conserver le bilan dans le dépôt
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/quality/coverage-4e.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: rapport vérifié de couverture des façades du 4e'
+            git pull --rebase origin main
+            git push
+          else
+            echo 'Rapport de couverture inchangé'
+          fi

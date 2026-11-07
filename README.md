@@ -4,6 +4,14 @@ Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans u
 
 
 
+## Suivi de la fidélité des façades
+
+Le dossier de recherche transmis est intégré à [la méthode détaillée](docs/FACADES_PARIS.md).
+Les licences et sources en service sont inventoriées dans `data/sources/licences.json`.
+Le rapport `data/quality/coverage-4e.json` différencie les matériaux et les
+formes de toit documentés des façades réellement observées. À ce stade, aucune
+façade n'est encore phototexturée et associée à une preuve par image.
+
 ## Correctif 0.7 : noms de voies ancrés dans la scène 3D
 
 Les étiquettes projetées en 2D sont remplacées par des inscriptions réellement
