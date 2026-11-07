@@ -13,6 +13,7 @@ type Layer = Polygon[];
 interface InfrastructureData {
   schema: number;
   source: string;
+  sourceUrl?: string;
   waterApproximate: boolean;
   widthsApproximate: boolean;
   counts: { roads: number; bridges: number };
@@ -105,6 +106,12 @@ export async function loadInfrastructure(scene: Scene): Promise<string> {
   const data = await response.json() as InfrastructureData;
   if (data.schema !== 1 || !data.layers || !data.layers.road?.length || !data.layers.water?.length) {
     throw new Error('Données de voirie incomplètes.');
+  }
+  const credit = document.getElementById('map-credits') as HTMLAnchorElement | null;
+  if (credit) {
+    const isIgn = data.source.startsWith('IGN');
+    credit.textContent = isIgn ? '© IGN' : '© OpenStreetMap';
+    credit.href = data.sourceUrl || (isIgn ? 'https://geoservices.ign.fr/bdtopo' : 'https://www.openstreetmap.org/copyright');
   }
   for (const kind of DRAW_ORDER) layerMesh(scene, kind, data.layers[kind] || []);
   rails(scene, data.layers.bridge || []);
