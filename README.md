@@ -1,6 +1,6 @@
 # PARIS, le jeu de la ville
 
-Prototype gratuit en 3D pour navigateur et Android. Le code reste dans un dépôt GitHub privé.
+Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans un dépôt GitHub public.
 
 ## Étape 1
 
@@ -26,8 +26,10 @@ En cas d'indisponibilité de l'IGN, aucun bâtiment de remplacement n'est invent
 
 ## Confidentialité et publication
 
-Le dépôt reste privé. GitHub Pages gratuit ne publie pas les dépôts privés.
-La publication Android sera décidée séparément avec un hébergement gratuit et, si nécessaire, un contrôle d'accès. Une URL non indexée ne constitue pas une protection de confidentialité.
+Le dépôt est public et le jeu sera publié gratuitement avec GitHub Pages.
+Pour l'activer : Settings > Pages > Build and deployment > Source : GitHub Actions.
+Puis dans Actions, lancer « Publier PARIS sur GitHub Pages » via Run workflow.
+Le site publié sera accessible à toute personne disposant du lien. Il ne contient pas de données personnelles du joueur.
 
 ## Documentation
 
