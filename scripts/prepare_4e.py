@@ -108,7 +108,7 @@ def encode_polygons(geom):
             continue
         rings = []
         for ring in [poly.exterior, *poly.interiors]:
-            coords = [[round(x, 7), round(y, 7)] for x, y in ring.coords]
+            coords = [[round(coord[0], 7), round(coord[1], 7)] for coord in ring.coords]
             if len(coords) >= 4:
                 rings.append(coords)
         if rings:
