@@ -9,7 +9,7 @@
 </head>
 <body>
 <canvas id="scene" aria-label="Vue 3D tactile de Paris"></canvas>
-<header><strong>PARIS</strong><span>PROTOTYPE 09 | 4e ARRONDISSEMENT</span></header>
+<header><strong>PARIS</strong><span>PROTOTYPE 09.1 | 4e ARRONDISSEMENT</span></header>
 <aside id="time-panel" aria-label="Temps de simulation">
   <div id="game-clock" aria-live="off">Chargement de l'heure…</div>
   <div class="time-controls">
@@ -20,7 +20,8 @@
     <span id="moon-phase">Lune …</span>
   </div>
 </aside>
-<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Un doigt : déplacer. Deux doigts : zoomer, tourner et incliner. Toucher un bâtiment : informations.</p></details>
+<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt pour déplacer, deux doigts pour tourner, zoomer et incliner. Rue : flèches pour avancer, un doigt pour regarder. Toucher un bâtiment pour ses informations.</p>
+<label class="precision-switch"><input type="checkbox" id="precision-mode"/> Mode précision, gestes plus lents (35 %)</label></details>
 <nav aria-label="Commandes de caméra">
 <button id="home" aria-label="Recentrer">⌂</button>
 <button id="plus" aria-label="Zoomer">+</button>

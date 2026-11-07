@@ -1,6 +1,6 @@
 import { ArcRotateCamera, Matrix, Scene, Vector3 } from '@babylonjs/core';
 import { clamp } from './geo';
-import { rotateWithFingers, tiltWithFingers, zoomAroundPinch } from './cameraGestures';
+import { rotateWithFingers, tiltWithFingers, zoomAroundPinch, gestureRatio, gestureApply, wrapTwist } from './cameraGestures';
 
 type Pointer = { x: number; y: number };
 export class MobileCamera {
@@ -13,6 +13,7 @@ export class MobileCamera {
   private tapMoved=false;
   private multi=false;
   private street=false;
+  private precision=false;
   private saveView:{radius:number;beta:number}|null=null;
   private animation:{
     fromRadius:number;fromBeta:number;
@@ -39,8 +40,11 @@ export class MobileCamera {
     scene.onBeforeRenderObservable.add(()=>this.updateTransition());
   }
   zoom(factor:number){
-    this.camera.radius=clamp(this.camera.radius*factor,30,4000);
+    const adjusted=gestureApply(1,factor,this.precision);
+    this.camera.radius=clamp(this.camera.radius*adjusted,30,4000);
   }
+  setPrecisionMode(precision:boolean){this.precision=precision;}
+  get isPrecisionMode(){return this.precision;}
   recenter(){
     this.camera.target.set(0,0,0);
     this.camera.alpha=-Math.PI/2;
@@ -143,9 +147,10 @@ export class MobileCamera {
         this.animation=null;
         // En vue proche, un doigt tourne et incline le regard.
         // Le point de visée est rapproché, ce n'est pas une translation écran.
-        this.camera.alpha+= (current.x-previous.x)*.004;
+        const fine=gestureRatio(this.precision);
+        this.camera.alpha+= (current.x-previous.x)*.004*fine;
         this.camera.beta=clamp(this.camera.beta+
-          (current.y-previous.y)*.0024,.80,1.55);
+          (current.y-previous.y)*.0024*fine,.80,1.55);
         this.tapMoved=true;
         return;
       }
@@ -153,7 +158,11 @@ export class MobileCamera {
         current.x-this.tapStart.x,current.y-this.tapStart.y)>8){
         this.tapMoved=true;
       }
-      this.grabMap(previous,current);
+      const next={
+        x:gestureApply(previous.x,current.x,this.precision),
+        y:gestureApply(previous.y,current.y,this.precision)
+      };
+      this.grabMap(previous,next);
       return;
     }
     const [a,b]=[...this.pointers.values()];
@@ -163,22 +172,27 @@ export class MobileCamera {
     if(this.center&&this.distance){
       // Point de terrain sous le milieu des doigts AVANT la transformation.
       const anchor=this.groundAt(this.center.x,this.center.y);
-      const dy=nextCenter.y-this.center.y;
-      this.camera.radius=zoomAroundPinch(
-        this.camera.radius,this.distance,nextDistance
-      );
-      this.camera.alpha=rotateWithFingers(this.camera.alpha,this.angle,nextAngle);
+      const fine=gestureRatio(this.precision);
+      const adjustedCenter={
+        x:gestureApply(this.center.x,nextCenter.x,this.precision),
+        y:gestureApply(this.center.y,nextCenter.y,this.precision)
+      };
+      const dy=adjustedCenter.y-this.center.y;
+      this.camera.radius=zoomAroundPinch(this.camera.radius,this.distance,
+        gestureApply(this.distance,nextDistance,this.precision));
+      this.camera.alpha=rotateWithFingers(this.camera.alpha,this.angle,
+        this.angle+wrapTwist(nextAngle-this.angle)*fine);
       // Deux doigts ensemble vers le haut = incliner vers l'horizon.
       if(Math.abs(nextDistance-this.distance)<12&&
          Math.abs(nextAngle-this.angle)<.09&&Math.abs(dy)>1){
         this.camera.beta=tiltWithFingers(this.camera.beta,dy);
       }
-      const after=this.groundAt(nextCenter.x,nextCenter.y);
+      const after=this.groundAt(adjustedCenter.x,adjustedCenter.y);
       if(anchor&&after){
         this.camera.target.x+=anchor.x-after.x;
         this.camera.target.z+=anchor.z-after.z;
       }else{
-        this.grabMap(this.center,nextCenter);
+        this.grabMap(this.center,adjustedCenter);
       }
     }
     this.center=nextCenter;this.distance=nextDistance;this.angle=nextAngle;

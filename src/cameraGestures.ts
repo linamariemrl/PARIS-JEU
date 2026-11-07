@@ -20,3 +20,13 @@ export function zoomAroundPinch(radius: number, previousDistance: number, nextDi
   const factor=Math.max(.75,Math.min(1.35,previousDistance/nextDistance));
   return Math.max(30,Math.min(4000,radius*factor));
 }
+
+/** Contrôle fin inspiré des fonctions d'édition précises des city builders.
+ * Implémentation originale TypeScript, sans copie de code Unity ou de mods.
+ */
+export function gestureRatio(precision:boolean):number {
+  return precision ? .35 : 1;
+}
+export function gestureApply(previous:number,current:number,precision:boolean):number {
+  return previous + (current-previous)*gestureRatio(precision);
+}

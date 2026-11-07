@@ -82,3 +82,12 @@ footer #materials-status{font-size:10px;color:#d5dde1}
  background:#102a42cc;touch-action:none;user-select:none;
 }
 #movement-pad button:active{background:#587896}
+
+/* Option de précision discrète dans l'aide, sans masquer la carte 3D. */
+.help .precision-switch{
+  display:flex;align-items:center;gap:9px;margin-top:6px;
+  padding:9px 11px;max-width:min(270px,calc(100vw - 90px));
+  background:#10243bf0;border:1px solid #ffffff33;border-radius:10px;
+  font-size:12px;line-height:1.35;
+}
+.help .precision-switch input{width:19px;height:19px;accent-color:#b7dbea;flex:none}

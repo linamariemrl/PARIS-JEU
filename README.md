@@ -19,6 +19,13 @@ La vue conserve les bâtiments Babylon.js ; quatre flèches permettent de se
 déplacer de manière continue. Le mode Carte reste accessible par le même bouton.
 Il ne s'agit pas encore d'un système de collisions ou de promenade physique.
 
+## Mode précision tactile 0.9.1
+
+L'aide « ? » propose un mode précision qui réduit à 35 % la sensibilité des
+gestes et ralentit les déplacements en vue Rue. Cette option applique une
+méthode originale TypeScript inspirée de la précision des outils de city
+builders, sans recopier leurs codes propriétaires ou leurs mods.
+
 ## Inspiration Cities: Skylines, sans imitation de sa ville fictive
 
 PARIS suit son propre objectif : géographie réelle, bâtis documentés, compétences

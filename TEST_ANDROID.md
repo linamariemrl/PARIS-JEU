@@ -136,3 +136,11 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 3. Glisser un doigt dans la vue Rue pour orienter le regard et l'incliner.
 4. Appuyer sur Carte : retrouver une vue d'ensemble du même secteur.
 5. Tester la sélection des bâtiments à proximité et mesurer la fluidité sur Android. La vue Rue ne gère pas encore les collisions avec les bâtiments.
+
+## Prototype 0.9.1 : précision inspirée des city builders
+
+1. Ouvrir l'aide « ? » et cocher « Mode précision ».
+2. Avec un doigt, déplacer la carte : le mouvement doit être plus lent, sans inversion.
+3. En vue Rue, glisser pour regarder et maintenir les flèches : les rotations et la vitesse doivent être réduites.
+4. Vérifier le zoom et la rotation à deux doigts avec et sans le mode précision.
+5. Garder le nombre total de 2 696 bâtiments et surveiller la fluidité Android.

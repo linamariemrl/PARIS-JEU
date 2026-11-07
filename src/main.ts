@@ -108,6 +108,11 @@ try {
   el('north').addEventListener('click', () => camera.north());
   el('plus').addEventListener('click', () => camera.zoom(0.76));
   el('minus').addEventListener('click', () => camera.zoom(1.3));
+  const fineMode=el<HTMLInputElement>('precision-mode');
+  fineMode.addEventListener('change',()=>{
+    camera.setPrecisionMode(fineMode.checked);
+  });
+  camera.setPrecisionMode(fineMode.checked);
   const toggleStreet=el<HTMLButtonElement>('street-view');
   const pad=el<HTMLElement>('movement-pad');
   toggleStreet.addEventListener('click',()=>{
@@ -167,7 +172,7 @@ try {
       const forward=(held.has('forward')?1:0)-(held.has('back')?1:0);
       const lateral=(held.has('right')?1:0)-(held.has('left')?1:0);
       const len=Math.max(1,Math.hypot(forward,lateral));
-      const speed=13;
+      const speed=camera.isPrecisionMode?4.5:13;
       camera.moveStreet(forward/len*speed*dt,lateral/len*speed*dt);
     }
     clock.tick(now);
