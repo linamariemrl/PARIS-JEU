@@ -26,7 +26,6 @@ export class StreetLighting {
   private cameraZ=0;
   private lastX=Infinity;
   private lastZ=Infinity;
-  private intensity=0;
   private quality:QualityLevel='medium';
   private ready=false;
   private count=0;
@@ -80,7 +79,6 @@ export class StreetLighting {
     this.rebuild();
   }
   updateBrightness(factor:number){
-    this.intensity=factor;
     // L'allumage suit le soleil : le rendu utilise une émission simulée,
     // sans 500 lampes ponctuelles GPU.
     this.bulbMaterial.emissiveColor.set(factor*.98,factor*.78,factor*.48);
