@@ -1,23 +1,25 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
 import earcut from 'earcut';
+import { createFacadeTexture } from './facadeTexture';
 import { project } from './geo';
 import type { Building, Point, TileFile } from './types';
 
 type XYZ = [number, number, number];
 type RGB = [number, number, number];
-interface Batch { positions: number[]; indices: number[]; colors: number[]; faceToBuilding: number[]; }
+interface Batch { positions: number[]; indices: number[]; colors: number[]; uvs: number[]; faceToBuilding: number[]; }
 const WALLS: RGB[] = [
   [0.82, 0.76, 0.66], [0.89, 0.84, 0.76], [0.76, 0.74, 0.67],
   [0.91, 0.86, 0.74], [0.74, 0.74, 0.74], [0.86, 0.79, 0.72]
 ];
 const ROOF: RGB = [0.39, 0.48, 0.55];
-const empty = (): Batch => ({ positions: [], indices: [], colors: [], faceToBuilding: [] });
+const empty = (): Batch => ({ positions: [], indices: [], colors: [], uvs: [], faceToBuilding: [] });
 
-function triangle(out: Batch, a: XYZ, b: XYZ, c: XYZ, rgb: RGB, id: number) {
+function triangle(out: Batch, a: XYZ, b: XYZ, c: XYZ, rgb: RGB, id: number,
+                  uv: [number, number][] = [[0.98, 0.98], [0.98, 0.98], [0.98, 0.98]]) {
   const start = out.positions.length / 3;
   out.positions.push(...a, ...b, ...c);
   out.indices.push(start, start + 1, start + 2);
-  for (let i = 0; i < 3; i++) out.colors.push(...rgb, 1);
+  for (let i = 0; i < 3; i++) { out.colors.push(...rgb, 1); out.uvs.push(...uv[i]); }
   out.faceToBuilding.push(id);
 }
 function hash(s: string): number {
@@ -48,8 +50,14 @@ function addBuilding(out: Batch, b: Building, featureIndex: number) {
         const p = ring[j], q = ring[(j + 1) % ring.length];
         const a: XYZ = [p.x, 0, p.z], bb: XYZ = [q.x, 0, q.z];
         const c: XYZ = [q.x, h, q.z], d: XYZ = [p.x, h, p.z];
-        triangle(out, a, bb, c, wall, featureIndex);
-        triangle(out, a, c, d, wall, featureIndex);
+        const spanU = Math.hypot(q.x - p.x, q.z - p.z) / 6.4;
+        const spanV = h / 3.1;
+        const uv0: [number, number] = [0.01, 0.01];
+        const uv1: [number, number] = [spanU + 0.01, 0.01];
+        const uv2: [number, number] = [spanU + 0.01, spanV + 0.01];
+        const uv3: [number, number] = [0.01, spanV + 0.01];
+        triangle(out, a, bb, c, wall, featureIndex, [uv0, uv1, uv2]);
+        triangle(out, a, c, d, wall, featureIndex, [uv0, uv2, uv3]);
       }
     }
     const flat = vertices.flatMap(p => [p.x, p.z]);
@@ -65,6 +73,7 @@ export function createMaterials(scene: Scene) {
   mat.diffuseColor = Color3.White();
   mat.specularColor = new Color3(0.05, 0.05, 0.05);
   mat.backFaceCulling = false;
+  mat.diffuseTexture = createFacadeTexture(scene);
   return mat;
 }
 export function createTile(scene: Scene, tile: TileFile, material: StandardMaterial): Mesh[] {
@@ -75,6 +84,7 @@ export function createTile(scene: Scene, tile: TileFile, material: StandardMater
   vd.positions = out.positions;
   vd.indices = out.indices;
   vd.colors = out.colors;
+  vd.uvs = out.uvs;
   const normals: number[] = [];
   VertexData.ComputeNormals(out.positions, out.indices, normals);
   vd.normals = normals;
