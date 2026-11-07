@@ -36,14 +36,35 @@ async function transaction<T>(
   });
  }finally{db.close();}
 }
+/** Vérification stricte des imports, avant toute insertion IndexedDB.
+ * Les anciennes sauvegardes schema 1 restent compatibles.
+ */
 export function validateSave(value:unknown):GameSave{
+ if(!value||typeof value!=='object')throw Error('Sauvegarde invalide');
  const x=value as Partial<GameSave>;
- if(!x||x.schema!==SAVE_SCHEMA||!x.plan||!Array.isArray(x.indicators)||
+ const plan=x.plan;
+ if(x.schema!==SAVE_SCHEMA||!plan||typeof plan!=='object'||
+    !Array.isArray(plan.decisions)||!Array.isArray(x.indicators)||
     !Number.isFinite(x.gameTimestamp)||![0,1,10,60].includes(x.timeRate as number))
    throw Error('Sauvegarde incompatible ou incomplète');
- if(typeof x.name!=='string'||x.name.length>80||
-    x.indicators.length>50000||x.plan.decisions.length>100)
+ const lower=Date.UTC(1900,0,1),upper=Date.UTC(2500,0,1);
+ if((x.gameTimestamp as number)<lower||(x.gameTimestamp as number)>upper)
+   throw Error('Date de simulation hors limites');
+ if(typeof x.name!=='string'||!x.name.trim()||x.name.length>80||
+    !Number.isFinite(Date.parse(x.createdAt??''))||
+    !Number.isFinite(Date.parse(x.updatedAt??''))||
+    x.indicators.length>50000||plan.decisions.length>100)
    throw Error('Sauvegarde trop volumineuse ou corrompue');
+ for(const n of [plan.operatingExpenseChangePct,
+   plan.capitalExpenseChangePct,plan.projectedBorrowingEUR]){
+   if(typeof n!=='number'||!Number.isFinite(n))
+     throw Error('Montants de scénario invalides');
+ }
+ for(const indicator of x.indicators){
+   if(!indicator||typeof indicator.key!=='string'||typeof indicator.spatialId!=='string'||
+      !Number.isFinite(indicator.value)||!Number.isFinite(indicator.asOf))
+      throw Error('Indicateur de sauvegarde corrompu');
+ }
  return x as GameSave;
 }
 export class SaveStore{
