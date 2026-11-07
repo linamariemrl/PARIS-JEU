@@ -1,4 +1,4 @@
-import type { Mesh, Scene, StandardMaterial } from '@babylonjs/core';
+import type { Mesh, Scene } from '@babylonjs/core';
 import { createTile } from './buildings';
 import type { Manifest, TileFile, TileInfo } from './types';
 
