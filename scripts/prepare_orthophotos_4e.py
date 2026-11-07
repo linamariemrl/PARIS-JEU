@@ -20,7 +20,6 @@ from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode
 from urllib.request import Request, urlopen
 
-from PIL import Image, ImageStat
 
 ROOT=Path(__file__).resolve().parents[1]
 BOUNDARY=ROOT/"public/data/4e/boundary.geojson"
@@ -75,6 +74,7 @@ def wms_url(xmin,zmin,xmax,zmax):
     return SOURCE+"?"+urlencode(params)
 
 def fetch_jpeg(xmin,zmin,xmax,zmax):
+    from PIL import Image, ImageStat
     url=wms_url(xmin,zmin,xmax,zmax)
     last=None
     for attempt in range(5):
@@ -88,7 +88,7 @@ def fetch_jpeg(xmin,zmin,xmax,zmax):
                 mime=res.headers.get("Content-Type","").lower()
             if "image" not in mime:
                 raise RuntimeError(f"WMS non photographique ({mime}) : {content[:200]!r}")
-            if not content.startswith(b"\\xff\\xd8"):
+            if not content.startswith(b"\xff\xd8"):
                 raise RuntimeError(f"Fichier non JPEG, en-tête={content[:30]!r}")
             image=Image.open(io.BytesIO(content)).convert("RGB")
             if image.size!=(RESOLUTION,RESOLUTION):
@@ -107,6 +107,7 @@ def fetch_jpeg(xmin,zmin,xmax,zmax):
     raise RuntimeError(f"Photographie IGN indisponible pour {xmin},{zmin}: {last}")
 
 def main():
+    from PIL import Image
     minix,miniz,maxix,maxiz=get_coverage()
     OUT.mkdir(parents=True,exist_ok=True)
     width=(maxix-minix)*256
@@ -156,7 +157,7 @@ def main():
     if len(photos)<30:raise RuntimeError("Nombre de dalles photographiques insuffisant")
     manifest=OUT/"manifest.json"
     tmp=OUT/"manifest.tmp"
-    tmp.write_text(json.dumps(document,ensure_ascii=False,indent=2)+"\\n",
+    tmp.write_text(json.dumps(document,ensure_ascii=False,indent=2)+"\n",
                    encoding="utf-8")
     tmp.replace(manifest)
     print(f"IGN ORTHO : {len(photos)} dalles de 300m, "
