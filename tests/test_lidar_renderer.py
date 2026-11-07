@@ -6,7 +6,7 @@ class LidarRendererTest(unittest.TestCase):
   code=(ROOT/'src/buildings.ts').read_text()
   self.assertIn('validLidarPart',code)
   self.assertIn('lidar.indices',code)
-  self.assertIn('lidar.ringsHeights',code)
+  self.assertIn('lidar?.ringsHeights',code)
   self.assertIn('localCoordinates',code)
   self.assertNotIn('new AerialLayer',code)
  def test_overlay_is_optional(self):
