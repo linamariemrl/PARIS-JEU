@@ -10,7 +10,17 @@
 <body>
 <canvas id="scene" aria-label="Vue 3D tactile de Paris"></canvas>
 <canvas id="street-labels" aria-hidden="true"></canvas>
-<header><strong>PARIS</strong><span>PROTOTYPE 04 | 4e ARRONDISSEMENT</span></header>
+<header><strong>PARIS</strong><span>PROTOTYPE 05 | 4e ARRONDISSEMENT</span></header>
+<aside id="time-panel" aria-label="Temps de simulation">
+  <div id="game-clock" aria-live="off">Chargement de l'heure…</div>
+  <div class="time-controls">
+    <button id="time-pause" class="time-btn" aria-label="Pause" title="Pause">Ⅱ</button>
+    <button id="time-normal" class="time-btn" aria-label="Vitesse normale" title="1 seconde réelle = 1 minute">×1</button>
+    <button id="time-ten" class="time-btn" aria-label="Dix fois plus vite" title="×10">×10</button>
+    <button id="time-sixty" class="time-btn" aria-label="Soixante fois plus vite" title="×60">×60</button>
+    <span id="moon-phase">Lune …</span>
+  </div>
+</aside>
 <details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Un doigt : déplacer. Deux doigts : zoomer, tourner et incliner. Toucher un bâtiment : informations.</p></details>
 <nav aria-label="Commandes de caméra">
 <button id="home" aria-label="Recentrer">⌂</button>

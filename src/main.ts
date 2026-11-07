@@ -1,6 +1,5 @@
 import {
-  Color3, Color4, DirectionalLight, Engine, HemisphericLight,
-  Mesh, MeshBuilder, Scene, StandardMaterial, Vector3
+  Color3, Engine, Mesh, MeshBuilder, Scene, StandardMaterial
 } from '@babylonjs/core';
 import { createMaterials, facadeCategory, getPickedBuilding, highlightBuilding } from './buildings';
 import { MobileCamera } from './mobileCamera';
@@ -8,6 +7,10 @@ import { loadInfrastructure } from './infrastructure';
 import { TileManager } from './tileManager';
 import { TreeLayer } from './trees';
 import { StreetLabels } from './streetLabels';
+import { GameClock, type TimeSpeed } from './gameClock';
+import { SkyAndSun } from './sky';
+import { installNightWindows } from './nightWindows';
+import { StreetLighting } from './streetLighting';
 import type { Building } from './types';
 import './style.css';
 
@@ -27,15 +30,9 @@ const urban = el<HTMLElement>('urban');
 try {
   const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: false }, true);
   const scene = new Scene(engine);
-  scene.clearColor = new Color4(0.69, 0.79, 0.84, 1);
   scene.fogMode = Scene.FOGMODE_EXP2;
-  scene.fogDensity = 0.00024;
-  scene.fogColor = new Color3(0.69, 0.79, 0.84);
-  const ambient = new HemisphericLight('ciel', new Vector3(0, 1, 0), scene);
-  ambient.intensity = 0.90;
-  ambient.groundColor = new Color3(0.45, 0.51, 0.55);
-  const sunlight = new DirectionalLight('soleil', new Vector3(-0.5, -1, -0.4), scene);
-  sunlight.intensity = 0.6;
+  const sky = new SkyAndSun(scene);
+  const clock = new GameClock();
 
   const ground = MeshBuilder.CreateGround('sol', { width: 7000, height: 7000 }, scene);
   const groundMat = new StandardMaterial('sol', scene);
@@ -46,6 +43,8 @@ try {
 
   const camera = new MobileCamera(scene, canvas);
   const material = createMaterials(scene);
+  const updateNightWindows = installNightWindows(scene, material);
+  const streetLighting = new StreetLighting(scene);
   const trees = new TreeLayer(scene, message => { vegetation.textContent = message; });
   const streetLabels = new StreetLabels(scene, engine);
   const manager = new TileManager(scene, material, (message, number) => {
@@ -86,21 +85,52 @@ try {
     const level = quality.value as 'low' | 'medium' | 'high';
     manager.setQuality(level);
     trees.setQuality(level);
+    streetLighting.setQuality(level);
     engine.setHardwareScalingLevel(level === 'low' ? 1.65 : level === 'medium' ? 1.30 : 1);
   });
   quality.dispatchEvent(new Event('change'));
+  const speedButtons: ReadonlyArray<{id:string;rate:TimeSpeed}> = [
+    {id:'time-pause',rate:0}, {id:'time-normal',rate:1},
+    {id:'time-ten',rate:10}, {id:'time-sixty',rate:60}
+  ];
+  const selectRate = (rate:TimeSpeed) => {
+    clock.setRate(rate);
+    for(const item of speedButtons) {
+      const button = el<HTMLButtonElement>(item.id);
+      button.setAttribute('aria-pressed',String(item.rate===rate));
+    }
+  };
+  for(const item of speedButtons) {
+    el<HTMLButtonElement>(item.id).addEventListener('click',()=>selectRate(item.rate));
+  }
+  selectRate(1);
   window.addEventListener('resize', () => engine.resize());
   let lastFpsUpdate = 0;
+  let lastEnvironmentUpdate = -1000;
   engine.runRenderLoop(() => {
+    const now = performance.now();
+    clock.tick(now);
+    if (now - lastEnvironmentUpdate >= 450) {
+      const light = sky.update(clock.current);
+      streetLighting.updateBrightness(light.nightFactor);
+      updateNightWindows(light.nightFactor,clock.localHour());
+      el('game-clock').textContent = clock.label();
+      el('moon-phase').textContent = 'Lune ' + Math.round(light.moonFraction*100) + ' %';
+      lastEnvironmentUpdate = now;
+    }
+    sky.followCamera();
     scene.render();
     manager.update(camera.camera.target.x, camera.camera.target.z);
     trees.update(camera.camera.target.x, camera.camera.target.z);
+    streetLighting.updatePosition(camera.camera.target.x, camera.camera.target.z);
     streetLabels.update(camera.camera.radius);
-    const now = performance.now();
     if (now - lastFpsUpdate > 1000) {
       fps.textContent = Math.round(engine.getFps()) + ' FPS';
       lastFpsUpdate = now;
     }
+  });
+  void streetLighting.init().catch((e: unknown) => {
+    console.warn('Mobilier lumineux simulé',e);
   });
   void streetLabels.init().catch((e: unknown) => {
     console.warn('Noms officiels des voies', e);

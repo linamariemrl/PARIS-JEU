@@ -74,13 +74,15 @@ export class SkyAndSun {
   private texture:DynamicTexture;
   private ambient:HemisphericLight;
   private sunLight:DirectionalLight;
-  private sun=makeDisk(this.scene,'sun');
-  private moon=makeDisk(this.scene,'moon');
+  private sun:ReturnType<typeof makeDisk>;
+  private moon:ReturnType<typeof makeDisk>;
   private lastStep=-1;
   private lastMoonStep=-1;
   private lighting:LightState={sunAltitudeDegrees:0,moonFraction:0,nightFactor:0};
 
   constructor(private scene:Scene) {
+    this.sun=makeDisk(scene,'sun');
+    this.moon=makeDisk(scene,'moon');
     const skyMat=new StandardMaterial('ciel-procedural',scene);
     this.texture=new DynamicTexture('gradient-ciel',{width:512,height:256},scene,true);
     skyMat.emissiveTexture=this.texture;

@@ -30,7 +30,7 @@ export class StreetLighting {
   private quality:QualityLevel='medium';
   private ready=false;
   private count=0;
-  constructor(private scene:Scene){
+  constructor(scene:Scene){
     this.poles=MeshBuilder.CreateCylinder('lampadaires-stylises',{
       height:1,diameter:.16,tessellation:5
     },scene);

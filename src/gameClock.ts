@@ -25,6 +25,10 @@ export class GameClock{
   get current():number{return this.timestamp;}
   get rate():TimeSpeed{return this.speed;}
   setRate(speed:TimeSpeed):void{this.speed=speed;this.previous=null;}
+  localHour():number {
+    const parts=new Intl.DateTimeFormat('en-GB', {timeZone:'Europe/Paris',hour:'2-digit',hourCycle:'h23'}).format(new Date(this.timestamp));
+    return Number(parts);
+  }
   label():string {
     const weekday=this.weekdayFormatter.format(new Date(this.timestamp));
     return weekday+' '+this.dateFormatter.format(new Date(this.timestamp));

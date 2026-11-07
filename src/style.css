@@ -13,3 +13,18 @@ footer a{color:#c6dce7;text-decoration:underline;font-size:10px}
 header,nav,#selection,footer,#error{z-index:3}
 .help{z-index:4}
 footer #streets{color:#d4e4e6}
+
+/* 0.5 : panneau d'horloge permanent, lisible sur téléphone et peu intrusif. */
+#time-panel{position:fixed;top:calc(env(safe-area-inset-top) + 67px);left:9px;z-index:3;
+  width:min(286px,calc(100vw - 91px));padding:9px 11px;border-radius:11px;
+  background:#0c2134db;color:#f3f6f8;box-shadow:0 3px 16px #07162444}
+#game-clock{font-size:12px;font-weight:700;font-variant-numeric:tabular-nums;white-space:nowrap}
+.time-controls{display:flex;gap:5px;align-items:center;margin-top:6px}
+button.time-btn{width:34px;height:28px;min-width:32px;border-radius:7px;
+  padding:0 3px;font-size:11px;font-weight:700}
+button.time-btn[aria-pressed="true"]{background:#58758c;border-color:#cfdfeb}
+#moon-phase{font-size:10px;color:#c2d8e4;margin-left:3px;white-space:nowrap}
+.help{top:calc(env(safe-area-inset-top) + 155px)}
+@media (max-width:360px){#time-panel{padding:7px}#game-clock{font-size:11px}
+  .time-controls{gap:3px}button.time-btn{width:30px;min-width:29px}
+  #moon-phase{font-size:9px}}
