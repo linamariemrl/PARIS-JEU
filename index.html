@@ -9,7 +9,7 @@
 </head>
 <body>
 <canvas id="scene" aria-label="Vue 3D tactile de Paris"></canvas>
-<header><strong>PARIS</strong><span>PROTOTYPE 0.15 | PARIS ET MÉTROPOLE</span></header>
+<header><strong>PARIS</strong><span>PROTOTYPE 0.16 | PARIS ET MÉTROPOLE</span></header>
 <aside id="time-panel" aria-label="Temps de simulation">
   <div id="game-clock" aria-live="off">Chargement de l'heure…</div>
   <div class="time-controls">
@@ -85,7 +85,7 @@
 <p>Volumes : <span id="volume-information"></span></p><p>Identifiant IGN : <span id="identifier"></span></p><small id="caveat"></small></aside>
 <div id="error" class="hidden" role="alert"></div>
 <footer id="map-hud">
-  <span id="count">0 bâtiment</span>
+  <span id="count">0 bâtiment représenté</span>
   <span id="fps">FPS : ...</span>
   <details id="technical-details">
     <summary aria-label="Afficher les informations techniques">Détails</summary>
@@ -95,6 +95,7 @@
       <span id="roof-status">Formes de toits : lecture…</span>
       <span id="lidar-status">LiDAR HD : vérification…</span>
       <span id="metropole-status">Métropole : index des bâtiments en préparation…</span>
+      <span id="overview-status">Vue d’ensemble : volumes IGN allégés en préparation…</span>
       <span id="volume-status">Volumes bâtis municipaux : lecture…</span>
       <span id="urban">Voirie en cours de chargement…</span>
       <div class="map-legend" aria-label="Légende des nuances de la maquette">
