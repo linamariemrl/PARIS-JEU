@@ -169,7 +169,9 @@ export class MetroOverview {
     {size:1},this.scene);
    mesh.material=this.materials.roof;
    mesh.isPickable=false;
-   mesh.thinInstanceSetBuffer('matrix',matrices,16,true);
+   // Matrices dynamiques : les substitutions IGN/LOD doivent mettre à jour
+   // le GPU. Un buffer statique provoque des superpositions scintillantes.
+   mesh.thinInstanceSetBuffer('matrix',matrices,16,false);
    mesh.thinInstanceRefreshBoundingInfo();
    let hidden=0;
    for(const tile of group.tiles){
