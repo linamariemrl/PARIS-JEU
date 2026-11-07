@@ -21,6 +21,16 @@ class SceneInvariants(unittest.TestCase):
         self.assertNotIn("loaded.meshes.forEach(mesh => mesh.dispose())",code)
         self.assertNotIn("const radius = this.quality",code)
 
+    def test_street_labels_use_real_world_geometry(self):
+        code=(ROOT/"src/streetLabels.ts").read_text(encoding="utf-8")
+        geometry=(ROOT/"src/streetLabelGeometry.ts").read_text(encoding="utf-8")
+        self.assertIn("quadOnRoad(label,",code)
+        self.assertIn("VertexBuffer.PositionKind",code)
+        self.assertIn("disableDepthWrite=true",code)
+        self.assertNotIn("canvas.getContext",code)
+        self.assertNotIn("ctx.fillText",code)
+        self.assertIn("a.x-vx*halfW-nx*halfH",geometry)
+
     def test_all_official_street_names_have_label(self):
         file=DATA/"street-names.json"
         if not file.exists():

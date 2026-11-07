@@ -1,7 +1,7 @@
 /** Règles d'affichage sans réglage utilisateur, fixes en pixels CSS.
  * Aucun nom n'est rendu en vue d'ensemble ; l'inventaire reste complet.
  */
-export const STREET_NAME_FONT_PX = 9;
+export const STREET_NAME_FONT_PX = 9; // taille cible des glyphes sur l'écran, sans projection de texte
 export const STREET_LABEL_LIMIT = 28;
 export const STREET_LABEL_MAX_RADIUS = 720;
 export function labelVisibility(radius: number, groundDistance: number): number {

@@ -4,6 +4,15 @@ Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans u
 
 
 
+## Correctif 0.7 : noms de voies ancrés dans la scène 3D
+
+Les étiquettes projetées en 2D sont remplacées par des inscriptions réellement
+placées sur les chaussées dans Babylon.js. Les points d'ancrage sont fixes à
+tous les zooms. Un atlas de texture et un seul maillage limitent le coût GPU ;
+les noms restent petits, discrets, répétés sur les longues voies et visibles
+seulement à proximité. Ponts et passerelles sont placés au-dessus de leurs
+tabliers schématiques. L'occlusion est traitée par le moteur 3D.
+
 ## Version 0.6 : matériaux et toitures issus de données réutilisables
 
 Le prototype conserve 2 696 bâtiments IGN, indépendamment de la caméra et du zoom.

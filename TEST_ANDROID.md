@@ -97,3 +97,13 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 3. Se placer à l'angle d'une rue, caméra inclinée. Une étiquette de rue masquée par un bâtiment doit disparaître au lieu de flotter sur sa façade.
 4. Zoomer près d'une voie libre : son nom reste petit et discret, collé à sa position cartographique.
 5. Compter 2 696 bâtiments quelle que soit la position de la caméra. L'objectif de fluidité reste au moins 30 FPS sur Android ; la visée observée était 58 à 60 FPS avant cette correction.
+
+## Version 0.7 : disparition du glissement des noms de rues
+
+1. Actualiser la page et vérifier la mention « PROTOTYPE 07 ».
+2. Avancer près du pont Notre-Dame, du quai de Gesvres, de la rue Chanoinesse ou de la rue des Ursins.
+3. Zoomer et dézoomer lentement 10 fois. Chaque nom doit rester au MÊME emplacement sur la rue, jamais sur une façade ni dans l'eau.
+4. Tourner et incliner la caméra : l'inscription doit rester couchée sur la chaussée et naturellement masquée par un obstacle.
+5. Regarder Paris de loin : les noms doivent disparaître. Revenir dans la rue : ils réapparaissent en petit, semi-transparents et sans cartouche.
+6. Vérifier les noms répétés des voies longues, le compteur 2 696 bâtiments et l'objectif de 30 FPS sur le même téléphone.
+7. Si un nom paraît déplacé, fournir deux captures du même endroit à deux zooms différents.

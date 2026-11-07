@@ -466,3 +466,15 @@ Les diagnostics détaillés sont conservés dans un panneau « Détails » repli
 
 Les noms des rues restent petits (9 pixels), à faible opacité et proches de leur emprise réelle. Avant de dessiner une étiquette, un test de profondeur est réalisé contre les maillages des bâtiments. Une étiquette occultée par une façade ou une toiture ne doit pas être placée devant le bâtiment. Le nombre de tests est plafonné par le désencombrement et par un intervalle de rafraîchissement d'environ 240 ms. Si la fluidité mobile chute, réduire d'abord la fréquence de vérification, jamais le nombre de bâtiments conservés.
 
+
+## 24. Correction définitive de l'ancrage des odonymes, prototype 0.7
+
+Le rendu 2D projeté par-dessus la carte était responsable de l'impression de glissement des noms de rues lorsqu'on zoomait. Il est remplacé par des quads texturés dans la scène Babylon.js, orientés selon les axes officiels et géographiquement ancrés aux coordonnées locales fournies par la Ville de Paris.
+
+Les 205 voies officielles et 329 repères restent dans le référentiel. Les libellés sont dessinés dans un seul atlas de texture et regroupés en un maillage de 28 inscriptions maximum par vue. Le GPU prend en charge l'occlusion par les bâtiments. Le moteur ne crée plus une seconde surface de dessin texte dans le navigateur. Les quads sont horizontaux à l'altitude de la chaussée schématique (0,215 m), ou à 2,29 m pour les ponts et passerelles au-dessus du tablier de 2,25 m. Ces hauteurs sont liées au prototype et non à des mesures altimétriques réelles.
+
+Le zoom n'agit jamais sur les coordonnées centrales de l'inscription, seulement sur le choix d'afficher le nom et sur sa petite taille apparente. La taille du quad s'ajuste pour rester proche de 9 pixels perçus sans dépasser une dimension physique plafonnée. La résolution du conflit entre « taille écran fixe » et « géométrie réellement posée au sol » passe par un facteur d'échelle autour du centre géographique permanent, non par une translation de l'étiquette dans l'écran.
+
+Les libellés sont discrets (alpha faible), masqués loin de la voie ou à la vue d'ensemble, répétés selon les emprises disponibles, et évitent les commandes et chevauchements importants. Le test d'invariance de leur centre est exécuté dans GitHub Actions pour plusieurs zooms et orientations.
+
+Il reste à valider visuellement sur Android, notamment sur le pont Notre-Dame, le quai de Gesvres et les voies étroites de l'île de la Cité. La publication du site et les tests automatisés ne remplacent pas cette validation.
