@@ -7,3 +7,9 @@
 footer{gap:6px 11px;justify-content:center;text-align:center}
 footer #urban{font-weight:600;color:#cce0e8}
 footer a{color:#c6dce7;text-decoration:underline;font-size:10px}
+
+/* 0.4 : couche des odonymes, toujours active et jamais cliquable. */
+#street-labels{position:fixed;inset:0;display:block;width:100vw;height:100dvh;z-index:1;pointer-events:none}
+header,nav,#selection,footer,#error{z-index:3}
+.help{z-index:4}
+footer #streets{color:#d4e4e6}
