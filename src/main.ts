@@ -196,6 +196,8 @@ try{
     error.classList.remove('hidden');
     state.textContent='Données indisponibles';
   });
+  if('caches' in window)
+    void window.caches.delete('ortho-4e-images').catch(console.warn);
   if('serviceWorker' in navigator)
     void import('virtual:pwa-register').then(({registerSW})=>
       registerSW({immediate:true})).catch(console.warn);
