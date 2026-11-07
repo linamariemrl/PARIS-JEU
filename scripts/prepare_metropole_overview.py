@@ -60,11 +60,14 @@ def record(building, ix, iz, tile_size):
     depth = max(STEP, max(vv) - min(vv))
     height = max(2.0, float(building["height"]))
     angle = math.atan2(dz, dx)
+    angle_code = round(angle * 32768 / math.pi)
+    if angle_code >= 32768:
+        angle_code -= 65536
     # Int16 pour le centre relatif à la tuile et la rotation.
     nums = [round((center_x - ix * tile_size) / STEP),
             round((center_z - iz * tile_size) / STEP),
             round(width / STEP), round(depth / STEP),
-            round(height / STEP), round(angle * 32768 / math.pi)]
+            round(height / STEP), angle_code]
     if not (-32768 <= nums[0] <= 32767 and
             -32768 <= nums[1] <= 32767 and
             -32768 <= nums[5] <= 32767 and
