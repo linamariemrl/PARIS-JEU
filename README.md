@@ -2,6 +2,16 @@
 
 Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans un dépôt GitHub public.
 
+## Version 0.2 : infrastructures du 4e
+
+- Voiries, trottoirs, chemins et places issus des tracés OpenStreetMap.
+- Seine, berges et tronçons de ponts issus d'OpenStreetMap.
+- Largeurs de chaussée et hauteurs de tabliers schématiques lorsque les sources ne renseignent pas les cotes. Les ponts ne sont pas encore des modèles architecturaux détaillés.
+- Extraction reproductible dans GitHub Actions, vérifications et chargement d'un unique fichier compact.
+- Affichage de la provenance OSM dans le jeu et aide tactile réduite.
+
+Pour obtenir les données initiales, le workflow « Préparer rues, Seine et ponts OSM » s'exécute sur GitHub. Si la source est indisponible, les bâtiments restent explorables.
+
 ## Étape 1
 
 - Géographie pilote : le 4e arrondissement de Paris.
