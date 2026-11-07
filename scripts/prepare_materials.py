@@ -11,7 +11,7 @@ from pathlib import Path
 from urllib.parse import urlencode
 import json
 import re
-from prepare_4e import IGN_WFS,request_json
+from prepare_4e import fetch_ign,tile_bounds
 
 ROOT=Path(__file__).resolve().parents[1]
 DEST=ROOT/"public/data/4e/materials.json"
@@ -43,19 +43,15 @@ def known_ids():
     if len(out)<2000:raise RuntimeError("Bâtiments du 4e introuvables")
     return out
 
-def fetch_features(bounds):
-    bbox=",".join(f"{x:.7f}" for x in bounds)+",CRS:84"
-    for page in range(35):
-        args={"SERVICE":"WFS","VERSION":"2.0.0","REQUEST":"GetFeature",
-          "TYPENAMES":"BDTOPO_V3:batiment","SRSNAME":"CRS:84",
-          "BBOX":bbox,"COUNT":400,"STARTINDEX":page*400,
-          "OUTPUTFORMAT":"application/json"}
-        data=request_json(IGN_WFS+"?"+urlencode(args))
-        rows=data.get("features")
-        if not isinstance(rows,list):raise RuntimeError("Réponse WFS non valide")
-        for item in rows:yield item
-        if len(rows)<400:return
-    raise RuntimeError("Pagination WFS trop longue")
+def fetch_features(_bounds):
+    # Reprend EXACTEMENT le découpage de l'extraction initiale : 27 petites
+    # emprises où le service IGN a déjà répondu de manière fiable.
+    manifest=json.loads((DEST.parent/"manifest.json").read_text(encoding="utf-8"))
+    if len(manifest.get("tiles",[]))<20:
+        raise RuntimeError("Liste des tuiles IGN incomplète")
+    for tile in manifest["tiles"]:
+        bbox=tile_bounds(tile["ix"],tile["iz"])
+        yield from fetch_ign(bbox)
 
 def collect(features,ids):
     known={}
