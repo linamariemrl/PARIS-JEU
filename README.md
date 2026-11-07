@@ -2,6 +2,16 @@
 
 Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans un dépôt GitHub public.
 
+
+## Version 0.4 : stabilité et repérage
+
+- Les 2 696 bâtiments IGN du 4e sont conservés en mémoire, quelle que soit la position ou le zoom de la caméra. Les boutons + et - ne font plus varier leur présence.
+- Les murs et toitures sont habillés séparément. Les motifs d'ouverture et les finitions sont procéduraux et adaptés à l'usage IGN, mais ne constituent pas des photographies ou des relevés certifiés de chaque immeuble.
+- Les 205 dénominations officielles de la Ville de Paris pour le 4e disposent d'une étiquette toujours active, sans bouton pour la masquer. Les chevauchements restent possibles quand la caméra montre un territoire très vaste.
+- Les liens IGN et Ville de Paris permettent de retrouver la provenance des données.
+
+Les prochaines étapes poursuivront la vérification des matériaux et des types de toiture, l'amélioration des monuments, puis le cycle lumière et météo. Une étape est validée sur Android avant d'étendre sa complexité.
+
 ## Version 0.3 : premiers détails de la ville
 
 - Ponts simplifiés en volume, avec tabliers et parapets. Ces volumes ne reproduisent pas encore la hauteur ni la silhouette de chaque ouvrage réel.
