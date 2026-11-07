@@ -49,10 +49,11 @@ export class MobileCamera{
     this.camera=new ArcRotateCamera('camera',-Math.PI/2,.85,1100,Vector3.Zero(),scene);
     this.camera.inputs.clear();
     this.camera.lowerRadiusLimit=12;
-    this.camera.upperRadiusLimit=4500;
+    this.camera.upperRadiusLimit=26000;
     this.camera.lowerBetaLimit=.10;
     this.camera.upperBetaLimit=2.78;
-    this.camera.minZ=.10;
+    this.camera.minZ=.15;
+    this.camera.maxZ=65000;
     canvas.style.touchAction='none';
     canvas.addEventListener('pointerdown',this.onDown,{passive:false});
     canvas.addEventListener('pointermove',this.onMove,{passive:false});
@@ -77,7 +78,7 @@ export class MobileCamera{
     if(!Number.isFinite(factor)||factor<=0)return;
     const adjusted=gestureApply(1,factor,this.precision);
     const radius=this.wheelRadius??this.camera.radius;
-    this.wheelRadius=clamp(radius*adjusted,12,4500);
+    this.wheelRadius=clamp(radius*adjusted,12,26000);
   }
   north(){
     this.stopInertia();
@@ -155,6 +156,10 @@ export class MobileCamera{
       }
     }
     if(this.street&&!this.transition)this.lockStreetEye();
+    // Au zoom métropolitain, un plan proche trop petit dégrade les
+    // valeurs du depth buffer : bâtiments et routes scintillent.
+    const near=this.street?.12:clamp(this.camera.radius/24,.15,1100);
+    if(Math.abs(this.camera.minZ-near)>.025)this.camera.minZ=near;
   }
   private transitionEnd=0;
   private eye(){return this.camera.target.y+this.camera.radius*Math.cos(this.camera.beta);}
