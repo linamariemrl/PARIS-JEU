@@ -1,0 +1,39 @@
+name: Vérifier PARIS 3D
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  verification:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer le traitement IGN
+        run: python -m pip install 'shapely>=2.1,<3'
+      - name: Préparer les données géographiques si absentes
+        run: |
+          if [ ! -f public/data/4e/manifest.json ]; then
+            python scripts/prepare_4e.py
+          fi
+      - name: Vérifier les géométries
+        run: python -m unittest discover -s tests -p 'test_*.py'
+      - name: Installer les dépendances Babylon.js
+        run: npm install --no-audit --no-fund
+      - name: Compiler le prototype PWA et contrôler la taille
+        run: npm run build
+      - uses: actions/upload-artifact@v4
+        with:
+          name: site-paris-3d
+          path: dist
+          retention-days: 7
