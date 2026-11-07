@@ -11,12 +11,25 @@ export interface CityVolumeGroup {
   maxFloors:number;
   parts:CityVolumePart[];
 }
+export interface LidarRoofPart {
+  /** Positions X/Z locales et hauteurs mesurées par MNH IGN en mètres. */
+  vertices:[number,number,number][];
+  indices:number[];
+  ringsHeights:number[][];
+  sampleCount:number;
+}
+export interface LidarRoof{
+  source:string;
+  parts:LidarRoofPart[];
+}
 export interface Building {
   id: string;
   height: number;
   estimatedHeight: boolean;
   usage: string;
   polygons: Point[][][];
+  localCoordinates?:boolean;
+  lidarRoof?:LidarRoof;
   wallCode?: string;
   roofCode?: string;
   roofInfo?: RoofInfo;
@@ -31,4 +44,5 @@ export interface Manifest {
   buildings: number;
   tiles: TileInfo[];
 }
-export interface TileFile { schema: 1; id: string; buildings: Building[]; }
+export interface TileFile { schema: 1|2; id: string;
+  localCoordinates?:boolean; buildings: Building[]; }

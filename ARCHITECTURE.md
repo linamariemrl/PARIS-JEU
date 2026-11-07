@@ -610,3 +610,11 @@ Le pipeline indépendant `scripts/prepare_perimeter.py` a exécuté la vérifica
 Le fichier `public/data/metropole/limits.geojson` couvre Paris, ses 20 arrondissements et les 29 communes voisines, avec la provenance et le code INSEE. Le fichier `neighbors.json` crée leurs identifiants d'acteurs avec caractéristiques économiques et politiques nulles tant qu'elles ne sont pas officiellement disponibles. Leur autonomie politique et financière nécessite les modules ultérieurs.
 
 Les contours de Paris et des communes limitrophes s'affichent en nuances de gris. Ils ne valent pas couverture des bâtiments au-delà du 4e. Le chargement géographique des empreintes bâties sera indépendant, sous réserve des limites de GitHub Pages et des mesures FPS Android.
+
+## 36. Surfaces MNH LiDAR HD du 4e réellement mesurées
+
+La préparation sur GitHub Actions a récupéré six dalles GeoTIFF à 50 cm depuis le service WMS officiel IGN, une fois contrôlés CRS Lambert-93, valeurs, couverture spatiale et concordance statistique avec les hauteurs BD TOPO. Sur 2 696 bâtiments du pilote, 1 051 ont un jeu de triangles de toit MNH interprétable. Les autres ne sont pas comblés artificiellement. Les images raster de travail ne sont pas distribuées à l'application. Seules les positions et hauteurs des sommets simplifiés sont stockées dans `public/data/4e/roof-lidar.json` et regroupées par bâtiments.
+
+Les profils de façades utilisent les hauteurs relevées des sommets en limite de toiture pour ces surfaces, et un matériau neutre. Le maillage MNH n'est pas une certification de tous les détails d'architecture (lucarnes, cheminées, surplombs) ni de précision de chaque pan. Pour les bâtiments couverts par plusieurs subdivisions municipales exploitables, celles-ci gardent temporairement la priorité afin d'éviter des raccords incohérents : l'unification fine volumes 3D et mesures MNH sera une étape spécifique.
+
+Source : https://www.data.gouv.fr/datasets/mnh-lidar-hd (Licence Ouverte 2.0). Rapports : `data/quality/lidar-4e-availability.json` et `data/quality/lidar-4e-reconstruction.json`.

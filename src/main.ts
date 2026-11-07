@@ -75,7 +75,8 @@ try{
     const roof=b.roofInfo;
     const exterior=b.polygons[0]?.[0]?.map(project)??[];
     const profile=roofProfile(roof,b.height,exterior);
-    el('roof-form').textContent=roof?
+    el('roof-form').textContent=b.lidarRoof&&!b.volumes?
+      'Relief de toiture MNH LiDAR HD IGN mesuré (maillage simplifié)' :roof?
       roofShapeDescription(roof.shape)+
       (profile?.estimated?' (pente estimée)':' (pente documentée si disponible)'):
       'forme non documentée : toit de secours plat';
@@ -90,7 +91,9 @@ try{
       (b.volumes?'Subdivisions géométriques Ville de Paris, altitudes internes estimées. ':'')+
       (roof?'Type de toiture OSM, pente non toujours mesurée. ':
         'Forme de toiture inconnue. ')+
-      'Aucun volume LiDAR HD n’est encore intégré.';
+      (b.lidarRoof&&!b.volumes?
+        'Relief de couverture MNH LiDAR HD, IGN 50 cm. ':
+        'Toit LiDAR non disponible ou subdivision municipale prioritaire. ');
   };
   camera.onTap=(x,y)=>{
     const hit=scene.pick(x,y,mesh=>mesh.isPickable&&Boolean(mesh.metadata));

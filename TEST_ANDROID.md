@@ -188,3 +188,11 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 2. Contrôler qu'ils ne changent pas de place en tournant à 360°.
 3. Les nouveaux contours ne constituent pas de faux bâtiments : seule la zone déjà chargée comporte des immeubles.
 4. Aucune diminution significative de FPS ne doit résulter de l'affichage des limites.
+
+## Reliefs de couverture LiDAR
+
+1. Dans Détails, relever le compteur de bâtiments avec MNH LiDAR.
+2. Approcher les îlots du 4e et observer les variations locales de hauteur.
+3. Les toitures non validées continuent à s'afficher, sans disparition de bâtiments.
+4. Contrôler la sélection d'un immeuble à toit mesuré pour connaître la provenance.
+5. Vérifier que la navigation reste fluide (objectif au moins 30 FPS sur Android).

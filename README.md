@@ -228,3 +228,11 @@ Les 20 arrondissements et les 29 communes limitrophes ont été déterminés
 en projection métrique. Leurs contours sont affichables dans la maquette.
 La 3D détaillée des bâtiments reste limitée au 4e tant que les extractions
 supplémentaires ne sont pas validées.
+
+## Toitures mesurées LiDAR HD, 4e arrondissement
+
+Le moteur privilégie maintenant des surfaces de couverture échantillonnées
+sur le MNH LiDAR HD IGN lorsqu'elles sont valides. L'extraction vérifiée en
+a retenu 1 051 sur 2 696 bâtiments. Les autres restent simplifiées;
+les subdivisions de la Ville de Paris priment lorsqu'elles sont plus
+complètes. Les détails non mesurés ne sont jamais inventés.

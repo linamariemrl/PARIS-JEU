@@ -2,7 +2,7 @@ import type { Mesh, Scene } from '@babylonjs/core';
 import { createTile } from './buildings';
 import type { Manifest, TileFile, TileInfo } from './types';
 import type { RoofInfo } from './roofGeometry';
-import type { CityVolumeGroup } from './types';
+import type { CityVolumeGroup, LidarRoof } from './types';
 import { shouldUseVolumes } from './volumeGeometry';
 
 const root = import.meta.env.BASE_URL + 'data/4e/';
@@ -44,6 +44,7 @@ export class TileManager {
   private overlay:Record<string,BuildingMaterialRecord>={};
   private roofOverlay:Record<string,RoofInfo>={};
   private cityVolumeOverlay:Record<string,CityVolumeGroup>={};
+  private lidarOverlay:Record<string,LidarRoof>={};
 
   constructor(
     private scene: Scene,
@@ -119,6 +120,22 @@ export class TileManager {
         if(el)el.textContent='Volumétrie municipale complémentaire absente';
       }
     }catch(e){console.warn('Volumes officiels Paris Data indisponibles',e);}
+    // Mesures LiDAR réelles, intégrées seulement si les annexes sont valides.
+    // Le résultat est optionnel : aucun bâtiment ne doit disparaître.
+    try{
+      const response=await fetch(root+'roof-lidar.json');
+      if(response.ok){
+        const data=await response.json() as {
+          schema:number;buildingCount:number;byId:Record<string,LidarRoof>
+        };
+        if(data.schema===1&&data.buildingCount<=manifest.buildings&&data.byId){
+          this.lidarOverlay=data.byId;
+          const node=document.getElementById('lidar-status');
+          if(node)node.textContent=data.buildingCount.toLocaleString('fr-FR')+
+            ' bâtiments avec mesures MNH, sous réserve des subdivisions prioritaires';
+        }
+      }
+    }catch(e){console.warn('Toitures MNH facultatives indisponibles',e);}
     // Jusqu'à trois téléchargements simultanés sans saturation du téléphone.
     const queue = manifest.tiles.slice();
     const worker = async () => {
@@ -157,6 +174,8 @@ export class TileManager {
       for(const building of data.buildings){
         const roof=this.roofOverlay[building.id];
         if(roof)building.roofInfo=roof;
+        const lidar=this.lidarOverlay[building.id];
+        if(lidar)building.lidarRoof=lidar;
         const volumes=this.cityVolumeOverlay[building.id];
         if(volumes&&shouldUseVolumes(volumes.coverage,volumes.parts.length,
                                     Boolean(building.roofInfo))){
