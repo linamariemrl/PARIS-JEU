@@ -3,6 +3,22 @@
 Prototype gratuit en 3D pour navigateur et Android. Le code est hébergé dans un dépôt GitHub public.
 
 
+
+## Version 0.5 : Paris au fil des heures
+
+La simulation dispose d'une horloge en temps parisien et d'un cycle visuel jour et nuit.
+À ×1, une journée dure 24 minutes. Les vitesses ×10 et ×60 permettent d'observer
+rapidement plusieurs journées et saisons. Le ciel, la position du soleil, la
+lune, les éclairages simulés et les fenêtres allumées évoluent avec la date.
+
+Les bâtiments restent intégralement présents quel que soit le zoom ; les 205
+noms de voies officiels restent affichables à toutes les heures du jeu.
+
+Les étoiles et les lampadaires sont provisoires et stylisés, sans prétendre
+à une représentation exacte des étoiles ni aux emplacements réels des luminaires.
+Les horaires et décisions de la Ville ne pilotent pas encore l'éclairage :
+ce raccordement fait partie du socle de simulation ultérieur.
+
 ## Version 0.4 : stabilité et repérage
 
 - Les 2 696 bâtiments IGN du 4e sont conservés en mémoire, quelle que soit la position ou le zoom de la caméra. Les boutons + et - ne font plus varier leur présence.

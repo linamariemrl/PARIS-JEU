@@ -51,3 +51,18 @@ En cas de chute durable sous 30 FPS, réduire d'abord la distance des arbres, pu
 7. Vérifier 30 FPS minimum en situation normale sur votre Android ; signaler toute chute durable ou fermeture de l'application.
 8. Si le navigateur conserve l'ancien moteur PWA, actualiser la page puis la rouvrir.
 
+
+## Version 0.5 : recette sur l'unique téléphone Android
+
+1. Actualiser la page publiée et vérifier « PROTOTYPE 05 ».
+2. Vérifier la date au format français et l'affichage de l'heure sur 24 heures.
+3. Appuyer sur « Ⅱ » : l'heure doit se figer. Passer à ×1, ×10, puis ×60.
+4. À ×60, observer un cycle complet en environ 24 secondes : jour, crépuscule, nuit, aube.
+5. Vérifier que le soleil évolue selon l'heure et que le ciel nocturne comporte une lune avec phase.
+6. À la nuit, observer les lampadaires schématiques et certaines fenêtres illuminées.
+7. Vérifier que le nombre de bâtiments reste à 2 696 pendant tous les cycles et que les noms de rues restent disponibles.
+8. En qualité Basse, Moyenne et Haute, observer la fluidité avec un objectif de 30 FPS minimum.
+9. Vérifier qu'une sélection de bâtiment fonctionne toujours et que le panneau d'horloge ne bloque pas la caméra.
+10. Faire une capture de jour et une de nuit avec les FPS visibles, puis signaler toute différence anormale.
+
+Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les états réels des logements, ni les horaires des monuments ne sont encore reproduits.

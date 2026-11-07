@@ -372,3 +372,17 @@ Avant la prochaine étape, vérifier sur le téléphone Android :
 3. Que les revêtements de murs et de toitures sont distincts et que les informations de provenance ne prétendent pas reproduire le matériau exact.
 4. Que les noms de toutes les voies officielles du 4e sont chargés et suivent la caméra, sans option de désactivation.
 5. Que la fluidité reste au minimum à 30 FPS dans plusieurs vues urbaines chargées.
+
+## 19. Cycle céleste et éclairages, version 0.5
+
+Le temps du jeu est un instant absolu. À vitesse normale, 1 seconde réelle correspond à 1 minute du jeu. Pause, ×1, ×10 et ×60 sont accessibles dans l'interface. La date et l'heure sont affichées en français au fuseau `Europe/Paris`, avec les passages aux heures d'été et d'hiver. Aucune persistance de l'horloge avant l'étape 4.
+
+La position du Soleil et de la Lune utilise une approximation astronomique basée sur le calendrier et les coordonnées de Paris (48,8566° N, 2,3522° E). Les phases lunaires et les variations saisonnières sont simulées. La précision n'est pas destinée à la navigation astronomique.
+
+Le ciel est une voûte peu coûteuse en géométrie, avec des couleurs jour, nuit, aube et crépuscule ; les étoiles constituent un fond décoratif, non un catalogue astronomique. Le niveau d'éclairage ambiant dépend de l'altitude du Soleil. Aucun rendu d'ombres portées dynamiques n'est activé sur cette étape pour préserver la fluidité.
+
+L'éclairage public est approché par des instances graphiques de poteaux et de globes. Les positions sont déduites des voies officiellement nommées, pas d'un inventaire réel des lampadaires. Les globes s'illuminent quand l'altitude du Soleil descend sous l'horizon selon un seuil de crépuscule, sans création de centaines de véritables lumières Babylon.
+
+Les fenêtres utilisent des textures nocturnes procédurales mutualisées par usage du bâtiment. Leur état suit une hypothèse d'occupation résidentielle ou professionnelle. Il ne décrit pas les habitudes des occupants réels et ne modifie pas les informations IGN. Les décisions budgétaires concernant l'éclairage seront raccordées au simulateur à partir de l'étape 4.
+
+Les tests automatiques couvrent la position du Soleil aux solstices, les conditions d'allumage et les changements d'heure de Paris. L'acceptation des performances exige ensuite une vérification réelle sur le téléphone Android, notamment 30 images par seconde au minimum.

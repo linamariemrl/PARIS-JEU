@@ -4,9 +4,10 @@
  */
 export type TimeSpeed=0|1|10|60;
 export class GameClock{
-  private timestamp=Date.now();
+  private timestamp:number;
   private previous:number|null=null;
   private speed:TimeSpeed=1;
+  constructor(initialTimestamp=Date.now()) {this.timestamp=initialTimestamp;}
   private readonly dateFormatter=new Intl.DateTimeFormat('fr-FR',{
     timeZone:'Europe/Paris',day:'2-digit',month:'2-digit',year:'numeric',
     hour:'2-digit',minute:'2-digit',hourCycle:'h23'

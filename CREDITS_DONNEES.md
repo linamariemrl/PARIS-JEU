@@ -18,3 +18,8 @@
 
 - Noms et emprises des voies, au nombre de 205 pour le 4e : Ville de Paris, « Dénominations des emprises des voies actuelles », licence ODbL, https://opendata.paris.fr/explore/dataset/denominations-emprises-voies-actuelles/
 - Les matériaux et motifs de fenêtres par catégorie d'usage sont des créations procédurales, pas un inventaire architectural exhaustif. Les matériaux précis des murs et des toitures demeurent non déterminés.
+
+- Calcul de la position du Soleil et de la Lune à partir d'équations astronomiques simplifiées implémentées directement dans le jeu, sans service externe payant.
+- Les constellations décoratives ne reproduisent pas un catalogue d'étoiles.
+- Les lampadaires sont des éléments stylisés placés à partir des voies de Paris Data et ne correspondent pas à des positions vérifiées d'éclairage public.
+- Les fenêtres allumées indiquent une hypothèse d'occupation par usage IGN, et ne permettent aucune inférence sur les occupants.
