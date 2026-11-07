@@ -1,0 +1,37 @@
+name: Auditer la fidélité géométrique du 4e
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/geometry-audit.yml'
+      - 'scripts/audit_maquette_4e.py'
+      - 'tests/test_maquette_audit.py'
+
+permissions:
+  contents: write
+
+jobs:
+  report:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Contrôler les 2696 géométries IGN
+        run: python -m unittest discover -s tests -p 'test_maquette_audit.py'
+      - name: Produire le rapport de précision du 4e
+        run: python scripts/audit_maquette_4e.py
+      - name: Enregistrer le rapport dans GitHub
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/quality/maquette-4e.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: état vérifié de la précision géométrique du 4e'
+            git pull --rebase origin main
+            git push
+          fi
