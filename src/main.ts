@@ -118,10 +118,10 @@ try {
     pad.classList.toggle('hidden',!active);
   });
   const held=new Set<string>();
-  for(const button of pad.querySelectorAll<HTMLButtonElement>('[data-move]')){
+  for(const button of Array.from(pad.querySelectorAll<HTMLButtonElement>('[data-move]'))){
     const command=button.dataset.move;
     if(!command)continue;
-    button.addEventListener('pointerdown',e=>{
+    button.addEventListener('pointerdown',(e:PointerEvent)=>{
       e.preventDefault();
       held.add(command);
       button.setPointerCapture(e.pointerId);
