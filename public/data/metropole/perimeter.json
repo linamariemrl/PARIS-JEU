@@ -1,0 +1,163 @@
+{
+  "schema": 1,
+  "source": "IGN ADMINEXPRESS-COG.LATEST:commune; Ville de Paris arrondissements",
+  "sourceURL": "https://data.geopf.fr/wfs/ows",
+  "arrondissementSourceURL": "https://opendata.paris.fr/explore/dataset/arrondissements/",
+  "generatedAt": "2026-11-07T21:11:41.287996+00:00",
+  "coordinateSystem": "EPSG:4326",
+  "intersectionSystem": "EPSG:2154",
+  "parisINSEE": "75056",
+  "arrondissementCount": 20,
+  "neighborCount": 29,
+  "neighbors": [
+    {
+      "insee": "92012",
+      "name": "Boulogne-Billancourt",
+      "sharedBoundaryMeters": 4149.6
+    },
+    {
+      "insee": "92024",
+      "name": "Clichy",
+      "sharedBoundaryMeters": 1380.6
+    },
+    {
+      "insee": "92040",
+      "name": "Issy-les-Moulineaux",
+      "sharedBoundaryMeters": 3224.3
+    },
+    {
+      "insee": "92044",
+      "name": "Levallois-Perret",
+      "sharedBoundaryMeters": 1731.6
+    },
+    {
+      "insee": "92046",
+      "name": "Malakoff",
+      "sharedBoundaryMeters": 993.4
+    },
+    {
+      "insee": "92049",
+      "name": "Montrouge",
+      "sharedBoundaryMeters": 1561.5
+    },
+    {
+      "insee": "92051",
+      "name": "Neuilly-sur-Seine",
+      "sharedBoundaryMeters": 3992.7
+    },
+    {
+      "insee": "92062",
+      "name": "Puteaux",
+      "sharedBoundaryMeters": 1348.4
+    },
+    {
+      "insee": "92064",
+      "name": "Saint-Cloud",
+      "sharedBoundaryMeters": 667.1
+    },
+    {
+      "insee": "92073",
+      "name": "Suresnes",
+      "sharedBoundaryMeters": 1173.2
+    },
+    {
+      "insee": "92075",
+      "name": "Vanves",
+      "sharedBoundaryMeters": 950.0
+    },
+    {
+      "insee": "93001",
+      "name": "Aubervilliers",
+      "sharedBoundaryMeters": 1755.8
+    },
+    {
+      "insee": "93006",
+      "name": "Bagnolet",
+      "sharedBoundaryMeters": 2004.8
+    },
+    {
+      "insee": "93045",
+      "name": "Les Lilas",
+      "sharedBoundaryMeters": 626.1
+    },
+    {
+      "insee": "93048",
+      "name": "Montreuil",
+      "sharedBoundaryMeters": 665.5
+    },
+    {
+      "insee": "93055",
+      "name": "Pantin",
+      "sharedBoundaryMeters": 1574.6
+    },
+    {
+      "insee": "93061",
+      "name": "Le Pré-Saint-Gervais",
+      "sharedBoundaryMeters": 1683.6
+    },
+    {
+      "insee": "93066",
+      "name": "Saint-Denis",
+      "sharedBoundaryMeters": 1000.2
+    },
+    {
+      "insee": "93070",
+      "name": "Saint-Ouen-sur-Seine",
+      "sharedBoundaryMeters": 2368.9
+    },
+    {
+      "insee": "94018",
+      "name": "Charenton-le-Pont",
+      "sharedBoundaryMeters": 2511.1
+    },
+    {
+      "insee": "94033",
+      "name": "Fontenay-sous-Bois",
+      "sharedBoundaryMeters": 1638.6
+    },
+    {
+      "insee": "94037",
+      "name": "Gentilly",
+      "sharedBoundaryMeters": 2093.3
+    },
+    {
+      "insee": "94041",
+      "name": "Ivry-sur-Seine",
+      "sharedBoundaryMeters": 2176.2
+    },
+    {
+      "insee": "94042",
+      "name": "Joinville-le-Pont",
+      "sharedBoundaryMeters": 983.4
+    },
+    {
+      "insee": "94043",
+      "name": "Le Kremlin-Bicêtre",
+      "sharedBoundaryMeters": 591.7
+    },
+    {
+      "insee": "94052",
+      "name": "Nogent-sur-Marne",
+      "sharedBoundaryMeters": 1718.8
+    },
+    {
+      "insee": "94067",
+      "name": "Saint-Mandé",
+      "sharedBoundaryMeters": 4246.0
+    },
+    {
+      "insee": "94069",
+      "name": "Saint-Maurice",
+      "sharedBoundaryMeters": 3728.9
+    },
+    {
+      "insee": "94080",
+      "name": "Vincennes",
+      "sharedBoundaryMeters": 2161.7
+    }
+  ],
+  "officialMunicipalAreaSqKm": 105.43,
+  "areaParisNotCoveredByArrondissementPolygonsSqKm": 0.132,
+  "renderingStatus": "administrative outlines only; buildings remain 4e until a validated building extraction",
+  "note": "No economic or political values invented for neighboring municipalities"
+}
