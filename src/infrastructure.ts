@@ -139,9 +139,9 @@ export async function loadMetropolitanOutlines(scene:Scene):Promise<number>{
   if(data.type!=='FeatureCollection'||data.features.length<40)
     throw Error('Périmètre IGN incomplet');
   const config:{[key:string]:{color:number;alpha:number;height:number}}={
-    arrondissement:{color:.66,alpha:.53,height:.24},
-    paris:{color:.38,alpha:.76,height:.25},
-    commune_limitrophe:{color:.76,alpha:.38,height:.23}
+    arrondissement:{color:.55,alpha:.76,height:.24},
+    paris:{color:.32,alpha:.91,height:.25},
+    commune_limitrophe:{color:.66,alpha:.57,height:.23}
   };
   const group=new Map<string,Vector3[][]>();
   const LON=2.3537,LAT=48.8545;
