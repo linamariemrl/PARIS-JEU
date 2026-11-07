@@ -28,7 +28,9 @@ class SceneInvariants(unittest.TestCase):
         self.assertIn("VertexBuffer.PositionKind",code)
         self.assertIn("disableDepthWrite=true",code)
         self.assertNotIn("canvas.getContext",code)
-        self.assertNotIn("ctx.fillText",code)
+        self.assertNotIn("ctx.translate(x,y)",code)
+        self.assertNotIn("this.canvas.clientWidth",code)
+        self.assertIn("mesh.updateVerticesData",code)
         self.assertIn("a.x-vx*halfW-nx*halfH",geometry)
 
     def test_all_official_street_names_have_label(self):
