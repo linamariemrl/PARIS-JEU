@@ -7,6 +7,7 @@ import { MobileCamera } from './mobileCamera';
 import { loadInfrastructure, addAdministrativeOutline } from './infrastructure';
 import { TileManager } from './tileManager';
 import { GameClock, type TimeSpeed } from './gameClock';
+import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
 import { project } from './geo';
