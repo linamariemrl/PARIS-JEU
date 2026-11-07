@@ -7,6 +7,7 @@ import { MobileCamera } from './mobileCamera';
 import { loadInfrastructure } from './infrastructure';
 import { TileManager } from './tileManager';
 import { TreeLayer } from './trees';
+import { StreetLabels } from './streetLabels';
 import type { Building } from './types';
 import './style.css';
 
@@ -46,6 +47,7 @@ try {
   const camera = new MobileCamera(scene, canvas);
   const material = createMaterials(scene);
   const trees = new TreeLayer(scene, message => { vegetation.textContent = message; });
+  const streetLabels = new StreetLabels(scene, engine);
   const manager = new TileManager(scene, material, (message, number) => {
     state.textContent = message;
     counter.textContent = number.toLocaleString('fr-FR') + ' bâtiments chargés';
@@ -90,11 +92,16 @@ try {
     scene.render();
     manager.update(camera.camera.target.x, camera.camera.target.z);
     trees.update(camera.camera.target.x, camera.camera.target.z);
+    streetLabels.update(camera.camera.radius);
     const now = performance.now();
     if (now - lastFpsUpdate > 1000) {
       fps.textContent = Math.round(engine.getFps()) + ' FPS';
       lastFpsUpdate = now;
     }
+  });
+  void streetLabels.init().catch((e: unknown) => {
+    console.warn('Noms officiels des voies', e);
+    el('streets').textContent = 'Noms de rues indisponibles';
   });
   void trees.init().catch((e: unknown) => {
     console.warn('Arbres Paris Data', e);
