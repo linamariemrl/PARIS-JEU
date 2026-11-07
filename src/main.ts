@@ -43,7 +43,7 @@ try{
   const clock=new GameClock();
 
   const ground=MeshBuilder.CreateGround('sol-neutre',
-    {width:7200,height:7200},scene);
+    {width:40000,height:40000},scene);
   const mat=new StandardMaterial('sol-gris-clair',scene);
   mat.diffuseColor=new Color3(.94,.94,.94);
   mat.specularColor=Color3.Black();
@@ -86,25 +86,27 @@ try{
     const roof=b.roofInfo;
     const exterior=b.polygons[0]?.[0]?.map(project)??[];
     const profile=roofProfile(roof,b.height,exterior);
-    el('roof-form').textContent=b.lidarRoof&&!b.volumes?
+    el('roof-form').textContent=b.lidarRoof?
       'Relief de toiture MNH LiDAR HD IGN mesuré (maillage simplifié)' :roof?
       roofShapeDescription(roof.shape)+
       (profile?.estimated?' (pente estimée)':' (pente documentée si disponible)'):
       'forme non documentée : toit de secours plat';
-    el('volume-information').textContent=b.volumes?
-      b.volumes.parts.length.toLocaleString('fr-FR')+
+    el('volume-information').textContent=b.lidarRoof?
+      'Relief LiDAR prioritaire'+(b.volumes?' ; subdivisions municipales conservées en référence':''):
+      b.volumes?b.volumes.parts.length.toLocaleString('fr-FR')+
       ' subdivisions municipales (hauteurs internes estimées)':
       'emprise IGN (sans subdivision validée)';
     el('identifier').textContent=b.id;
     el('caveat').textContent=
       'Les contours et hauteurs proviennent des sources indiquées dans Détails. '+
       'Les matériaux fiscaux ne sont pas représentés. '+
-      (b.volumes?'Subdivisions géométriques Ville de Paris, altitudes internes estimées. ':'')+
+      (b.volumes?(b.lidarRoof?'Subdivisions municipale disponibles mais non affichées sous le LiDAR. ':
+ 'Subdivisions géométriques Ville de Paris, altitudes internes estimées. '):'')+
       (roof?'Type de toiture OSM, pente non toujours mesurée. ':
         'Forme de toiture inconnue. ')+
-      (b.lidarRoof&&!b.volumes?
-        'Relief de couverture MNH LiDAR HD, IGN 50 cm. ':
-        'Toit LiDAR non disponible ou subdivision municipale prioritaire. ');
+      (b.lidarRoof?
+        'Relief de couverture MNH LiDAR HD, IGN 50 cm, prioritaire lorsqu’il est valide. ':
+        'Toit LiDAR non disponible ; forme OSM ou toit de secours. ');
   };
   camera.onTap=(x,y)=>{
     const hit=scene.pick(x,y,mesh=>mesh.isPickable&&Boolean(mesh.metadata));
