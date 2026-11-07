@@ -19,7 +19,12 @@ from urllib.error import HTTPError, URLError
 from shapely.geometry import shape
 from shapely.ops import transform
 
-from prepare_4e import ll_to_xy
+CENTER_LON, CENTER_LAT = 2.3537, 48.8545
+METERS_X = 111320 * math.cos(math.radians(CENTER_LAT))
+METERS_Z = 111132
+
+def ll_to_xy(lon, lat):
+    return (lon - CENTER_LON) * METERS_X, (lat - CENTER_LAT) * METERS_Z
 
 ROOT = Path(__file__).resolve().parents[1]
 DEST = ROOT / "public/data/4e/street-names.json"
