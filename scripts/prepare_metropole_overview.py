@@ -6,7 +6,7 @@ en volumes légers à partir de leurs enveloppes mesurées. Ce niveau de
 détail est une approximation visuelle documentée, jamais un toit LiDAR.
 Le maillage exact des emprises reste réservé aux tuiles proches.
 Format binaire par cellule de 3,2 km : int16 x,z ; uint16 largeur,
-profondeur, hauteur ; valeurs en quarts de mètre.
+profondeur, hauteur (quarts de mètre), puis int16 angle d'orientation.
 """
 from __future__ import annotations
 
@@ -24,28 +24,53 @@ CELLS = 4
 
 
 def record(building, ix, iz, tile_size):
-    xs = []
-    zs = []
+    """Rectangle orienté d'après l'axe dominant de l'emprise IGN.
+
+    Il reste une approximation. Contrairement à une boîte alignée sur les
+    axes mondiaux, le contour des rues reste cohérent à vue d'ensemble.
+    """
+    exterior = []
+    coords = []
     for polygon in building["polygons"]:
+        if not polygon:
+            continue
         for ring in polygon:
             for point in ring:
-                xs.append(float(point[0]))
-                zs.append(float(point[1]))
-    if not xs or not zs:
+                coords.append((float(point[0]), float(point[1])))
+        if len(polygon[0]) > len(exterior):
+            exterior = polygon[0]
+    if not coords or len(exterior) < 3:
         raise ValueError("Emprise IGN sans coordonnées : " + str(building.get("id")))
-    if not all(map(math.isfinite, xs + zs)):
+    if not all(math.isfinite(v) for p in coords for v in p):
         raise ValueError("Coordonnées IGN non finies")
-    center_x = (min(xs) + max(xs)) / 2 - ix * tile_size
-    center_z = (min(zs) + max(zs)) / 2 - iz * tile_size
-    width = max(STEP, max(xs) - min(xs))
-    depth = max(STEP, max(zs) - min(zs))
+    longest = 0.0
+    dx, dz = 1.0, 0.0
+    for p, q in zip(exterior, exterior[1:] + exterior[:1]):
+        vx, vz = q[0] - p[0], q[1] - p[1]
+        length = math.hypot(vx, vz)
+        if length > longest:
+            longest, dx, dz = length, vx / length, vz / length
+    vx, vz = -dz, dx
+    uu = [x * dx + z * dz for x, z in coords]
+    vv = [x * vx + z * vz for x, z in coords]
+    u_mid = (min(uu) + max(uu)) / 2
+    v_mid = (min(vv) + max(vv)) / 2
+    center_x, center_z = u_mid * dx + v_mid * vx, u_mid * dz + v_mid * vz
+    width = max(STEP, max(uu) - min(uu))
+    depth = max(STEP, max(vv) - min(vv))
     height = max(2.0, float(building["height"]))
-    nums = [round(center_x / STEP), round(center_z / STEP),
-            round(width / STEP), round(depth / STEP), round(height / STEP)]
-    if not (-32768 <= nums[0] <= 32767 and -32768 <= nums[1] <= 32767 and
-            all(1 <= v <= 65535 for v in nums[2:])):
+    angle = math.atan2(dz, dx)
+    # Int16 pour le centre relatif à la tuile et la rotation.
+    nums = [round((center_x - ix * tile_size) / STEP),
+            round((center_z - iz * tile_size) / STEP),
+            round(width / STEP), round(depth / STEP),
+            round(height / STEP), round(angle * 32768 / math.pi)]
+    if not (-32768 <= nums[0] <= 32767 and
+            -32768 <= nums[1] <= 32767 and
+            -32768 <= nums[5] <= 32767 and
+            all(1 <= v <= 65535 for v in nums[2:5])):
         raise ValueError("Géométrie hors plage int16 : " + str(building.get("id")))
-    return struct.pack("<hhHHH", *nums)
+    return struct.pack("<hhHHHh", *nums)
 
 
 def main():
@@ -74,15 +99,15 @@ def main():
     if total != manifest["totalBuildings"]:
         raise ValueError("Effectifs de l'aperçu différents de la source IGN")
     TARGET.mkdir(parents=True, exist_ok=True)
-    output = {"schema": 1, "tileMeters": size, "cellsPerGroup": CELLS,
+    output = {"schema": 2, "tileMeters": size, "cellsPerGroup": CELLS,
               "quantizationMeters": STEP, "totalBuildings": total,
-              "source": manifest["source"], "geometry": "bbox-approximation",
+              "source": manifest["source"], "geometry": "oriented-box-approximation",
               "sourceHash": sha256((SOURCE / "manifest.json").read_bytes()).hexdigest()[:12],
               "groups": []}
     for (gx, gz), entry in sorted(groups.items()):
         name = f"{gx}_{gz}.bin"
         payload = entry["data"]
-        if len(payload) != entry["count"] * 10:
+        if len(payload) != entry["count"] * 12:
             raise ValueError("Longueur d'aperçu invalide")
         (TARGET / name).write_bytes(payload)
         output["groups"].append({
@@ -93,7 +118,7 @@ def main():
         json.dumps(output, ensure_ascii=False, separators=(",", ":")) + "\n",
         encoding="utf-8")
     print(f"LOD IGN : {total} enveloppes, {len(groups)} groupes, "
-          f"{total * 10 / 1e6:.2f} Mo binaires")
+          f"{total * 12 / 1e6:.2f} Mo binaires")
 
 
 if __name__ == "__main__":
