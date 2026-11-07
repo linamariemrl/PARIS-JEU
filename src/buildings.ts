@@ -169,6 +169,35 @@ export function createTile(scene:Scene,tile:TileFile,materials:BuildingMaterials
   if(r)result.push(r);
   return result;
 }
+
+/** Prépare les géométries exactes sans bloquer le fil de rendu mobile.
+ * Les sommets sont assemblés en tranches, mais un unique maillage par
+ * matériau est construit à la fin : pas de milliers de draw calls.
+ *
+ * Le maillage précédent ou la silhouette lointaine reste visible durant
+ * toute la préparation; le basculement n'intervient qu'après succès.
+ */
+export async function createTileProgressive(
+  scene:Scene,tile:TileFile,materials:BuildingMaterials,
+  stillWanted:()=>boolean=()=>true
+):Promise<Mesh[]>{
+  const walls=empty(),roofs=empty();
+  const batch=100;
+  for(let i=0;i<tile.buildings.length;i++){
+    if(i>0&&i%batch===0){
+      await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+      if(!stillWanted())return [];
+    }
+    addBuilding(walls,roofs,tile.buildings[i],i);
+  }
+  if(!stillWanted())return [];
+  const result:Mesh[]=[];
+  const w=asMesh(scene,tile,'wall',walls,materials.wall);
+  const r=asMesh(scene,tile,'roof',roofs,materials.roof);
+  if(w)result.push(w);
+  if(r)result.push(r);
+  return result;
+}
 export function getPickedBuilding(mesh:Mesh,faceId:number):Building|null{
   const m=mesh.metadata as {buildings?:Building[];faceToBuilding?:number[]}|undefined;
   const index=m?.faceToBuilding?.[faceId];
