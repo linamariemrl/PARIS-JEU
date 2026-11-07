@@ -8,6 +8,7 @@ import { loadInfrastructure, addAdministrativeOutline, loadMetropolitanOutlines 
 import { TileManager } from './tileManager';
 import { MetroTileManager } from './metroTiles';
 import { MetroOverview } from './metroOverview';
+import { installTerritoryNavigation } from './territoryNavigation';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
@@ -151,6 +152,7 @@ try{
     updateCameraButtons();
   });
   updateCameraButtons();
+  void installTerritoryNavigation(camera,updateCameraButtons).catch(console.warn);
   const held=new Set<string>();
   for(const button of Array.from(pad.querySelectorAll<HTMLButtonElement>('[data-move]'))){
     const command=button.dataset.move;
