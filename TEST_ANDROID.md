@@ -12,3 +12,15 @@
 10. Couper le réseau et vérifier seulement les contenus effectivement mis en cache par la PWA. Ne pas promettre l'intégralité de Paris hors ligne à cette étape.
 
 Échec bloquant : page blanche, erreur JavaScript, sélection incohérente, données fictives ou impossibilité de naviguer au doigt.
+
+## Version 0.2, infrastructures
+
+1. Vérifier sur l'écran de chargement que l'état « tronçons de voirie, ponts » apparaît, et non « Voirie indisponible ».
+2. Identifier des chaussées grises, des trottoirs clairs, la Seine bleutée, des berges et les ponts.
+3. Déplacer la caméra de l'île Saint-Louis vers l'île de la Cité et leurs accès, puis zoomer à proximité d'un pont.
+4. Vérifier que les bâtiments restent sélectionnables et que les commandes tactiles fonctionnent.
+5. Observer l'indicateur FPS en qualité moyenne : viser 30 FPS minimum dans les zones chargées.
+6. Ouvrir le bouton d'aide « ? » et vérifier qu'il n'obstrue plus la carte en permanence.
+7. Vérifier que le lien de crédits OpenStreetMap est visible.
+
+La largeur exacte des rues, l'élévation des ponts, le détail des trottoirs et la précision hydrologique doivent encore faire l'objet de validations supplémentaires. Aucune mesure de performance ne peut être extrapolée d'une capture isolée.
