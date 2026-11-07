@@ -92,6 +92,7 @@ export class MetroOverview {
   if(!state||!tile)return;
   this.writeTile(state.buffer,state.bytes,tile,enabled);
   state.mesh.thinInstanceBufferUpdated('matrix');
+  state.mesh.thinInstanceRefreshBoundingInfo();
   this.currentCount+=enabled?-tile.count:tile.count;
   this.report();
  }
