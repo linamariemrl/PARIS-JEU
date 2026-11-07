@@ -13,6 +13,7 @@ from __future__ import annotations
 import json
 import math
 import struct
+from hashlib import sha256
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -76,6 +77,7 @@ def main():
     output = {"schema": 1, "tileMeters": size, "cellsPerGroup": CELLS,
               "quantizationMeters": STEP, "totalBuildings": total,
               "source": manifest["source"], "geometry": "bbox-approximation",
+              "sourceHash": sha256((SOURCE / "manifest.json").read_bytes()).hexdigest()[:12],
               "groups": []}
     for (gx, gz), entry in sorted(groups.items()):
         name = f"{gx}_{gz}.bin"
