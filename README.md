@@ -220,3 +220,11 @@ Les finances affichent désormais les deux sections du budget primitif
 pas des dépenses réalisées. La dette affichée ne prétend pas être actualisée :
 l'unique référence datée est au 1er janvier 2026. Les propositions du joueur
 sont distinctes de la loi de finances et du vote municipal.
+
+## Frontières administratives officielles
+
+Les 20 arrondissements et les 29 communes limitrophes ont été déterminés
+à partir de Paris Data et d'IGN ADMIN EXPRESS par intersection des frontières
+en projection métrique. Leurs contours sont affichables dans la maquette.
+La 3D détaillée des bâtiments reste limitée au 4e tant que les extractions
+supplémentaires ne sont pas validées.

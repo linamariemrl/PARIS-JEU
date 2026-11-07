@@ -602,3 +602,11 @@ Sources :
 - https://a06-v7.apps.paris.fr/a06/jsp/site/plugins/odjcp/DoDownload.jsp?id_entite=66070&id_type_entite=6
 
 Fichier stable : public/data/finance/budget-paris.json. Un ajout de données open data plus détaillées devra réconcilier crédits BP, budget supplémentaire et décisions modificatives, sans additionner des versions d'un même vote.
+
+## 35. Frontières administratives exécutées sur les sources officielles
+
+Le pipeline indépendant `scripts/prepare_perimeter.py` a exécuté la vérification IGN ADMIN EXPRESS, trouvé Paris code 75056, calculé l'intersection **des frontières partagées** en EPSG:2154 et validé 29 communes limitrophes. Il a chargé les 20 arrondissements via les géométries officielles de Paris Data. La commune de Paris couvre environ 105,43 km² selon le millésime interrogé. Le différentiel géométrique de la réunion des arrondissements est de 0,132 km², conservé dans le rapport pour contrôler les bois et imprécisions, sans rectifier artificiellement la frontière.
+
+Le fichier `public/data/metropole/limits.geojson` couvre Paris, ses 20 arrondissements et les 29 communes voisines, avec la provenance et le code INSEE. Le fichier `neighbors.json` crée leurs identifiants d'acteurs avec caractéristiques économiques et politiques nulles tant qu'elles ne sont pas officiellement disponibles. Leur autonomie politique et financière nécessite les modules ultérieurs.
+
+Les contours de Paris et des communes limitrophes s'affichent en nuances de gris. Ils ne valent pas couverture des bâtiments au-delà du 4e. Le chargement géographique des empreintes bâties sera indépendant, sous réserve des limites de GitHub Pages et des mesures FPS Android.

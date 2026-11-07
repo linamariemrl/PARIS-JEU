@@ -4,7 +4,7 @@ import {
 } from '@babylonjs/core';
 import { createMaterials, getPickedBuilding, highlightBuilding } from './buildings';
 import { MobileCamera } from './mobileCamera';
-import { loadInfrastructure, addAdministrativeOutline } from './infrastructure';
+import { loadInfrastructure, addAdministrativeOutline, loadMetropolitanOutlines } from './infrastructure';
 import { TileManager } from './tileManager';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { GameManagement } from './simulation/ui';
@@ -195,7 +195,9 @@ try{
 
   // Géométrie SIG neutre, sans photographie aérienne, textures de rue,
   // végétation décorative, éclairage temporel ou variation jour/nuit.
-  void addAdministrativeOutline(scene).catch(console.warn);
+  void loadMetropolitanOutlines(scene).catch(()=>{
+    void addAdministrativeOutline(scene).catch(console.warn);
+  });
   void loadInfrastructure(scene).then(message=>{
     urban.textContent=message+' (maquette monochrome)';
   }).catch(e=>{

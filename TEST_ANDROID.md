@@ -181,3 +181,10 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 4. Créer deux sauvegardes nommées différentes, changer l'horloge, restaurer chaque partie.
 5. Exporter une sauvegarde JSON, la réimporter puis vérifier la date du jeu et la proposition financière.
 6. Le scénario ne doit pas être confondu avec une décision réellement votée par le Conseil.
+
+## Contours métropolitains
+
+1. Déplacer la caméra hors du 4e et observer les contours fins de Paris et de la petite couronne.
+2. Contrôler qu'ils ne changent pas de place en tournant à 360°.
+3. Les nouveaux contours ne constituent pas de faux bâtiments : seule la zone déjà chargée comporte des immeubles.
+4. Aucune diminution significative de FPS ne doit résulter de l'affichage des limites.

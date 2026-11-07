@@ -126,6 +126,58 @@ export async function addAdministrativeOutline(scene:Scene):Promise<number>{
   return total;
 }
 
+/** Frontières IGN ADMIN EXPRESS et arrondissements Paris Data.
+ * Pas de façades ni d'immeubles inventés dans les autres arrondissements.
+ * Les courbes restent attachées au terrain et non à l'écran.
+ */
+export async function loadMetropolitanOutlines(scene:Scene):Promise<number>{
+  const response=await fetch(import.meta.env.BASE_URL+'data/metropole/limits.geojson');
+  if(!response.ok)throw Error('Périmètre métropolitain non encore publié');
+  type Feature={properties:{kind:string;id:string};
+    geometry:{type:'Polygon'|'MultiPolygon';coordinates:unknown}};
+  const data=await response.json() as {type:string;features:Feature[]};
+  if(data.type!=='FeatureCollection'||data.features.length<40)
+    throw Error('Périmètre IGN incomplet');
+  const config:{[key:string]:{color:number;alpha:number;height:number}}={
+    arrondissement:{color:.66,alpha:.53,height:.24},
+    paris:{color:.38,alpha:.76,height:.25},
+    commune_limitrophe:{color:.76,alpha:.38,height:.23}
+  };
+  const group=new Map<string,Vector3[][]>();
+  const LON=2.3537,LAT=48.8545;
+  const mx=111320*Math.cos(LAT*Math.PI/180),mz=111132;
+  let total=0;
+  for(const f of data.features){
+    const conf=config[f.properties.kind];if(!conf)continue;
+    const raw=f.geometry.type==='Polygon'?
+      [f.geometry.coordinates] : f.geometry.type==='MultiPolygon'?
+      f.geometry.coordinates : null;
+    if(!Array.isArray(raw))continue;
+    for(const rawPolygon of raw){
+      if(!Array.isArray(rawPolygon)||!Array.isArray(rawPolygon[0]))continue;
+      const ring=rawPolygon[0] as number[][];
+      if(ring.length<4)continue;
+      const points=ring.filter(x=>x.length>=2).map(([lon,lat])=>
+        new Vector3((lon-LON)*mx,conf.height,(lat-LAT)*mz));
+      if(points.length<4)continue;
+      const collection=group.get(f.properties.kind)??[];
+      collection.push(points);
+      group.set(f.properties.kind,collection);
+      total++;
+    }
+  }
+  if(!group.has('paris')||!group.has('arrondissement'))
+    throw Error('Contours officiels mal formés');
+  for(const [kind,lines] of group){
+    const mesh=MeshBuilder.CreateLineSystem('limites-'+kind,{lines},scene);
+    const conf=config[kind];
+    mesh.color=new Color3(conf.color,conf.color,conf.color);
+    mesh.alpha=conf.alpha;
+    mesh.isPickable=false;
+  }
+  return total;
+}
+
 /** Filet de berge en géométrie réelle selon l'emprise hydraulique disponible.
  * Largeur des rives / eau : attribuée à la source data/4e/infrastructure.json.
  */
