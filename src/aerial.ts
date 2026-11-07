@@ -21,7 +21,6 @@ type Quality='low'|'medium'|'high';
  */
 export class AerialLayer {
   private data:OrthophotoManifest|null=null;
-  private overview:Mesh|null=null;
   private active=new Map<string,Mesh>();
   private quality:Quality='medium';
   private lastX=Number.POSITIVE_INFINITY;
@@ -37,7 +36,7 @@ export class AerialLayer {
        !Array.isArray(data.tiles)||data.tiles.length<25||
        !Array.isArray(data.overview?.bounds))return false;
     this.data=data;
-    this.overview=this.makePlane('orthophoto-generale',data.overview.bounds,
+    this.makePlane('orthophoto-generale',data.overview.bounds,
       base+data.overview.file,.025);
     this.update(0,0,true);
     const status=document.getElementById('aerial-status');
