@@ -9,7 +9,7 @@
 </head>
 <body>
 <canvas id="scene" aria-label="Vue 3D tactile de Paris"></canvas>
-<header><strong>PARIS</strong><span>PROTOTYPE 0.10 | 4e ARRONDISSEMENT</span></header>
+<header><strong>PARIS</strong><span>PROTOTYPE 0.11 | 4e ARRONDISSEMENT</span></header>
 <aside id="time-panel" aria-label="Temps de simulation">
   <div id="game-clock" aria-live="off">Chargement de l'heure…</div>
   <div class="time-controls">
@@ -17,16 +17,17 @@
     <button id="time-normal" class="time-btn" aria-label="Vitesse normale" title="1 seconde réelle = 1 minute">×1</button>
     <button id="time-ten" class="time-btn" aria-label="Dix fois plus vite" title="×10">×10</button>
     <button id="time-sixty" class="time-btn" aria-label="Soixante fois plus vite" title="×60">×60</button>
-    <span id="moon-phase">Lune …</span>
+    
   </div>
 </aside>
-<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt pour déplacer, deux doigts pour tourner, zoomer et incliner. Rue : flèches pour avancer, un doigt pour regarder. Toucher un bâtiment pour ses informations.</p>
+<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt déplace la maquette. Le bouton 360° transforme le glissement en rotation libre. Deux doigts tournent, inclinent ou zooment. Rue : un doigt regarde partout, flèches pour marcher. Un appui bref sélectionne un immeuble.</p>
 <label class="precision-switch"><input type="checkbox" id="precision-mode"/> Mode précision, gestes plus lents (35 %)</label></details>
 <nav aria-label="Commandes de caméra">
 <button id="home" aria-label="Recentrer">⌂</button>
 <button id="plus" aria-label="Zoomer">+</button>
 <button id="minus" aria-label="Dézoomer">−</button>
 <button id="north" aria-label="Nord">N</button>
+<button id="orbit-view" aria-label="Activer le déplacement orbital à 360 degrés" aria-pressed="false">360°</button>
 <button id="street-view" aria-label="Basculer entre carte et vue proche de la rue" aria-pressed="false">Rue</button>
 <label>Qualité <select id="quality" aria-label="Qualité graphique"><option value="low">Basse</option><option value="medium" selected>Moyenne</option><option value="high">Haute</option></select></label>
 </nav>
@@ -55,13 +56,13 @@
       <span id="materials-status">Matériaux : lecture…</span>
       <span id="roof-status">Formes de toits : lecture…</span>
       <span id="volume-status">Volumes bâtis municipaux : lecture…</span>
-      <span id="urban">Chargement des rues...</span>
-      <span id="vegetation">Arbres : chargement...</span>
-      <span id="aerial-status">Photographies aériennes : chargement…</span>
+      <span id="urban">Voirie en cours de chargement…</span>
+      
+      
       <div class="credits">
         <a href="https://opendata.paris.fr/explore/dataset/volumesbatisparis/" target="_blank" rel="noopener">© Ville de Paris, volumes bâtis (ODbL)</a>
-        <a href="https://www.data.gouv.fr/datasets/bd-ortho-r" target="_blank" rel="noopener">© IGN BD ORTHO - Licence Ouverte 2.0</a>
-        <a href="https://opendata.paris.fr/explore/dataset/les-arbres/" target="_blank" rel="noopener">© Ville de Paris</a>
+        
+        
         <a id="roof-source-credits" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap (toits)</a>
         <a id="map-credits" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>
         <a href="https://geoservices.ign.fr/bdtopo" target="_blank" rel="noopener">© IGN</a>

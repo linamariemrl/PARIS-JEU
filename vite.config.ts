@@ -20,13 +20,9 @@ export default defineConfig({
     },
     workbox: {
       globPatterns: ['**/*.{js,css,html,json,svg,webmanifest}'],
-      runtimeCaching: [{
-        urlPattern: new RegExp("data/4e/aerial/.*[.]jpg$"),
-        handler: 'CacheFirst',
-        options: {cacheName:'ortho-4e-images',expiration:{maxEntries:85,maxAgeSeconds:60*60*24*30}}
-      }],
       maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
-      cleanupOutdatedCaches: true
+      cleanupOutdatedCaches: true,
+      globIgnores: ['**/data/4e/aerial/**']
     }
   })]
 });

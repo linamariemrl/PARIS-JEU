@@ -22,12 +22,12 @@ interface InfrastructureData {
 }
 type Kind = 'water' | 'bank' | 'sidewalk' | 'road' | 'foot' | 'square';
 const COLORS: Record<Kind, [number, number, number]> = {
-  water: [0.18, 0.42, 0.51],
-  bank: [0.68, 0.65, 0.59],
-  sidewalk: [0.67, 0.63, 0.56],
-  road: [0.29, 0.33, 0.37],
-  foot: [0.79, 0.74, 0.63],
-  square: [0.76, 0.70, 0.59],
+  water: [.81,.81,.81],
+  bank: [.85,.85,.85],
+  sidewalk: [.88,.88,.88],
+  road: [.71,.71,.71],
+  foot: [.84,.84,.84],
+  square: [.86,.86,.86],
 };
 const HEIGHTS: Record<Kind, number> = {
   water: 0.05, bank: 0.085, sidewalk: 0.10, road: 0.14,

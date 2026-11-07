@@ -1,235 +1,205 @@
 import {
-  Color3, Engine, Mesh, MeshBuilder, Scene, StandardMaterial
+  Color3, Color4, DirectionalLight, Engine, HemisphericLight,
+  Mesh, MeshBuilder, Scene, StandardMaterial, Vector3
 } from '@babylonjs/core';
-import { createMaterials, facadeCategory, getPickedBuilding, highlightBuilding } from './buildings';
+import { createMaterials, getPickedBuilding, highlightBuilding } from './buildings';
 import { MobileCamera } from './mobileCamera';
 import { loadInfrastructure } from './infrastructure';
 import { TileManager } from './tileManager';
-import { TreeLayer } from './trees';
-import { AerialLayer } from './aerial';
 import { GameClock, type TimeSpeed } from './gameClock';
-import { SkyAndSun } from './sky';
-import { installNightWindows } from './nightWindows';
-import { StreetLighting } from './streetLighting';
-import type { Building } from './types';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
 import { project } from './geo';
+import type { Building } from './types';
 import './style.css';
 
-function el<T extends HTMLElement>(id: string): T {
-  const element = document.getElementById(id);
-  if (!element) throw new Error('Élément manquant : ' + id);
-  return element as T;
+function el<T extends HTMLElement>(id:string):T{
+  const e=document.getElementById(id);
+  if(!e)throw new Error('Élément manquant : '+id);
+  return e as T;
 }
-const canvas = el<HTMLCanvasElement>('scene');
-const error = el<HTMLDivElement>('error');
-const state = el<HTMLElement>('state');
-const counter = el<HTMLElement>('count');
-const fps = el<HTMLElement>('fps');
-const vegetation = el<HTMLElement>('vegetation');
-const urban = el<HTMLElement>('urban');
+const canvas=el<HTMLCanvasElement>('scene');
+const error=el<HTMLDivElement>('error');
+const state=el<HTMLElement>('state');
+const counter=el<HTMLElement>('count');
+const fps=el<HTMLElement>('fps');
+const urban=el<HTMLElement>('urban');
 
-try {
-  const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: false }, true);
-  const scene = new Scene(engine);
-  scene.fogMode = Scene.FOGMODE_EXP2;
-  const sky = new SkyAndSun(scene);
-  const clock = new GameClock();
+try{
+  const engine=new Engine(canvas,true,{
+    preserveDrawingBuffer:false,stencil:false,antialias:false
+  },true);
+  const scene=new Scene(engine);
+  scene.fogMode=Scene.FOGMODE_NONE;
+  scene.clearColor=new Color4(.87,.87,.87,1);
+  const ambient=new HemisphericLight('éclairage-fixe',new Vector3(0,1,0),scene);
+  ambient.intensity=.92;
+  ambient.groundColor=new Color3(.45,.45,.45);
+  const directional=new DirectionalLight('lumière-fixe',
+    new Vector3(-.45,-1,-.28),scene);
+  directional.intensity=.60;
+  const clock=new GameClock();
 
-  const ground = MeshBuilder.CreateGround('sol', { width: 7000, height: 7000 }, scene);
-  const groundMat = new StandardMaterial('sol', scene);
-  groundMat.diffuseColor = new Color3(0.51, 0.52, 0.49);
-  groundMat.specularColor = Color3.Black();
-  ground.material = groundMat;
-  ground.isPickable = false;
+  const ground=MeshBuilder.CreateGround('sol-neutre',
+    {width:7200,height:7200},scene);
+  const mat=new StandardMaterial('sol-gris-clair',scene);
+  mat.diffuseColor=new Color3(.85,.85,.85);
+  mat.specularColor=Color3.Black();
+  mat.freeze();
+  ground.material=mat;ground.isPickable=false;
 
-  const camera = new MobileCamera(scene, canvas);
-  const material = createMaterials(scene);
-  const updateNightWindows = installNightWindows(scene, material);
-  const streetLighting = new StreetLighting(scene);
-  const trees = new TreeLayer(scene, message => { vegetation.textContent = message; });
-  const aerial = new AerialLayer(scene);
-  const manager = new TileManager(scene, material, (message, number) => {
-    state.textContent = message;
-    counter.textContent = number.toLocaleString('fr-FR') + ' bâtiments chargés';
+  const camera=new MobileCamera(scene,canvas);
+  const materials=createMaterials(scene);
+  const manager=new TileManager(scene,materials,(message,count)=>{
+    state.textContent=message;
+    counter.textContent=count.toLocaleString('fr-FR')+' bâtiments chargés';
   });
-  const selection: Mesh[] = [];
-  const clear = () => {
+  const selection:Mesh[]=[];
+  const clear=()=>{
     el('selection').classList.add('hidden');
-    selection.splice(0).forEach(m => m.dispose());
+    selection.splice(0).forEach(m=>m.dispose());
   };
-  const select = (building: Building) => {
+  const select=(b:Building)=>{
     clear();
-    selection.push(...highlightBuilding(scene, building));
+    selection.push(...highlightBuilding(scene,b));
     el('selection').classList.remove('hidden');
-    el('height').textContent = building.height.toLocaleString('fr-FR') + ' m' + (building.estimatedHeight ? ' (estimation)' : '');
-    el('usage').textContent = building.usage || 'Non renseigné';
-    const styles = { residential: 'habillage résidentiel stylisé', commercial: 'habillage commercial stylisé', religious: 'habillage religieux stylisé', neutral: 'habillage neutre stylisé' };
-    el('skin').textContent = building.wallCode ?
-      'habillage correspondant au matériau cadastral, détails illustratifs' :
-      styles[facadeCategory(building)];
-    el('wall-real').textContent = describeMaterial(building.wallCode,false);
-    el('roof-real').textContent = describeMaterial(building.roofCode,true);
-    el('floors-real').textContent = building.floors ?
-      building.floors.toLocaleString('fr-FR') + ' niveau(x) déclarés' :
-      'non renseigné';
-    const roofData=building.roofInfo;
-    const outer=building.polygons[0]?.[0]?.map(project)??[];
-    const profile=roofProfile(roofData,building.height,outer);
-    el('roof-form').textContent=roofData ?
-      roofShapeDescription(roofData.shape)+
-      (profile?.estimated ? ' (pente estimée)' : ' (pente documentée si disponible)') :
-      'forme non documentée';
-    el('volume-information').textContent=building.volumes ?
-      building.volumes.parts.length.toLocaleString('fr-FR')+
-      ' parties d’emprise mesurée (étagement indicatif)' :
-      'emprise IGN unique (subdivisions non validées)';
-    el('identifier').textContent = building.id;
-    el('caveat').textContent =
-      (building.estimatedHeight ? 'Hauteur indicative. ' : 'Emprise et hauteur IGN. ') +
-      'Matériaux de gros murs et de couverture issus des données fiscales lorsqu’ils sont connus ; ' +
-      'les fenêtres restent illustratives. ' +
-      (roofData ? 'Forme du toit OSM (© contributeurs OSM). ' :
-        'Forme du toit non renseignée. ') +
-      (building.volumes ?
-        'Contours des subdivisions : Ville de Paris (ODbL), hauteur intermédiaire estimée. ':
-        '')+
-      'Les dimensions non mesurées restent des approximations.';
+    el('height').textContent=b.height.toLocaleString('fr-FR')+' m'+
+      (b.estimatedHeight?' (estimée)':' (IGN)');
+    el('usage').textContent=b.usage||'Non renseigné';
+    el('skin').textContent='Maquette monochrome, aucun parement illustratif';
+    el('wall-real').textContent=describeMaterial(b.wallCode,false);
+    el('roof-real').textContent=describeMaterial(b.roofCode,true);
+    el('floors-real').textContent=b.floors?
+      b.floors.toLocaleString('fr-FR')+' niveau(x) déclarés':'non renseigné';
+    const roof=b.roofInfo;
+    const exterior=b.polygons[0]?.[0]?.map(project)??[];
+    const profile=roofProfile(roof,b.height,exterior);
+    el('roof-form').textContent=roof?
+      roofShapeDescription(roof.shape)+
+      (profile?.estimated?' (pente estimée)':' (pente documentée si disponible)'):
+      'forme non documentée : toit de secours plat';
+    el('volume-information').textContent=b.volumes?
+      b.volumes.parts.length.toLocaleString('fr-FR')+
+      ' subdivisions municipales (hauteurs internes estimées)':
+      'emprise IGN (sans subdivision validée)';
+    el('identifier').textContent=b.id;
+    el('caveat').textContent=
+      'Les contours et hauteurs proviennent des sources indiquées dans Détails. '+
+      'Les matériaux fiscaux ne sont pas représentés. '+
+      (b.volumes?'Subdivisions géométriques Ville de Paris, altitudes internes estimées. ':'')+
+      (roof?'Type de toiture OSM, pente non toujours mesurée. ':
+        'Forme de toiture inconnue. ')+
+      'Aucun volume LiDAR HD n’est encore intégré.';
   };
-  camera.onTap = (x, y) => {
-    const hit = scene.pick(x, y, mesh => mesh.isPickable && Boolean(mesh.metadata));
-    const found = hit?.pickedMesh && hit.faceId >= 0 ?
-      getPickedBuilding(hit.pickedMesh as Mesh, hit.faceId) : null;
-    if (found) select(found); else clear();
+  camera.onTap=(x,y)=>{
+    const hit=scene.pick(x,y,mesh=>mesh.isPickable&&Boolean(mesh.metadata));
+    const selected=hit?.pickedMesh&&hit.faceId>=0?
+      getPickedBuilding(hit.pickedMesh as Mesh,hit.faceId):null;
+    if(selected)select(selected);else clear();
   };
-  el('close').addEventListener('click', clear);
-  el('home').addEventListener('click', () => camera.recenter());
-  el('north').addEventListener('click', () => camera.north());
-  el('plus').addEventListener('click', () => camera.zoom(0.76));
-  el('minus').addEventListener('click', () => camera.zoom(1.3));
-  const fineMode=el<HTMLInputElement>('precision-mode');
-  fineMode.addEventListener('change',()=>{
-    camera.setPrecisionMode(fineMode.checked);
+  el('close').addEventListener('click',clear);
+  el('home').addEventListener('click',()=>camera.recenter());
+  el('north').addEventListener('click',()=>camera.north());
+  el('plus').addEventListener('click',()=>camera.zoom(.78));
+  el('minus').addEventListener('click',()=>camera.zoom(1.28));
+  const precision=el<HTMLInputElement>('precision-mode');
+  precision.addEventListener('change',()=>camera.setPrecisionMode(precision.checked));
+  camera.setPrecisionMode(precision.checked);
+  const orbit=el<HTMLButtonElement>('orbit-view');
+  orbit.addEventListener('click',()=>{
+    camera.setOrbitMode(!camera.isOrbitMode);
+    orbit.setAttribute('aria-pressed',String(camera.isOrbitMode));
+    orbit.textContent=camera.isOrbitMode?'Pan':'360°';
   });
-  camera.setPrecisionMode(fineMode.checked);
-  const toggleStreet=el<HTMLButtonElement>('street-view');
+  const street=el<HTMLButtonElement>('street-view');
   const pad=el<HTMLElement>('movement-pad');
-  toggleStreet.addEventListener('click',()=>{
+  street.addEventListener('click',()=>{
     const active=!camera.isStreetMode;
     camera.setStreetMode(active);
-    toggleStreet.textContent=active?'Carte':'Rue';
-    toggleStreet.setAttribute('aria-pressed',String(active));
+    street.textContent=active?'Carte':'Rue';
+    street.setAttribute('aria-pressed',String(active));
     pad.classList.toggle('hidden',!active);
+    orbit.disabled=active;
   });
   const held=new Set<string>();
   for(const button of Array.from(pad.querySelectorAll<HTMLButtonElement>('[data-move]'))){
     const command=button.dataset.move;
     if(!command)continue;
-    button.addEventListener('pointerdown',(e:PointerEvent)=>{
-      e.preventDefault();
+    button.addEventListener('pointerdown',(event:PointerEvent)=>{
+      event.preventDefault();
       held.add(command);
-      button.setPointerCapture(e.pointerId);
+      button.setPointerCapture(event.pointerId);
     });
-    for(const type of ['pointerup','pointercancel','lostpointercapture']){
-      button.addEventListener(type,()=>held.delete(command));
+    for(const event of ['pointerup','pointercancel','lostpointercapture']){
+      button.addEventListener(event,()=>held.delete(command));
     }
   }
-  let previousMoveTime=performance.now();
-  const quality = el<HTMLSelectElement>('quality');
-  quality.addEventListener('change', () => {
-    const level = quality.value as 'low' | 'medium' | 'high';
+  const quality=el<HTMLSelectElement>('quality');
+  quality.addEventListener('change',()=>{
+    const level=quality.value as 'low'|'medium'|'high';
     manager.setQuality(level);
-    trees.setQuality(level);
-    streetLighting.setQuality(level);
-    aerial.setQuality(level);
-    engine.setHardwareScalingLevel(level === 'low' ? 1.65 : level === 'medium' ? 1.30 : 1);
+    engine.setHardwareScalingLevel(level==='low'?1.7:level==='medium'?1.3:1);
+    engine.resize();
   });
   quality.dispatchEvent(new Event('change'));
-  const speedButtons: ReadonlyArray<{id:string;rate:TimeSpeed}> = [
-    {id:'time-pause',rate:0}, {id:'time-normal',rate:1},
-    {id:'time-ten',rate:10}, {id:'time-sixty',rate:60}
+
+  const speedButtons:ReadonlyArray<{id:string;rate:TimeSpeed}>=[
+    {id:'time-pause',rate:0},{id:'time-normal',rate:1},
+    {id:'time-ten',rate:10},{id:'time-sixty',rate:60}
   ];
-  const selectRate = (rate:TimeSpeed) => {
+  const selectRate=(rate:TimeSpeed)=>{
     clock.setRate(rate);
-    for(const item of speedButtons) {
-      const button = el<HTMLButtonElement>(item.id);
-      button.setAttribute('aria-pressed',String(item.rate===rate));
-    }
+    for(const item of speedButtons)
+      el<HTMLButtonElement>(item.id).setAttribute('aria-pressed',
+        String(item.rate===rate));
   };
-  for(const item of speedButtons) {
+  for(const item of speedButtons)
     el<HTMLButtonElement>(item.id).addEventListener('click',()=>selectRate(item.rate));
-  }
   selectRate(1);
-  window.addEventListener('resize', () => engine.resize());
-  let lastFpsUpdate = 0;
-  let lastEnvironmentUpdate = -1000;
-  engine.runRenderLoop(() => {
-    const now = performance.now();
-    const dt=Math.min(.06,(now-previousMoveTime)/1000);
-    previousMoveTime=now;
+  window.addEventListener('resize',()=>engine.resize());
+  let lastFps=0,lastClock=0,previous=performance.now();
+  engine.runRenderLoop(()=>{
+    const now=performance.now();
+    const dt=Math.min(.05,Math.max(0,(now-previous)/1000));
+    previous=now;
+    camera.step(dt);
     if(camera.isStreetMode&&held.size){
       const forward=(held.has('forward')?1:0)-(held.has('back')?1:0);
-      const lateral=(held.has('right')?1:0)-(held.has('left')?1:0);
-      const len=Math.max(1,Math.hypot(forward,lateral));
-      const speed=camera.isPrecisionMode?4.5:13;
-      camera.moveStreet(forward/len*speed*dt,lateral/len*speed*dt);
+      const side=(held.has('right')?1:0)-(held.has('left')?1:0);
+      const length=Math.max(1,Math.hypot(forward,side));
+      const speed=camera.isPrecisionMode?4:12;
+      camera.moveStreet(forward/length*speed*dt,side/length*speed*dt);
     }
     clock.tick(now);
-    if (now - lastEnvironmentUpdate >= 450) {
-      const light = sky.update(clock.current);
-      streetLighting.updateBrightness(light.nightFactor);
-      updateNightWindows(light.nightFactor,clock.localHour());
-      el('game-clock').textContent = clock.label();
-      el('moon-phase').textContent = 'Lune ' + Math.round(light.moonFraction*100) + ' %';
-      lastEnvironmentUpdate = now;
+    if(now-lastClock>=350){
+      el('game-clock').textContent=clock.label();
+      lastClock=now;
     }
-    sky.followCamera();
+    manager.update(camera.camera.target.x,camera.camera.target.z);
     scene.render();
-    manager.update(camera.camera.target.x, camera.camera.target.z);
-    trees.update(camera.camera.target.x, camera.camera.target.z);
-    streetLighting.updatePosition(camera.camera.target.x, camera.camera.target.z);
-    aerial.update(camera.camera.target.x, camera.camera.target.z);
-    if (now - lastFpsUpdate > 1000) {
-      fps.textContent = Math.round(engine.getFps()) + ' FPS';
-      lastFpsUpdate = now;
+    if(now-lastFps>=1000){
+      fps.textContent=Math.round(engine.getFps())+' FPS';
+      lastFps=now;
     }
   });
-  // Les objets schématiques ne doivent PAS masquer les photos réelles.
-  // Repli vérifiable : si l'IGN est indisponible, l'ancienne carte reste utilisable.
-  void aerial.init().then(ready=>{
-    if(ready){
-      urban.textContent='Fond photographique IGN BD ORTHO';
-      vegetation.textContent='Végétation visible sur photo aérienne';
-    }else{
-      urban.textContent='Photos IGN absentes, fond schématique de secours';
-      void streetLighting.init().catch(console.warn);
-      void trees.init().catch(e=>{
-        console.warn('Arbres Paris Data',e);
-        vegetation.textContent='Arbres indisponibles';
-      });
-      void loadInfrastructure(scene).then(message=>{
-        urban.textContent=message;
-      }).catch(e=>{
-        console.warn('Voirie OpenStreetMap',e);
-        urban.textContent='Voirie indisponible';
-      });
-    }
+
+  // Géométrie SIG neutre, sans photographie aérienne, textures de rue,
+  // végétation décorative, éclairage temporel ou variation jour/nuit.
+  void loadInfrastructure(scene).then(message=>{
+    urban.textContent=message+' (maquette monochrome)';
   }).catch(e=>{
-    console.warn('Fond photographique indisponible',e);
-    urban.textContent='Photographies IGN indisponibles';
-    void loadInfrastructure(scene).catch(console.warn);
-    void trees.init().catch(console.warn);
+    console.warn('Réseau des rues non disponible',e);
+    urban.textContent='Voirie non disponible';
   });
-  void manager.init().catch((e: unknown) => {
-    error.textContent = e instanceof Error ? e.message : 'Données cartographiques non disponibles.';
+  void manager.init().catch((e:unknown)=>{
+    error.textContent=e instanceof Error?e.message:'Données IGN non disponibles';
     error.classList.remove('hidden');
-    state.textContent = 'Données indisponibles';
+    state.textContent='Données indisponibles';
   });
-  if ('serviceWorker' in navigator) {
-    void import('virtual:pwa-register').then(({registerSW}) => registerSW({immediate:true})).catch(console.warn);
-  }
-} catch (e) {
-  error.textContent = e instanceof Error ? e.message : 'WebGL non pris en charge par cet appareil.';
+  if('serviceWorker' in navigator)
+    void import('virtual:pwa-register').then(({registerSW})=>
+      registerSW({immediate:true})).catch(console.warn);
+}catch(e){
+  error.textContent=e instanceof Error?e.message:'WebGL non disponible';
   error.classList.remove('hidden');
 }

@@ -49,7 +49,7 @@ function geometry(scene: Scene, name: string, batch: Batch, color: Color3): Mesh
   data.applyToMesh(mesh);
   const mat = new StandardMaterial(name + '-mat', scene);
   mat.diffuseColor = color;
-  mat.specularColor = new Color3(0.015, 0.015, 0.015);
+  mat.specularColor = Color3.Black();
   mat.backFaceCulling = false;
   mesh.material = mat;
   mesh.isPickable = false;
@@ -131,7 +131,7 @@ export function addBridges(scene: Scene, polygons: Layer): number {
       if (parallel >= 0.83) addBeam(parapets, a, b);
     }
   }
-  geometry(scene, 'tabliers-ponts-3D', deck, new Color3(0.48, 0.48, 0.47));
-  geometry(scene, 'parapets-ponts-3D', parapets, new Color3(0.70, 0.68, 0.64));
+  geometry(scene, 'tabliers-ponts-3D', deck, new Color3(0.75, 0.75, 0.75));
+  geometry(scene, 'parapets-ponts-3D', parapets, new Color3(0.88, 0.88, 0.88));
   return count;
 }
