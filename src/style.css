@@ -32,3 +32,38 @@ button.time-btn[aria-pressed="true"]{background:#58758c;border-color:#cfdfeb}
 /* Matériaux 0.6 : libellé discret, la sélection explicite les incertitudes. */
 footer #materials-status{font-size:10px;color:#d5dde1}
 #selection{max-height:min(68dvh,450px);overflow-y:auto}
+
+/* Affichage compact sur Android. Le diagnostic reste accessible sans
+   consommer en permanence plusieurs rangées du paysage. */
+#map-hud{
+  position:fixed;left:0;right:0;bottom:0;min-height:43px;
+  display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-around;
+  gap:12px;padding:8px 11px calc(env(safe-area-inset-bottom) + 8px);
+  font-size:12px;background:#0b1827e8;text-align:center;
+}
+#map-hud #count{font-size:12px;white-space:nowrap;font-weight:600}
+#map-hud #fps{font-size:12px;white-space:nowrap;font-variant-numeric:tabular-nums}
+#technical-details{position:relative;min-width:57px;text-align:right}
+#technical-details summary{
+  font-size:11px;color:#d2e7ef;cursor:pointer;list-style:none;
+  border:1px solid #ffffff42;border-radius:8px;padding:6px 8px;
+  background:#142c42;
+}
+#technical-details summary::-webkit-details-marker{display:none}
+#technical-details summary::after{content:" ▴"}
+#technical-details[open] summary::after{content:" ▾"}
+#technical-details .technical-body{
+  position:absolute;bottom:calc(100% + 8px);right:0;
+  width:min(340px,calc(100vw - 20px));max-height:45dvh;overflow-y:auto;
+  display:flex;flex-direction:column;align-items:flex-start;gap:9px;
+  padding:13px 15px;border:1px solid #ffffff35;border-radius:13px;
+  background:#091c2cf5;box-shadow:0 6px 25px #0008;
+  text-align:left;font-size:12px;line-height:1.35;
+}
+#technical-details .credits{display:flex;flex-wrap:wrap;gap:8px}
+#technical-details .credits a{font-size:10px}
+#selection{bottom:58px}
+@media(max-width:365px){
+  #map-hud{gap:6px;padding:7px 6px}
+  #map-hud #count,#map-hud #fps{font-size:10px}
+}

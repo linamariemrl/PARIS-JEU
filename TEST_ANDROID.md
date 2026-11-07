@@ -89,3 +89,11 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 7. Dans le 4e, 59 formes de toit ont été raccordées aux bâtiments IGN. Certaines sont très localisées et ne seront pas nécessairement visibles sur la première vue.
 8. Observer la fluidité en qualité Moyenne puis Haute, au jour et à la nuit, avec une cible d'au moins 30 FPS.
 9. Envoyer des captures de près et de loin avec l'indicateur FPS si des erreurs de façades, de toitures ou de sélection apparaissent.
+
+## Correctif interface après les captures du 7 novembre
+
+1. Vérifier que le bas de l'écran ne conserve plus qu'une seule ligne : nombre de bâtiments, FPS et bouton « Détails ».
+2. Appuyer sur « Détails » pour retrouver l'ensemble des informations techniques et les crédits de sources, puis refermer.
+3. Se placer à l'angle d'une rue, caméra inclinée. Une étiquette de rue masquée par un bâtiment doit disparaître au lieu de flotter sur sa façade.
+4. Zoomer près d'une voie libre : son nom reste petit et discret, collé à sa position cartographique.
+5. Compter 2 696 bâtiments quelle que soit la position de la caméra. L'objectif de fluidité reste au moins 30 FPS sur Android ; la visée observée était 58 à 60 FPS avant cette correction.

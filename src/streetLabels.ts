@@ -63,7 +63,7 @@ export class StreetLabels {
 
   update(cameraRadius: number, targetX: number, targetZ: number): void {
     const now = performance.now();
-    if (now - this.lastFrame < 170) return;
+    if (now - this.lastFrame < 240) return;
     this.lastFrame = now;
 
     const width = this.canvas.clientWidth;
@@ -143,8 +143,24 @@ export class StreetLabels {
         left:x-halfW, right:x+halfW, top:y-halfH, bottom:y+halfH
       };
       if (rect.left < 8 || rect.right > width-84 ||
-          rect.top < 152 || rect.bottom > height-73 ||
+          rect.top < 152 || rect.bottom > height-55 ||
           collides(rect,occupied)) continue;
+
+      // Une étiquette projetée en 2D ne doit pas traverser la façade
+      // d'un bâtiment devant elle. Un rayon est testé uniquement sur
+      // les rares étiquettes effectivement visibles et non superposées.
+      // scene.pick attend les coordonnées CSS, comme la sélection tactile.
+      const anchor = new Vector3(street.x, 0.18, street.z);
+      const hit = this.scene.pick(
+        x, y,
+        mesh => mesh.isPickable && Boolean(mesh.metadata),
+        false,
+        camera
+      );
+      if (hit?.hit && hit.pickedMesh &&
+          hit.distance + 0.75 < Vector3.Distance(camera.position, anchor)) {
+        continue;
+      }
 
       ctx.save();
       ctx.translate(x,y);

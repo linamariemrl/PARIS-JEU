@@ -457,3 +457,12 @@ Le but est de reproduire la forme et le parement visuellement exacts lorsque des
 
 Le programme ne crée pas un matériau unique pour chaque immeuble. Les textures sont mutualisées par classe physique. Les bâtiments restent sélectionnables dans le même référentiel IGN. Les 59 formes de toiture ajoutent des triangles uniquement aux bâtiments concernés. L'objectif de 30 FPS minimum doit être validé par observation sur l'Android du joueur.
 
+
+## 23. Vérification visuelle sur Android et ergonomie légère
+
+Les captures du 7 novembre 2026 indiquent 2 696 bâtiments conservés à l'écran, 58 à 60 FPS et le chargement correct des matériaux et formes de toit de la version 0.6. Il s'agit de trois observations à l'instant des captures et non d'un benchmark garanti.
+
+Les diagnostics détaillés sont conservés dans un panneau « Détails » replié par défaut. Le pied d'écran montre seulement le nombre de bâtiments et les FPS. Les crédits restent accessibles et identifiés dans les détails.
+
+Les noms des rues restent petits (9 pixels), à faible opacité et proches de leur emprise réelle. Avant de dessiner une étiquette, un test de profondeur est réalisé contre les maillages des bâtiments. Une étiquette occultée par une façade ou une toiture ne doit pas être placée devant le bâtiment. Le nombre de tests est plafonné par le désencombrement et par un intervalle de rafraîchissement d'environ 240 ms. Si la fluidité mobile chute, réduire d'abord la fréquence de vérification, jamais le nombre de bâtiments conservés.
+

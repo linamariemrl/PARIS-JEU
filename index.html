@@ -35,7 +35,27 @@
 <p>Forme de toiture : <span id="roof-form"></span></p>
 <p>Étages : <span id="floors-real"></span></p><p>Identifiant IGN : <span id="identifier"></span></p><small id="caveat"></small></aside>
 <div id="error" class="hidden" role="alert"></div>
-<footer><span id="state">Chargement de la carte...</span><span id="count">0 bâtiment</span><span id="materials-status">Matériaux : lecture…</span><span id="roof-status">Formes de toits : lecture…</span><span id="urban">Chargement des rues...</span><span id="vegetation">Arbres : chargement...</span><span id="streets">Noms de rues : chargement...</span><span id="fps">FPS : ...</span><a href="https://opendata.paris.fr/explore/dataset/les-arbres/" target="_blank" rel="noopener">© Ville de Paris</a><a id="roof-source-credits" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap (toits)</a><a id="map-credits" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a></footer>
+<footer id="map-hud">
+  <span id="count">0 bâtiment</span>
+  <span id="fps">FPS : ...</span>
+  <details id="technical-details">
+    <summary aria-label="Afficher les informations techniques">Détails</summary>
+    <div class="technical-body">
+      <span id="state">Chargement de la carte...</span>
+      <span id="materials-status">Matériaux : lecture…</span>
+      <span id="roof-status">Formes de toits : lecture…</span>
+      <span id="urban">Chargement des rues...</span>
+      <span id="vegetation">Arbres : chargement...</span>
+      <span id="streets">Noms de rues : chargement...</span>
+      <div class="credits">
+        <a href="https://opendata.paris.fr/explore/dataset/les-arbres/" target="_blank" rel="noopener">© Ville de Paris</a>
+        <a id="roof-source-credits" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap (toits)</a>
+        <a id="map-credits" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap</a>
+        <a href="https://geoservices.ign.fr/bdtopo" target="_blank" rel="noopener">© IGN</a>
+      </div>
+    </div>
+  </details>
+</footer>
 <script type="module" src="/src/main.ts"></script>
 </body>
 </html>
