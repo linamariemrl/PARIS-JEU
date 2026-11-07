@@ -1,3 +1,4 @@
+import type { RoofInfo } from './roofGeometry';
 export type Point = [number, number];
 export interface Building {
   id: string;
@@ -7,6 +8,7 @@ export interface Building {
   polygons: Point[][][];
   wallCode?: string;
   roofCode?: string;
+  roofInfo?: RoofInfo;
   floors?: number;
 }
 export interface TileInfo { id: string; ix: number; iz: number; count: number; }

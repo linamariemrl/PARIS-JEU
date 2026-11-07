@@ -5,11 +5,12 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "python scripts/generate_icons.py && tsc --noEmit && npm run test:astronomy && npm run test:street-labels && npm run test:material-catalog && vite build && python scripts/check_site_size.py dist",
+    "build": "python scripts/generate_icons.py && tsc --noEmit && npm run test:astronomy && npm run test:street-labels && npm run test:material-catalog && npm run test:roof-geometry && vite build && python scripts/check_site_size.py dist",
     "preview": "vite preview --host 0.0.0.0",
     "test:astronomy": "node --experimental-strip-types scripts/check_astronomy.mjs",
     "test:street-labels": "node --experimental-strip-types scripts/check_street_labels.mjs",
-    "test:material-catalog": "node --experimental-strip-types scripts/check_material_catalog.mjs"
+    "test:material-catalog": "node --experimental-strip-types scripts/check_material_catalog.mjs",
+    "test:roof-geometry": "node --experimental-strip-types scripts/check_roof_geometry.mjs"
   },
   "dependencies": {
     "@babylonjs/core": "^8.0.0",

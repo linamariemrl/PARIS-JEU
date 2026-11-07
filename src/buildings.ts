@@ -3,6 +3,7 @@ import earcut from 'earcut';
 import { createFacadeTextures, type FacadeCategory, type SurfaceCategory } from './facadeTexture';
 import { WALL_SURFACES, ROOF_SURFACES, surfaceForCode } from './materialCatalog';
 import { project } from './geo';
+import { roofProfile } from './roofGeometry';
 import type { Building, Point, TileFile } from './types';
 
 type XYZ = [number, number, number];
@@ -63,6 +64,8 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
   for (const polygon of b.polygons) {
     const rings=polygon.map(projected).filter(x=>x.length>=3);
     if (!rings.length)continue;
+    const profile=roofProfile(b.roofInfo,height,rings[0]);
+    const roofY=(p:{x:number;z:number})=>profile?.heightAt(p)??height;
     const points:{x:number;z:number}[]=[];
     const holes:number[]=[];
     for(let r=0;r<rings.length;r++) {
@@ -74,10 +77,9 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
       for(let j=0;j<ring.length;j++) {
         const p=ring[j],q=ring[(j+1)%ring.length];
         const a:XYZ=[p.x,0,p.z], bb:XYZ=[q.x,0,q.z];
-        const c:XYZ=[q.x,height,q.z],d:XYZ=[p.x,height,p.z];
+        const c:XYZ=[q.x,roofY(q),q.z],d:XYZ=[p.x,roofY(p),p.z];
         const u=Math.hypot(q.x-p.x,q.z-p.z)/6;
-        const v=height/3.0;
-        const uv0:UV=[0,0],uv1:UV=[u,0],uv2:UV=[u,v],uv3:UV=[0,v];
+        const uv0:UV=[0,0],uv1:UV=[u,0],uv2:UV=[u,c[1]/3],uv3:UV=[0,d[1]/3];
         tri(walls,a,bb,c,wallColor,index,[uv0,uv1,uv2]);
         tri(walls,a,c,d,wallColor,index,[uv0,uv2,uv3]);
       }
@@ -86,10 +88,22 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
     const t=earcut(flat,holes,2);
     for(let k=0;k<t.length;k+=3) {
       const a=points[t[k]],bb=points[t[k+1]],c=points[t[k+2]];
-      // Les toits restent à l'altitude IGN ; leur pente n'est pas inventée.
-      tri(roofs,[a.x,height,a.z],[bb.x,height,bb.z],[c.x,height,c.z],
-          ROOF,index,
+      // Toiture : forme OSM documentée, pente exacte seulement si roof:height
+      // est renseigné. Le sommet ne dépasse jamais la hauteur totale IGN.
+      const pa:[number,number,number]=[a.x,roofY(a),a.z];
+      const pb:[number,number,number]=[bb.x,roofY(bb),bb.z];
+      const pc:[number,number,number]=[c.x,roofY(c),c.z];
+      if(profile && profile.rise>0.05){
+        const center={x:(a.x+bb.x+c.x)/3,z:(a.z+bb.z+c.z)/3};
+        const pm:[number,number,number]=[center.x,roofY(center),center.z];
+        const uv=(v:[number,number,number]):UV=>[v[0]/3,v[2]/3];
+        tri(roofs,pa,pb,pm,ROOF,index,[uv(pa),uv(pb),uv(pm)]);
+        tri(roofs,pb,pc,pm,ROOF,index,[uv(pb),uv(pc),uv(pm)]);
+        tri(roofs,pc,pa,pm,ROOF,index,[uv(pc),uv(pa),uv(pm)]);
+      }else{
+        tri(roofs,pa,pb,pc,ROOF,index,
           [[a.x/3,a.z/3],[bb.x/3,bb.z/3],[c.x/3,c.z/3]]);
+      }
     }
   }
 }

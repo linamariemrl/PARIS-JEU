@@ -13,6 +13,8 @@ import { installNightWindows } from './nightWindows';
 import { StreetLighting } from './streetLighting';
 import type { Building } from './types';
 import { describeMaterial } from './materialCatalog';
+import { roofProfile, roofShapeDescription } from './roofGeometry';
+import { project } from './geo';
 import './style.css';
 
 function el<T extends HTMLElement>(id: string): T {
@@ -72,11 +74,21 @@ try {
     el('floors-real').textContent = building.floors ?
       building.floors.toLocaleString('fr-FR') + ' niveau(x) déclarés' :
       'non renseigné';
+    const roofData=building.roofInfo;
+    const outer=building.polygons[0]?.[0]?.map(project)??[];
+    const profile=roofProfile(roofData,building.height,outer);
+    el('roof-form').textContent=roofData ?
+      roofShapeDescription(roofData.shape)+
+      (profile?.estimated ? ' (pente estimée)' : ' (pente documentée si disponible)') :
+      'forme non documentée';
     el('identifier').textContent = building.id;
     el('caveat').textContent =
       (building.estimatedHeight ? 'Hauteur indicative. ' : 'Emprise et hauteur IGN. ') +
       'Matériaux de gros murs et de couverture issus des données fiscales lorsqu’ils sont connus ; ' +
-      'le parement visible, la pente du toit et les fenêtres sont encore illustratifs.';
+      'les fenêtres restent illustratives. ' +
+      (roofData ? 'Forme du toit OSM (© contributeurs OSM). ' :
+        'Forme du toit non renseignée. ') +
+      'Les dimensions non mesurées restent des approximations.';
   };
   camera.onTap = (x, y) => {
     const hit = scene.pick(x, y, mesh => mesh.isPickable && Boolean(mesh.metadata));

@@ -1,10 +1,16 @@
 import type { Mesh, Scene } from '@babylonjs/core';
 import { createTile } from './buildings';
 import type { Manifest, TileFile, TileInfo } from './types';
+import type { RoofInfo } from './roofGeometry';
 
 const root = import.meta.env.BASE_URL + 'data/4e/';
 interface Loaded { meshes: Mesh[]; count: number; }
 interface BuildingMaterialRecord {wall?:string;roof?:string;floors?:number;}
+interface RoofOverlay {
+  schema:number;
+  count:number;
+  byId:Record<string,RoofInfo>;
+}
 interface MaterialOverlay {
   schema:number;
   totalBuildings:number;
@@ -27,6 +33,7 @@ export class TileManager {
   private failed = new Set<string>();
   private ready = false;
   private overlay:Record<string,BuildingMaterialRecord>={};
+  private roofOverlay:Record<string,RoofInfo>={};
 
   constructor(
     private scene: Scene,
@@ -59,6 +66,19 @@ export class TileManager {
     } catch(e) {
       console.warn('Attributs cadastraux optionnels non disponibles',e);
     }
+    try {
+      const response=await fetch(root+'roof-shapes.json');
+      if(response.ok){
+        const data=await response.json() as RoofOverlay;
+        if(data.schema===1&&data.byId&&
+           typeof data.byId==='object'&&data.count<=manifest.buildings){
+          this.roofOverlay=data.byId;
+          const status=document.getElementById('roof-status');
+          if(status)status.textContent=data.count.toLocaleString('fr-FR')+
+            ' formes de toits documentées OSM';
+        }
+      }
+    }catch(e){console.warn('Formes de toits libres indisponibles',e);}
     // Jusqu'à trois téléchargements simultanés sans saturation du téléphone.
     const queue = manifest.tiles.slice();
     const worker = async () => {
@@ -91,6 +111,10 @@ export class TileManager {
         if(documented.wall)building.wallCode=documented.wall;
         if(documented.roof)building.roofCode=documented.roof;
         if(documented.floors)building.floors=documented.floors;
+      }
+      for(const building of data.buildings){
+        const roof=this.roofOverlay[building.id];
+        if(roof)building.roofInfo=roof;
       }
       this.active.set(tile.id, {
         meshes: createTile(this.scene, data, this.materials),
