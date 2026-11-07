@@ -6,6 +6,7 @@ import { createMaterials, getPickedBuilding, highlightBuilding } from './buildin
 import { MobileCamera } from './mobileCamera';
 import { loadInfrastructure } from './infrastructure';
 import { TileManager } from './tileManager';
+import { TreeLayer } from './trees';
 import type { Building } from './types';
 import './style.css';
 
@@ -19,6 +20,7 @@ const error = el<HTMLDivElement>('error');
 const state = el<HTMLElement>('state');
 const counter = el<HTMLElement>('count');
 const fps = el<HTMLElement>('fps');
+const vegetation = el<HTMLElement>('vegetation');
 const urban = el<HTMLElement>('urban');
 
 try {
@@ -40,6 +42,7 @@ try {
 
   const camera = new MobileCamera(scene, canvas);
   const material = createMaterials(scene);
+  const trees = new TreeLayer(scene, message => { vegetation.textContent = message; });
   const manager = new TileManager(scene, material, (message, number) => {
     state.textContent = message;
     counter.textContent = number.toLocaleString('fr-FR') + ' bâtiments chargés';
@@ -74,6 +77,7 @@ try {
   quality.addEventListener('change', () => {
     const level = quality.value as 'low' | 'medium' | 'high';
     manager.setQuality(level);
+    trees.setQuality(level);
     engine.setHardwareScalingLevel(level === 'low' ? 1.65 : level === 'medium' ? 1.30 : 1);
   });
   quality.dispatchEvent(new Event('change'));
@@ -82,11 +86,16 @@ try {
   engine.runRenderLoop(() => {
     scene.render();
     manager.update(camera.camera.target.x, camera.camera.target.z);
+    trees.update(camera.camera.target.x, camera.camera.target.z);
     const now = performance.now();
     if (now - lastFpsUpdate > 1000) {
       fps.textContent = Math.round(engine.getFps()) + ' FPS';
       lastFpsUpdate = now;
     }
+  });
+  void trees.init().catch((e: unknown) => {
+    console.warn('Arbres Paris Data', e);
+    vegetation.textContent = 'Arbres indisponibles';
   });
   void loadInfrastructure(scene).then((message) => {
     urban.textContent = message;
