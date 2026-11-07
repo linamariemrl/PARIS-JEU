@@ -59,7 +59,7 @@ export function facadeCategory(building:Building): FacadeCategory {
 }
 function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
   const height=Math.min(220,Math.max(2,b.height));
-  const wallColor=WALLS[hash(b.id)%WALLS.length];
+  const wallColor:RGB = b.wallCode ? [1,1,1] : WALLS[hash(b.id)%WALLS.length];
   for (const polygon of b.polygons) {
     const rings=polygon.map(projected).filter(x=>x.length>=3);
     if (!rings.length)continue;
