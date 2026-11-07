@@ -22,9 +22,9 @@ class MetroOverviewTests(unittest.TestCase):
             ]]],
         }
         encoded = record(building, 1, 1, 800)
-        self.assertEqual(len(encoded), 10)
-        x, z, width, depth, height = struct.unpack("<hhHHH", encoded)
-        self.assertEqual((x, z, width, depth, height), (40, 24, 80, 48, 70))
+        self.assertEqual(len(encoded), 12)
+        x, z, width, depth, height, angle = struct.unpack("<hhHHHh", encoded)
+        self.assertEqual((x, z, width, depth, height, angle), (40, 24, 80, 48, 70, 0))
 
     def test_no_silent_clipping_of_invalid_coordinates(self):
         bad = {
@@ -43,13 +43,13 @@ class MetroOverviewTests(unittest.TestCase):
         index = json.loads(name.read_text(encoding="utf-8"))
         source = json.loads((SOURCE / "manifest.json").read_text(encoding="utf-8"))
         self.assertEqual(index["totalBuildings"], source["totalBuildings"])
-        self.assertEqual(index["geometry"], "bbox-approximation")
+        self.assertEqual(index["geometry"], "oriented-box-approximation")
         self.assertEqual(index["quantizationMeters"], 0.25)
         self.assertEqual(sum(group["count"] for group in index["groups"]),
                          source["totalBuildings"])
         for group in index["groups"]:
             payload = TARGET / (group["id"] + ".bin")
-            self.assertEqual(payload.stat().st_size, group["count"] * 10)
+            self.assertEqual(payload.stat().st_size, group["count"] * 12)
             self.assertEqual(sum(t["count"] for t in group["tiles"]),
                              group["count"])
             last = 0
