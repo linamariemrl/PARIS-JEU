@@ -618,3 +618,11 @@ La préparation sur GitHub Actions a récupéré six dalles GeoTIFF à 50 cm dep
 Les profils de façades utilisent les hauteurs relevées des sommets en limite de toiture pour ces surfaces, et un matériau neutre. Le maillage MNH n'est pas une certification de tous les détails d'architecture (lucarnes, cheminées, surplombs) ni de précision de chaque pan. Pour les bâtiments couverts par plusieurs subdivisions municipales exploitables, celles-ci gardent temporairement la priorité afin d'éviter des raccords incohérents : l'unification fine volumes 3D et mesures MNH sera une étape spécifique.
 
 Source : https://www.data.gouv.fr/datasets/mnh-lidar-hd (Licence Ouverte 2.0). Rapports : `data/quality/lidar-4e-availability.json` et `data/quality/lidar-4e-reconstruction.json`.
+
+## 37. Streaming métropolitain de géométries bâties
+
+Un pipeline `scripts/prepare_metropole_buildings.py` extrait les emprises et hauteurs BD TOPO pour le périmètre IGN officiel de Paris et des 29 communes voisines. Les tuiles ont 800 m de côté, sont encodées en coordonnées locales métriques arrondies à 2 cm près et excluent les 2 696 bâtiments identifiés dans le 4e pour ne pas créer de doublons. Les édifices sans hauteur officielle sont signalés comme estimés. La préparation doit vérifier son propre seuil d'exhaustivité et le plafond de données (380 Mo) avant publication. Le code ne recopie aucun bâtiment de capture satellite ou de jeu commercial.
+
+Le chargeur `MetroTileManager` conserve un budget de 6, 10 ou 16 tuiles selon la qualité graphique. Il charge au maximum deux tuiles à la fois et décharge celles qui sont sorties de la zone active, en maintenant le 4e entier. C'est une première architecture fonctionnelle pour l'exploration proche sur Android. Elle **ne garantit pas encore le rendu complet de tous les immeubles en vue métropolitaine distante** : il faudra des tuiles LOD agrégées pour qu'aucune zone bâtie ne disparaisse lorsque la caméra s'éloigne, sans perdre l'objectif de 30 FPS. Cette limite est explicite.
+
+L'index n'est utilisé que s'il contient une extraction intégrale vérifiée par un manifeste. Si la génération a échoué ou n'est pas publiée, l'extension est désactivée plutôt que d'inventer de la géométrie.

@@ -21,8 +21,14 @@ export default defineConfig({
     workbox: {
       globPatterns: ['**/*.{js,css,html,json,svg,webmanifest}'],
       maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
+      runtimeCaching: [{
+        urlPattern: /\\/data\\/metropole\\/buildings\\/tiles\\/.*\\.json$/,
+        handler: 'CacheFirst',
+        options:{cacheName:'metro-tiles-recentes',
+          expiration:{maxEntries:28,maxAgeSeconds:60*60*24*14}}
+      }],
       cleanupOutdatedCaches: true,
-      globIgnores: ['**/data/4e/aerial/**']
+      globIgnores: ['**/data/4e/aerial/**','**/data/metropole/buildings/tiles/**']
     }
   })]
 });

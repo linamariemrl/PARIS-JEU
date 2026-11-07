@@ -236,3 +236,12 @@ sur le MNH LiDAR HD IGN lorsqu'elles sont valides. L'extraction vérifiée en
 a retenu 1 051 sur 2 696 bâtiments. Les autres restent simplifiées;
 les subdivisions de la Ville de Paris priment lorsqu'elles sont plus
 complètes. Les détails non mesurés ne sont jamais inventés.
+
+## Streaming progressif hors du 4e
+
+Le pipeline SIG utilise les emprises officielles IGN BD TOPO du périmètre
+complet. Le chargeur 3D optionnel affiche 6 à 16 tuiles voisines à la fois,
+selon l'appareil, et ne télécharge pas toute la métropole sur Android.
+Les tuiles sont chargées uniquement si le jeu de données géographiques
+complet a été généré et validé. Les vues lointaines nécessitent encore
+un niveau de détail général pour éviter tout trou visuel.

@@ -196,3 +196,11 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 3. Les toitures non validées continuent à s'afficher, sans disparition de bâtiments.
 4. Contrôler la sélection d'un immeuble à toit mesuré pour connaître la provenance.
 5. Vérifier que la navigation reste fluide (objectif au moins 30 FPS sur Android).
+
+## Navigation entre arrondissements et communes limitrophes
+
+1. Ouvrir Détails pour vérifier si l'index métropolitain IGN est effectivement présent.
+2. Déplacer la caméra hors du 4e : s'il est disponible, les tuiles voisines doivent s'afficher, sans fausse géométrie.
+3. En retournant dans le 4e, les 2 696 immeubles d'origine doivent toujours être visibles.
+4. Tester les trois qualités et observer la mémoire du téléphone après dix minutes de navigation, ainsi que les FPS.
+5. Les vues lointaines de toute la métropole peuvent encore nécessiter un rendu simplifié pour ne pas dépasser le budget graphique Android.

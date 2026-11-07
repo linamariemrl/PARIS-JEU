@@ -6,6 +6,7 @@ import { createMaterials, getPickedBuilding, highlightBuilding } from './buildin
 import { MobileCamera } from './mobileCamera';
 import { loadInfrastructure, addAdministrativeOutline, loadMetropolitanOutlines } from './infrastructure';
 import { TileManager } from './tileManager';
+import { MetroTileManager } from './metroTiles';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
@@ -51,9 +52,19 @@ try{
 
   const camera=new MobileCamera(scene,canvas);
   const materials=createMaterials(scene);
+  let metroCount=0;
+  let fourthCount=0;
+  const showCounts=()=>{
+    counter.textContent=(fourthCount+metroCount).toLocaleString('fr-FR')+
+      ' bâtiments 3D chargés';
+  };
   const manager=new TileManager(scene,materials,(message,count)=>{
     state.textContent=message;
-    counter.textContent=count.toLocaleString('fr-FR')+' bâtiments chargés';
+    fourthCount=count;showCounts();
+  });
+  const metro=new MetroTileManager(scene,materials,(message,count)=>{
+    metroCount=count;showCounts();
+    el('metropole-status').textContent=message;
   });
   const selection:Mesh[]=[];
   const clear=()=>{
@@ -149,6 +160,7 @@ try{
   quality.addEventListener('change',()=>{
     const level=quality.value as 'low'|'medium'|'high';
     manager.setQuality(level);
+    metro.setQuality(level);
     engine.setHardwareScalingLevel(level==='low'?1.7:level==='medium'?1.3:1);
     engine.resize();
   });
@@ -189,6 +201,7 @@ try{
       lastClock=now;
     }
     manager.update(camera.camera.target.x,camera.camera.target.z);
+    metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     scene.render();
     if(now-lastFps>=1000){
       fps.textContent=Math.round(engine.getFps())+' FPS';
@@ -207,6 +220,7 @@ try{
     console.warn('Réseau des rues non disponible',e);
     urban.textContent='Voirie non disponible';
   });
+  void metro.init().catch(console.warn);
   void manager.init().catch((e:unknown)=>{
     error.textContent=e instanceof Error?e.message:'Données IGN non disponibles';
     error.classList.remove('hidden');
