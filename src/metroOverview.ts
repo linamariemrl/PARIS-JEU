@@ -7,7 +7,7 @@ interface Group {
  id:string;gx:number;gz:number;count:number;bytes:number;tiles:TileRef[];
 }
 interface Manifest {
- schema:1;tileMeters:number;cellsPerGroup:number;quantizationMeters:number;
+ schema:2;tileMeters:number;cellsPerGroup:number;quantizationMeters:number;
  totalBuildings:number;source:string;geometry:string;
  sourceHash?:string;groups:Group[];
 }
@@ -49,15 +49,15 @@ export class MetroOverview {
    const response=await fetch(PREFIX+'manifest.json');
    if(!response.ok)throw Error('Aperçu métropolitain non généré');
    const m=await response.json() as Manifest;
-   if(m.schema!==1||m.totalBuildings<15000||
-      m.geometry!=='bbox-approximation'||m.quantizationMeters!==.25||
+   if(m.schema!==2||m.totalBuildings<15000||
+      m.geometry!=='oriented-box-approximation'||m.quantizationMeters!==.25||
       m.tileMeters!==800||m.cellsPerGroup!==4||
       !Array.isArray(m.groups)||m.groups.length<10)
     throw Error('Manifest de représentation distante invalide');
    const total=m.groups.reduce((sum,g)=>sum+g.count,0);
    if(total!==m.totalBuildings)throw Error('Effectifs d’aperçu incohérents');
    for(const group of m.groups){
-    if(group.bytes!==group.count*10||
+    if(group.bytes!==group.count*12||
        group.tiles.reduce((sum,t)=>sum+t.count,0)!==group.count)
      throw Error('Groupe d’aperçu invalide '+group.id);
     for(const tile of group.tiles){
@@ -92,7 +92,8 @@ export class MetroOverview {
   if(!state||!tile)return;
   this.writeTile(state.buffer,state.bytes,tile,enabled);
   state.mesh.thinInstanceBufferUpdated('matrix');
-  state.mesh.thinInstanceRefreshBoundingInfo();
+  // Bornes de rendu conservatrices établies à la première création :
+  // recalculer à chaque changement serait très coûteux sur Android.
   this.currentCount+=enabled?-tile.count:tile.count;
   this.report();
  }
@@ -127,16 +128,21 @@ export class MetroOverview {
   const step=this.manifest?.quantizationMeters??.25;
   const unit=this.manifest?.tileMeters??800;
   for(let j=0;j<tile.count;j++){
-   const i=tile.offset+j,at=i*10,k=i*16;
+   const i=tile.offset+j,at=i*12,k=i*16;
    const x=tile.ix*unit+data.getInt16(at,true)*step;
    const z=tile.iz*unit+data.getInt16(at+2,true)*step;
    const w=Math.max(step,data.getUint16(at+4,true)*step);
    const d=Math.max(step,data.getUint16(at+6,true)*step);
    const h=Math.max(2,data.getUint16(at+8,true)*step);
-   // Matrice colonne-major Babylon.js, base de boîte 1 m.
-   matrix[k]=hide?0:w;
+   const angle=data.getInt16(at+10,true)*Math.PI/32768;
+   const c=Math.cos(angle),s=Math.sin(angle);
+   // Boîtes orientées selon les arêtes IGN, pas les axes de la carte.
+   // Matrice colonne-major, sans rotation GPU supplémentaire.
+   matrix[k]=hide?0:w*c;
+   matrix[k+2]=hide?0:w*s;
    matrix[k+5]=hide?0:h;
-   matrix[k+10]=hide?0:d;
+   matrix[k+8]=hide?0:-d*s;
+   matrix[k+10]=hide?0:d*c;
    matrix[k+12]=x;
    matrix[k+13]=h/2;
    matrix[k+14]=z;
@@ -154,8 +160,10 @@ export class MetroOverview {
    if(bytes.byteLength!==group.bytes)throw Error('Groupe incomplet : '+group.id);
    const source=new DataView(bytes);
    const matrices=new Float32Array(group.count*16);
+   // D'abord toutes les silhouettes, pour construire des bornes de
+   // culling qui restent valables même lorsqu'une tuile est masquée.
    for(const tile of group.tiles){
-    this.writeTile(matrices,source,tile,this.detailed.has(tile.id));
+    this.writeTile(matrices,source,tile,false);
    }
    const mesh=MeshBuilder.CreateBox('enveloppes-metropole-'+group.id,
     {size:1},this.scene);
@@ -163,6 +171,13 @@ export class MetroOverview {
    mesh.isPickable=false;
    mesh.thinInstanceSetBuffer('matrix',matrices,16,true);
    mesh.thinInstanceRefreshBoundingInfo();
+   let hidden=0;
+   for(const tile of group.tiles){
+    if(!this.detailed.has(tile.id))continue;
+    this.writeTile(matrices,source,tile,true);
+    hidden+=tile.count;
+   }
+   if(hidden)mesh.thinInstanceBufferUpdated('matrix');
    mesh.freezeWorldMatrix();
    this.loaded.set(group.id,{mesh,buffer:matrices,bytes:source,group});
    this.currentCount+=group.tiles.reduce((sum,t)=>
