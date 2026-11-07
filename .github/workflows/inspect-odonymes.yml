@@ -1,0 +1,40 @@
+name: Inspecter les odonymes officiels de Paris
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/inspect-odonymes.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  diagnostic:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Examining les champs Paris Data et IGN
+        run: |
+          python - <<'PY'
+          import json, urllib.request, urllib.parse
+          endpoints=[
+            ('Paris Data record','https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/denominations-emprises-voies-actuelles/records?limit=1'),
+            ('IGN roads', 'https://data.geopf.fr/wfs/ows?'+urllib.parse.urlencode({
+              'SERVICE':'WFS','VERSION':'2.0.0','REQUEST':'GetFeature','TYPENAMES':'BDTOPO_V3:troncon_de_route',
+              'SRSNAME':'CRS:84','BBOX':'2.350,48.851,2.353,48.855,CRS:84','COUNT':1,'OUTPUTFORMAT':'application/json'}))
+          ]
+          for name,url in endpoints:
+            try:
+              req=urllib.request.Request(url,headers={'User-Agent':'PARIS-city-game/0.3','Accept':'application/json'})
+              with urllib.request.urlopen(req,timeout=65) as r: d=json.load(r)
+              print('DATASET',name,'keys',list(d))
+              items=d.get('results',d.get('features',[]))
+              print('COUNT',d.get('total_count'), 'ROWS',len(items))
+              if items:
+                row=items[0]; props=row.get('properties',row)
+                print('FIELDS',list(props.keys()))
+                for k,v in props.items():
+                  if 'nom' in k.lower() or 'geom' in k.lower() or 'arron' in k.lower() or 'voie' in k.lower() or 'topon' in k.lower():
+                    print('SAMPLE',k,str(v)[:600])
+            except Exception as e:
+              print('ERROR',name,repr(e))
+          PY
