@@ -2,7 +2,7 @@ import {
   Color3, Color4, DirectionalLight, Engine, HemisphericLight,
   Mesh, MeshBuilder, Scene, StandardMaterial, Vector3
 } from '@babylonjs/core';
-import { createMaterials, getPickedBuilding, highlightBuilding } from './buildings';
+import { createMaterials, facadeCategory, getPickedBuilding, highlightBuilding } from './buildings';
 import { MobileCamera } from './mobileCamera';
 import { loadInfrastructure } from './infrastructure';
 import { TileManager } from './tileManager';
@@ -63,9 +63,12 @@ try {
     el('selection').classList.remove('hidden');
     el('height').textContent = building.height.toLocaleString('fr-FR') + ' m' + (building.estimatedHeight ? ' (estimation)' : '');
     el('usage').textContent = building.usage || 'Non renseigné';
+    const styles = { residential: 'habillage résidentiel stylisé', commercial: 'habillage commercial stylisé', religious: 'habillage religieux stylisé', neutral: 'habillage neutre stylisé' };
+    el('skin').textContent = styles[facadeCategory(building)];
     el('identifier').textContent = building.id;
     el('caveat').textContent = building.estimatedHeight ?
-      'Hauteur indicative : donnée IGN manquante.' : 'Emprise et hauteur issues de la BD TOPO IGN.';
+      'Hauteur indicative : donnée IGN manquante. Revêtement et toiture illustratifs.' :
+      'Emprise et hauteur issues de la BD TOPO IGN. Revêtement et toiture illustratifs, non vérifiés individuellement.';
   };
   camera.onTap = (x, y) => {
     const hit = scene.pick(x, y, mesh => mesh.isPickable && Boolean(mesh.metadata));
