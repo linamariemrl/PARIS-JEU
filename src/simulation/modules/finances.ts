@@ -66,23 +66,40 @@ export class FinanceModule{
       (1+this.plan.operatingExpenseChangePct/100);
     const capSpend=b.capital.expenseEUR*
       (1+this.plan.capitalExpenseChangePct/100);
+    // Les crédits votés sont des références millésimées et ne sont
+    // jamais antidatés ou présentés comme des dépenses réalisées.
+    const budgetDate=Date.UTC(b.year,0,1);
+    const need=Math.max(0,capSpend-b.capital.revenueEUR);
+    const uncovered=Math.max(0,need-this.plan.projectedBorrowingEUR);
     const records:[
       string,number,'official'|'simulated'
     ][]=[
       ['finances.fonctionnement.recettes',b.operating.revenueEUR,'official'],
+      ['finances.fonctionnement.depenses-votees',b.operating.expenseEUR,'official'],
       ['finances.investissement.recettes',b.capital.revenueEUR,'official'],
+      ['finances.investissement.depenses-votees',b.capital.expenseEUR,'official'],
       ['finances.fonctionnement.depenses-projet',opSpend,'simulated'],
       ['finances.investissement.depenses-projet',capSpend,'simulated'],
       ['finances.fonctionnement.solde-projet',
        b.operating.revenueEUR-opSpend,'simulated'],
-      ['finances.investissement.besoin-projet',
-       capSpend-b.capital.revenueEUR,'simulated'],
+      ['finances.investissement.besoin-projet',need,'simulated'],
+      ['finances.investissement.besoin-non-couvert-projet',uncovered,'simulated'],
       ['finances.emprunt-nouveau-projet',this.plan.projectedBorrowingEUR,'simulated']
     ];
     for(const [key,value,provenance] of records){
       this.indicators.put({
-        key,level:'paris',spatialId:'75056',value,unit:'EUR',asOf:gameDate,
+        key,level:'paris',spatialId:'75056',value,unit:'EUR',
+        asOf:provenance==='official'?budgetDate:gameDate,
         provenance,source:b.sourceUrl
+      });
+    }
+    const debt=b.debtOpeningReference;
+    if(debt?.notCurrent&&Number.isFinite(debt.amountApproxEUR)){
+      this.indicators.put({
+        key:'finances.dette.reference-ouverture-estimee',
+        level:'paris',spatialId:'75056',value:debt.amountApproxEUR,
+        unit:'EUR',asOf:Date.parse(debt.asOf),
+        provenance:'estimated',source:debt.sourceUrl
       });
     }
   }
