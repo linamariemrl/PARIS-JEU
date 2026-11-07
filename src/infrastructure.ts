@@ -117,6 +117,6 @@ export async function loadInfrastructure(scene: Scene): Promise<string> {
   rails(scene, data.layers.bridge || []);
   const n = data.counts.roads.toLocaleString('fr-FR');
   const p = data.counts.bridges.toLocaleString('fr-FR');
-  return `${n} tronçons de voirie · ${p} ponts` +
+  return `${n} tronçons de voirie · ${p} passages surélevés` +
     (data.waterApproximate ? ' · largeur de Seine schématique' : '');
 }
