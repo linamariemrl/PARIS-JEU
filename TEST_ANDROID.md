@@ -128,3 +128,11 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 5. Vérifier que la photographie IGN reste bien au sol, sous les bâtiments, même lorsque les formes sont différentes.
 6. Vérifier 30 FPS minimum sur Android récent en qualité Moyenne ; comparer aussi Haute en vue rapprochée.
 7. Ne pas interpréter les étages de la Ville comme des mesures de toiture. Signaler si une toiture pénètre dans une autre ou si l'emprise d'un bâtiment est incomplète.
+
+## Version 0.9 : vue de proximité
+
+1. Appuyer sur Rue depuis le mode Carte : la caméra se rapproche progressivement du sol.
+2. Utiliser les flèches tactiles maintenues : avancer, reculer, aller à droite ou à gauche selon l'orientation courante.
+3. Glisser un doigt dans la vue Rue pour orienter le regard et l'incliner.
+4. Appuyer sur Carte : retrouver une vue d'ensemble du même secteur.
+5. Tester la sélection des bâtiments à proximité et mesurer la fluidité sur Android. La vue Rue ne gère pas encore les collisions avec les bâtiments.

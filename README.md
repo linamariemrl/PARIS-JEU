@@ -12,6 +12,13 @@ Le rapport `data/quality/coverage-4e.json` différencie les matériaux et les
 formes de toit documentés des façades réellement observées. À ce stade, aucune
 façade n'est encore phototexturée et associée à une preuve par image.
 
+## Navigation au niveau des rues
+
+Le bouton Rue rapproche la caméra d'une hauteur de perspective de quelques mètres.
+La vue conserve les bâtiments Babylon.js ; quatre flèches permettent de se
+déplacer de manière continue. Le mode Carte reste accessible par le même bouton.
+Il ne s'agit pas encore d'un système de collisions ou de promenade physique.
+
 ## Prototype 0.9 : premiers volumes architecturaux officiels
 
 - Le fond aérien demeure une vraie photographie IGN, mais ne remplace pas le relief 3D.

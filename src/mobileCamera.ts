@@ -12,6 +12,13 @@ export class MobileCamera {
   private tapStart:{x:number;y:number;time:number}|null=null;
   private tapMoved=false;
   private multi=false;
+  private street=false;
+  private saveView:{radius:number;beta:number}|null=null;
+  private animation:{
+    fromRadius:number;fromBeta:number;
+    toRadius:number;toBeta:number;
+    started:number
+  }|null=null;
   onTap:(x:number,y:number)=>void=()=>{};
 
   constructor(private scene:Scene,private canvas:HTMLCanvasElement){
@@ -29,6 +36,7 @@ export class MobileCamera {
       this.zoom(Math.exp(e.deltaY*.001));
     },{passive:false});
     scene.activeCamera=this.camera;
+    scene.onBeforeRenderObservable.add(()=>this.updateTransition());
   }
   zoom(factor:number){
     this.camera.radius=clamp(this.camera.radius*factor,30,4000);
@@ -40,6 +48,47 @@ export class MobileCamera {
     this.camera.radius=1250;
   }
   north(){this.camera.alpha=-Math.PI/2;}
+
+  /** Vue proche des rues, 2,3 m environ de hauteur.
+   * Le contrôle conserve la caméra de carte, ne génère pas de fausses rues
+   * et ne revendique pas une véritable marche physique collisionnelle.
+   */
+  setStreetMode(value:boolean){
+    if(value===this.street)return;
+    this.street=value;
+    if(value){
+      this.saveView={radius:this.camera.radius,beta:this.camera.beta};
+    }
+    const targetRadius=value?64:Math.max(180,this.saveView?.radius??1250);
+    const targetBeta=value?Math.acos(2.3/64):(this.saveView?.beta??.84);
+    this.animation={
+      fromRadius:this.camera.radius,fromBeta:this.camera.beta,
+      toRadius:targetRadius,toBeta:targetBeta,started:performance.now()
+    };
+  }
+  get isStreetMode(){return this.street;}
+  /** Avancer, reculer, se déplacer latéralement en mètres dans la carte.
+   * Vecteurs dérivés de l'orientation effective, sans inversion des axes.
+   */
+  moveStreet(forward:number,side:number){
+    if(!this.street)return;
+    const a=this.camera.alpha;
+    const fx=-Math.cos(a),fz=-Math.sin(a);
+    const rx=fz,rz=-fx;
+    this.camera.target.x+=fx*forward+rx*side;
+    this.camera.target.z+=fz*forward+rz*side;
+  }
+  private updateTransition(){
+    const animation=this.animation;
+    if(!animation)return;
+    const t=Math.min(1,(performance.now()-animation.started)/620);
+    const eased=t*t*(3-2*t);
+    this.camera.radius=animation.fromRadius+
+      (animation.toRadius-animation.fromRadius)*eased;
+    this.camera.beta=animation.fromBeta+
+      (animation.toBeta-animation.fromBeta)*eased;
+    if(t>=1)this.animation=null;
+  }
 
   /** Renvoie le point du sol réel sous une position CSS du doigt.
    * Permet de "saisir la carte" et la faire suivre sans signe inversé.
@@ -90,6 +139,16 @@ export class MobileCamera {
     const current={x:e.clientX,y:e.clientY};
     this.pointers.set(e.pointerId,current);
     if(this.pointers.size===1){
+      if(this.street){
+        this.animation=null;
+        // En vue proche, un doigt tourne et incline le regard.
+        // Le point de visée est rapproché, ce n'est pas une translation écran.
+        this.camera.alpha+= (current.x-previous.x)*.004;
+        this.camera.beta=clamp(this.camera.beta+
+          (current.y-previous.y)*.0024,.80,1.55);
+        this.tapMoved=true;
+        return;
+      }
       if(this.tapStart&&Math.hypot(
         current.x-this.tapStart.x,current.y-this.tapStart.y)>8){
         this.tapMoved=true;

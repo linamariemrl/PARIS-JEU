@@ -26,8 +26,17 @@
 <button id="plus" aria-label="Zoomer">+</button>
 <button id="minus" aria-label="Dézoomer">−</button>
 <button id="north" aria-label="Nord">N</button>
+<button id="street-view" aria-label="Basculer entre carte et vue proche de la rue" aria-pressed="false">Rue</button>
 <label>Qualité <select id="quality" aria-label="Qualité graphique"><option value="low">Basse</option><option value="medium" selected>Moyenne</option><option value="high">Haute</option></select></label>
 </nav>
+<div id="movement-pad" class="hidden" aria-label="Commandes de déplacement en vue de rue">
+  <button data-move="forward" aria-label="Avancer">▲</button>
+  <div>
+    <button data-move="left" aria-label="Aller à gauche">◀</button>
+    <button data-move="back" aria-label="Reculer">▼</button>
+    <button data-move="right" aria-label="Aller à droite">▶</button>
+  </div>
+</div>
 <aside id="selection" class="hidden"><button id="close" aria-label="Fermer">×</button><h2>Bâtiment sélectionné</h2><p>Hauteur : <span id="height"></span></p><p>Usage : <span id="usage"></span></p><p>Façade : <span id="skin"></span></p>
 <p>Gros murs : <span id="wall-real"></span></p>
 <p>Couverture : <span id="roof-real"></span></p>

@@ -66,3 +66,19 @@ footer #materials-status{font-size:10px;color:#d5dde1}
   #map-hud{gap:6px;padding:7px 6px}
   #map-hud #count,#map-hud #fps{font-size:10px}
 }
+
+/* Contrôles de proximité, visibles seulement en mode Rue. */
+#street-view{font-size:13px;height:43px}
+#street-view[aria-pressed="true"]{background:#436784;box-shadow:0 0 0 1px #bedef266}
+#movement-pad{
+ position:fixed;left:11px;bottom:calc(65px + env(safe-area-inset-bottom));
+ display:flex;flex-direction:column;align-items:center;gap:4px;
+ z-index:10;touch-action:none;
+}
+#movement-pad.hidden{display:none!important}
+#movement-pad>div{display:flex;gap:4px}
+#movement-pad button{
+ width:46px;height:46px;border-radius:13px;font-size:20px;
+ background:#102a42cc;touch-action:none;user-select:none;
+}
+#movement-pad button:active{background:#587896}

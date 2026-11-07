@@ -108,6 +108,29 @@ try {
   el('north').addEventListener('click', () => camera.north());
   el('plus').addEventListener('click', () => camera.zoom(0.76));
   el('minus').addEventListener('click', () => camera.zoom(1.3));
+  const toggleStreet=el<HTMLButtonElement>('street-view');
+  const pad=el<HTMLElement>('movement-pad');
+  toggleStreet.addEventListener('click',()=>{
+    const active=!camera.isStreetMode;
+    camera.setStreetMode(active);
+    toggleStreet.textContent=active?'Carte':'Rue';
+    toggleStreet.setAttribute('aria-pressed',String(active));
+    pad.classList.toggle('hidden',!active);
+  });
+  const held=new Set<string>();
+  for(const button of pad.querySelectorAll<HTMLButtonElement>('[data-move]')){
+    const command=button.dataset.move;
+    if(!command)continue;
+    button.addEventListener('pointerdown',e=>{
+      e.preventDefault();
+      held.add(command);
+      button.setPointerCapture(e.pointerId);
+    });
+    for(const type of ['pointerup','pointercancel','lostpointercapture']){
+      button.addEventListener(type,()=>held.delete(command));
+    }
+  }
+  let previousMoveTime=performance.now();
   const quality = el<HTMLSelectElement>('quality');
   quality.addEventListener('change', () => {
     const level = quality.value as 'low' | 'medium' | 'high';
@@ -138,6 +161,15 @@ try {
   let lastEnvironmentUpdate = -1000;
   engine.runRenderLoop(() => {
     const now = performance.now();
+    const dt=Math.min(.06,(now-previousMoveTime)/1000);
+    previousMoveTime=now;
+    if(camera.isStreetMode&&held.size){
+      const forward=(held.has('forward')?1:0)-(held.has('back')?1:0);
+      const lateral=(held.has('right')?1:0)-(held.has('left')?1:0);
+      const len=Math.max(1,Math.hypot(forward,lateral));
+      const speed=13;
+      camera.moveStreet(forward/len*speed*dt,lateral/len*speed*dt);
+    }
     clock.tick(now);
     if (now - lastEnvironmentUpdate >= 450) {
       const light = sky.update(clock.current);

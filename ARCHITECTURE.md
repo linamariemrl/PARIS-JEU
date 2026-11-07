@@ -518,3 +518,9 @@ Les contours de ces subdivisions sont des données réelles. Les niveaux interm�
 Objectif suivant : toitures véritablement 3D à partir du LiDAR HD MNS / MNH et du nuage de points classés, correction du relief de la chaussée et des fondations, matériaux PBR de meilleure qualité sans licence propriétaire, détails des monuments selon observations libres et trajectoire caméra améliorée avec collision et mode rue. Les surfaces verticales ne peuvent pas être tirées d'une orthophotographie, qui n'observe que la surface supérieure.
 
 La cible réaliste pour Android récent reste 30 FPS au minimum sur l'appareil de l'utilisateur avec LOD. Le seuil n'est pas garanti par la seule compilation. L'ambition « qualité Google Earth 3D avec rendu de jeu vidéo » est une direction artistique et technique de long terme, non un état atteint ou un niveau de détail identique sur tout Paris.
+
+## 28. Commandes de navigation de proximité, prototype 0.9
+
+Un bouton Rue / Carte permet d'abaisser la caméra à une hauteur indicative de 2,3 m dans le modèle, puis de revenir à la navigation aérienne sans changer de quartier. La transition est interpolée sur 620 ms. En vue proche, le glissement à un doigt oriente le regard ; quatre commandes tactiles continues permettent d'avancer, reculer et se déplacer latéralement selon l'orientation effective. Les boutons carte, zoom, Nord et qualité sont conservés.
+
+Ce n'est pas un personnage physique et aucune collision terrain/bâtiment n'est encore intégrée : le mode est une première approche d'exploration de rue. L'objectif est un contrôleur libre avec collisions, inclinaison et navigation multimodale, validé exclusivement sur téléphone Android.
