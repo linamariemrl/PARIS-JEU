@@ -433,3 +433,27 @@ Les modèles 3D, les images et les textures de Google Maps / Google Earth ne doi
 - IGN LiDAR HD : https://geoservices.ign.fr/
 - Panoramax : https://panoramax.fr/
 
+
+## 22. Premier déploiement des matériaux et formes réels, version 0.6
+
+### Extraction et vérification
+
+- Les 2 696 identifiants IGN sont conservés sans changement. La jointure de données supplémentaires est faite par identifiant stable, jamais par rang dans une liste.
+- Les codes des gros murs et des toitures de la BD TOPO proviennent des fichiers fonciers Cerema et DGFiP. Ils sont décodés avec la nomenclature officielle, puis associés aux matériaux procéduraux correspondants.
+- Après jointure complète, 1 315 bâtiments ont un matériau des gros murs exploitable, 1 334 un matériau de toiture exploitable et 2 002 un nombre d'étages. Le code 00 ou une absence de code reste « non documenté ».
+- Les matériaux fiscaux des gros murs n'indiquent pas forcément le revêtement apparent. Une texture de pierre ou de brique représente le matériau déclaré sans prétendre reproduire la façade réelle, les couleurs exactes, ni les ouvertures. Les combinaisons de matériaux restent consultables dans l'inspecteur.
+- Les formes de toiture OSM sont rapprochées des emprises IGN par recouvrement géométrique IoU supérieur ou égal à 0,63 et sans ambiguïté entre deux candidats. Ce contrôle valide 59 bâtiments dans le 4e. Seuls huit possèdent une hauteur de toiture renseignée. Pour les autres, la silhouette du toit suit son type renseigné, mais sa hauteur est estimée et explicitement signalée.
+- Les pentes de toit sont générées en conservant la hauteur maximale IGN. Les toits sans forme libre vérifiée restent plats provisoirement, sans extrapolation abusive.
+
+### Limites de la source IGN et étapes suivantes
+
+Un contrôle de 220 géométries WFS a montré que l'altitude des sommets est constante pour chaque contour de bâtiment. Les données extraites seules ne permettent pas de restituer la géométrie complète d'une toiture réelle.
+
+Le jeu de données officiel « Volumes bâtis » de la Ville de Paris comporte 8 664 volumes pour le 4e arrondissement, avec une emprise des retraits et surplombs, et des valeurs en nombre d'étages. Ces volumes devront être reliés géométriquement aux bâtiments IGN et convertis en volumes 3D avec une méthode explicitant les incertitudes altimétriques, avant toute substitution dans le rendu. Le LiDAR HD reste la source préférentielle pour une hauteur de toiture mesurée.
+
+Le but est de reproduire la forme et le parement visuellement exacts lorsque des données ou photographies libres autorisent cette reconstruction, et de signaler explicitement les approximations ailleurs. Il est interdit d'extraire des maillages ou textures Google Maps. L'intégration d'autres données ouvertes dépend de la licence précise et de la qualité des attributs.
+
+### Performance
+
+Le programme ne crée pas un matériau unique pour chaque immeuble. Les textures sont mutualisées par classe physique. Les bâtiments restent sélectionnables dans le même référentiel IGN. Les 59 formes de toiture ajoutent des triangles uniquement aux bâtiments concernés. L'objectif de 30 FPS minimum doit être validé par observation sur l'Android du joueur.
+

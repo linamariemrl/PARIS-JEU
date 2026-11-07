@@ -77,3 +77,15 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 6. Vérifier que plusieurs noms proches ne se chevauchent pas et ne passent pas sur les commandes.
 7. Dézoomer : les étiquettes disparaissent progressivement sans modifier le nombre de bâtiments.
 8. Vérifier que le compteur conserve les 205 voies officielles et que le jeu reste fluide (objectif 30 FPS minimum).
+
+## Version 0.6 : matériaux et toitures issus de sources ouvertes
+
+1. Vérifier l'affichage de « PROTOTYPE 06 » après actualisation.
+2. Attendre les 2 696 bâtiments puis zoomer et dézoomer plusieurs fois. Le nombre doit rester identique.
+3. Vérifier que le pied de page indique les murs et toits documentés. Les deux nombres attendus sont 1 315 et 1 334.
+4. Sélectionner des bâtiments. Lire le matériau déclaré des gros murs, celui de couverture, la provenance et les réserves. Les valeurs inconnues doivent être affichées comme telles.
+5. Repérer des différences visuelles entre couvertures de zinc, d'ardoise et de tuile. Les détails des fenêtres restent illustratifs.
+6. Vérifier que certaines toitures d'origine OSM ont un volume non plat, sans dépasser la hauteur IGN. La ligne « forme de toiture » précise si sa pente est estimée.
+7. Dans le 4e, 59 formes de toit ont été raccordées aux bâtiments IGN. Certaines sont très localisées et ne seront pas nécessairement visibles sur la première vue.
+8. Observer la fluidité en qualité Moyenne puis Haute, au jour et à la nuit, avec une cible d'au moins 30 FPS.
+9. Envoyer des captures de près et de loin avec l'indicateur FPS si des erreurs de façades, de toitures ou de sélection apparaissent.

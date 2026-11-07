@@ -36,5 +36,33 @@ class SceneInvariants(unittest.TestCase):
         self.assertEqual(len({x["id"] for x in data["labels"]}),len(data["labels"]))
         self.assertGreaterEqual(data["namedStreets"],150)
 
+
+    def test_sources_architecturales_liees_aux_identifiants_ign(self):
+        material_path=DATA/"materials.json"
+        roof_path=DATA/"roof-shapes.json"
+        if not material_path.exists() or not roof_path.exists():
+            self.skipTest("Les extractions officielles n'ont pas encore été produites")
+        ids={
+            b["id"]
+            for p in (DATA/"tiles").glob("*.json")
+            for b in json.loads(p.read_text(encoding="utf-8"))["buildings"]
+        }
+        self.assertEqual(len(ids),2696)
+        materials=json.loads(material_path.read_text(encoding="utf-8"))
+        self.assertEqual(materials["totalBuildings"],len(ids))
+        self.assertEqual(materials["matchedBuildings"],len(ids))
+        self.assertTrue(set(materials["byId"]).issubset(ids))
+        self.assertGreaterEqual(materials["withWallMaterial"],1000)
+        self.assertGreaterEqual(materials["withRoofMaterial"],1000)
+        for record in materials["byId"].values():
+            for name in ("wall","roof"):
+                if name in record:
+                    self.assertRegex(record[name],r"^[0-9]{2}$")
+        roof=json.loads(roof_path.read_text(encoding="utf-8"))
+        self.assertEqual(roof["count"],len(roof["byId"]))
+        self.assertTrue(set(roof["byId"]).issubset(ids))
+        self.assertTrue(all(v["score"]>=.63 for v in roof["byId"].values()))
+        self.assertGreaterEqual(roof["count"],40)
+
 if __name__=="__main__":
     unittest.main()

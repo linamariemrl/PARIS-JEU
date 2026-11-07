@@ -52,6 +52,10 @@ export class TileManager {
     // Couche séparée par identifiant IGN : les géométries historiques restent intactes.
     try {
       const source = await fetch(root + 'materials.json');
+      if(!source.ok){
+        const el=document.getElementById('materials-status');
+        if(el)el.textContent='Matériaux complémentaires indisponibles';
+      }
       if(source.ok){
         const data=await source.json() as MaterialOverlay;
         if(data.schema===1 && data.totalBuildings===manifest.buildings &&
@@ -68,6 +72,10 @@ export class TileManager {
     }
     try {
       const response=await fetch(root+'roof-shapes.json');
+      if(!response.ok){
+        const status=document.getElementById('roof-status');
+        if(status)status.textContent='Formes de toits complémentaires indisponibles';
+      }
       if(response.ok){
         const data=await response.json() as RoofOverlay;
         if(data.schema===1&&data.byId&&

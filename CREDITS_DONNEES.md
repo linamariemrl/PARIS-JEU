@@ -30,3 +30,13 @@
 - Reconstruction des formes de toitures : LiDAR HD IGN, à exploiter dans une phase ultérieure avec contrôle de la qualité des dalles et de leur licence.
 - Références de façades : photographies Panoramax, dont les licences varient selon l'instance ; attribution et droits de réutilisation à contrôler image par image.
 - Aucun modèle, matériau ou relevé 3D du jeu ne doit être copié, extrait ou dérivé de Google Maps / Google Earth sans autorisation contractuelle explicite. L'API Google Maps 3D est facturable et incompatible avec le cahier de gratuité tel qu'établi.
+
+## Matériaux de bâtiments et formes de toiture, version 0.6
+
+- IGN BD TOPO, emprises, hauteurs, identifiants, codes « materiaux_des_murs » et « materiaux_de_la_toiture », Licence Ouverte 2.0. https://geoservices.ign.fr/bdtopo
+- Cerema Datafoncier, correspondance des codes Dmatgm (matériaux des gros murs) et Dmatto (matériaux des toitures). https://doc-datafoncier.cerema.fr/doc/ff/pb40_pevprincipale/dmatgm
+- © OpenStreetMap contributors, formes des toitures taguées roof:shape et hauteurs roof:height si présentes, licence ODbL 1.0. https://www.openstreetmap.org/copyright
+- Ville de Paris, Volumes bâtis, licence ODbL, données de géométrie des parties en saillie et en retrait destinées à une intégration ultérieure. https://opendata.paris.fr/explore/dataset/volumesbatisparis/
+
+Les motifs de matériaux sont des dessins procéduraux originaux produits pour le jeu. Ce ne sont ni des photographies réelles d'immeubles, ni des images dérivées de Google Maps. Les pentes des toitures sans hauteur OSM restent approximatives. Les toits sans forme connue ne sont pas reconstruits arbitrairement.
+
