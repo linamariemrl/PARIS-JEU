@@ -35,7 +35,7 @@ function material(scene: Scene, name: string, rgb: [number, number, number]): St
   return mat;
 }
 function matrix(x: number, y: number, z: number, sx: number, sy: number, sz: number): number[] {
-  return Matrix.Compose(new Vector3(sx, sy, sz), qIdentity, new Vector3(x, y, z)).toArray();
+  return Array.from(Matrix.Compose(new Vector3(sx, sy, sz), qIdentity, new Vector3(x, y, z)).toArray());
 }
 function hash(s: string): number {
   let h = 2166136261;
