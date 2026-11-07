@@ -26,7 +26,7 @@ export class MetroTileManager{
   private tileCache=new Map<string,TileFile>();
   private tileMeters=800;
   private ready=false;
-  private budget=20;
+  private budget=18;
   private lastUpdate=0;
   private lastPointX=Infinity;
   private lastPointZ=Infinity;
@@ -61,7 +61,7 @@ export class MetroTileManager{
 
   setQuality(level:'low'|'medium'|'high'):void{
     // Le budget borne les maillages EXACTS et non les bâtiments représentés.
-    this.budget=level==='low'?12:level==='high'?30:20;
+    this.budget=level==='low'?10:level==='high'?24:18;
     this.lastPointX=Infinity;
   }
 
