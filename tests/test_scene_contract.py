@@ -16,8 +16,8 @@ class SceneInvariants(unittest.TestCase):
     def test_zoom_does_not_unload_buildings(self):
         code=(ROOT/"src/tileManager.ts").read_text(encoding="utf-8")
         self.assertIn("await Promise.all([worker(), worker(), worker()])",code)
-        self.assertIn("setQuality(quality:",code)
-        self.assertIn("update(x:number,z:number)",code)
+        self.assertIn("setQuality(_quality:",code)
+        self.assertIn("update(_x:number,_z:number)",code)
         self.assertNotIn("loaded.meshes.forEach(mesh => mesh.dispose())",code)
         self.assertIn("const meshes=createTile(this.scene,data,this.materials)",code)
         self.assertNotIn("mesh.dispose()",code)
