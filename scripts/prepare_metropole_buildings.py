@@ -93,7 +93,7 @@ def rings_of(polygon):
         rings=[]
         for ring in [p.exterior,*p.interiors]:
             values=[[round(local(lon,lat)[0],2),
-                     round(local(lon,lat)[1],2)] for lon,lat in ring.coords]
+                     round(local(lon,lat)[1],2)] for lon,lat,*_ in ring.coords]
             if len(values)>=4:rings.append(values)
         if rings:output.append(rings)
     return output
