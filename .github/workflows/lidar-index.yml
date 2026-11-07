@@ -1,0 +1,34 @@
+name: Rechercher LiDAR HD IGN pour les toitures du 4e
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/lidar-index.yml'
+      - 'scripts/inspect_lidar_4e.py'
+
+permissions:
+  contents: write
+
+jobs:
+  inspect:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Vérifier l'index WFS LiDAR officiel
+        run: python scripts/inspect_lidar_4e.py
+      - name: Archiver les liens et leur provenance
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add data/quality/lidar-4e-availability.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: état des dalles MNH LiDAR HD pour Paris Centre'
+            git pull --rebase origin main
+            git push
+          fi
