@@ -8,6 +8,8 @@ export interface OfficialBudget {
  capital:{revenueEUR:number;expenseEUR:number};
  /** Dette constatée: n'est pas fournie dans les crédits votés M57. */
  debtOutstandingEUR:null|number;
+ debtOpeningReference?:{asOf:string;amountApproxEUR:number;notCurrent:true;
+   source:string;sourceUrl:string};
  scope:'Ville-departement de Paris';
  status:'official';
  comment:string;

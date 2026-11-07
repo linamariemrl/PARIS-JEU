@@ -589,3 +589,16 @@ La base ne contient aucun chiffre inventé. Le fichier officiel `public/data/fin
 Les parties sont enregistrées en IndexedDB, avec plusieurs cases nommées, export/import JSON pour partage entre téléphones et restauration de la date, de la vitesse, des propositions financières et des indicateurs. Le navigateur n'est pas un coffre-fort permanent : recommander l'export JSON. La validation de schéma de sauvegarde est minimale et devra être renforcée avec les modules suivants.
 
 Ces fichiers de simulation ne modifient pas les emprises ni le rendu. Le socle n'implémente encore ni bilan consolidé de dette ni fiscalité municipale détaillée, ni débats/majorités. Il est un premier système opérationnel extensible.
+
+## 34. Référence financière officielle 2026
+
+Le module Finances a une base chiffrée, reproduisant les totaux votés en dépenses et recettes par section en décembre 2025 pour 2026 (Conseil de Paris, délibérations DFA 68-1 et 68-2). Ces totaux sont les **budgets comptables complets** et ne doivent pas être confondus avec les dépenses et recettes réelles (hors opérations d'ordre), ni avec les réalisations de l'exercice. Le budget en recettes et en dépenses est voté équilibré, y compris la section d'investissement.
+
+Budget fonctionnement : 10 298 594 091 EUR en recettes et autant en dépenses. Budget investissement : 2 338 878 454 EUR de crédits de paiement en recettes et autant en dépenses. La dette **actuelle** n'est pas déduite de ces autorisations. Le rapport du projet de budget indique une dette bancaire et obligataire de 9 297,1 M EUR au 1er janvier 2026, seulement comme référence historique datée, pas comme dette instantanée, et le document prévoit un scénario d'endettement de fin d'année sous hypothèses qui ne peut être converti en dette certaine.
+
+Sources :
+- https://a06-v7.apps.paris.fr/a06/jsp/site/Portal.jsp?fq=type%3AD%C3%A9bat&id_document=183716&items_per_page=20&page=ods-solr.display_document&query=2009+PP+3-7&sort_name=date&sort_order=desc
+- https://a06-v7.apps.paris.fr/a06/jsp/site/Portal.jsp?fq=type%3AD%C3%A9bat&id_document=183842&items_per_page=20&page=ods-solr.display_document&query=2008+DRH+17-1&sort_name=date&sort_order=desc
+- https://a06-v7.apps.paris.fr/a06/jsp/site/plugins/odjcp/DoDownload.jsp?id_entite=66070&id_type_entite=6
+
+Fichier stable : public/data/finance/budget-paris.json. Un ajout de données open data plus détaillées devra réconcilier crédits BP, budget supplémentaire et décisions modificatives, sans additionner des versions d'un même vote.

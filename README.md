@@ -212,3 +212,11 @@ l'objet d'un vote du Conseil de Paris.
 Le panneau permet de sauvegarder plusieurs parties en IndexedDB, de charger
 l'une d'elles, d'exporter et importer un fichier JSON. Les dates, les
 indicateurs partagés et les propositions budgétaires sont conservés.
+
+## Base budgétaire de référence, 2026
+
+Les finances affichent désormais les deux sections du budget primitif
+2026 voté par le Conseil de Paris. Les montants officiels votés ne sont
+pas des dépenses réalisées. La dette affichée ne prétend pas être actualisée :
+l'unique référence datée est au 1er janvier 2026. Les propositions du joueur
+sont distinctes de la loi de finances et du vote municipal.

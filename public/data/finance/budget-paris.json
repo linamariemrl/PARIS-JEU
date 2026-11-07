@@ -1,0 +1,28 @@
+{
+  "schema": 1,
+  "year": 2026,
+  "source": "Conseil de Paris, budget primitif voté en décembre 2025 pour l'exercice 2026, délibérations DFA 68-1 et 68-2",
+  "sourceUrl": "https://a06-v7.apps.paris.fr/a06/jsp/site/Portal.jsp?fq=type%3AD%C3%A9bat&id_document=183716&items_per_page=20&page=ods-solr.display_document&query=2009+PP+3-7",
+  "otherSourceUrl": "https://a06-v7.apps.paris.fr/a06/jsp/site/Portal.jsp?fq=type%3AD%C3%A9bat&id_document=183842&items_per_page=20&page=ods-solr.display_document&query=2008+DRH+17-1",
+  "fetchedAt": "2026-11-07T00:00:00Z",
+  "budgetType": "Budget primitif 2026, crédits totaux en recettes et dépenses incluant les opérations d'ordre",
+  "operating": {
+    "revenueEUR": 10298594091,
+    "expenseEUR": 10298594091
+  },
+  "capital": {
+    "revenueEUR": 2338878454,
+    "expenseEUR": 2338878454
+  },
+  "debtOutstandingEUR": null,
+  "debtOpeningReference": {
+    "asOf": "2026-01-01",
+    "amountApproxEUR": 9297100000,
+    "source": "Projet de budget primitif 2026, estimation de dette bancaire et obligataire en début d'exercice",
+    "notCurrent": true,
+    "sourceUrl": "https://a06-v7.apps.paris.fr/a06/jsp/site/plugins/odjcp/DoDownload.jsp?id_entite=66070&id_type_entite=6"
+  },
+  "scope": "Ville-departement de Paris",
+  "status": "official",
+  "comment": "Totaux des sections votées en équilibre et non flux réels. La dette à la date du jeu n'est pas connue; la référence au 1er janvier provient du rapport du projet de BP 2026. Les prévisions n'ont pas valeur de constatation de fin d'année."
+}

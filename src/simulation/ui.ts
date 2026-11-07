@@ -1,6 +1,6 @@
 import {GameClock} from '../gameClock';
 import {IndicatorStore} from './indicatorStore';
-import {FinanceModule,emptyPlan} from './modules/finances';
+import {FinanceModule} from './modules/finances';
 import {SaveStore,validateSave,type GameSave} from './saveStore';
 
 const money=(v:number)=>new Intl.NumberFormat('fr-FR',{
@@ -43,8 +43,12 @@ export class GameManagement {
   node('fin-op-expense').textContent=b?money(b.operating.expenseEUR):'Non disponible';
   node('fin-cap-revenue').textContent=b?money(b.capital.revenueEUR):'Non disponible';
   node('fin-cap-expense').textContent=b?money(b.capital.expenseEUR):'Non disponible';
-  node('fin-debt').textContent=b?.debtOutstandingEUR===null||!b?
-    'Non documentée dans cette source':money(b.debtOutstandingEUR);
+  const reference=b?.debtOpeningReference;
+  node('fin-debt').textContent=b?.debtOutstandingEUR!==null&&b?
+    money(b.debtOutstandingEUR):
+    reference?money(reference.amountApproxEUR)+
+      ' au 01/01/2026 (référence, pas dette actuelle)':
+    'Dette actuelle non documentée';
   node<HTMLInputElement>('op-change').value=String(this.finance.plan.operatingExpenseChangePct);
   node<HTMLInputElement>('cap-change').value=String(this.finance.plan.capitalExpenseChangePct);
   node<HTMLInputElement>('borrow-change').value=String(this.finance.plan.projectedBorrowingEUR/1e6);
