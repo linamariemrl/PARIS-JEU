@@ -10,5 +10,5 @@ class MetroStreaming(unittest.TestCase):
   self.assertIn("data.schema!==2",c)
  def test_offline_cache_is_bounded(self):
   c=(ROOT/'vite.config.ts').read_text()
-  self.assertIn("maxEntries:28",c)
+  self.assertIn("maxEntries: 28",c)
   self.assertIn("metropole/buildings/tiles",c)
