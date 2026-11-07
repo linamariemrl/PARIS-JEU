@@ -54,6 +54,10 @@ export class TreeLayer {
   private crowns: Mesh;
   private conifers: Mesh;
   private loaded = false;
+  private x = 0;
+  private z = 0;
+  private previousX = Number.POSITIVE_INFINITY;
+  private previousZ = Number.POSITIVE_INFINITY;
   private onStatus: (text: string) => void;
 
   constructor(scene: Scene, onStatus: (text: string) => void) {
@@ -100,7 +104,20 @@ export class TreeLayer {
     if (this.loaded) this.render();
   }
 
+  update(x: number, z: number) {
+    if (!this.loaded) return;
+    if (Math.hypot(x-this.previousX, z-this.previousZ) < 110) return;
+    this.x = x;
+    this.z = z;
+    this.render();
+  }
+
   private render() {
+    this.previousX = this.x;
+    this.previousZ = this.z;
+    const radius = this.quality === 'low' ? 520 :
+                   this.quality === 'medium' ? 720 : 1000;
+    const radiusSquared = radius * radius;
     const keep = this.quality === 'low' ? 0.28 :
                  this.quality === 'medium' ? 0.60 : 1;
     const trunks: number[] = [];
@@ -108,6 +125,8 @@ export class TreeLayer {
     const conifers: number[] = [];
     let shown = 0;
     for (const tree of this.trees) {
+      const dx = tree.x - this.x, dz = tree.z - this.z;
+      if (dx*dx + dz*dz > radiusSquared) continue;
       if ((hash(tree.id) % 1000) / 1000 >= keep) continue;
       const h = tree.h;
       const trunkH = h * 0.46;
