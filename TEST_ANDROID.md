@@ -38,3 +38,16 @@ La largeur exacte des rues, l'élévation des ponts, le détail des trottoirs et
 9. Vérifier la présence des attributions IGN et Ville de Paris.
 
 En cas de chute durable sous 30 FPS, réduire d'abord la distance des arbres, puis leur densité et la qualité des façades.
+
+
+## Version 0.4 : bâtiments permanents, revêtements, noms de voies
+
+1. Laisser le chargement des bâtiments du 4e se terminer. Le compteur doit afficher 2 696.
+2. Appuyer dix fois sur + puis dix fois sur -. Le compteur doit rester à 2 696 et les mêmes bâtiments doivent rester présents.
+3. Déplacer, incliner et faire pivoter la caméra, puis revenir à la vue initiale. Aucun bâtiment du périmètre ne doit être supprimé.
+4. Toucher plusieurs bâtiments de fonctions différentes pour vérifier l'identifiant IGN, la hauteur et la mention « habillage stylisé ».
+5. Observer les fenêtres, revêtements de murs et toitures séparées. Vérifier qu'aucun matériau non sourcé n'est présenté comme attesté.
+6. Vérifier la présence des noms de voies à l'écran, notamment rue de Rivoli, rue Saint-Antoine, quai de l'Hôtel de Ville et pont Saint-Louis. Les étiquettes doivent suivre la caméra et rester actives à tous les réglages de qualité.
+7. Vérifier 30 FPS minimum en situation normale sur votre Android ; signaler toute chute durable ou fermeture de l'application.
+8. Si le navigateur conserve l'ancien moteur PWA, actualiser la page puis la rouvrir.
+
