@@ -52,13 +52,15 @@ function validLidarPart(part:LidarRoofPart|undefined,rings:Point[][]):boolean{
 }
 function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
   const height=Math.min(220,Math.max(2,b.height));
-  const detailed=b.volumes&&shouldUseVolumes(
+  // Le relief mesuré LiDAR doit primer sur un étagement municipal estimé.
+  // On n'utilise les subdivisions qu'en l'absence d'une couverture LiDAR valide.
+  const measured=b.lidarRoof&&
+    b.lidarRoof.parts.length===b.polygons.length&&
+    b.polygons.every((p,i)=>validLidarPart(b.lidarRoof!.parts[i],p))?
+      b.lidarRoof:null;
+  const detailed=!measured&&b.volumes&&shouldUseVolumes(
     b.volumes.coverage,b.volumes.parts.length,Boolean(b.roofInfo)
   )?b.volumes:null;
-  const measured=(!detailed&&b.lidarRoof&&
-    b.lidarRoof.parts.length===b.polygons.length&&
-    b.polygons.every((p,i)=>validLidarPart(b.lidarRoof!.parts[i],p)))?
-      b.lidarRoof:null;
   const sections=detailed
     ?detailed.parts.flatMap(v=>v.polygons.map(p=>({
         rings:p.map(r=>r.map(([x,z])=>({x,z}))),
