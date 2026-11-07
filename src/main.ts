@@ -65,7 +65,7 @@ try{
     state.textContent=message;
     fourthCount=count;showCounts();
   });
-  const overview=new MetroOverview(scene,materials,(message,count)=>{
+  const overview=new MetroOverview(scene,(message,count)=>{
     overviewCount=count;showCounts();
     el('overview-status').textContent=message;
   });
