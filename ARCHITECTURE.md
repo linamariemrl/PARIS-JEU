@@ -342,3 +342,33 @@ La génération de la liste des communes limitrophes IGN et la préparation des 
 Le complément « Transports » accessible ici s'interrompt après « Fluvial : navette ». Les exigences reçues portent sur les données IDFM GTFS et OSM, métro, RER, Transilien, tramway, grandes gares et trains grandes lignes, Grand Paris Express, bus, Noctilien, navettes, cars, taxis, VTC et navettes fluviales. La suite non communiquée n'est pas devinée. Le texte complet du cahier initial n'est pas présent non plus ; les choix PWA, mode hors ligne, Vite, multi-sauvegardes et règles de travail sont bien intégrés à la présente version conformément à la demande de révision, mais tout contenu spécifique supplémentaire devra être confronté au texte lorsqu'il sera fourni.
 
 **Références techniques des limites gratuites :** https://docs.github.com/en/pages/getting-started-with-github-pages/github-pages-limits ; https://docs.github.com/en/actions/concepts/billing-and-usage ; https://vite.dev/guide/static-deploy ; https://opendata.paris.fr/explore/dataset/arrondissements/ ; https://cartes.gouv.fr/aide/fr/guides-utilisateur/utiliser-les-services-de-la-geoplateforme/diffusion/wfs/
+
+## 18. Contrats de rendu, bâtiments et noms de rues, version 0.4
+
+### Bâtiments : permanence géographique absolue
+
+Le zoom et le réglage graphique ne doivent jamais changer la présence des bâtiments dans le périmètre couvert.
+Dans le prototype du 4e, les 27 tuiles IGN et leurs 2 696 bâtiments sont chargés intégralement, puis conservés en mémoire, sans déchargement selon le zoom ni la caméra. Les boutons + et - agissent uniquement sur la distance de caméra. Cette règle doit être validée sur Android avec un nombre de bâtiments constant, une fois le chargement achevé.
+
+Pour tout Paris et les communes limitrophes, la présence géographique des bâtiments sera conservée avec des niveaux de détail, une représentation distante et un chargement progressif des géométries. Afficher simultanément les maillages détaillés de tous les bâtiments serait irréaliste sur un téléphone. Les bâtiments hors champ peuvent donc ne pas occuper la mémoire graphique, sans cesser d'exister dans les données ou de réapparaître à la caméra.
+
+### Fidélité des façades et des toitures
+
+Les emprises, identifiants, usages et hauteurs disponibles proviennent de la BD TOPO IGN. La période historique de construction, le matériau réel de chaque mur, l'emplacement exact des fenêtres, la géométrie complète de chaque toiture et les lucarnes ne sont pas contenus de manière exhaustive dans ces données.
+
+Le moteur distingue provisoirement des habillages résidentiels, commerciaux, religieux et neutres selon l'usage renseigné, avec un revêtement spécifique pour les couvertures. Ces apparences sont **illustratives**, jamais des relevés attestés. Quand des attributs vérifiés deviennent accessibles, le moteur les applique par bâtiment ; sinon il conserve un habillage plausible, explicitement non certifié. Il ne faut jamais affecter un style historique de façon aléatoire en le présentant comme réel.
+
+### Noms des voies : affichage permanent
+
+Aucune commande ne désactive les noms de voies. Les noms officiels sont issus du jeu de données de la Ville de Paris « Dénominations des emprises des voies actuelles ». Le jeu pilote contient les 205 voies recensées pour le 4e, y compris rues, places, quais, ponts, passages et autres emprises nommées. Chacune est conservée dans les données avec son ancrage géographique. Les étiquettes suivent en permanence le mouvement, l'inclinaison et le zoom de la caméra.
+
+Sur mobile, la lisibilité simultanée de centaines ou de milliers de noms à l'échelle générale n'est pas matériellement possible sans chevauchement. La règle « aucun nom omis » s'applique au référentiel et à la disponibilité des étiquettes ; les indications hors champ ou masquées par les perspectives ne peuvent pas être lisibles à l'écran en même temps. Des étiquettes supplémentaires et une gestion d'espacement sont prévues pour l'extension à tout Paris.
+
+### Vérification obligatoire
+
+Avant la prochaine étape, vérifier sur le téléphone Android :
+1. Que le nombre final de bâtiments reste à 2 696 après plusieurs zooms avant et arrière.
+2. Que les bâtiments restent sélectionnables à toutes les distances autorisées.
+3. Que les revêtements de murs et de toitures sont distincts et que les informations de provenance ne prétendent pas reproduire le matériau exact.
+4. Que les noms de toutes les voies officielles du 4e sont chargés et suivent la caméra, sans option de désactivation.
+5. Que la fluidité reste au minimum à 30 FPS dans plusieurs vues urbaines chargées.
