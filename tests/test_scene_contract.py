@@ -23,9 +23,7 @@ class SceneInvariants(unittest.TestCase):
         self.assertIn("mesh.setEnabled(detail)",code)
         # Seuls les couronnements illustratifs sont masqués selon les LOD ;
         # les maillages de bâtiments et le compteur restent inchangés.
-        self.assertIn("meshes: createTile",code) if False else self.assertIn(
-            "const meshes=createTile(this.scene,data,this.materials)",code
-        )
+        self.assertIn("const meshes=createTile(this.scene,data,this.materials)",code)
 
     def test_street_labels_use_real_world_geometry(self):
         code=(ROOT/"src/streetLabels.ts").read_text(encoding="utf-8")
