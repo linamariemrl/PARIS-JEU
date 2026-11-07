@@ -47,7 +47,6 @@ export class MetroOverview {
    this.overviewMaterial=new StandardMaterial('volume-eloigne-pierre',scene);
    this.overviewMaterial.diffuseColor=new Color3(.93,.93,.93);
    this.overviewMaterial.specularColor=Color3.Black();
-   this.overviewMaterial.useVertexColors=true;
    this.overviewMaterial.freeze();
  }
  async init():Promise<void>{
