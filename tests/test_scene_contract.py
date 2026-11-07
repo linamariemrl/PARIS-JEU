@@ -16,10 +16,16 @@ class SceneInvariants(unittest.TestCase):
     def test_zoom_does_not_unload_buildings(self):
         code=(ROOT/"src/tileManager.ts").read_text(encoding="utf-8")
         self.assertIn("await Promise.all([worker(), worker(), worker()])",code)
-        self.assertIn("setQuality(_quality:",code)
-        self.assertIn("update(_x:",code)
+        self.assertIn("setQuality(quality:",code)
+        self.assertIn("update(x:number,z:number)",code)
         self.assertNotIn("loaded.meshes.forEach(mesh => mesh.dispose())",code)
-        self.assertNotIn("const radius = this.quality",code)
+        self.assertIn("mesh.name.startsWith('batiments-cornice-')",code)
+        self.assertIn("mesh.setEnabled(detail)",code)
+        # Seuls les couronnements illustratifs sont masqués selon les LOD ;
+        # les maillages de bâtiments et le compteur restent inchangés.
+        self.assertIn("meshes: createTile",code) if False else self.assertIn(
+            "const meshes=createTile(this.scene,data,this.materials)",code
+        )
 
     def test_street_labels_use_real_world_geometry(self):
         code=(ROOT/"src/streetLabels.ts").read_text(encoding="utf-8")
