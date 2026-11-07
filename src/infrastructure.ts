@@ -1,7 +1,8 @@
-import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3, VertexData } from '@babylonjs/core';
+import { Color3, Mesh, Scene, StandardMaterial, VertexData } from '@babylonjs/core';
 import earcut from 'earcut';
+import { addBridges } from './bridges';
 
-/** Réseau simplifié issu de vraies géométries OSM (coordonnées locales en mètres).
+/** Réseau simplifié issu de géométries IGN ou OSM (coordonnées locales en mètres).
  * Un seul maillage par couche, pour ne pas multiplier les draw calls sur Android.
  * Les tabliers de pont et les largeurs par défaut sont des conventions graphiques.
  */
@@ -19,7 +20,7 @@ interface InfrastructureData {
   counts: { roads: number; bridges: number };
   layers: Record<string, Layer>;
 }
-type Kind = 'water' | 'bank' | 'sidewalk' | 'road' | 'foot' | 'square' | 'bridge';
+type Kind = 'water' | 'bank' | 'sidewalk' | 'road' | 'foot' | 'square';
 const COLORS: Record<Kind, [number, number, number]> = {
   water: [0.18, 0.42, 0.51],
   bank: [0.68, 0.65, 0.59],
@@ -27,13 +28,12 @@ const COLORS: Record<Kind, [number, number, number]> = {
   road: [0.29, 0.33, 0.37],
   foot: [0.79, 0.74, 0.63],
   square: [0.76, 0.70, 0.59],
-  bridge: [0.42, 0.44, 0.45],
 };
 const HEIGHTS: Record<Kind, number> = {
   water: 0.05, bank: 0.085, sidewalk: 0.10, road: 0.14,
-  foot: 0.16, square: 0.17, bridge: 0.82,
+  foot: 0.16, square: 0.17,
 };
-const DRAW_ORDER: Kind[] = ['water', 'bank', 'sidewalk', 'road', 'foot', 'square', 'bridge'];
+const DRAW_ORDER: Kind[] = ['water', 'bank', 'sidewalk', 'road', 'foot', 'square'];
 
 function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   const positions: number[] = [];
@@ -83,23 +83,6 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   return mesh;
 }
 
-function rails(scene: Scene, polygons: Layer): Mesh | null {
-  // Le garde-corps souligne les ponts visibles. Il ne représente ni les
-  // matériaux ni les cotes exactes des ponts historiques.
-  const lines: Vector3[][] = [];
-  for (const polygon of polygons) {
-    const exterior = polygon[0];
-    if (!exterior || exterior.length < 4) continue;
-    // Limiter la longueur des segments, sans créer un maillage par pont.
-    lines.push(exterior.map(([x, z]) => new Vector3(x, HEIGHTS.bridge + 0.7, z)));
-  }
-  if (!lines.length) return null;
-  const mesh = MeshBuilder.CreateLineSystem('garde-corps-schematiques', { lines }, scene);
-  mesh.color = new Color3(0.78, 0.76, 0.68);
-  mesh.isPickable = false;
-  return mesh;
-}
-
 export async function loadInfrastructure(scene: Scene): Promise<string> {
   const response = await fetch(import.meta.env.BASE_URL + 'data/4e/infrastructure.json');
   if (!response.ok) throw new Error('Données des rues non encore préparées.');
@@ -114,7 +97,7 @@ export async function loadInfrastructure(scene: Scene): Promise<string> {
     credit.href = data.sourceUrl || (isIgn ? 'https://geoservices.ign.fr/bdtopo' : 'https://www.openstreetmap.org/copyright');
   }
   for (const kind of DRAW_ORDER) layerMesh(scene, kind, data.layers[kind] || []);
-  rails(scene, data.layers.bridge || []);
+  addBridges(scene, data.layers.bridge || []);
   const n = data.counts.roads.toLocaleString('fr-FR');
   const p = data.counts.bridges.toLocaleString('fr-FR');
   return `${n} tronçons de voirie · ${p} passages surélevés` +
