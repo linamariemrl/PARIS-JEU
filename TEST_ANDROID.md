@@ -144,3 +144,13 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 3. En vue Rue, glisser pour regarder et maintenir les flèches : les rotations et la vitesse doivent être réduites.
 4. Vérifier le zoom et la rotation à deux doigts avec et sans le mode précision.
 5. Garder le nombre total de 2 696 bâtiments et surveiller la fluidité Android.
+
+## Prototype 0.10 : façades plus sobres et relief 3D
+
+1. Actualiser la page jusqu'à lire « PROTOTYPE 0.10 ».
+2. En qualité Haute, observer les façades du 4e de près. Vérifier que les baies sont moins massives et que les murs restent majoritaires.
+3. Incliner la caméra pour examiner le bord des toits. Les bandeaux de corniche sont de petits volumes 3D, mais leur forme exacte est illustrative.
+4. En qualité Basse, ces détails disparaissent. En revenant en Haute, ils réapparaissent à proximité, sans modifier le compteur des 2 696 bâtiments.
+5. Comparer le FPS en qualité Moyenne puis Haute. Le seuil à respecter reste au moins 30 FPS sur le téléphone Android du joueur.
+6. Vérifier l'orthophotographie IGN au sol, la sélection et les nouveaux volumes à étages du prototype 0.9.
+7. Envoyer une capture rapprochée des toitures et façades si un relief paraît disproportionné.

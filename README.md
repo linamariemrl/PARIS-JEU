@@ -19,6 +19,18 @@ La vue conserve les bâtiments Babylon.js ; quatre flèches permettent de se
 déplacer de manière continue. Le mode Carte reste accessible par le même bouton.
 Il ne s'agit pas encore d'un système de collisions ou de promenade physique.
 
+## Prototype 0.10 : relief architectural léger
+
+Les façades procédurales ont désormais des ouvertures plus discrètes et
+une proportion de maçonnerie plus crédible. Les couronnements de toit sont
+modélisés par des volumes 3D discrets, regroupés par tuile pour limiter le
+coût de rendu. Leur forme et leurs dimensions sont **illustratives**, non
+mesurées. Ils ne s'affichent qu'à courte distance en Moyen/Haute.
+
+Les 2 696 bâtiments réels et la photographie IGN restent en place à tous
+les zooms. La reconstruction véritable des toitures par LiDAR est la
+priorité architecturale suivante.
+
 ## Mode précision tactile 0.9.1
 
 L'aide « ? » propose un mode précision qui réduit à 35 % la sensibilité des

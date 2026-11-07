@@ -5,6 +5,7 @@ import { WALL_SURFACES, ROOF_SURFACES, surfaceForCode } from './materialCatalog'
 import { project } from './geo';
 import { roofProfile } from './roofGeometry';
 import { steppedHeight,shouldUseVolumes } from './volumeGeometry';
+import { corniceSegments } from './corniceGeometry';
 import type { Building, Point, TileFile } from './types';
 
 type XYZ = [number, number, number];
@@ -17,8 +18,10 @@ interface Batch {
   uvs: number[];
   faceToBuilding: number[];
 }
-export type BuildingMaterials = Record<SurfaceCategory, StandardMaterial>;
-const TYPES: SurfaceCategory[] = [
+type RenderCategory=SurfaceCategory|'cornice';
+export type BuildingMaterials = Record<RenderCategory, StandardMaterial>;
+const TYPES: RenderCategory[] = [
+  'cornice',
   'residential','commercial','religious','neutral','roof',
   ...WALL_SURFACES,...ROOF_SURFACES
 ];
@@ -59,7 +62,7 @@ export function facadeCategory(building:Building): FacadeCategory {
   if (/résident|resident|habitation|logement/.test(usage)) return 'residential';
   return 'neutral';
 }
-function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
+function addBuilding(walls:Batch,roofs:Batch,cornices:Batch,b:Building,index:number) {
   const height=Math.min(220,Math.max(2,b.height));
   const wallColor:RGB = b.wallCode ? [1,1,1] : WALLS[hash(b.id)%WALLS.length];
   const detail=b.volumes&&shouldUseVolumes(
@@ -103,6 +106,23 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
         tri(walls,a,c,d,wallColor,index,[uv0,uv2,uv3]);
       }
     }
+    // Lignes de couronnement physiques de 14 cm, estimées.
+    // Un unique maillage par tuile évite un objet Babylon par immeuble.
+    const outer=rings[0];
+    for(const seg of corniceSegments(outer,
+      profile?.eave??section.height)){
+      const a:XYZ=[seg.a.x,seg.bottom,seg.a.z];
+      const bb:XYZ=[seg.b.x,seg.bottom,seg.b.z];
+      const c:XYZ=[seg.outB.x,seg.top,seg.outB.z];
+      const d:XYZ=[seg.outA.x,seg.top,seg.outA.z];
+      const aTop:XYZ=[seg.a.x,seg.top,seg.a.z];
+      const bTop:XYZ=[seg.b.x,seg.top,seg.b.z];
+      const tone:RGB=[.88,.85,.79];
+      tri(cornices,a,bb,c,tone,index,[[0,0],[1,0],[1,1]]);
+      tri(cornices,a,c,d,tone,index,[[0,0],[1,1],[0,1]]);
+      tri(cornices,aTop,bTop,c,tone,index,[[0,0],[1,0],[1,1]]);
+      tri(cornices,aTop,c,d,tone,index,[[0,0],[1,1],[0,1]]);
+    }
     const flat=points.flatMap(p=>[p.x,p.z]);
     const t=earcut(flat,holes,2);
     for(let k=0;k<t.length;k+=3) {
@@ -131,15 +151,21 @@ export function createMaterials(scene:Scene): BuildingMaterials {
   const result={} as BuildingMaterials;
   for (const type of TYPES) {
     const mat=new StandardMaterial('revetement-'+type,scene);
-    mat.diffuseTexture=textures[type];
-    mat.diffuseColor=Color3.White();
-    mat.specularColor=type==='roof'?new Color3(.13,.14,.16):new Color3(.02,.02,.02);
+    if(type==='cornice'){
+      mat.diffuseColor=new Color3(.87,.84,.79);
+      mat.specularColor=Color3.Black();
+    }else{
+      mat.diffuseTexture=textures[type];
+      mat.diffuseColor=Color3.White();
+      mat.specularColor=type.startsWith('roof')||type==='roof'
+        ?new Color3(.04,.04,.05):new Color3(.015,.015,.015);
+    }
     mat.backFaceCulling=false;
     result[type]=mat;
   }
   return result;
 }
-function asMesh(scene:Scene,tile:TileFile,kind:SurfaceCategory,
+function asMesh(scene:Scene,tile:TileFile,kind:RenderCategory,
                 batch:Batch,mat:StandardMaterial):Mesh|null {
   if(!batch.indices.length)return null;
   const vd=new VertexData();
@@ -158,12 +184,12 @@ function asMesh(scene:Scene,tile:TileFile,kind:SurfaceCategory,
 }
 export function createTile(scene:Scene,tile:TileFile,
                            materials:BuildingMaterials):Mesh[] {
-  const batches={} as Record<SurfaceCategory,Batch>;
+  const batches={} as Record<RenderCategory,Batch>;
   for(const type of TYPES)batches[type]=empty();
   tile.buildings.forEach((building,index)=>{
     const wallKind=surfaceForCode(building.wallCode,false)??facadeCategory(building);
     const roofKind=surfaceForCode(building.roofCode,true)??'roof';
-    addBuilding(batches[wallKind],batches[roofKind],building,index);
+    addBuilding(batches[wallKind],batches[roofKind],batches.cornice,building,index);
   });
   const meshes:Mesh[]=[];
   for (const kind of TYPES) {

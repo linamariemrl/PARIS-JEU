@@ -73,22 +73,40 @@ function drawDocumentedTexture(ctx:CanvasRenderingContext2D,kind:WallSurface|Roo
     }
   }
   if(wall) {
-    // Fenêtres illustratives : seul le matériau structurel est documenté.
-    for(const center of [51,128,205]){
-      ctx.fillStyle='rgba(225,217,200,.75)';
-      ctx.fillRect(center-23,45,46,149);
-      ctx.fillStyle='#53646b';
-      ctx.fillRect(center-19,48,38,138);
-      ctx.fillStyle='#819aa5';
-      ctx.fillRect(center-16,51,33,131);
-      ctx.fillStyle='#d8d5cb';
-      ctx.fillRect(center-2,48,4,137);
-      ctx.fillRect(center-19,110,38,4);
-      ctx.fillStyle='rgba(60,53,45,.8)';
-      ctx.fillRect(center-25,158,50,3);
+    // Le matériau fiscal décrit le gros oeuvre et non le parement visible.
+    // Plus de pierre apparente, ouvertures plus étroites et peu réfléchissantes.
+    ctx.fillStyle='rgba(66,57,49,.12)';
+    for(let y=22;y<245;y+=70)ctx.fillRect(0,y,256,2);
+    const dark=kind==='wall-concrete'||kind==='wall-aggregate';
+    for(const center of [45,128,211]){
+      const w=dark?37:33,top=67,h=112;
+      const x=center-w/2;
+      ctx.fillStyle=dark?'#aaadae':'#eee1cc';
+      ctx.fillRect(x-5,top-6,w+10,h+13);
+      ctx.fillStyle=dark?'#46535c':'#364751';
+      ctx.fillRect(x,top,w,h);
+      ctx.fillStyle='#70818a';
+      ctx.fillRect(x+3,top+4,w-6,h-9);
+      ctx.fillStyle='rgba(222,231,227,.20)';
+      ctx.fillRect(x+4,top+5,w*.25,h*.53);
+      ctx.fillStyle='#d7d2c8';
+      ctx.fillRect(center-1,top,2,h);
+      ctx.fillRect(x,top+h*.52,w,2);
+      ctx.fillStyle='rgba(65,58,54,.80)';
+      ctx.fillRect(x-5,top+h-17,w+10,2);
+      // Garde-corps : simple dessin illustratif, pas un relevé précis.
+      if(!dark){
+        ctx.fillRect(x-4,top+h-15,w+8,2);
+        for(let n=0;n<5;n++)
+          ctx.fillRect(x+n*(w-2)/4,top+h-13,1,10);
+      }
+      ctx.fillStyle='rgba(245,239,225,.60)';
+      ctx.fillRect(x-7,top-10,w+14,3);
     }
-    ctx.fillStyle='rgba(240,231,207,.7)';
-    ctx.fillRect(0,228,256,8);
+    ctx.fillStyle='rgba(103,92,79,.18)';
+    ctx.fillRect(0,238,256,5);
+    ctx.fillStyle='rgba(246,239,220,.24)';
+    ctx.fillRect(0,245,256,5);
   }
 }
 function texture(scene: Scene, category: SurfaceCategory): DynamicTexture {
@@ -134,45 +152,40 @@ function texture(scene: Scene, category: SurfaceCategory): DynamicTexture {
       }
     }
 
-    if (category === 'religious') {
-      // Fenêtres hautes à arc stylisé pour les édifices d'usage religieux.
-      for (const center of [54, 128, 202]) {
-        ctx.fillStyle='#b1a48f';
-        ctx.fillRect(center-20,37,40,183);
-        ctx.beginPath();ctx.arc(center,47,20,Math.PI,0);ctx.fill();
-        ctx.fillStyle='#485962';
-        ctx.fillRect(center-13,56,26,150);
-        ctx.beginPath();ctx.arc(center,56,13,Math.PI,0);ctx.fill();
-        ctx.fillStyle='#adbcc3';ctx.fillRect(center-1,55,2,148);
+    if(category==='religious'){
+      for(const cx of [60,128,196]){
+        ctx.fillStyle='#e7dac2';
+        ctx.fillRect(cx-14,63,28,122);
+        ctx.beginPath();ctx.arc(cx,63,14,Math.PI,0);ctx.fill();
+        ctx.fillStyle='#42525a';
+        ctx.fillRect(cx-10,67,20,110);
+        ctx.beginPath();ctx.arc(cx,67,10,Math.PI,0);ctx.fill();
+        ctx.fillStyle='#9cb1b5';ctx.fillRect(cx-1,67,2,110);
       }
-    } else {
-      const business = category === 'commercial';
-      const neutral = category === 'neutral';
-      const centers=business?[61,189]:neutral?[64,192]:[51,128,205];
-      for (const c of centers) {
-        const width=business?88:neutral?54:49;
-        const x=c-width/2;
-        const top=business?25:42;
-        const height=business?186:156;
-        ctx.fillStyle= business?'#aebbc0':'#c7b6a1';
-        ctx.fillRect(x-5,top-6,width+10,height+11);
-        ctx.fillStyle=business?'#4f6b7b':'#3d4f59';
-        ctx.fillRect(x,top,width,height);
-        ctx.fillStyle=business?'#7399a9':'#7b9ba6';
-        ctx.fillRect(x+4,top+4,width-8,height-9);
-        ctx.fillStyle='#e3e1d6';
-        ctx.fillRect(c-2,top,4,height);
-        ctx.fillRect(x,top+height*0.51,width,4);
-        ctx.fillStyle='#9dafb1';
-        ctx.fillRect(x+5,top+7,Math.max(6,width*0.26),height*0.34);
-        if (!business) {
-          // Garde-corps inspirés du bâti parisien ; non géolocalisés au détail.
-          ctx.fillStyle='#4c4a47';
-          ctx.fillRect(x-7,top+height-42,width+14,4);
-          for (let b=0;b<6;b++)ctx.fillRect(x-4+b*(width+8)/6,top+height-40,2,19);
-          ctx.fillStyle='#b6a997';
-          ctx.fillRect(x-10,top+height-22,width+20,7);
+    }else{
+      // Le bâti sans documentation de style reste sobre : ne pas répéter
+      // les grandes façades vitrées de bureaux sur chaque immeuble.
+      const office=category==='commercial';
+      const centers=office?[52,128,204]:category==='residential'?[48,128,208]:[57,199];
+      for(const center of centers){
+        const width=office?42:35;
+        const x=center-width/2;
+        const top=office?63:67, h=office?119:109;
+        ctx.fillStyle='#ded6c7';ctx.fillRect(x-5,top-8,width+10,h+13);
+        ctx.fillStyle=office?'#354a56':'#3b4951';
+        ctx.fillRect(x,top,width,h);
+        ctx.fillStyle=office?'#6c8793':'#718991';
+        ctx.fillRect(x+3,top+4,width-6,h-8);
+        ctx.fillStyle='rgba(239,244,236,.22)';
+        ctx.fillRect(x+5,top+5,width*.20,h*.45);
+        ctx.fillStyle='#dedacf';ctx.fillRect(center-1,top,2,h);
+        ctx.fillRect(x,top+h*.53,width,2);
+        if(!office){
+          ctx.fillStyle='#55534e';
+          ctx.fillRect(x-5,top+h-15,width+10,2);
+          for(let n=0;n<5;n++)ctx.fillRect(x+n*(width-1)/4,top+h-13,1,10);
         }
+        ctx.fillStyle='#ece3d4';ctx.fillRect(x-8,top-11,width+16,3);
       }
     }
     ctx.fillStyle = category==='commercial'?'#bac2c1':'#b6a894';
