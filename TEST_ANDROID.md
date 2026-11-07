@@ -165,3 +165,10 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 6. Passer de Carte à Rue, puis de Rue à Carte sans saut. Zoomer/dézoomer, utiliser Nord et Recentrer.
 7. Essayer les vitesses d'horloge. Aucun changement visuel de jour ou nuit ne doit se produire.
 8. Comparer Moyen et Haut, objectif minimum 30 FPS. Contrôler la stabilité après plusieurs minutes.
+
+## Prototype 0.12 : lisibilité des ouvrages
+
+1. Faire le tour de la Seine et des îles, vérifier la différence visible entre l'eau, les berges et les ponts.
+2. À proximité, les chaussées doivent se distinguer des trottoirs et places sans couleur.
+3. Observer le filet discret de limite administrative à différentes distances, sans changement de position lors du zoom.
+4. Contrôler que les 2 696 bâtiments IGN restent présents et que le FPS reste supérieur ou égal à 30 en mode Moyen.

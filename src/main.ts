@@ -4,7 +4,7 @@ import {
 } from '@babylonjs/core';
 import { createMaterials, getPickedBuilding, highlightBuilding } from './buildings';
 import { MobileCamera } from './mobileCamera';
-import { loadInfrastructure } from './infrastructure';
+import { loadInfrastructure, addAdministrativeOutline } from './infrastructure';
 import { TileManager } from './tileManager';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { describeMaterial } from './materialCatalog';
@@ -31,7 +31,7 @@ try{
   },true);
   const scene=new Scene(engine);
   scene.fogMode=Scene.FOGMODE_NONE;
-  scene.clearColor=new Color4(.87,.87,.87,1);
+  scene.clearColor=new Color4(.94,.94,.94,1);
   const ambient=new HemisphericLight('éclairage-fixe',new Vector3(0,1,0),scene);
   ambient.intensity=.92;
   ambient.groundColor=new Color3(.45,.45,.45);
@@ -43,7 +43,7 @@ try{
   const ground=MeshBuilder.CreateGround('sol-neutre',
     {width:7200,height:7200},scene);
   const mat=new StandardMaterial('sol-gris-clair',scene);
-  mat.diffuseColor=new Color3(.85,.85,.85);
+  mat.diffuseColor=new Color3(.94,.94,.94);
   mat.specularColor=Color3.Black();
   mat.freeze();
   ground.material=mat;ground.isPickable=false;
@@ -192,6 +192,7 @@ try{
 
   // Géométrie SIG neutre, sans photographie aérienne, textures de rue,
   // végétation décorative, éclairage temporel ou variation jour/nuit.
+  void addAdministrativeOutline(scene).catch(console.warn);
   void loadInfrastructure(scene).then(message=>{
     urban.textContent=message+' (maquette monochrome)';
   }).catch(e=>{

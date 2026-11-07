@@ -573,3 +573,9 @@ Le code des photographies reste dans l'historique de recherche mais le JavaScrip
 - Industrialiser les tuiles pour tous les arrondissements, bois de Boulogne/Vincennes et communes limitrophes issues des frontières ADMIN EXPRESS.
 - Mettre en place une lecture légère des couches de voirie et de bâtiment, sans trou visuel lors des changements de LOD.
 - Étape 4 : instaurer l'état partagé et le temps de simulation, plusieurs sauvegardes IndexedDB, puis les finances municipales, avant un module fonctionnel à la fois. Aucun système fictif de niveau ou déblocage.
+
+## 32. Maquette monochrome lisible : limites et ouvrages
+
+Version 0.12 : palette strictement achromatique. Bâtiments en blanc mat, toits en gris clair, eau en gris moyen, chaussées plus foncées que les trottoirs. Les berges reçoivent un filet discret et les ponts conservent des parapets légèrement plus clairs. Les frontières administratives affichées utilisent le contour officiel GeoJSON du 4e arrondissement, jamais une frontière calculée depuis une capture d'écran. Elles sont tracées en géométrie du monde à une élévation minimale. Leur continuité est indépendante du zoom.
+
+Les descriptions distinguent les surfaces déduites de la source de voirie et les cotes de pont estimées. Aucune mesure LiDAR ou archive d'autres arrondissements n'est annoncée comme intégrée avant extraction et validation. Le cahier initial demeure : vingt arrondissements, deux bois et communes limitrophes, puis simulation financière, transport et modules suivants.

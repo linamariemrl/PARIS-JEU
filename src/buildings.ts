@@ -91,12 +91,12 @@ export function createMaterials(scene:Scene):BuildingMaterials{
   // Deux matériaux en tout pour les immeubles du 4e. Aucun atlas,
   // photographie, façade dessinée ni teinte selon les matériaux fiscaux.
   const wall=new StandardMaterial('maquette-murs-blanc-mat',scene);
-  wall.diffuseColor=new Color3(.93,.93,.93);
+  wall.diffuseColor=new Color3(.965,.965,.965);
   wall.specularColor=Color3.Black();
   wall.backFaceCulling=false;
   wall.freeze();
   const roof=new StandardMaterial('maquette-toits-gris-mat',scene);
-  roof.diffuseColor=new Color3(.78,.78,.78);
+  roof.diffuseColor=new Color3(.82,.82,.82);
   roof.specularColor=Color3.Black();
   roof.backFaceCulling=false;
   roof.freeze();

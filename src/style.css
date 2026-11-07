@@ -102,3 +102,8 @@ nav button{height:45px}
 header{background:linear-gradient(#273543dd,#273543aa)}
 #time-panel{background:#263643e5}
 #map-hud{background:#25323fe8}
+
+/* 0.12 : reliefs ivoire et repères en gris de pierre. Les boutons et
+   l'horloge restent lisibles, sans ajout de photographie. */
+#scene{background:#f0f0f0}
+#time-panel{backdrop-filter:blur(6px)}

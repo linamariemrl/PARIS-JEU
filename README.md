@@ -193,3 +193,10 @@ Le site publié sera accessible à toute personne disposant du lien. Il ne conti
 - [Crédits des données](CREDITS_DONNEES.md)
 
 Projet indépendant, non affilié à la Ville de Paris.
+
+## Maquette 0.12 : eau, quais, voies et limites
+
+Palette neutre raffinée, traits de berges et limite officielle du 4e
+arrondissement. Aucun retour aux photographies ni aux façades décoratives.
+La maquette continue à distinguer les mesures d'emprises des largeurs
+schématiques de certaines voies ou des profils de ponts.

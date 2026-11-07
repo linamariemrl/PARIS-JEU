@@ -1,4 +1,4 @@
-import { Color3, Mesh, Scene, StandardMaterial, VertexData } from '@babylonjs/core';
+import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3, VertexData } from '@babylonjs/core';
 import earcut from 'earcut';
 import { addBridges } from './bridges';
 
@@ -21,13 +21,19 @@ interface InfrastructureData {
   layers: Record<string, Layer>;
 }
 type Kind = 'water' | 'bank' | 'sidewalk' | 'road' | 'foot' | 'square';
+// Palette pierre de Paris : contrastes neutres, jamais de photographie.
+export const NEUTRAL_PALETTE = {
+  ground: .94, buildings: .965, roofs: .82,
+  river: .74, bank: .81, road: .655, sidewalk: .91,
+  foot: .85, square: .89, border: .47
+} as const;
 const COLORS: Record<Kind, [number, number, number]> = {
-  water: [.81,.81,.81],
-  bank: [.85,.85,.85],
-  sidewalk: [.88,.88,.88],
-  road: [.71,.71,.71],
-  foot: [.84,.84,.84],
-  square: [.86,.86,.86],
+  water: [.74,.74,.74],
+  bank: [.81,.81,.81],
+  sidewalk: [.91,.91,.91],
+  road: [.655,.655,.655],
+  foot: [.85,.85,.85],
+  square: [.89,.89,.89],
 };
 const HEIGHTS: Record<Kind, number> = {
   water: 0.05, bank: 0.085, sidewalk: 0.10, road: 0.14,
@@ -83,6 +89,78 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   return mesh;
 }
 
+type Coordinates=[number,number];
+type MultiBoundary={type:'Polygon'|'MultiPolygon';coordinates:Coordinates[][]|Coordinates[][][]};
+type BoundaryDocument={type:'Feature';geometry:MultiBoundary;properties?:Record<string,unknown>};
+
+/** Traits fins placés sur les coordonnées officielles du 4e.
+ * Aucune délimitation inventée ni frontière dessinée de mémoire.
+ */
+export async function addAdministrativeOutline(scene:Scene):Promise<number>{
+  const result=await fetch(import.meta.env.BASE_URL+'data/4e/boundary.geojson');
+  if(!result.ok)throw new Error('Limites officielles indisponibles');
+  const feature=await result.json() as BoundaryDocument;
+  if(feature.type!=='Feature'||!feature.geometry)throw new Error('Frontière invalide');
+  const coords=feature.geometry.type==='Polygon'?
+    [feature.geometry.coordinates as Coordinates[][]]:
+    feature.geometry.type==='MultiPolygon'?
+    feature.geometry.coordinates as Coordinates[][][]:null;
+  if(!coords)throw new Error('Frontière non polygonale');
+  // On ne trace que les contours extérieurs, sans confondre une île avec un trou.
+  const lon0=2.3537,lat0=48.8545;
+  const mx=111320*Math.cos(lat0*Math.PI/180),mz=111132;
+  let total=0;
+  for(const polygon of coords){
+    const boundary=polygon[0];
+    if(!boundary||boundary.length<4)continue;
+    const points=boundary.map(([lon,lat])=>
+      new Vector3((lon-lon0)*mx,.235,(lat-lat0)*mz));
+    const mesh=MeshBuilder.CreateLines('limite-officielle-4e-'+total,{
+      points,updatable:false
+    },scene);
+    mesh.color=new Color3(.42,.42,.42);
+    mesh.alpha=.72;
+    mesh.isPickable=false;
+    total++;
+  }
+  return total;
+}
+
+/** Filet de berge en géométrie réelle selon l'emprise hydraulique disponible.
+ * Largeur des rives / eau : attribuée à la source data/4e/infrastructure.json.
+ */
+function shoreline(scene:Scene,water:Layer):void{
+  const positions:number[]=[];
+  for(const poly of water){
+    if(!poly?.length)continue;
+    for(const ring of poly){
+      if(ring.length<4)continue;
+      // Le tracé est continu en monde réel, pas une étiquette d'écran.
+      for(const [x,z] of ring){
+        positions.push(x,.078,z);
+      }
+      positions.push(NaN,NaN,NaN);
+    }
+  }
+  let n=0;
+  let current:number[]=[];
+  function flush(){
+    if(current.length>=6){
+      const pts:Vector3[]=[];
+      for(let j=0;j<current.length;j+=3)
+        pts.push(new Vector3(current[j],current[j+1],current[j+2]));
+      const line=MeshBuilder.CreateLines('berge-'+n++,{points:pts},scene);
+      line.color=new Color3(.53,.53,.53);
+      line.alpha=.62;line.isPickable=false;
+    }
+    current=[];
+  }
+  for(let i=0;i<positions.length;i+=3){
+    if(!Number.isFinite(positions[i]))flush();
+    else current.push(positions[i],positions[i+1],positions[i+2]);
+  }
+}
+
 export async function loadInfrastructure(scene: Scene): Promise<string> {
   const response = await fetch(import.meta.env.BASE_URL + 'data/4e/infrastructure.json');
   if (!response.ok) throw new Error('Données des rues non encore préparées.');
@@ -98,6 +176,7 @@ export async function loadInfrastructure(scene: Scene): Promise<string> {
   }
   for (const kind of DRAW_ORDER) layerMesh(scene, kind, data.layers[kind] || []);
   addBridges(scene, data.layers.bridge || []);
+  shoreline(scene,data.layers.water||[]);
   const n = data.counts.roads.toLocaleString('fr-FR');
   const p = data.counts.bridges.toLocaleString('fr-FR');
   return `${n} tronçons de voirie · ${p} passages surélevés` +
