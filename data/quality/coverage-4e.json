@@ -1,0 +1,25 @@
+{
+  "schema": 1,
+  "sector": "Paris 4e arrondissement",
+  "dataDate": "2026-11-07T14:34:02.127091+00:00",
+  "buildingsIGN": 2696,
+  "tilesIGN": 27,
+  "potentialExteriorContourEdges": 24025,
+  "potentialExteriorContourEdgesWarning": "Ces arêtes d'emprise ne sont PAS nécessairement des façades visibles; murs mitoyens non filtrés.",
+  "knownCadastreWallMaterial": 1315,
+  "knownCadastreRoofMaterial": 1334,
+  "knownStoreyCounts": 2002,
+  "OSMRoofShapesMatched": 59,
+  "OSMRoofHeightsMatched": 8,
+  "distinctFacadeRecordsLinkedToStreet": 0,
+  "photographicallyObservedFacades": 0,
+  "photographicallyReconstructedFacades": 0,
+  "unverifiedBuildingAppearance": 2696,
+  "status": "relevé des sources existantes; chaîne de façades non encore exécutée",
+  "nextActions": [
+    "joindre géométriquement les volumes de la Ville de Paris aux bâtiments IGN",
+    "filtrer arêtes mitoyennes et exposées aux voies",
+    "rapprocher périodes/matériaux Apur puis sources photographiques sous licence",
+    "conserver un statut observée/reconstituée/inconnue pour chaque façade"
+  ]
+}
