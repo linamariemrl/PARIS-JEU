@@ -506,3 +506,15 @@ Le moteur Babylon charge une vue d'ensemble et des dalles détaillées en foncti
 Les couches graphiques de voirie, de Seine et d'arbres schématiques sont masquées si l'image aérienne est disponible afin de ne pas cacher les détails des vrais photographies. Faute de photos validées, le moteur conserve en repli l'ancienne carte schématique sans inventer de tuiles.
 
 Ces images aériennes peuvent être datées et ne sont pas de la 3D photogrammétrique. Elles ne fournissent pas les textures des façades verticales. L'objectif suivant est une reconstruction PBR fondée sur les volumes, surfaces et observations autorisées. Attribution visible dans le panneau Détails.
+
+## 27. Prototype 0.9 : géométrie réelle des retraits des bâtiments
+
+Le rendu ne confond plus photographies satellites et vraie architecture volumétrique. La source municipale « Volumes bâtis », dernière modification du catalogue le 8 octobre 2026, fournit 8 664 emprises du 4e (ODbL). Le traitement GitHub Actions les associe à la BD TOPO de l'IGN en exploitant la géométrie géolocalisée, en refusant les correspondances ambiguës et les surplombs sans description altimétrique exploitable.
+
+La première extraction vérifiée contient 894 bâtiments IGN et 3 260 subdivisions officielles appariées, avec un seuil de couverture initial de 0,76. Le rendu mobilise en priorité les 601 emprises dont la couverture atteint 0,90, à l'exception de celles qui disposent déjà d'une forme de toiture OSM attestée. Les autres bâtiments conservent l'extrusion d'origine ; la présence des 2 696 emprises est inchangée lors du zoom.
+
+Les contours de ces subdivisions sont des données réelles. Les niveaux intermédiaires sont reconstruits à partir du nombre d'étages municipal, du maximum d'étages associé à l'immeuble et de la hauteur totale IGN : cette estimation n'est PAS une altitude observée. Aucune toiture historiquement exacte, façade par photographie, fenêtre ou balcon individuel n'est affirmé. Le moteur garde les textures de matériaux documentés, réduit l'espacement répétitif des fenêtres et reste compatible avec la sélection d'origine.
+
+Objectif suivant : toitures véritablement 3D à partir du LiDAR HD MNS / MNH et du nuage de points classés, correction du relief de la chaussée et des fondations, matériaux PBR de meilleure qualité sans licence propriétaire, détails des monuments selon observations libres et trajectoire caméra améliorée avec collision et mode rue. Les surfaces verticales ne peuvent pas être tirées d'une orthophotographie, qui n'observe que la surface supérieure.
+
+La cible réaliste pour Android récent reste 30 FPS au minimum sur l'appareil de l'utilisateur avec LOD. Le seuil n'est pas garanti par la seule compilation. L'ambition « qualité Google Earth 3D avec rendu de jeu vidéo » est une direction artistique et technique de long terme, non un état atteint ou un niveau de détail identique sur tout Paris.

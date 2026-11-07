@@ -39,7 +39,7 @@
       "name": "Ville de Paris, volumes bâtis",
       "url": "https://opendata.paris.fr/explore/dataset/volumesbatisparis/",
       "license": "ODbL",
-      "status": "audité, non intégré au rendu",
+      "status": "utilisé pour subdivisions en plan; hauteurs intermédiaires estimées",
       "role": "subdivisions et morphologie du bâti"
     },
     {

@@ -4,6 +4,7 @@ import { createFacadeTextures, type FacadeCategory, type SurfaceCategory } from 
 import { WALL_SURFACES, ROOF_SURFACES, surfaceForCode } from './materialCatalog';
 import { project } from './geo';
 import { roofProfile } from './roofGeometry';
+import { steppedHeight,shouldUseVolumes } from './volumeGeometry';
 import type { Building, Point, TileFile } from './types';
 
 type XYZ = [number, number, number];
@@ -61,11 +62,29 @@ export function facadeCategory(building:Building): FacadeCategory {
 function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
   const height=Math.min(220,Math.max(2,b.height));
   const wallColor:RGB = b.wallCode ? [1,1,1] : WALLS[hash(b.id)%WALLS.length];
-  for (const polygon of b.polygons) {
-    const rings=polygon.map(projected).filter(x=>x.length>=3);
-    if (!rings.length)continue;
-    const profile=roofProfile(b.roofInfo,height,rings[0]);
-    const roofY=(p:{x:number;z:number})=>profile?.heightAt(p)??height;
+  const detail=b.volumes&&shouldUseVolumes(
+    b.volumes.coverage,b.volumes.parts.length,Boolean(b.roofInfo)
+  ) ? b.volumes : null;
+  const sections=detail
+    ? detail.parts.flatMap(v=>v.polygons.map(p=>({
+        rings:p.map(r=>r.map(([x,z])=>({x,z}))),
+        height:steppedHeight(height,v.floors,detail.maxFloors),
+        proceduralRoof:false
+      })))
+    : b.polygons.map(p=>({
+        rings:p.map(projected),
+        height,
+        proceduralRoof:true
+      }));
+  for(const section of sections){
+    const rings=section.rings.filter(x=>x.length>=3);
+    if(!rings.length)continue;
+    // La subdivision est une emprise géométrique officielle; sa hauteur
+    // intermédiaire est une estimation rapportée à la hauteur totale IGN.
+    const profile=section.proceduralRoof ?
+      roofProfile(b.roofInfo,height,rings[0]):null;
+    const roofY=(p:{x:number;z:number})=>
+      profile?.heightAt(p)??section.height;
     const points:{x:number;z:number}[]=[];
     const holes:number[]=[];
     for(let r=0;r<rings.length;r++) {
@@ -78,7 +97,7 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number) {
         const p=ring[j],q=ring[(j+1)%ring.length];
         const a:XYZ=[p.x,0,p.z], bb:XYZ=[q.x,0,q.z];
         const c:XYZ=[q.x,roofY(q),q.z],d:XYZ=[p.x,roofY(p),p.z];
-        const u=Math.hypot(q.x-p.x,q.z-p.z)/6;
+        const u=Math.hypot(q.x-p.x,q.z-p.z)/10.5;
         const uv0:UV=[0,0],uv1:UV=[u,0],uv2:UV=[u,c[1]/3],uv3:UV=[0,d[1]/3];
         tri(walls,a,bb,c,wallColor,index,[uv0,uv1,uv2]);
         tri(walls,a,c,d,wallColor,index,[uv0,uv2,uv3]);

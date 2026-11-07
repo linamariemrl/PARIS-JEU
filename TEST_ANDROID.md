@@ -118,3 +118,13 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 6. En mode photographie IGN, les routes, fleuve, ponts, végétation et toitures au sol proviennent du cliché aérien. Le volume 3D des bâtiments reste procédural et doit encore être amélioré.
 7. Mesurer les FPS près d'une rue (qualités Moyenne et Haute), vérifier au moins 30 FPS. Vérifier la continuité des dalles en déplaçant la caméra.
 8. Si la photographie ne s'affiche pas, ouvrir Détails : le jeu ne doit pas inventer de photo, un fond schématique de secours reste disponible.
+
+## Prototype 0.9 : vrais retraits de volumes bâtis
+
+1. Actualiser et vérifier la présence de « PROTOTYPE 09 ».
+2. Explorer le 4e en qualité Haute près de l'Hôtel de Ville et de l'île Saint-Louis : davantage de bâtiments ont des niveaux en retrait et des toits de sections différents.
+3. La géométrie doit rester stable pendant les zooms et rotations ; le compteur de 2 696 bâtiments ne doit pas varier.
+4. Sélectionner des bâtiments : la ligne « Volumes » doit afficher le nombre de subdivisions municipales quand elles sont certifiées.
+5. Vérifier que la photographie IGN reste bien au sol, sous les bâtiments, même lorsque les formes sont différentes.
+6. Vérifier 30 FPS minimum sur Android récent en qualité Moyenne ; comparer aussi Haute en vue rapprochée.
+7. Ne pas interpréter les étages de la Ville comme des mesures de toiture. Signaler si une toiture pénètre dans une autre ou si l'emprise d'un bâtiment est incomplète.

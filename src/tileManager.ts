@@ -2,6 +2,8 @@ import type { Mesh, Scene } from '@babylonjs/core';
 import { createTile } from './buildings';
 import type { Manifest, TileFile, TileInfo } from './types';
 import type { RoofInfo } from './roofGeometry';
+import type { CityVolumeGroup } from './types';
+import { shouldUseVolumes } from './volumeGeometry';
 
 const root = import.meta.env.BASE_URL + 'data/4e/';
 interface Loaded { meshes: Mesh[]; count: number; }
@@ -10,6 +12,13 @@ interface RoofOverlay {
   schema:number;
   count:number;
   byId:Record<string,RoofInfo>;
+}
+interface CityVolumeOverlay {
+  schema:1;
+  officialVolumes:number;
+  matchedBuildings:number;
+  renderedParts:number;
+  byId:Record<string,CityVolumeGroup>;
 }
 interface MaterialOverlay {
   schema:number;
@@ -34,6 +43,7 @@ export class TileManager {
   private ready = false;
   private overlay:Record<string,BuildingMaterialRecord>={};
   private roofOverlay:Record<string,RoofInfo>={};
+  private cityVolumeOverlay:Record<string,CityVolumeGroup>={};
 
   constructor(
     private scene: Scene,
@@ -87,6 +97,28 @@ export class TileManager {
         }
       }
     }catch(e){console.warn('Formes de toits libres indisponibles',e);}
+    // Volumes municipaux réels. En cas d'absence, l'extrusion IGN existante
+    // est conservée sans aucun chargement factice ni perte de bâtiments.
+    try {
+      const result=await fetch(root+'city-volumes.json');
+      if(result.ok){
+        const data=await result.json() as CityVolumeOverlay;
+        if(data.schema===1&&data.byId&&
+           data.matchedBuildings<=manifest.buildings){
+          this.cityVolumeOverlay=data.byId;
+          const count=Object.values(data.byId).filter(v=>
+            shouldUseVolumes(v.coverage,v.parts.length,false)
+          ).length;
+          const element=document.getElementById('volume-status');
+          if(element)element.textContent=
+            count.toLocaleString('fr-FR')+
+            ' bâtiments à étagement municipal détaillé (toits OSM prioritaires)';
+        }
+      }else{
+        const el=document.getElementById('volume-status');
+        if(el)el.textContent='Volumétrie municipale complémentaire absente';
+      }
+    }catch(e){console.warn('Volumes officiels Paris Data indisponibles',e);}
     // Jusqu'à trois téléchargements simultanés sans saturation du téléphone.
     const queue = manifest.tiles.slice();
     const worker = async () => {
@@ -123,6 +155,11 @@ export class TileManager {
       for(const building of data.buildings){
         const roof=this.roofOverlay[building.id];
         if(roof)building.roofInfo=roof;
+        const volumes=this.cityVolumeOverlay[building.id];
+        if(volumes&&shouldUseVolumes(volumes.coverage,volumes.parts.length,
+                                    Boolean(building.roofInfo))){
+          building.volumes=volumes;
+        }
       }
       this.active.set(tile.id, {
         meshes: createTile(this.scene, data, this.materials),

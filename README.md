@@ -12,6 +12,15 @@ Le rapport `data/quality/coverage-4e.json` différencie les matériaux et les
 formes de toit documentés des façades réellement observées. À ce stade, aucune
 façade n'est encore phototexturée et associée à une preuve par image.
 
+## Prototype 0.9 : premiers volumes architecturaux officiels
+
+- Le fond aérien demeure une vraie photographie IGN, mais ne remplace pas le relief 3D.
+- 8 664 géométries municipales « Volumes bâtis » ont été analysées.
+- 894 bâtiments IGN ont été rapprochés de 3 260 subdivisions géométriques fiables.
+- Les 601 bâtiments avec au moins 90 % de couverture deviennent éligibles au rendu étagé, sauf ceux dotés de formes de toit OSM déjà documentées.
+- La géométrie en plan est officielle. Les hauteurs intermédiaires sont estimées à partir des niveaux par volume et de la hauteur du bâtiment IGN.
+- Les 2 696 bâtiments et la sélection restent présents à tous les zooms. Les façades photographiques et véritables toits LiDAR restent à construire.
+
 ## Prototype 0.8 : photographie aérienne et nouvelle caméra
 
 - Aucune inscription de rue affichée.

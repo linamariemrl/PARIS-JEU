@@ -1,0 +1,13 @@
+import assert from 'node:assert/strict';
+import {steppedHeight,shouldUseVolumes} from '../src/volumeGeometry.ts';
+assert.equal(steppedHeight(24,8,8),24);
+assert.ok(steppedHeight(24,4,8)<24);
+assert.ok(steppedHeight(24,4,8)>2);
+assert.ok(steppedHeight(24,2,8)<steppedHeight(24,4,8));
+assert.equal(steppedHeight(18,1,1),18);
+assert.ok(steppedHeight(3,1,8)<=3);
+assert.equal(shouldUseVolumes(.94,4,false),true);
+assert.equal(shouldUseVolumes(.89,4,false),false);
+assert.equal(shouldUseVolumes(.94,4,true),false);
+assert.equal(shouldUseVolumes(.99,1,false),false);
+console.log('Étagement des volumes Paris Data : limité à la hauteur IGN et sans effacement de bâtiments.');

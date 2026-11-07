@@ -81,6 +81,10 @@ try {
       roofShapeDescription(roofData.shape)+
       (profile?.estimated ? ' (pente estimée)' : ' (pente documentée si disponible)') :
       'forme non documentée';
+    el('volume-information').textContent=building.volumes ?
+      building.volumes.parts.length.toLocaleString('fr-FR')+
+      ' parties d’emprise mesurée (étagement indicatif)' :
+      'emprise IGN unique (subdivisions non validées)';
     el('identifier').textContent = building.id;
     el('caveat').textContent =
       (building.estimatedHeight ? 'Hauteur indicative. ' : 'Emprise et hauteur IGN. ') +
@@ -88,6 +92,9 @@ try {
       'les fenêtres restent illustratives. ' +
       (roofData ? 'Forme du toit OSM (© contributeurs OSM). ' :
         'Forme du toit non renseignée. ') +
+      (building.volumes ?
+        'Contours des subdivisions : Ville de Paris (ODbL), hauteur intermédiaire estimée. ':
+        '')+
       'Les dimensions non mesurées restent des approximations.';
   };
   camera.onTap = (x, y) => {

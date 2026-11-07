@@ -1,5 +1,16 @@
 import type { RoofInfo } from './roofGeometry';
 export type Point = [number, number];
+export interface CityVolumePart {
+  id:string;
+  floors:number;
+  /** Emprises Paris Data en coordonnées locales métriques (x,z). */
+  polygons:Point[][][];
+}
+export interface CityVolumeGroup {
+  coverage:number;
+  maxFloors:number;
+  parts:CityVolumePart[];
+}
 export interface Building {
   id: string;
   height: number;
@@ -9,6 +20,7 @@ export interface Building {
   wallCode?: string;
   roofCode?: string;
   roofInfo?: RoofInfo;
+  volumes?: CityVolumeGroup;
   floors?: number;
 }
 export interface TileInfo { id: string; ix: number; iz: number; count: number; }
