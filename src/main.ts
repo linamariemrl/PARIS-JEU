@@ -98,7 +98,6 @@ try{
     if(selected)select(selected);else clear();
   };
   el('close').addEventListener('click',clear);
-  el('home').addEventListener('click',()=>camera.recenter());
   el('north').addEventListener('click',()=>camera.north());
   el('plus').addEventListener('click',()=>camera.zoom(.78));
   el('minus').addEventListener('click',()=>camera.zoom(1.28));
@@ -106,21 +105,29 @@ try{
   precision.addEventListener('change',()=>camera.setPrecisionMode(precision.checked));
   camera.setPrecisionMode(precision.checked);
   const orbit=el<HTMLButtonElement>('orbit-view');
-  orbit.addEventListener('click',()=>{
-    camera.setOrbitMode(!camera.isOrbitMode);
-    orbit.setAttribute('aria-pressed',String(camera.isOrbitMode));
-    orbit.textContent=camera.isOrbitMode?'Pan':'360°';
-  });
   const street=el<HTMLButtonElement>('street-view');
   const pad=el<HTMLElement>('movement-pad');
-  street.addEventListener('click',()=>{
-    const active=!camera.isStreetMode;
-    camera.setStreetMode(active);
-    street.textContent=active?'Carte':'Rue';
-    street.setAttribute('aria-pressed',String(active));
-    pad.classList.toggle('hidden',!active);
-    orbit.disabled=active;
+  function updateCameraButtons(){
+    orbit.setAttribute('aria-pressed',String(camera.isOrbitMode));
+    orbit.textContent=camera.isOrbitMode?'Pan':'360°';
+    orbit.disabled=camera.isStreetMode;
+    street.setAttribute('aria-pressed',String(camera.isStreetMode));
+    street.textContent=camera.isStreetMode?'Carte':'Rue';
+    pad.classList.toggle('hidden',!camera.isStreetMode);
+  }
+  orbit.addEventListener('click',()=>{
+    camera.setOrbitMode(!camera.isOrbitMode);
+    updateCameraButtons();
   });
+  street.addEventListener('click',()=>{
+    camera.setStreetMode(!camera.isStreetMode);
+    updateCameraButtons();
+  });
+  el('home').addEventListener('click',()=>{
+    camera.recenter();
+    updateCameraButtons();
+  });
+  updateCameraButtons();
   const held=new Set<string>();
   for(const button of Array.from(pad.querySelectorAll<HTMLButtonElement>('[data-move]'))){
     const command=button.dataset.move;
