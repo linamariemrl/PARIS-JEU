@@ -4,6 +4,7 @@ import {
 } from '@babylonjs/core';
 import { createMaterials, getPickedBuilding, highlightBuilding } from './buildings';
 import { MobileCamera } from './mobileCamera';
+import { loadInfrastructure } from './infrastructure';
 import { TileManager } from './tileManager';
 import type { Building } from './types';
 import './style.css';
@@ -18,6 +19,7 @@ const error = el<HTMLDivElement>('error');
 const state = el<HTMLElement>('state');
 const counter = el<HTMLElement>('count');
 const fps = el<HTMLElement>('fps');
+const urban = el<HTMLElement>('urban');
 
 try {
   const engine = new Engine(canvas, true, { preserveDrawingBuffer: false, stencil: false }, true);
@@ -31,7 +33,7 @@ try {
 
   const ground = MeshBuilder.CreateGround('sol', { width: 7000, height: 7000 }, scene);
   const groundMat = new StandardMaterial('sol', scene);
-  groundMat.diffuseColor = new Color3(0.72, 0.74, 0.70);
+  groundMat.diffuseColor = new Color3(0.51, 0.52, 0.49);
   groundMat.specularColor = Color3.Black();
   ground.material = groundMat;
   ground.isPickable = false;
@@ -85,6 +87,12 @@ try {
       fps.textContent = Math.round(engine.getFps()) + ' FPS';
       lastFpsUpdate = now;
     }
+  });
+  void loadInfrastructure(scene).then((message) => {
+    urban.textContent = message;
+  }).catch((e: unknown) => {
+    console.warn('Voirie OpenStreetMap', e);
+    urban.textContent = 'Voirie indisponible';
   });
   void manager.init().catch((e: unknown) => {
     error.textContent = e instanceof Error ? e.message : 'Données cartographiques non disponibles.';
