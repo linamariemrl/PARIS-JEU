@@ -23,7 +23,8 @@ export default defineConfig({
       maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
       globIgnores: [
         '**/data/4e/aerial/**',
-        '**/data/metropole/buildings/tiles/**'
+        '**/data/metropole/buildings/tiles/**',
+        '**/data/metropole/overview/**'
       ],
       runtimeCaching: [{
         urlPattern: new RegExp('data/metropole/buildings/tiles/.*[.]json$'),
@@ -31,6 +32,13 @@ export default defineConfig({
         options: {
           cacheName: 'metro-tiles-recentes',
           expiration: { maxEntries: 28, maxAgeSeconds: 60*60*24*14 }
+        }
+      }, {
+        urlPattern: new RegExp('data/metropole/overview/.*'),
+        handler: 'StaleWhileRevalidate',
+        options: {
+          cacheName: 'metro-overview-v1',
+          expiration: { maxEntries: 95, maxAgeSeconds: 60*60*24*14 }
         }
       }],
       cleanupOutdatedCaches: true
