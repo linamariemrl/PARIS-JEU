@@ -21,7 +21,7 @@ export default defineConfig({
     workbox: {
       globPatterns: ['**/*.{js,css,html,json,svg,webmanifest}'],
       runtimeCaching: [{
-        urlPattern: /\\/data\\/4e\\/aerial\\/.*\\.jpg$/,
+        urlPattern: new RegExp("data/4e/aerial/.*[.]jpg$"),
         handler: 'CacheFirst',
         options: {cacheName:'ortho-4e-images',expiration:{maxEntries:85,maxAgeSeconds:60*60*24*30}}
       }],
