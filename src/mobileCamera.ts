@@ -15,7 +15,7 @@ interface Transition{
   fromZ:number;toZ:number;
   fromAlpha:number;toAlpha:number;
 }
-const WORLD_LIMIT=1e7;
+const WORLD_LIMIT=18000;
 const MAX_SPEED=650;
 const expSmoothing=(speed:number,dt:number)=>1-Math.exp(-speed*dt);
 
@@ -85,6 +85,17 @@ export class MobileCamera{
     this.animateTo(this.camera.radius,this.camera.beta,
       this.street?2.5:this.eye(),this.camera.target.x,
       this.camera.target.z,-Math.PI/2,480);
+  }
+  /** Transition douce vers une position documentée, sans téléportation brusque. */
+  flyTo(x:number,z:number,radius:number){
+    if(![x,z,radius].every(Number.isFinite))return;
+    this.stopInertia();
+    if(this.street)this.setStreetMode(false);
+    this.orbit=false;
+    const bounded=clamp(radius,50,26000);
+    this.animateTo(bounded,.83,bounded*Math.cos(.83),
+      clamp(x,-WORLD_LIMIT,WORLD_LIMIT),
+      clamp(z,-WORLD_LIMIT,WORLD_LIMIT),this.camera.alpha,950);
   }
   recenter(){
     this.stopInertia();
