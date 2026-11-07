@@ -12,6 +12,14 @@ Le rapport `data/quality/coverage-4e.json` différencie les matériaux et les
 formes de toit documentés des façades réellement observées. À ce stade, aucune
 façade n'est encore phototexturée et associée à une preuve par image.
 
+## Prototype 0.8 : photographie aérienne et nouvelle caméra
+
+- Aucune inscription de rue affichée.
+- Glisser pour saisir la carte, pincer pour zoomer autour des doigts, tourner sans inversion, glisser deux doigts verticalement pour incliner.
+- Photographies aériennes IGN BD ORTHO, Licence Ouverte 2.0, rectifiées par GitHub Actions, affichées dans la 3D Babylon.js.
+- Les anciennes couches schématiques ne s'affichent qu'en secours en l'absence d'orthophotographies.
+- Les façades des bâtiments restent pour l'instant des reconstitutions simplifiées.
+
 ## Correctif 0.7 : noms de voies ancrés dans la scène 3D
 
 Les étiquettes projetées en 2D sont remplacées par des inscriptions réellement

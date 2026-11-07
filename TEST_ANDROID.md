@@ -107,3 +107,14 @@ Les éclairages restent illustratifs. Ni les positions des lampadaires, ni les �
 5. Regarder Paris de loin : les noms doivent disparaître. Revenir dans la rue : ils réapparaissent en petit, semi-transparents et sans cartouche.
 6. Vérifier les noms répétés des voies longues, le compteur 2 696 bâtiments et l'objectif de 30 FPS sur le même téléphone.
 7. Si un nom paraît déplacé, fournir deux captures du même endroit à deux zooms différents.
+
+## Prototype 0.8 : photographie aérienne IGN et gestes intuitifs Android
+
+1. Vérifier « PROTOTYPE 08 » et le compteur constant des 2 696 bâtiments.
+2. Vérifier que les noms de rues ont entièrement disparu. Le fichier de noms reste en données internes pour une réintroduction future, mais aucun texte ne doit être dessiné.
+3. Glisser avec un doigt vers le haut puis vers le bas : la carte doit suivre physiquement le doigt, comme une feuille que l'on déplace.
+4. Tourner les deux doigts : le terrain doit réagir dans le même sens perceptible que la manipulation. Écarter / rapprocher pour zoomer / dézoomer, sans saut brutal.
+5. Faire glisser deux doigts ensemble vers le haut : la caméra se rapproche d'une vue de l'horizon ; vers le bas : elle remonte vers la vue du dessus.
+6. En mode photographie IGN, les routes, fleuve, ponts, végétation et toitures au sol proviennent du cliché aérien. Le volume 3D des bâtiments reste procédural et doit encore être amélioré.
+7. Mesurer les FPS près d'une rue (qualités Moyenne et Haute), vérifier au moins 30 FPS. Vérifier la continuité des dalles en déplaçant la caméra.
+8. Si la photographie ne s'affiche pas, ouvrir Détails : le jeu ne doit pas inventer de photo, un fond schématique de secours reste disponible.

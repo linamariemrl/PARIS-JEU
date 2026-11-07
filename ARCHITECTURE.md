@@ -488,3 +488,21 @@ Les exigences de preuve sont explicitement distinctes : emprise IGN / volumes mu
 Les sources et licences sont suivies dans `data/sources/licences.json`. Aucune photographie externe n'est actuellement incorporée ; la disponibilité libre de Panoramax ou Wikimedia ne suffit pas à justifier la réutilisation d'un fichier particulier. Le rapport automatisé `data/quality/coverage-4e.json` compte les matériaux cadastraux et les formes de toit effectivement associés aux 2 696 identifiants IGN, tout en déclarant zéro façade photographiquement vérifiée tant que la chaîne d'appariement et de calage des photographies n'est pas opérationnelle.
 
 Les prochaines actions sont la jointure conservatrice des 8 664 volumes de la Ville de Paris aux bâtiments IGN, l'extraction des vraies arêtes exposées et le filtrage des mitoyennetés, puis l'appariement aux informations Apur et aux photographies dont la réutilisation est autorisée. Aucune substitution prématurée aux 2 696 bâtiments existants ne doit intervenir avant les contrôles Android.
+
+## 26. Prototype 0.8 : déplacements corrigés, orthophotographies IGN
+
+### Contrôles tactiles
+
+Le contrôleur Android utilise une intersection rayon/sol pour déplacer le terrain en gardant sous le doigt le point géographique initial. Cela élimine les conventions de signe instables liées à l'angle de caméra. Les déplacements de deux doigts conservent le milieu du geste comme pivot au zoom et à la rotation. Le signe de rotation est inversé par rapport au prototype 0.7, de même que le signe de l'inclinaison à deux doigts : glisser vers le haut fait voir davantage l'horizon. Le bouton Nord et le bouton recentrer sont conservés.
+
+Les noms de rues sont intégralement désactivés dans le rendu conformément à la demande explicite, sans effacer les données sources officielles. Leur réintroduction nécessitera une nouvelle demande.
+
+### Fond photographique authentique
+
+Source officielle : IGN BD ORTHO, Licence Ouverte 2.0. La Géoplateforme fournit des images par flux WMS/WMS-R. Une action GitHub prépare une mosaïque de référence et des dalles rectifiées sur le quadrillage local du 4e ; ces JPEG réutilisables sont conservés sur GitHub Pages. Aucun téléchargement de tuiles IGN en boucle depuis les téléphones des joueurs.
+
+Le moteur Babylon charge une vue d'ensemble et des dalles détaillées en fonction de la position de la caméra (cache plafonné selon la qualité) et les libère lorsqu'elles ne sont plus utiles. Aucun bâtiment 3D n'est supprimé au zoom. Les images sont au sol, sous les maillages des immeubles ; la hauteur et les façades continuent d'utiliser les données IGN et les textures provisoires existantes.
+
+Les couches graphiques de voirie, de Seine et d'arbres schématiques sont masquées si l'image aérienne est disponible afin de ne pas cacher les détails des vrais photographies. Faute de photos validées, le moteur conserve en repli l'ancienne carte schématique sans inventer de tuiles.
+
+Ces images aériennes peuvent être datées et ne sont pas de la 3D photogrammétrique. Elles ne fournissent pas les textures des façades verticales. L'objectif suivant est une reconstruction PBR fondée sur les volumes, surfaces et observations autorisées. Attribution visible dans le panneau Détails.

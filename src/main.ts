@@ -6,7 +6,7 @@ import { MobileCamera } from './mobileCamera';
 import { loadInfrastructure } from './infrastructure';
 import { TileManager } from './tileManager';
 import { TreeLayer } from './trees';
-import { StreetLabels } from './streetLabels';
+import { AerialLayer } from './aerial';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { SkyAndSun } from './sky';
 import { installNightWindows } from './nightWindows';
@@ -49,7 +49,7 @@ try {
   const updateNightWindows = installNightWindows(scene, material);
   const streetLighting = new StreetLighting(scene);
   const trees = new TreeLayer(scene, message => { vegetation.textContent = message; });
-  const streetLabels = new StreetLabels(scene, engine);
+  const aerial = new AerialLayer(scene);
   const manager = new TileManager(scene, material, (message, number) => {
     state.textContent = message;
     counter.textContent = number.toLocaleString('fr-FR') + ' bâtiments chargés';
@@ -107,6 +107,7 @@ try {
     manager.setQuality(level);
     trees.setQuality(level);
     streetLighting.setQuality(level);
+    aerial.setQuality(level);
     engine.setHardwareScalingLevel(level === 'low' ? 1.65 : level === 'medium' ? 1.30 : 1);
   });
   quality.dispatchEvent(new Event('change'));
@@ -144,28 +145,37 @@ try {
     manager.update(camera.camera.target.x, camera.camera.target.z);
     trees.update(camera.camera.target.x, camera.camera.target.z);
     streetLighting.updatePosition(camera.camera.target.x, camera.camera.target.z);
-    streetLabels.update(camera.camera.radius, camera.camera.target.x, camera.camera.target.z);
+    aerial.update(camera.camera.target.x, camera.camera.target.z);
     if (now - lastFpsUpdate > 1000) {
       fps.textContent = Math.round(engine.getFps()) + ' FPS';
       lastFpsUpdate = now;
     }
   });
-  void streetLighting.init().catch((e: unknown) => {
-    console.warn('Mobilier lumineux simulé',e);
-  });
-  void streetLabels.init().catch((e: unknown) => {
-    console.warn('Noms officiels des voies', e);
-    el('streets').textContent = 'Noms de rues indisponibles';
-  });
-  void trees.init().catch((e: unknown) => {
-    console.warn('Arbres Paris Data', e);
-    vegetation.textContent = 'Arbres indisponibles';
-  });
-  void loadInfrastructure(scene).then((message) => {
-    urban.textContent = message;
-  }).catch((e: unknown) => {
-    console.warn('Voirie OpenStreetMap', e);
-    urban.textContent = 'Voirie indisponible';
+  // Les objets schématiques ne doivent PAS masquer les photos réelles.
+  // Repli vérifiable : si l'IGN est indisponible, l'ancienne carte reste utilisable.
+  void aerial.init().then(ready=>{
+    if(ready){
+      urban.textContent='Fond photographique IGN BD ORTHO';
+      vegetation.textContent='Végétation visible sur photo aérienne';
+    }else{
+      urban.textContent='Photos IGN absentes, fond schématique de secours';
+      void streetLighting.init().catch(console.warn);
+      void trees.init().catch(e=>{
+        console.warn('Arbres Paris Data',e);
+        vegetation.textContent='Arbres indisponibles';
+      });
+      void loadInfrastructure(scene).then(message=>{
+        urban.textContent=message;
+      }).catch(e=>{
+        console.warn('Voirie OpenStreetMap',e);
+        urban.textContent='Voirie indisponible';
+      });
+    }
+  }).catch(e=>{
+    console.warn('Fond photographique indisponible',e);
+    urban.textContent='Photographies IGN indisponibles';
+    void loadInfrastructure(scene).catch(console.warn);
+    void trees.init().catch(console.warn);
   });
   void manager.init().catch((e: unknown) => {
     error.textContent = e instanceof Error ? e.message : 'Données cartographiques non disponibles.';

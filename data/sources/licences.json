@@ -89,6 +89,14 @@
       "license": "CC0",
       "status": "non importé",
       "role": "textures et modèles architecturaux"
+    },
+    {
+      "id": "ign_bdortho",
+      "name": "IGN BD ORTHO",
+      "url": "https://www.data.gouv.fr/datasets/bd-ortho-r",
+      "license": "Licence Ouverte 2.0",
+      "status": "en préparation",
+      "role": "orthophotographie réelle des routes, sols, toitures au sol et végétation ; diffusion locale GitHub Pages"
     }
   ],
   "importedPhotographs": [],
