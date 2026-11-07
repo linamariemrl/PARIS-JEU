@@ -28,3 +28,7 @@ button.time-btn[aria-pressed="true"]{background:#58758c;border-color:#cfdfeb}
 @media (max-width:360px){#time-panel{padding:7px}#game-clock{font-size:11px}
   .time-controls{gap:3px}button.time-btn{width:30px;min-width:29px}
   #moon-phase{font-size:9px}}
+
+/* Matériaux 0.6 : libellé discret, la sélection explicite les incertitudes. */
+footer #materials-status{font-size:10px;color:#d5dde1}
+#selection{max-height:min(68dvh,450px);overflow-y:auto}

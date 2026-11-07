@@ -12,6 +12,7 @@ import { SkyAndSun } from './sky';
 import { installNightWindows } from './nightWindows';
 import { StreetLighting } from './streetLighting';
 import type { Building } from './types';
+import { describeMaterial } from './materialCatalog';
 import './style.css';
 
 function el<T extends HTMLElement>(id: string): T {
@@ -63,11 +64,19 @@ try {
     el('height').textContent = building.height.toLocaleString('fr-FR') + ' m' + (building.estimatedHeight ? ' (estimation)' : '');
     el('usage').textContent = building.usage || 'Non renseigné';
     const styles = { residential: 'habillage résidentiel stylisé', commercial: 'habillage commercial stylisé', religious: 'habillage religieux stylisé', neutral: 'habillage neutre stylisé' };
-    el('skin').textContent = styles[facadeCategory(building)];
+    el('skin').textContent = building.wallCode ?
+      'habillage correspondant au matériau cadastral, détails illustratifs' :
+      styles[facadeCategory(building)];
+    el('wall-real').textContent = describeMaterial(building.wallCode,false);
+    el('roof-real').textContent = describeMaterial(building.roofCode,true);
+    el('floors-real').textContent = building.floors ?
+      building.floors.toLocaleString('fr-FR') + ' niveau(x) déclarés' :
+      'non renseigné';
     el('identifier').textContent = building.id;
-    el('caveat').textContent = building.estimatedHeight ?
-      'Hauteur indicative : donnée IGN manquante. Revêtement et toiture illustratifs.' :
-      'Emprise et hauteur issues de la BD TOPO IGN. Revêtement et toiture illustratifs, non vérifiés individuellement.';
+    el('caveat').textContent =
+      (building.estimatedHeight ? 'Hauteur indicative. ' : 'Emprise et hauteur IGN. ') +
+      'Matériaux de gros murs et de couverture issus des données fiscales lorsqu’ils sont connus ; ' +
+      'le parement visible, la pente du toit et les fenêtres sont encore illustratifs.';
   };
   camera.onTap = (x, y) => {
     const hit = scene.pick(x, y, mesh => mesh.isPickable && Boolean(mesh.metadata));

@@ -4,6 +4,15 @@ import type { Manifest, TileFile, TileInfo } from './types';
 
 const root = import.meta.env.BASE_URL + 'data/4e/';
 interface Loaded { meshes: Mesh[]; count: number; }
+interface BuildingMaterialRecord {wall?:string;roof?:string;floors?:number;}
+interface MaterialOverlay {
+  schema:number;
+  totalBuildings:number;
+  matchedBuildings:number;
+  withWallMaterial:number;
+  withRoofMaterial:number;
+  byId:Record<string,BuildingMaterialRecord>;
+}
 
 /**
  * Mode pilote 4e : les 27 tuiles de bâtiments sont conservées en mémoire.
@@ -17,6 +26,7 @@ export class TileManager {
   private active = new Map<string, Loaded>();
   private failed = new Set<string>();
   private ready = false;
+  private overlay:Record<string,BuildingMaterialRecord>={};
 
   constructor(
     private scene: Scene,
@@ -32,6 +42,23 @@ export class TileManager {
       throw new Error('Manifeste IGN invalide.');
     }
     this.manifest = manifest;
+    // Couche séparée par identifiant IGN : les géométries historiques restent intactes.
+    try {
+      const source = await fetch(root + 'materials.json');
+      if(source.ok){
+        const data=await source.json() as MaterialOverlay;
+        if(data.schema===1 && data.totalBuildings===manifest.buildings &&
+           data.byId && typeof data.byId==='object'){
+          this.overlay=data.byId;
+          const el=document.getElementById('materials-status');
+          if(el)el.textContent =
+            data.withWallMaterial.toLocaleString('fr-FR') + ' murs / ' +
+            data.withRoofMaterial.toLocaleString('fr-FR') + ' toitures documentés';
+        }
+      }
+    } catch(e) {
+      console.warn('Attributs cadastraux optionnels non disponibles',e);
+    }
     // Jusqu'à trois téléchargements simultanés sans saturation du téléphone.
     const queue = manifest.tiles.slice();
     const worker = async () => {
@@ -57,6 +84,13 @@ export class TileManager {
       const data = await response.json() as TileFile;
       if (data.schema !== 1 || !Array.isArray(data.buildings) || data.buildings.length !== tile.count) {
         throw new Error('Tuile IGN invalide : ' + tile.id);
+      }
+      for(const building of data.buildings){
+        const documented=this.overlay[building.id];
+        if(!documented)continue;
+        if(documented.wall)building.wallCode=documented.wall;
+        if(documented.roof)building.roofCode=documented.roof;
+        if(documented.floors)building.floors=documented.floors;
       }
       this.active.set(tile.id, {
         meshes: createTile(this.scene, data, this.materials),

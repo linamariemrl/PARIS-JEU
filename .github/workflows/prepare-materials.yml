@@ -6,6 +6,7 @@ on:
     paths:
       - '.github/workflows/prepare-materials.yml'
       - 'scripts/prepare_materials.py'
+      - 'tests/test_materials.py'
   workflow_dispatch:
 
 permissions:
