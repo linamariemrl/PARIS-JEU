@@ -1,119 +1,159 @@
 #!/usr/bin/env python3
-"""Extraire les noms de rues sourcés de l'IGN BD TOPO (sans toponymes inventés).
+"""Noms de voies géolocalisés, référentiel officiel des voies actuelles de Paris.
 
-Les noms sont pris uniquement dans les champs odonymiques documentés des tronçons.
-Chaque rue nommée a au moins un point d'ancrage ; les rues longues en ont plusieurs.
-Le rendu peut répartir les textes en cas de chevauchement à petite échelle.
+Les noms et emprises viennent de la Ville de Paris, sans génération fictive.
+Chaque voie du 4e possédant un nom et une géométrie dispose d'une étiquette.
+La projection écran est effectuée côté navigateur, indépendamment du zoom.
 """
 from __future__ import annotations
 
 import json
 import math
-from collections import defaultdict
+import time
 from datetime import datetime, timezone
 from pathlib import Path
+from urllib.parse import urlencode
+from urllib.request import Request, urlopen
+from urllib.error import HTTPError, URLError
 
-from shapely.geometry import box, shape
+from shapely.geometry import shape
 from shapely.ops import transform
 
 from prepare_4e import ll_to_xy
-from prepare_ign_infrastructure import BOUNDARY, wfs_layer, flatten_lines
 
-DEST = Path(__file__).resolve().parents[1] / "public/data/4e/street-names.json"
-FIELDS = (
-    "nom_ban_g", "nom_ban_d", "nom_ban_gauche", "nom_ban_droite",
-    "nom_collaboratif_gauche", "nom_collaboratif_droite",
-    "nom_collaboratif_g", "nom_collaboratif_d",
-    "cpx_toponyme_route_nommee", "nom_voie_ban_g", "nom_voie_ban_d",
-    "nom_1_g", "nom_1_d", "toponyme",
-)
-INVALID = {"", "sans valeur", "inconnu", "indéterminé", "non renseigné", "none", "null", "nc", "nr"}
+ROOT = Path(__file__).resolve().parents[1]
+DEST = ROOT / "public/data/4e/street-names.json"
+BOUNDARY = ROOT / "public/data/4e/boundary.geojson"
+API = ("https://opendata.paris.fr/api/explore/v2.1/catalog/datasets/"
+       "denominations-emprises-voies-actuelles/records")
+LICENSE = "ODbL 1.0"
+
+def fetch_page(offset):
+    params = {"refine": "arrdt:04e", "limit": 100, "offset": offset}
+    url = API + "?" + urlencode(params)
+    last = None
+    for attempt in range(4):
+        try:
+            req = Request(url, headers={"Accept":"application/json",
+                  "User-Agent":"PARIS-city-game/0.4 (non-commercial)"})
+            with urlopen(req, timeout=60) as response:
+                data = json.load(response)
+            if not isinstance(data,dict) or not isinstance(data.get("results"), list):
+                raise ValueError("Réponse Paris Data invalide")
+            return data
+        except (HTTPError, URLError, TimeoutError, ValueError, OSError) as exc:
+            last=exc
+            time.sleep(1 + 2**attempt)
+    raise RuntimeError("Noms des voies indisponibles : " + str(last))
 
 def normalize(value):
-    if not isinstance(value, str):
-        return None
-    value = " ".join(value.replace("\x00", " ").split()).strip()
-    return value if 2 <= len(value) <= 110 and value.casefold() not in INVALID else None
+    if not isinstance(value,str): return ""
+    return " ".join(value.replace("\x00"," ").split()).strip()
 
-def names(props):
-    found = []
-    for key in FIELDS:
-        name = normalize(props.get(key))
-        if name and name.casefold() not in [n.casefold() for n in found]:
-            found.append(name)
-    return found
+def street_name(record):
+    name=normalize(record.get("nomvoie"))
+    if not name: return None
+    type_name=normalize(record.get("typvoie"))
+    pre_name=normalize(record.get("prevoie"))
+    words=[v for v in (type_name, pre_name, name) if v]
+    return " ".join(words).replace("  "," ").strip()
 
-def anchor(line):
-    mid = line.interpolate(0.5, normalized=True)
-    delta = min(max(2., line.length * 0.06), 9.)
-    a = line.interpolate(max(0., line.length / 2 - delta))
-    b = line.interpolate(min(line.length, line.length / 2 + delta))
-    angle = math.degrees(math.atan2(b.y-a.y, b.x-a.x))
-    return [round(mid.x, 1), round(mid.y, 1), round(angle, 1)]
+def local(x,y,z=None):
+    return ll_to_xy(x,y)
 
-def candidates(features, extent):
-    by_name = defaultdict(list)
-    named_sections = 0
-    unnamed_sections = 0
-    for feat in features:
-        geom = feat.get("geometry")
-        if not geom:
-            continue
-        props = feat.get("properties") or {}
-        nms = names(props)
-        if not nms:
-            unnamed_sections += 1
-            continue
-        g = transform(lambda x, y, z=None: ll_to_xy(x, y), shape(geom))
-        if not g.intersects(extent):
-            continue
-        for line in flatten_lines(g.intersection(extent)):
-            if line.length < 5:
-                continue
-            named_sections += 1
-            for name in nms[:2]:
-                by_name[name].append(line)
-    points = []
-    for name, lines in sorted(by_name.items()):
-        # Un point obligatoire par dénomination, même pour une voie très courte.
-        lines.sort(key=lambda l: l.length, reverse=True)
-        chosen = [lines[0]]
-        for line in lines[1:]:
-            if len(chosen) >= 12:
-                break
-            mid = line.interpolate(0.5, normalized=True)
-            if all(mid.distance(other.interpolate(0.5, normalized=True)) >= 125 for other in chosen):
-                chosen.append(line)
-        for i, line in enumerate(chosen):
-            x, z, angle = anchor(line)
-            points.append({"id": f"{name}|{i}", "name": name, "x": x, "z": z, "angle": angle, "length": round(line.length)})
-    return points, len(by_name), named_sections, unnamed_sections
+def polygon_parts(geom):
+    if geom.is_empty: return []
+    if geom.geom_type=="Polygon": return [geom]
+    if geom.geom_type in ("GeometryCollection","MultiPolygon"):
+        return [p for item in geom.geoms for p in polygon_parts(item)]
+    return []
+
+def street_angle(geom):
+    rectangle=geom.minimum_rotated_rectangle
+    if rectangle.geom_type!="Polygon": return 0.
+    coords=list(rectangle.exterior.coords)
+    edge=max(( (math.hypot(b[0]-a[0],b[1]-a[1]),a,b)
+               for a,b in zip(coords,coords[1:])),key=lambda x:x[0])
+    a,b=edge[1:]
+    return round(math.degrees(math.atan2(b[1]-a[1],b[0]-a[0])), 1)
+
+def encode_record(record, boundary):
+    arr=record.get("arrdt") or []
+    if isinstance(arr,str): arr=[arr]
+    if "04e" not in arr: return None
+    label=street_name(record)
+    if not label: return None
+    data=record.get("geo_shape")
+    if not isinstance(data,dict): return None
+    geo=shape(data.get("geometry") or data)
+    if geo.is_empty: return None
+    if not geo.is_valid: geo=geo.buffer(0)
+    if geo.is_empty or not geo.intersects(boundary): return None
+    geo=geo.intersection(boundary)
+    parts=polygon_parts(geo)
+    if not parts: return None
+    parts.sort(key=lambda x:x.area,reverse=True)
+    anchor=transform(local,parts[0])
+    point=anchor.representative_point()
+    return {
+        "id":str(record.get("id") or record.get("cvoie") or label),
+        "name":label,
+        "x":round(point.x,1),
+        "z":round(point.y,1),
+        "angle":street_angle(anchor),
+        "kind":normalize(record.get("typvoie")),
+        "length":round(float(anchor.length),1),
+    }
 
 def main():
-    boundary = shape(json.loads(BOUNDARY.read_text(encoding="utf-8"))["geometry"])
-    west, south, east, north = boundary.bounds
-    padding = 0.0012
-    bbox = west-padding, south-padding, east+padding, north+padding
-    x0,z0 = ll_to_xy(bbox[0],bbox[1])
-    x1,z1 = ll_to_xy(bbox[2],bbox[3])
-    points, unique, sections, missing = candidates(wfs_layer("troncon_de_route", bbox), box(x0,z0,x1,z1))
-    if unique < 80 or len(points) < 100:
-        raise RuntimeError(f"Relevé odonymique insuffisant : {unique} rues, {len(points)} étiquettes")
-    data = {
-        "schema": 1,
-        "source": "IGN BD TOPO V3, noms de voies",
-        "sourceUrl": "https://geoservices.ign.fr/bdtopo",
-        "extractedAt": datetime.now(timezone.utc).isoformat(),
-        "namedStreets": unique,
-        "namedSections": sections,
-        "unnamedSections": missing,
-        "count": len(points),
-        "labels": points
+    boundary_data=json.loads(BOUNDARY.read_text(encoding="utf-8"))
+    boundary=shape(boundary_data["geometry"])
+    # Légère marge pour les voies bordant deux arrondissements.
+    boundary=boundary.buffer(0.00015)
+    all_records=[]
+    total=None
+    for offset in range(0,1000,100):
+        data=fetch_page(offset)
+        if total is None:
+            total=int(data.get("total_count",0))
+            if not 100 <= total <= 750:
+                raise RuntimeError("Le filtre des voies du 4e n'a pas fonctionné : "+str(total))
+        all_records.extend(data["results"])
+        if len(all_records)>=total: break
+    if total is None or len(all_records)<total:
+        raise RuntimeError(f"Pagination des voies incomplète : {len(all_records)}/{total}")
+    seen=set()
+    labels=[]
+    no_name=0
+    no_geometry=0
+    for row in all_records:
+        item=encode_record(row,boundary)
+        if item:
+            if item["id"] in seen:
+                continue
+            seen.add(item["id"])
+            labels.append(item)
+        elif not street_name(row):
+            no_name+=1
+        else:
+            no_geometry+=1
+    if len(labels)<130:
+        raise RuntimeError(f"Seulement {len(labels)} voies géolocalisées sur {total}")
+    labels.sort(key=lambda a:(a["name"].casefold(),a["id"]))
+    result={
+      "schema":1, "source":"Ville de Paris, dénominations des emprises des voies actuelles",
+      "sourceUrl":"https://opendata.paris.fr/explore/dataset/denominations-emprises-voies-actuelles/",
+      "license":LICENSE, "extractedAt":datetime.now(timezone.utc).isoformat(),
+      "officialCount":total, "namedStreets":len(labels),
+      "unnamedOfficialRecords":no_name,"unlocatedOfficialRecords":no_geometry,
+      "count":len(labels), "labels":labels,
     }
-    DEST.parent.mkdir(parents=True, exist_ok=True)
-    temp = DEST.with_suffix(".tmp")
-    temp.write_text(json.dumps(data, ensure_ascii=False, separators=(",",":")),encoding="utf-8")
+    DEST.parent.mkdir(parents=True,exist_ok=True)
+    temp=DEST.with_suffix(".tmp")
+    temp.write_text(json.dumps(result,ensure_ascii=False,separators=(",",":")),encoding="utf-8")
     temp.replace(DEST)
-    print(f"Noms IGN extraits : {unique} voies nommées, {len(points)} positions, {missing} tronçons sans nom.")
-if __name__ == "__main__":
+    print(f"Voies nommées du 4e : {len(labels)} étiquettes / {total} enregistrements officiels")
+    print(f"Sans nom : {no_name}, sans géométrie exploitable : {no_geometry}")
+
+if __name__=="__main__":
     main()
