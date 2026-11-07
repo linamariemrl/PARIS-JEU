@@ -32,6 +32,7 @@ jobs:
               if items:
                 row=items[0]; props=row.get('properties',row)
                 print('FIELDS',list(props.keys()))
+                print('SAMPLE_DATA', [(k,str(props.get(k))[:120]) for k in ('arrdt','typvoie','prevoie','nomvoie','geo_shape','geo_point_2d')])
                 for k,v in props.items():
                   if 'nom' in k.lower() or 'geom' in k.lower() or 'arron' in k.lower() or 'voie' in k.lower() or 'topon' in k.lower():
                     print('SAMPLE',k,str(v)[:600])
