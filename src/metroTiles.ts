@@ -25,6 +25,10 @@ export class MetroTileManager{
   private inFlight=new Set<string>();
   private wanted=new Set<string>();
   private tileCache=new Map<string,TileFile>();
+  // Réserve CPU de réponses brutes : le réseau est anticipé pendant le geste,
+  // mais JSON.parse et les triangles GPU attendent l'arrêt du doigt.
+  private rawTileCache=new Map<string,ArrayBuffer>();
+  private rawTileInFlight=new Map<string,Promise<ArrayBuffer>>();
   private tileMeters=800;
   private ready=false;
   private budget=18;
@@ -93,6 +97,22 @@ export class MetroTileManager{
     }).slice(0,this.budget);
 
     this.wanted=new Set(candidates.map(t=>t.id));
+    // Pendant le déplacement, ne lancer que les téléchargements des deux
+    // secteurs les plus proches. Ne pas décoder ni trianguler pendant le geste.
+    if(isMoving&&navigator.onLine){
+      const connection=(navigator as Navigator&{
+        connection?:{saveData?:boolean};
+      }).connection;
+      if(!connection?.saveData){
+        for(const tile of candidates.slice(0,2)){
+          if(this.tileCache.has(tile.id)||this.rawTileCache.has(tile.id)||
+             this.rawTileInFlight.has(tile.id))continue;
+          if(this.rawTileInFlight.size>=2)break;
+          void this.rawOf(tile).catch(error=>
+            console.warn('Préchargement des bâtiments IGN',tile.id,error));
+        }
+      }
+    }
     // Au grand dézoom, restituer les tuiles exactes à la couche LOD
     // déjà disponible : les anciennes géométries ne saturent plus le GPU.
     if(radius>5600&&!isMoving){
@@ -147,6 +167,36 @@ export class MetroTileManager{
     return true;
   }
 
+  /** Réutilise les téléchargements commencés en navigation et évite les
+   * demandes réseau concurrentes pour une même tuile. Cache LRU borné. */
+  private rawOf(tile:Info):Promise<ArrayBuffer>{
+    const cached=this.rawTileCache.get(tile.id);
+    if(cached){
+      this.rawTileCache.delete(tile.id);
+      this.rawTileCache.set(tile.id,cached);
+      return Promise.resolve(cached);
+    }
+    const pending=this.rawTileInFlight.get(tile.id);
+    if(pending)return pending;
+    const request=fetch(PREFIX+'tiles/'+tile.id+'.json')
+      .then(async response=>{
+        if(!response.ok)throw Error('Tuile absente : '+tile.id);
+        const bytes=await response.arrayBuffer();
+        if(!bytes.byteLength||bytes.byteLength!==tile.bytes)
+          throw Error('Réponse IGN incomplète : '+tile.id);
+        this.rawTileCache.delete(tile.id);
+        this.rawTileCache.set(tile.id,bytes);
+        while(this.rawTileCache.size>8){
+          const oldest=this.rawTileCache.keys().next().value;
+          if(oldest===undefined)break;
+          this.rawTileCache.delete(oldest);
+        }
+        return bytes;
+      }).finally(()=>this.rawTileInFlight.delete(tile.id));
+    this.rawTileInFlight.set(tile.id,request);
+    return request;
+  }
+
   private remember(id:string,data:TileFile):void{
     this.tileCache.delete(id);
     this.tileCache.set(id,data);
@@ -162,9 +212,10 @@ export class MetroTileManager{
     try{
       let data=this.tileCache.get(tile.id);
       if(!data){
-        const response=await fetch(PREFIX+'tiles/'+tile.id+'.json');
-        if(!response.ok)throw Error('Tuile absente : '+tile.id);
-        data=await response.json() as TileFile;
+        const bytes=await this.rawOf(tile);
+        if(!this.wanted.has(tile.id))return;
+        data=JSON.parse(new TextDecoder().decode(bytes)) as TileFile;
+        this.rawTileCache.delete(tile.id);
         if(data.schema!==2||data.id!==tile.id||
           data.buildings.length!==tile.count||!data.localCoordinates)
           throw Error('Tuile IGN invalide : '+tile.id);
@@ -228,13 +279,16 @@ export class MetroTileManager{
       try{
         let doc=this.tileCache.get(info.id);
         if(!doc){
-          const result=await fetch(PREFIX+'tiles/'+info.id+'.json');
-          if(!result.ok)continue;
-          doc=await result.json() as TileFile;
+          const bytes=await this.rawOf(info);
+          doc=JSON.parse(new TextDecoder().decode(bytes)) as TileFile;
+          this.rawTileCache.delete(info.id);
           if(doc.schema!==2||doc.id!==info.id||
              !Array.isArray(doc.buildings)||doc.buildings.length!==info.count)
             continue;
-          doc.buildings.forEach(b=>b.localCoordinates=true);
+          doc.buildings.forEach(b=>{
+            b.localCoordinates=true;
+            tagHeritageBuilding(b);
+          });
           this.remember(info.id,doc);
         }
         for(const building of doc.buildings){
