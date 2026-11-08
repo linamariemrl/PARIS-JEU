@@ -2,7 +2,7 @@ import {GameClock} from '../gameClock';
 import {IndicatorStore} from './indicatorStore';
 import {FinanceModule} from './modules/finances';
 import {EnvironmentModule} from './modules/environment';
-import {SaveStore,validateSave,type GameSave} from './saveStore';
+import {SaveStore,validateSave,validateBundle,type GameSave,type SaveBundle} from './saveStore';
 import {phaseOf,registerDossier,type Dossier,type DossierAction,type SelectedPlace} from './dossiers';
 
 const money=(v:number)=>new Intl.NumberFormat('fr-FR',{
@@ -21,6 +21,10 @@ export class GameManagement {
  private dossiers:Dossier[]=[];
  private selected:SelectedPlace|null=null;
  private lastDossierHour=-1;
+ private restored=false;
+ private writing=false;
+ private pendingSave=false;
+ private lastAutosave=Date.now();
  private currentName='Partie principale';
  private currentSlot='principal';
  private createdAt=new Date().toISOString();
@@ -32,6 +36,7 @@ export class GameManagement {
   node<HTMLButtonElement>('save-now').addEventListener('click',()=>void this.save());
   node<HTMLButtonElement>('save-new').addEventListener('click',()=>void this.save(true));
   node<HTMLButtonElement>('save-export').addEventListener('click',()=>void this.export());
+  node<HTMLButtonElement>('save-export-all').addEventListener('click',()=>void this.exportAll());
   node<HTMLInputElement>('save-import').addEventListener('change',e=>void this.import(e));
   void this.finance.loadOfficial(import.meta.env.BASE_URL).then(()=>this.render());
   void this.environment.load(import.meta.env.BASE_URL).then(()=>this.render());
@@ -41,10 +46,44 @@ export class GameManagement {
   ];
   for(const [id,action] of actions)
    node<HTMLButtonElement>(id).addEventListener('click',()=>void this.act(action));
-  void this.saves.get('principal').then(value=>{
-   // Reprise locale de la partie principale, sans modifier les anciens fichiers.
-   if(value&&this.currentSlot==='principal')void this.load('principal');
-  }).catch(console.warn);
+  try{
+   const slot=window.localStorage.getItem('paris.activeSlot');
+   if(slot&&/^[a-zA-Z0-9_-]{1,50}$/.test(slot))this.currentSlot=slot;
+  }catch{/* Stockage local non accessible dans certains modes privés. */}
+  void this.restoreActive();
+  document.addEventListener('visibilitychange',()=>{
+   if(document.hidden)void this.autosave(true);
+  });
+  window.addEventListener('pagehide',()=>void this.autosave(true));
+ }
+ private async restoreActive():Promise<void>{
+  try{
+   const save=await this.saves.get(this.currentSlot);
+   if(save)await this.load(this.currentSlot);
+  }catch(error){console.warn('Restauration de la dernière partie',error);}
+  finally{this.restored=true;this.lastAutosave=Date.now();}
+ }
+ private rememberSlot(){
+  try{window.localStorage.setItem('paris.activeSlot',this.currentSlot);}
+  catch{/* Les parties restent en IndexedDB. */}
+ }
+ /** Sauvegardes sérialisées : aucune écriture avant restauration. */
+ async autosave(force=false):Promise<void>{
+  if(!this.restored||(!force&&Date.now()-this.lastAutosave<30000))return;
+  if(this.writing){this.pendingSave=true;return;}
+  this.writing=true;
+  try{
+   await this.saves.put(this.currentSlot,this.snapshot());
+   this.lastAutosave=Date.now();this.rememberSlot();
+   node('autosave-status').textContent=
+    'Sauvegarde auto : '+new Date().toLocaleTimeString('fr-FR');
+  }catch(error){
+   node('autosave-status').textContent='Sauvegarde automatique impossible : '+
+    String(error);
+  }finally{
+   this.writing=false;
+   if(this.pendingSave){this.pendingSave=false;void this.autosave(true);}
+  }
  }
  setSelection(place:SelectedPlace):void{
   this.selected=place;
@@ -68,6 +107,7 @@ export class GameManagement {
   }catch(error){node('location-action-status').textContent='Erreur : '+String(error);}
  }
  tickDossiers():void{
+  if(Date.now()-this.lastAutosave>=30000)void this.autosave();
   const hour=Math.floor(this.clock.current/3_600_000);
   if(hour===this.lastDossierHour)return;
   this.lastDossierHour=hour;
@@ -169,6 +209,7 @@ export class GameManagement {
   const val=(id:string)=>Number(node<HTMLInputElement>(id).value);
   this.finance.propose(val('op-change'),val('cap-change'),val('borrow-change'),this.clock.current);
   this.status('Proposition enregistrée dans le scénario. Vote du Conseil de Paris non simulé.');
+  void this.autosave(true);
   void this.render();
  }
  private snapshot():GameSave{
@@ -190,6 +231,7 @@ export class GameManagement {
       this.createdAt=new Date().toISOString();
     }
     await this.saves.put(this.currentSlot,this.snapshot());
+    this.rememberSlot();this.lastAutosave=Date.now();
     this.status('Sauvegarde enregistrée localement sur ce téléphone.');
     await this.render();
   }catch(e){this.status('Impossible de sauvegarder : '+String(e));}
@@ -200,6 +242,7 @@ export class GameManagement {
     if(!s)return;
     const v=validateSave(s);
     this.currentSlot=slot;this.currentName=v.name;
+    this.rememberSlot();
     this.createdAt=v.createdAt;
     this.clock.restore(v.gameTimestamp,v.timeRate);
     this.onRateChange(v.timeRate);
@@ -217,30 +260,56 @@ export class GameManagement {
     await this.saves.remove(slot);
     if(slot===this.currentSlot){
       this.currentSlot='principal';this.currentName='Partie principale';
-      this.createdAt=new Date().toISOString();
+      this.createdAt=new Date().toISOString();this.rememberSlot();
     }
     this.status('Sauvegarde supprimée.');
     await this.render();
   }catch(e){this.status('Suppression impossible : '+String(e));}
  }
- private async export(){
-  const text=JSON.stringify(this.snapshot(),null,2);
-  const url=URL.createObjectURL(new Blob([text],{type:'application/json'}));
+ private download(content:string,filename:string){
+  const url=URL.createObjectURL(new Blob([content],{type:'application/json'}));
   const link=document.createElement('a');
-  link.href=url;link.download='PARIS-partie-'+Date.now()+'.json';
-  link.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+  link.href=url;link.download=filename;link.click();
+  setTimeout(()=>URL.revokeObjectURL(url),1000);
+ }
+ private async exportAll(){
+  try{
+   const rows=await this.saves.list();
+   const saves=rows.filter(row=>row.slot!==this.currentSlot);
+   saves.push({slot:this.currentSlot,save:this.snapshot()});
+   if(saves.length>30)throw Error('Plus de 30 cases : export par partie nécessaire');
+   const bundle:SaveBundle={format:'paris-save-bundle',schema:1,
+     exportedAt:new Date().toISOString(),saves};
+   this.download(JSON.stringify(bundle,null,2),'PARIS-toutes-parties-'+Date.now()+'.json');
+   this.status(saves.length+' sauvegardes exportées.');
+  }catch(error){this.status('Export global impossible : '+String(error));}
+ }
+ private async export(){
+  this.download(JSON.stringify(this.snapshot(),null,2),'PARIS-partie-'+Date.now()+'.json');
   this.status('Export JSON lancé vers les téléchargements Android.');
  }
  private async import(event:Event){
   const input=event.target as HTMLInputElement;
   const file=input.files?.[0];if(!file)return;
   try{
-    if(file.size>3e6)throw Error('Fichier supérieur à 3 Mo');
-    const value=validateSave(JSON.parse(await file.text()));
-    const slot='importe-'+Date.now();
-    await this.saves.put(slot,value);
-    await this.load(slot);
-    this.status('Import effectué. Sauvegarde locale créée.');
+    if(file.size>8e6)throw Error('Fichier supérieur à 8 Mo');
+    const parsed:unknown=JSON.parse(await file.text());
+    if(parsed&&typeof parsed==='object'&&
+      (parsed as {format?:string}).format==='paris-save-bundle'){
+     const bundle=validateBundle(parsed);
+     let first='';
+     for(let i=0;i<bundle.saves.length;i++){
+      const slot='importe-'+Date.now()+'-'+i;
+      if(!first)first=slot;
+      await this.saves.put(slot,bundle.saves[i].save);
+     }
+     await this.load(first);
+     this.status(bundle.saves.length+' parties restaurées sans écraser les anciennes.');
+    }else{
+     const value=validateSave(parsed),slot='importe-'+Date.now();
+     await this.saves.put(slot,value);await this.load(slot);
+     this.status('Import effectué. Sauvegarde locale créée.');
+    }
   }catch(e){this.status('Import refusé : '+String(e));}
   input.value='';
  }

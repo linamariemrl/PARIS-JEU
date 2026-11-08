@@ -3,6 +3,7 @@ import type {Indicator} from './indicatorStore';
 import {validateDossiers,type Dossier} from './dossiers';
 
 export const SAVE_SCHEMA=1;
+export const BUNDLE_SCHEMA=1;
 export interface GameSave {
  schema:1;name:string;createdAt:string;updatedAt:string;
  gameTimestamp:number;timeRate:0|1|10|60;
@@ -10,7 +11,26 @@ export interface GameSave {
  indicators:Indicator[];
  dossiers?:Dossier[]; // extension facultative : anciens JSON v1 toujours valides
 }
-interface DbSave{slot:string;save:GameSave}
+export interface DbSave{slot:string;save:GameSave}
+export interface SaveBundle{
+ format:'paris-save-bundle';schema:1;exportedAt:string;saves:DbSave[];
+}
+export function validateBundle(value:unknown):SaveBundle{
+ if(!value||typeof value!=='object')throw Error('Archive invalide');
+ const b=value as Partial<SaveBundle>;
+ if(b.format!=='paris-save-bundle'||b.schema!==BUNDLE_SCHEMA||
+    !Number.isFinite(Date.parse(b.exportedAt??''))||
+    !Array.isArray(b.saves)||b.saves.length<1||b.saves.length>30)
+  throw Error('Archive incompatible');
+ const ids=new Set<string>();
+ for(const item of b.saves){
+  if(!item||typeof item.slot!=='string'||!item.slot||
+     item.slot.length>50||ids.has(item.slot))
+   throw Error('Case de sauvegarde invalide ou doublonnée');
+  ids.add(item.slot);validateSave(item.save);
+ }
+ return b as SaveBundle;
+}
 const DB_NAME='paris-ville-saves-v1',STORE='games';
 function open():Promise<IDBDatabase>{
  return new Promise((resolve,reject)=>{

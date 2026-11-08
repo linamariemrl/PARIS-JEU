@@ -1,3 +1,29 @@
+## 0.25.8 — application Android installable, autosauvegardes
+
+L'application PWA (déjà configurée) s'installe depuis le nouveau bouton
+« Installer PARIS » dans l'aide. Elle se lance sur Android sans barre
+Chrome avec sa propre icône. Il ne s'agit pas d'un APK natif ; un
+conditionnement Android autonome reste une étape ultérieure.
+
+La partie est automatiquement enregistrée dans IndexedDB toutes les
+30 s et lors du passage en arrière-plan. La dernière case utilisée est
+restaurée au démarrage. Les écritures sont sérialisées afin d'éviter
+les écrasements. Le bouton « Protéger le stockage » demande le mode
+persistant à Android, sans garantie d'acceptation.
+
+Les exports JSON par partie sont conservés, et une archive JSON de
+toutes les parties peut être exportée, validée et importée dans de
+nouvelles cases sans écraser les anciennes. Ce fichier reste nécessaire
+avant une désinstallation : une PWA ne garantit pas la conservation
+des données lorsque l'utilisateur efface le stockage.
+
+Les mises à jour doivent être acceptées par le joueur : elles ne
+rechargent plus la partie sans confirmation. Les fichiers légers de
+couverture complète et de relief sont intégrés au cache du service
+worker pour améliorer l'usage hors ligne après installation. Les
+données exactes des bâtiments sont conservées au fur et à mesure
+des secteurs visités, sous réserve de l'espace disponible.
+
 ## 0.25.7 — atlas géographique complet, sans trous de quartiers
 
 La précédente limite de 15 groupes de toitures panoramiques retirait

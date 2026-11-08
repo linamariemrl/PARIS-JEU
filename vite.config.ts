@@ -4,9 +4,10 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
   base: process.env.GITHUB_ACTIONS === 'true' ? '/Paris-le-jeu/' : '/',
   plugins: [VitePWA({
-    registerType: 'autoUpdate',
+    registerType: 'prompt',
     includeAssets: ['icons/icon-192.png', 'icons/icon-512.png'],
     manifest: {
+      id: './',
       name: 'PARIS SKYLINES - Le jeu de la ville',
       short_name: 'PARIS',
       lang: 'fr',
@@ -19,18 +20,30 @@ export default defineConfig({
       ]
     },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,json,svg,webmanifest}'],
+      globPatterns: ['**/*.{js,css,html,json,svg,webmanifest}',
+        'data/metropole/coverage/*.{bin,json}',
+        'data/metropole/terrain/elevation.bin'],
       maximumFileSizeToCacheInBytes: 30 * 1024 * 1024,
       globIgnores: [
         '**/data/4e/aerial/**',
         '**/data/metropole/buildings/tiles/**',
         '**/data/metropole/overview/**',
         '**/data/metropole/surfaces/**',
-        '**/data/metropole/terrain/**',
+        // Grille altimétrique IGN de petite taille préchargée.
         '**/data/metropole/trees/**',
         '**/data/metropole/places/**'
       ],
       runtimeCaching: [{
+        urlPattern: new RegExp('data/metropole/(?:coverage|terrain)/.*'),
+        handler: 'CacheFirst',
+        options: {cacheName:'paris-socle-geographique-025',
+          expiration:{maxEntries:100,maxAgeSeconds:60*60*24*60}}
+      }, {
+        urlPattern: new RegExp('data/metropole/surfaces/(?:water|green)[.]json'),
+        handler: 'StaleWhileRevalidate',
+        options: {cacheName:'paris-nature-officielle-025',
+          expiration:{maxEntries:6,maxAgeSeconds:60*60*24*30}}
+      }, {
         urlPattern: new RegExp('data/metropole/buildings/tiles/.*[.]json'),
         handler: 'CacheFirst',
         options: {

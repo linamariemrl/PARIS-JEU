@@ -22,6 +22,12 @@
 </aside>
 <details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt déplace la maquette. Le bouton 360° transforme le glissement en rotation libre. Deux doigts tournent, inclinent ou zooment. Rue : un doigt regarde partout, flèches pour marcher. Un appui bref sélectionne un immeuble, une chaussée ou un lieu et permet d’ouvrir un dossier.</p>
 <label class="precision-switch"><input type="checkbox" id="precision-mode"/> Mode précision, gestes plus lents (35 %)</label>
+<div class="app-install-controls">
+  <button id="install-app" type="button">Installer PARIS</button>
+  <button id="persist-data" type="button">Protéger le stockage</button>
+  <button id="update-app" type="button" class="hidden">Installer la mise à jour</button>
+  <p id="app-install-status" role="status">Application installable sur Android.</p>
+</div>
 <label class="territory-select">Aller directement à une zone
   <select id="territory-jump" aria-label="Choisir une zone de Paris">
     <option value="">Choisir un arrondissement ou une commune…</option>
@@ -90,10 +96,11 @@
   <div class="finance-divider"></div>
   <h3>Sauvegardes de parties</h3>
   <p>Partie active : <strong id="current-slot">Partie principale</strong></p>
-  <div class="finance-buttons"><button id="save-now">Sauvegarder</button><button id="save-new">Nouvelle case</button><button id="save-export">Exporter</button></div>
-  <label class="file-label">Importer une partie JSON <input id="save-import" type="file" accept=".json,application/json"/></label>
+  <div class="finance-buttons"><button id="save-now">Sauvegarder</button><button id="save-new">Nouvelle case</button><button id="save-export">Exporter</button><button id="save-export-all">Exporter toutes les parties</button></div>
+  <p id="autosave-status" class="finance-source">Sauvegarde automatique toutes les 30 secondes.</p>
+  <label class="file-label">Importer une partie ou une archive JSON <input id="save-import" type="file" accept=".json,application/json"/></label>
   <div id="save-list"></div>
-  <p class="finance-source">Conservation locale IndexedDB. Une suppression des données du navigateur peut effacer les parties non exportées.</p>
+  <p class="finance-source">Parties locales IndexedDB, restaurées au lancement. Exportez-les avant de désinstaller ou d’effacer les données du navigateur.</p>
   <p id="finance-status" role="status">Prêt.</p>
 </section>
 <aside id="selection" class="hidden" aria-label="Fiche descriptive du lieu"><button id="close" aria-label="Fermer">×</button>

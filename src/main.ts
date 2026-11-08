@@ -23,6 +23,7 @@ import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import { StreetDirectory } from './streetDirectory';
 import { GameManagement } from './simulation/ui';
+import {prepareAppInstallation} from './appInstall';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
 import { project } from './geo';
@@ -86,6 +87,7 @@ try{
     el('terrain-status').textContent=status;
   });
 
+  const notifyAppUpdate=prepareAppInstallation();
   const camera=new MobileCamera(scene,canvas);
   const resolution=new AdaptiveResolution(engine);
   const materials=createMaterials(scene);
@@ -421,8 +423,14 @@ try{
   if('caches' in window)
     void window.caches.delete('ortho-4e-images').catch(console.warn);
   if('serviceWorker' in navigator)
-    void import('virtual:pwa-register').then(({registerSW})=>
-      registerSW({immediate:true})).catch(console.warn);
+    void import('virtual:pwa-register').then(({registerSW})=>{
+      const updateSW=registerSW({immediate:true,onNeedRefresh:()=>{
+       notifyAppUpdate(async()=>{
+        await management?.autosave(true);
+        await updateSW(true);
+       });
+      }});
+    }).catch(console.warn);
 }catch(e){
   error.textContent=e instanceof Error?e.message:'WebGL non disponible';
   error.classList.remove('hidden');
