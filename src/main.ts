@@ -13,6 +13,8 @@ import { GameClock, type TimeSpeed } from './gameClock';
 import { TreeLayer } from './trees';
 import { MetroTreeLayer } from './metroTrees';
 import { SurfaceTileManager } from './surfaceTiles';
+import {installSurfaceLayer} from './surfaceLayer';
+import {terrainHeight} from './terrain';
 import { MetroRoads } from './metroRoads';
 import { AdaptiveResolution } from './adaptiveResolution';
 import { TerrainModule } from './terrain';
@@ -294,6 +296,8 @@ try{
     manager.setQuality(level);
     metro.setQuality(level);
     roads.setQuality(level);
+    metroTrees.setQuality(level);
+    trees.setQuality(level);
     if(STABLE_RENDER){
       // Ajustement GPU progressif : uniquement si la chute de FPS dure.
       resolution.configure(level);
@@ -347,9 +351,10 @@ try{
       camera.camera.radius,camera.isMoving);
     roads.update(camera.camera.target.x,camera.camera.target.z,
       camera.camera.radius,camera.isMoving);
+    metroTrees.update(camera.camera.target.x,camera.camera.target.z,
+      camera.camera.radius,camera.isMoving);
+    trees.update(camera.camera.radius,camera.camera.target.x,camera.camera.target.z);
     if(!STABLE_RENDER){
-      metroTrees.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
-      trees.update(camera.camera.radius);
       surfaces.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius,camera.isMoving);
     }
     scene.render();
@@ -364,10 +369,14 @@ try{
   // surfaces du prototype 0.19 restent disponibles comme modules
   // expérimentaux, mais ne sont pas rendus en mode récupération.
   void (async()=>{
-    if(!STABLE_RENDER)await terrain.init(ground);
+    // Référentiel vertical officiel d'abord, puis maillages géographiques.
+    await terrain.init(ground);
+    camera.camera.target.y=terrainHeight(camera.camera.target.x,camera.camera.target.z);
     await Promise.allSettled([
       inspector.init(),
-      ...(STABLE_RENDER?[water.init(),roads.init()]:
+      ...(STABLE_RENDER?[water.init(),roads.init(),trees.init(),metroTrees.init(),
+        installSurfaceLayer(scene,'data/metropole/surfaces/green.json',
+          message=>{el('surface-status').textContent=message;})]:
         [surfaces.init(),metroTrees.init(),trees.init()]),
       overview.init(),metro.init(),manager.init().catch((err:unknown)=>{
         console.warn('Bâtiments du 4e indisponibles',err);
@@ -385,12 +394,8 @@ try{
       })
     ]);
     if(STABLE_RENDER){
-      el('terrain-status').textContent='Relief IGN archivé · rendu expérimental désactivé';
-      el('surface-status').textContent='Parcs : données conservées · rendu expérimental désactivé';
-      // L'état est rempli par StableWaterLayer selon la source IGN.
-      // L'état des chaussées métropolitaines est géré par MetroRoads.
-      el('trees-status').textContent='Arbres 3D en pause pour stabilité graphique';
-      el('metro-trees-status').textContent='Inventaire arboré conservé hors rendu';
+      // Terrain, végétation et eau disposent désormais de vrais états
+      // d'initialisation ; aucun message de substitution n'est affiché.
     }else{
       el('water-status').textContent='Surfaces d’eau IGN : emprises sectorisées';
       el('roads-status').textContent='Chaussées PVP : emprises sectorisées';

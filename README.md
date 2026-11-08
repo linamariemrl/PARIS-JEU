@@ -1,3 +1,29 @@
+## Prototype 0.25.3 — relief IGN et patrimoine végétal officiel
+
+Le relief utilise le RGE ALTI, avec une grille mesurée tous les 200 m,
+sur Paris et ses environs. Les altitudes entre nœuds sont interpolées,
+ce n'est pas un scan LiDAR du sol. Bâtiments et toitures simplifiées,
+chaussées, ponts, eau, espaces verts et arbres partagent le même
+référentiel de hauteur. La vue de rue respecte l'altitude locale.
+
+Les parcs, jardins, espaces boisés et plantations sont représentés par
+leurs emprises officielles Paris Data, avec des teintes vert-gris distinctes.
+Une emprise de parc ne prouve pas que toute sa surface est engazonnée.
+
+Les arbres géolocalisés proviennent de deux inventaires complémentaires,
+sans duplication des arbres du 4e. Les couronnes sont schématiques.
+Les secteurs arborés visibles sont bornés à 2/4/6 selon la qualité
+et chargés au repos plutôt que pendant les gestes ; les arbres disparaissent
+lorsqu'ils sont trop petits pour être visibles depuis le ciel.
+Certaines hauteurs d'arbres sans mesure restent estimées.
+
+L'eau IGN reste un seul maillage, calé sur la grille de terrain pour éviter
+les intersections, sans prétendre reconstituer une cote hydrologique réelle.
+
+La base de jeu (routes, dossiers, horloge et sauvegardes) reste intacte.
+La 0.26 n'est pas autorisée avant une validation Android du relief,
+des espaces verts, de l'eau et de la fluidité.
+
 ## Version 0.25.2 — correction des quartiers manquants au dézoom
 
 Une vérification chiffrée du manifeste IGN a révélé la régression :

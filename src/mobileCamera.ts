@@ -1,3 +1,4 @@
+import {terrainHeight} from './terrain';
 import { ArcRotateCamera, Matrix, Scene, Vector3 } from '@babylonjs/core';
 import { clamp } from './geo';
 import {
@@ -88,7 +89,7 @@ export class MobileCamera{
   north(){
     this.stopInertia();
     this.animateTo(this.camera.radius,this.camera.beta,
-      this.street?2.5:this.eye(),this.camera.target.x,
+      this.street?terrainHeight(this.camera.target.x,this.camera.target.z)+2.5:this.eye(),this.camera.target.x,
       this.camera.target.z,-Math.PI/2,480);
   }
   /** Transition douce vers une position documentée, sans téléportation brusque. */
@@ -98,7 +99,7 @@ export class MobileCamera{
     if(this.street)this.setStreetMode(false);
     this.orbit=false;
     const bounded=clamp(radius,50,26000);
-    this.animateTo(bounded,.83,bounded*Math.cos(.83),
+    this.animateTo(bounded,.83,terrainHeight(x,z)+bounded*Math.cos(.83),
       clamp(x,-WORLD_LIMIT,WORLD_LIMIT),
       clamp(z,-WORLD_LIMIT,WORLD_LIMIT),this.camera.alpha,950);
   }
@@ -106,7 +107,7 @@ export class MobileCamera{
     this.stopInertia();
     if(this.street)this.setStreetMode(false);
     this.orbit=false;
-    this.animateTo(1100,.85,1100*Math.cos(.85),0,0,-Math.PI/2,700);
+    this.animateTo(1100,.85,terrainHeight(0,0)+1100*Math.cos(.85),0,0,-Math.PI/2,700);
   }
   setStreetMode(value:boolean){
     if(value===this.street)return;
@@ -120,7 +121,8 @@ export class MobileCamera{
     this.street=value;
     const targetRadius=value?58:Math.max(100,this.previousView?.radius??1100);
     const beta=value?Math.PI/2:(this.previousView?.beta??.85);
-    const eye=value?2.5:(this.previousView?.eye??targetRadius*Math.cos(beta));
+    const eye=value?terrainHeight(this.camera.target.x,this.camera.target.z)+2.5:
+      (this.previousView?.eye??targetRadius*Math.cos(beta));
     this.animateTo(targetRadius,beta,eye,
       this.camera.target.x,this.camera.target.z,this.camera.alpha,690);
   }
@@ -172,6 +174,10 @@ export class MobileCamera{
       }
     }
     if(this.street&&!this.transition)this.lockStreetEye();
+    else if(!this.transition){
+      const target=terrainHeight(this.camera.target.x,this.camera.target.z);
+      this.camera.target.y+=(target-this.camera.target.y)*expSmoothing(11,elapsed);
+    }
     // Au zoom métropolitain, un plan proche trop petit dégrade les
     // valeurs du depth buffer : bâtiments et routes scintillent.
     const near=this.street ? 0.12 : clamp(this.camera.radius/60,.15,380);
@@ -195,7 +201,8 @@ export class MobileCamera{
   }
   private lockStreetEye(){
     // Le regard peut monter vers le ciel, sans faire passer la caméra sous terre.
-    this.camera.target.y=2.5-this.camera.radius*Math.cos(this.camera.beta);
+    this.camera.target.y=terrainHeight(this.camera.target.x,this.camera.target.z)+2.5-
+      this.camera.radius*Math.cos(this.camera.beta);
   }
   private stopInertia(){
     this.panX=0;this.panZ=0;

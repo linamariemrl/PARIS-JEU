@@ -80,10 +80,10 @@ export class MetroTreeLayer{
    }
  }
  setQuality(level:Quality){
-   this.budget=level==='low'?8:level==='high'?20:14;
+   this.budget=level==='low'?2:level==='high'?6:4;
    this.prevX=Infinity;
  }
- update(x:number,z:number,radius:number){
+ update(x:number,z:number,radius:number,isMoving=false){
   if(!this.manifest)return;
   const now=performance.now();
   if(now-this.lastUpdate<310)return;
@@ -93,17 +93,17 @@ export class MetroTreeLayer{
   this.lastUpdate=now;this.prevX=x;this.prevZ=z;this.prevRadius=radius;
   // La géométrie arborée n'est pas dessinée quand les houppiers
   // deviennent inférieurs au pixel. Les emprises végétales SIG restent.
-  if(!this.hiddenFar&&radius>6500){
+  if(!this.hiddenFar&&radius>3800){
     for(const state of this.active.values())
       state.meshes.forEach(mesh=>mesh.setEnabled(false));
     this.hiddenFar=true;
-  }else if(this.hiddenFar&&radius<4700){
+  }else if(this.hiddenFar&&radius<3200){
     for(const state of this.active.values())
       state.meshes.forEach(mesh=>mesh.setEnabled(true));
     this.hiddenFar=false;
   }
   if(this.hiddenFar)return;
-  const range=Math.max(1200,Math.min(2600,radius*1.25));
+  const range=Math.max(900,Math.min(1600,radius*1.2));
   const candidates=this.tiles.filter(t=>
     Math.hypot((t.ix+.5)*800-x,(t.iz+.5)*800-z)<range
   ).sort((a,b)=>{
@@ -117,7 +117,9 @@ export class MetroTreeLayer{
     if(current)current.lastUsed=now;
   }
   for(const tile of candidates){
-    if(this.fetching.size>=2)break;
+    // Ne pas construire des couronnes en pleine rotation.
+    if(isMoving)break;
+    if(this.fetching.size>=1)break;
     if(this.active.has(tile.id)||this.fetching.has(tile.id)||
        now-(this.errors.get(tile.id)??-Infinity)<15000)continue;
     if(!this.makeRoom(x,z))break;
@@ -184,6 +186,7 @@ export class MetroTreeLayer{
        else
          one(kind===0?light:dark,x,ground+h*.76,z,radius,h*.26,radius);
      }
+     if(!this.wanted.has(tile.id))return;
      const meshes=(['trunk','light','dark','conifer'] as const)
        .map((name,i)=>this.mesh(name,[trunk,light,dark,conifer][i],tile.id))
        .filter((mesh):mesh is Mesh=>mesh!==null);

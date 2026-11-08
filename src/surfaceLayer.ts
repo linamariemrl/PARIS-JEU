@@ -2,6 +2,7 @@ import {
  Color3,Mesh,Scene,StandardMaterial,VertexData
 } from '@babylonjs/core';
 import earcut from 'earcut';
+import {terrainHeight} from './terrain';
 
 /** Habillage surfacique SIG, sans bitmap ni relief inventé.
  * L'emprise d'un parc ne garantit PAS que chaque mètre carré est gazonné.
@@ -16,8 +17,8 @@ interface SurfaceFile{
 }
 interface Batch {positions:number[];normals:number[];indices:number[];count:number;}
 const palette:Record<SurfaceKind,[number,number,number]>={
- managed:[.71,.77,.67], wood:[.51,.64,.51],
- planted:[.63,.73,.60], water:[.57,.69,.73],
+ managed:[.64,.72,.64], wood:[.47,.59,.50],
+ planted:[.69,.75,.66], water:[.57,.69,.73],
  road:[.70,.69,.67]
 };
 const y:Record<SurfaceKind,number>={
@@ -46,7 +47,7 @@ function append(batch:Batch,poly:Polygon,kind:SurfaceKind){
  if(!triangulated.length)return;
  const offset=batch.positions.length/3;
  for(let i=0;i<flat.length;i+=2){
-  batch.positions.push(flat[i],y[kind],flat[i+1]);
+  batch.positions.push(flat[i],terrainHeight(flat[i],flat[i+1])+y[kind]+.13,flat[i+1]);
   batch.normals.push(0,1,0);
  }
  for(const index of triangulated)batch.indices.push(offset+index);

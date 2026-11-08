@@ -1,5 +1,6 @@
 import {Color3,Mesh,Scene,StandardMaterial,VertexData} from '@babylonjs/core';
 import earcut from 'earcut';
+import {terrainHeight} from './terrain';
 
 type Ring=number[][];
 type Polygon=Ring[];
@@ -65,7 +66,7 @@ export class StableWaterLayer{
           if(!faces.length)continue;
           const base=positions.length/3;
           for(let i=0;i<coords.length;i+=2){
-            positions.push(coords[i],.065,coords[i+1]);
+            positions.push(coords[i],terrainHeight(coords[i],coords[i+1])+.065,coords[i+1]);
             normals.push(0,1,0);
           }
           for(const face of faces)indices.push(base+face);

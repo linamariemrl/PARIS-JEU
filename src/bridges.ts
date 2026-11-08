@@ -2,6 +2,7 @@ import {
   Color3, Mesh, Scene, StandardMaterial, VertexData
 } from '@babylonjs/core';
 import earcut from 'earcut';
+import {terrainHeight} from './terrain';
 
 /** Tablier et parapets 3D très simplifiés à partir des emprises IGN des
  * tronçons surélevés. L'élévation est illustrative : elle ne restitue
@@ -22,7 +23,7 @@ class Batch {
   indices: number[] = [];
   add(a: XYZ, b: XYZ, c: XYZ) {
     const index = this.positions.length / 3;
-    this.positions.push(...a, ...b, ...c);
+    for(const p of [a,b,c])this.positions.push(p[0],p[1]+terrainHeight(p[0],p[2]),p[2]);
     this.indices.push(index, index + 1, index + 2);
   }
   quad(a: XYZ, b: XYZ, c: XYZ, d: XYZ) {

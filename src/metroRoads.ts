@@ -1,5 +1,6 @@
 import {Color3,Mesh,Scene,StandardMaterial,VertexData} from '@babylonjs/core';
 import earcut from 'earcut';
+import {terrainHeight} from './terrain';
 
 /** Chaussées PVP de Paris entier : seule la géométrie officielle est rendue.
  * Une seule emprise lointaine, plus quelques tuiles exactes proches.
@@ -34,7 +35,7 @@ function appendRoad(batch:Batch,rings:Polygon,height:number):void{
  if(!triangles.length)return;
  const base=batch.positions.length/3;
  for(let i=0;i<flat.length;i+=2)
-  batch.positions.push(flat[i],height,flat[i+1]);
+  batch.positions.push(flat[i],height+terrainHeight(flat[i],flat[i+1]),flat[i+1]);
  for(const index of triangles)batch.indices.push(base+index);
 }
 function meshFor(scene:Scene,name:string,batch:Batch,material:StandardMaterial,

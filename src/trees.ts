@@ -114,13 +114,14 @@ export class TreeLayer{
   /** Les 2 941 couronnes deviennent sous-pixel à grande distance.
    * Leur empreinte végétale reste visible via les surfaces SIG.
    */
-  update(radius:number):void{
+  update(radius:number,x=0,z=0):void{
     if(!this.initialized)return;
-    if(!this.hiddenFar&&radius>6500){
+    const away=Math.hypot(x,z)>2200;
+    if(!this.hiddenFar&&(radius>3800||away)){
       for(const mesh of [this.trunks,...this.leaves,this.conifers])
         mesh.setEnabled(false);
       this.hiddenFar=true;
-    }else if(this.hiddenFar&&radius<4700){
+    }else if(this.hiddenFar&&radius<3000&&!away){
       for(const mesh of [this.trunks,...this.leaves,this.conifers])
         mesh.setEnabled(mesh.thinInstanceCount>0);
       this.hiddenFar=false;

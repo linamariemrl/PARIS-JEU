@@ -1,5 +1,6 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3, VertexData } from '@babylonjs/core';
 import earcut from 'earcut';
+import {terrainHeight} from './terrain';
 import { addBridges } from './bridges';
 
 /** Réseau simplifié issu de géométries IGN ou OSM (coordonnées locales en mètres).
@@ -66,7 +67,7 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
     if (!triangles.length) continue;
     const offset = positions.length / 3;
     for (let i = 0; i < flat.length; i += 2) {
-      positions.push(flat[i], h, flat[i + 1]);
+      positions.push(flat[i], terrainHeight(flat[i],flat[i+1])+h, flat[i + 1]);
       normals.push(0, 1, 0);
     }
     for (const index of triangles) indices.push(offset + index);

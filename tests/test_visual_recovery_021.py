@@ -21,9 +21,9 @@ class VisualRecovery(unittest.TestCase):
         self.assertIn("mat.disableLighting=true",water)
         self.assertIn("getMeshByName('infrastructure-water')",water)
         self.assertIn("water.setVisible(waterToggle.checked)",entry)
-        self.assertNotIn("terrainHeight",source("src/buildings.ts"))
-        self.assertNotIn("terrainHeight",infra)
-        self.assertNotIn("terrainHeight",source("src/bridges.ts"))
+        self.assertIn("terrainHeight",source("src/buildings.ts"))
+        self.assertIn("terrainHeight",infra)
+        self.assertIn("terrainHeight",source("src/bridges.ts"))
 
     def test_real_hydrography_is_bounded(self):
         data=json.loads(source("public/data/metropole/surfaces/water.json"))

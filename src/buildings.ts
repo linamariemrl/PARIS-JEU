@@ -1,6 +1,7 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
 import earcut from 'earcut';
 import { project } from './geo';
+import {terrainHeight} from './terrain';
 import { roofProfile } from './roofGeometry';
 import { steppedHeight, shouldUseVolumes } from './volumeGeometry';
 import type { Building, Point, TileFile, LidarRoofPart } from './types';
@@ -92,8 +93,9 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
         const p=ring[j],q=ring[(j+1)%ring.length];
         const ph=measuredHeights?.[j]??profile?.heightAt(p)??section.height;
         const qh=measuredHeights?.[(j+1)%ring.length]??profile?.heightAt(q)??section.height;
-        const a:XYZ=[p.x,0,p.z],bb:XYZ=[q.x,0,q.z];
-        const c:XYZ=[q.x,qh,q.z],d:XYZ=[p.x,ph,p.z];
+        const py=terrainHeight(p.x,p.z),qy=terrainHeight(q.x,q.z);
+        const a:XYZ=[p.x,py,p.z],bb:XYZ=[q.x,qy,q.z];
+        const c:XYZ=[q.x,qy+qh,q.z],d:XYZ=[p.x,py+ph,p.z];
         tri(walls,a,bb,c,index);
         tri(walls,a,c,d,index);
       }
@@ -105,8 +107,9 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
         const a=lidar.vertices[lidar.indices[k]];
         const bb=lidar.vertices[lidar.indices[k+1]];
         const c=lidar.vertices[lidar.indices[k+2]];
-        tri(roofs,[a[0],a[2],a[1]],[bb[0],bb[2],bb[1]],
-          [c[0],c[2],c[1]],index);
+        tri(roofs,[a[0],terrainHeight(a[0],a[1])+a[2],a[1]],
+          [bb[0],terrainHeight(bb[0],bb[1])+bb[2],bb[1]],
+          [c[0],terrainHeight(c[0],c[1])+c[2],c[1]],index);
       }
       continue;
     }
@@ -115,10 +118,12 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
       const a=points[triangles[k]],b2=points[triangles[k+1]],c=points[triangles[k+2]];
       const top=(p:{x:number;z:number})=>
         profile?.heightAt(p)??section.height;
-      const pa:XYZ=[a.x,top(a),a.z],pb:XYZ=[b2.x,top(b2),b2.z],pc:XYZ=[c.x,top(c),c.z];
+      const pa:XYZ=[a.x,terrainHeight(a.x,a.z)+top(a),a.z],
+        pb:XYZ=[b2.x,terrainHeight(b2.x,b2.z)+top(b2),b2.z],
+        pc:XYZ=[c.x,terrainHeight(c.x,c.z)+top(c),c.z];
       if(profile&&profile.rise>.05){
         const center={x:(a.x+b2.x+c.x)/3,z:(a.z+b2.z+c.z)/3};
-        const pm:XYZ=[center.x,top(center),center.z];
+        const pm:XYZ=[center.x,terrainHeight(center.x,center.z)+top(center),center.z];
         tri(roofs,pa,pb,pm,index);
         tri(roofs,pb,pc,pm,index);
         tri(roofs,pc,pa,pm,index);
@@ -208,7 +213,7 @@ export function highlightBuilding(scene:Scene,b:Building):Mesh[]{
   for(const polygon of b.polygons){
     const exterior=polygon[0];if(!exterior||exterior.length<3)continue;
     const points=exterior.map(p=>b.localCoordinates?
-      {x:p[0],z:p[1]}:project(p)).map(p=>new Vector3(p.x,b.height+.12,p.z));
+      {x:p[0],z:p[1]}:project(p)).map(p=>new Vector3(p.x,b.height+.12+terrainHeight(p.x,p.z),p.z));
     if(Vector3.Distance(points[0],points[points.length-1])>.01)
       points.push(points[0].clone());
     const line=MeshBuilder.CreateLines('selection',{points},scene);

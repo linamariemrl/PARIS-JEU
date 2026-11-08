@@ -77,7 +77,7 @@ function meshFromGrid(scene:Scene,g:TerrainGrid):Mesh|null{
  vd.normals=normals;
  vd.applyToMesh(mesh);
  const mat=new StandardMaterial('relief-terrain-IGN-sans-texture',scene);
- mat.diffuseColor=new Color3(.85,.83,.79);
+ mat.diffuseColor=new Color3(.78,.79,.77);
  mat.specularColor=Color3.Black();
  mat.backFaceCulling=false;
  mat.freeze();
@@ -115,7 +115,9 @@ export class TerrainModule{
      const mesh=meshFromGrid(this.scene,grid);
      if(!mesh)throw Error('Aucun triangle altimétrique valide');
      current=grid;
-     flatFallback.setEnabled(false);
+     // Un fond inférieur aux mesures assure un socle hors grille sans masquer les collines.
+     flatFallback.position.y=-30;
+     flatFallback.setEnabled(true);
      this.onStatus('Relief IGN chargé, pas de '+meta.gridSpacingMeters+
        ' m, altitudes '+meta.minAltitudeM+' à '+meta.maxAltitudeM+
        ' m : interpolation entre les points mesurés');
