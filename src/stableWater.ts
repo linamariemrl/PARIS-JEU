@@ -15,7 +15,17 @@ interface WaterSource{
 export class StableWaterLayer{
   private polygons:Polygon[]=[];
   private ready=false;
+  private visible=true;
+  private count=0;
+  private mesh:Mesh|null=null;
   constructor(private scene:Scene,private onStatus:(message:string)=>void){}
+  setVisible(visible:boolean):void{
+    this.visible=visible;
+    this.mesh?.setEnabled(visible);
+    if(this.count)this.onStatus(
+      this.count.toLocaleString('fr-FR')+
+      ' surfaces d’eau IGN'+(visible?' visibles':' masquées à la demande'));
+  }
   async init():Promise<void>{
     try{
       const response=await fetch(import.meta.env.BASE_URL+
@@ -77,6 +87,9 @@ export class StableWaterLayer{
       mesh.material=mat;
       mesh.isPickable=false;
       mesh.freezeWorldMatrix();
+      this.mesh=mesh;
+      mesh.setEnabled(this.visible);
+      this.count=data.count;
       this.ready=true;
       this.onStatus(data.count.toLocaleString('fr-FR')+
         ' emprises d’eau IGN : géométrie réelle, un seul maillage');
