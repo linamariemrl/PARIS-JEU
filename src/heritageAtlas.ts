@@ -1,6 +1,6 @@
 import {Color3,Mesh,MeshBuilder,Scene,Vector3} from '@babylonjs/core';
 import type {Building} from './types';
-import {storyForMonument} from './monumentStories';
+import {storyForMonument,storyForReference} from './monumentStories';
 import {project} from './geo';
 import {terrainHeight} from './terrain';
 
@@ -165,7 +165,7 @@ export class HeritageAtlas{
   const notice=ref?this.byRef.get(ref):undefined;
   const name=notice?.name??building?.heritageName??area?.name;
   if(!name)return;
-  const story=storyForMonument(name)??(area?
+  const story=storyForReference(ref)??storyForMonument(name)??(area?
     storyForMonument(area.name):null);
   const section=document.createElement('section');
   section.className='monument-notice heritage-game-card';
@@ -203,7 +203,7 @@ export class HeritageAtlas{
    fromArea&&!/dénomination ne constitue|désigné dans OpenStreetMap/i.test(fromArea)?
     fromArea:undefined);
   p.textContent=summary?
-   (summary.length<=380?summary:summary.slice(0,377).replace(/\\s+\\S*$/,'')+'…'):
+   (summary.length<=380?summary:summary.slice(0,377).replace(/\s+\S*$/,'')+'…'):
    'L’histoire de ce lieu n’est pas encore documentée avec assez de précision pour en proposer un résumé fiable.';
   section.append(p);
   const url=story?.sourceUrl??notice?.sourceUrl??area?.sourceUrl;
@@ -213,7 +213,9 @@ export class HeritageAtlas{
     const allowed=['culture.gouv.fr','senat.fr','louvre.fr',
      'openstreetmap.org','notredamedeparis.fr','sainte-chapelle.fr',
      'toureiffel.paris','paris-arc-de-triomphe.fr',
-     'sacre-coeur-montmartre.com'];
+     'sacre-coeur-montmartre.com','operadeparis.fr',
+     'musee-orsay.fr','musee-armee.fr','grandpalais.fr',
+     'petitpalais.paris.fr','paris-pantheon.fr','paris.fr'];
     if(parsed.protocol==='https:'&&allowed.some(domain=>
       parsed.hostname===domain||parsed.hostname.endsWith('.'+domain))){
      const link=document.createElement('a');

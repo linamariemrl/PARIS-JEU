@@ -6,9 +6,9 @@ ROOT=Path(__file__).resolve().parents[1]
 def read(p):return (ROOT/p).read_text(encoding="utf8")
 class Heritage026(unittest.TestCase):
  def test_release_and_monochrome(self):
-  self.assertEqual(json.loads(read("package.json"))["version"],"0.26.0")
+  self.assertEqual(json.loads(read("package.json"))["version"],"0.26.1")
   self.assertIn("PROTOTYPE 0.26",read("index.html"))
-  self.assertIn("REVISION='0.26.0'",read("src/release.ts"))
+  self.assertIn("REVISION='0.26.1'",read("src/release.ts"))
   self.assertNotIn("new AerialLayer",read("src/main.ts"))
  def test_building_pick_and_geometry_are_independent(self):
   heritage=read("src/heritageAtlas.ts")

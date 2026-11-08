@@ -65,3 +65,39 @@ export function storyForMonument(name:string):MonumentStory|null{
   const normalized=name.trim().replace(/\s+/g,' ');
   return entries.find(entry=>entry.match.test(normalized))?.story??null;
 }
+
+/* Fiches ajoutées en 0.26.1 : références POP officielles vérifiées. */
+const referenceStories:Record<string,MonumentStory>={
+ 'PA00089004':{
+  type:'Opéra du Second Empire',period:'1861–1875',
+  history:'Conçu par Charles Garnier sous Napoléon III, ce théâtre est inauguré le 5 janvier 1875. Son grand escalier et ses décors monumentaux incarnent le Paris du Second Empire.',
+  sourceUrl:'https://www.operadeparis.fr/apropos/theatres-et-ateliers/palais-garnier'},
+ 'PA00088689':{
+  type:'Ancienne gare et musée',period:'1900 ; musée en 1986',
+  history:'Victor Laloux construit la gare d’Orsay pour l’Exposition universelle de 1900. Transformée après plusieurs décennies, elle ouvre comme musée en 1986.',
+  sourceUrl:'https://www.musee-orsay.fr/fr/magazine/2024-12-19/de-la-gare-au-musee'},
+ 'PA00088714':{
+  type:'Ensemble militaire',period:'Depuis 1670',
+  history:'Louis XIV crée les Invalides en 1670 pour les soldats blessés ou âgés. L’ensemble accueille l’église du Dôme et, depuis 1840, le tombeau de Napoléon Ier.',
+  sourceUrl:'https://www.musee-armee.fr/au-programme/350-ans-du-musee-de-larmee/lhotel-des-invalides-en-10-dates.html'},
+ 'PA00088877':{
+  type:'Palais d’exposition',period:'1897–1900',
+  history:'Édifié pour l’Exposition universelle de 1900, le Grand Palais associe pierre, métal et verre. Sa grande nef est devenue l’un des lieux majeurs de la vie culturelle parisienne.',
+  sourceUrl:'https://www.grandpalais.fr/fr/node/1553'},
+ 'PA00088878':{
+  type:'Musée des Beaux-Arts',period:'1900 ; musée en 1902',
+  history:'Charles Girault conçoit le Petit Palais pour l’Exposition universelle de 1900. En 1902, il devient le musée des Beaux-Arts de la Ville de Paris.',
+  sourceUrl:'https://www.petitpalais.paris.fr/explorer/le-petit-palais/lhistoire-du-petit-palais'},
+ 'PA00088420':{
+  type:'Monument national',period:'XVIIIe siècle ; 1791',
+  history:'Élevé comme église Sainte-Geneviève d’après le projet de Soufflot, l’édifice devient en 1791 un monument consacré aux grandes figures de la nation.',
+  sourceUrl:'https://www.paris-pantheon.fr/decouvrir/histoire-du-pantheon'},
+ 'PA00086479':{
+  type:'Ancien clocher',period:'XVIe siècle',
+  history:'La tour est le clocher préservé de l’ancienne église Saint-Jacques-de-la-Boucherie. L’église a disparu après la Révolution ; la tour se dresse aujourd’hui dans un square.',
+  sourceUrl:'https://www.paris.fr/lieux/tour-saint-jacques-5045'}
+};
+export function storyForReference(ref?:string):MonumentStory|null{
+ return ref?referenceStories[ref]??null:null;
+}
+export const NEW_REFERENCE_STORIES=Object.keys(referenceStories).length;
