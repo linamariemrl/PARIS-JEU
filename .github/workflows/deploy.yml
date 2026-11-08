@@ -39,6 +39,8 @@ jobs:
           fi
       - name: Préparer les enveloppes LOD de toute la métropole
         run: python scripts/prepare_metropole_overview.py
+      - name: Sectoriser les surfaces réelles pour Android
+        run: python scripts/prepare_surface_tiles.py
       - name: Vérifier les données
         run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Compiler et vérifier la taille du site
