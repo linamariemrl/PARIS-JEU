@@ -15,10 +15,16 @@ interface VisibleGroup {
  roof:Mesh;
  buffer:Float32Array;
  roofBuffer:Float32Array;
+ sampledRoofBuffer:Float32Array;
+ sampledIndices:Uint32Array;
  bytes:DataView;
  group:Group;
 }
 const retryAfterMs=15_000;
+const SAMPLED_ROOFS_PER_GROUP=2400;
+const roofStride=(count:number)=>
+ Math.max(1,Math.ceil(count/SAMPLED_ROOFS_PER_GROUP));
+const roofCount=(count:number)=>Math.ceil(count/roofStride(count));
 
 /** Silhouettes IGN en cache brut (environ 3,5 Mo pour tous les groupes).
  * Un budget GPU indépendant limite les instances affichées simultanément.
@@ -171,6 +177,15 @@ export class MetroOverview {
   if(!state||!tile)return;
   this.writeTile(state.buffer,state.bytes,tile,enabled);
   this.writeRoofTile(state.roofBuffer,state.bytes,tile,enabled);
+  // Les toits panoramiques utilisent une sélection uniforme des vrais
+  // bâtiments IGN. Une substitution détaillée masque aussi son échantillon.
+  for(let n=0;n<state.sampledIndices.length;n++){
+   const original=state.sampledIndices[n];
+   if(original<tile.offset||original>=tile.offset+tile.count)continue;
+   const from=original*16,to=n*16;
+   state.sampledRoofBuffer.set(
+    state.roofBuffer.subarray(from,from+16),to);
+  }
   state.mesh.thinInstanceBufferUpdated('matrix');
   state.roof.thinInstanceBufferUpdated('matrix');
   // Bornes de rendu conservatrices établies à la première création :
@@ -210,13 +225,19 @@ export class MetroOverview {
   // pas des bâtiments supplémentaires et leur source reste intacte.
   const maxInstances=this.roofsOnly?36000:16000;
   const maxGroups=this.roofsOnly?7:4;
+  // Une feuille de toits à 2 triangles coûte 6 fois moins qu'un cube.
+  // Le quota initial ne couvrait souvent que 2/16 secteurs autour
+  // de Paris-centre. À distance, répartir le quota sur 15 secteurs
+  // au maximum, avec un échantillon IGN réparti uniformément par groupe.
+  const displayGroups=this.roofsOnly?maxGroups+8:maxGroups;
   const near:Group[]=[];
   let count=0;
   for(const group of candidates){
-   if(near.length>=maxGroups)break;
-   if(near.length&&count+group.count>maxInstances)continue;
+   if(near.length>=displayGroups)break;
+   const cost=this.roofsOnly?roofCount(group.count):group.count;
+   if(near.length&&count+cost>maxInstances)continue;
    near.push(group);
-   count+=group.count;
+   count+=cost;
   }
   const next=new Set(near.map(g=>g.id));
   // Ne pas effacer la dernière silhouette pendant la mise à disposition
@@ -372,7 +393,16 @@ export class MetroOverview {
      {width:1,height:1},this.scene);
    roof.material=this.roofMaterial;
    roof.isPickable=false;
-   roof.thinInstanceSetBuffer('matrix',rooftops,16,false);
+   const stride=roofStride(group.count);
+   const sampleSize=roofCount(group.count);
+   const sampledIndices=new Uint32Array(sampleSize);
+   const sampledRoofBuffer=new Float32Array(sampleSize*16);
+   for(let i=0;i<sampleSize;i++){
+    const original=i*stride;
+    sampledIndices[i]=original;
+    sampledRoofBuffer.set(rooftops.subarray(original*16,original*16+16),i*16);
+   }
+   roof.thinInstanceSetBuffer('matrix',sampledRoofBuffer,16,false);
    roof.thinInstanceRefreshBoundingInfo();
    let hidden=0;
    for(const tile of group.tiles){
@@ -382,6 +412,10 @@ export class MetroOverview {
     hidden+=tile.count;
    }
    if(hidden){
+     for(let i=0;i<sampledIndices.length;i++){
+      const original=sampledIndices[i];
+      sampledRoofBuffer.set(rooftops.subarray(original*16,original*16+16),i*16);
+     }
      mesh.thinInstanceBufferUpdated('matrix');
      roof.thinInstanceBufferUpdated('matrix');
    }
@@ -390,7 +424,8 @@ export class MetroOverview {
    mesh.setEnabled(this.visible.has(group.id)&&!this.roofsOnly);
    roof.setEnabled(this.visible.has(group.id)&&this.roofsOnly);
    this.loaded.set(group.id,{
-     mesh,roof,buffer:matrices,roofBuffer:rooftops,bytes:source,group
+     mesh,roof,buffer:matrices,roofBuffer:rooftops,
+     sampledRoofBuffer,sampledIndices,bytes:source,group
    });
    this.currentCount+=group.tiles.reduce((sum,t)=>
     sum+(this.detailed.has(t.id)?0:t.count),0);
@@ -416,8 +451,13 @@ export class MetroOverview {
   const shown=active.reduce((sum,state)=>sum+
    state.group.tiles.reduce((subtotal,tile)=>subtotal+
     (this.detailed.has(tile.id)?0:tile.count),0),0);
-  this.currentCount=shown;
-  const message=shown.toLocaleString('fr-FR')+' volumes IGN visibles (réserve '+
+  const rendered=active.reduce((sum,state)=>sum+
+   (this.roofsOnly?state.sampledIndices.length:
+     state.group.tiles.reduce((n,t)=>n+
+      (this.detailed.has(t.id)?0:t.count),0)),0);
+  this.currentCount=rendered;
+  const message=shown.toLocaleString('fr-FR')+' emprises IGN couvertes ('+
+   rendered.toLocaleString('fr-FR')+' maquettes légères ou volumes) (réserve '+
    total.toLocaleString('fr-FR')+' bâtiments) · secteurs en cache '+
    this.rawCache.size+'/'+(this.manifest?.groups.length??0)+
    (this.failures.size?' · '+this.failures.size+' groupes à réessayer':'');

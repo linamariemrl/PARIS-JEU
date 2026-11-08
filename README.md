@@ -1,3 +1,24 @@
+## Version 0.25.2 — correction des quartiers manquants au dézoom
+
+Une vérification chiffrée du manifeste IGN a révélé la régression :
+à 4,5 km de zoom autour du centre de Paris, la limite du nombre
+d'instances de toiture ne laissait apparaître que 2 des 16 secteurs
+potentiellement visibles. Aucun téléchargement ne pouvait corriger
+cette lacune : il s'agissait d'un problème de répartition du budget.
+
+La couverture lointaine utilise désormais jusqu'à 15 groupes,
+avec un échantillonnage régulier d'emprises IGN réelles et au maximum
+2 400 toitures par groupe, tout en conservant le plafond de 36 000
+instances et les toitures composées de deux triangles. Les emprises
+sont de vrais bâtiments officiels ; seules les enveloppes lointaines
+demeurent simplifiées. Les détails exacts proches et l'exclusion des
+doublons lors des substitutions de tuiles sont conservés.
+
+Cette correction rend la maquette distante moins lacunaire sans
+promettre un Paris exhaustif à chaque image. Le rendu du téléphone
+doit encore être validé. Aucun passage en 0.26 ; réintroduction
+graduelle eau/végétation à faire après confirmation.
+
 ## Version de stabilité 0.25.1 — ne pas passer à 0.26
 
 Le rendu 0.25 constitue la base validée sur captures Android : 48 à 58
