@@ -4,12 +4,12 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
 <meta name="theme-color" content="#0c1723"/>
-<meta name="description" content="PARIS SKYLINES : maquette 3D monochrome de Paris, gestion municipale et simulation."/>
+<meta name="description" content="PARIS SKYLINES : maquette 3D de Paris, végétation géolocalisée et gestion municipale."/>
 <title>PARIS | Le jeu de la ville</title>
 </head>
 <body>
 <canvas id="scene" aria-label="Vue 3D tactile de Paris"></canvas>
-<header><strong>PARIS</strong><span>PROTOTYPE 0.17 | PARIS ET MÉTROPOLE</span></header>
+<header><strong>PARIS</strong><span>PROTOTYPE 0.18 | PARIS ET MÉTROPOLE</span></header>
 <aside id="time-panel" aria-label="Temps de simulation">
   <div id="game-clock" aria-live="off">Chargement de l'heure…</div>
   <div class="time-controls">
@@ -103,13 +103,18 @@
       <span id="overview-status">Vue d’ensemble : volumes IGN allégés en préparation…</span>
       <span id="volume-status">Volumes bâtis municipaux : lecture…</span>
       <span id="urban">Voirie en cours de chargement…</span>
+      <span id="trees-status">Arbres géolocalisés : chargement…</span>
+      <span id="surface-status">Surfaces des parcs : vérification…</span>
+      <span id="water-status">Hydrographie métropolitaine : vérification…</span>
       <div class="map-legend" aria-label="Légende des nuances de la maquette">
-        <strong>Nuances cartographiques</strong>
-        <span><i style="background:#f6f6f6"></i> Bâtiments</span>
-        <span><i style="background:#d1d1d1"></i> Toitures</span>
-        <span><i style="background:#a7a7a7"></i> Chaussées (4e détaillé)</span>
-        <span><i style="background:#bdbdbd"></i> Seine (4e détaillé)</span>
-        <span><i style="background:#cfcfcf"></i> Quais et berges (4e détaillé)</span>
+        <strong>Palette urbaine · couleurs sans textures</strong>
+        <span><i style="background:#e6dfd1"></i> Façades, pierre claire</span>
+        <span><i style="background:#8a969e"></i> Toitures, zinc/ardoise</span>
+        <span><i style="background:#ada9a5"></i> Chaussées (4e détaillé)</span>
+        <span><i style="background:#a6bec6"></i> Eau (IGN)</span>
+        <span><i style="background:#cfcdc5"></i> Quais et berges (4e détaillé)</span>
+        <span><i style="background:#9caf91"></i> Parcs (emprises municipales)</span>
+        <span><i style="background:#697d61"></i> Arbres géolocalisés</span>
         <span><i style="background:#cacaca"></i> Ponts 3D (4e détaillé)</span>
         <span><i style="background:#777"></i> Limites administratives</span>
       </div>
