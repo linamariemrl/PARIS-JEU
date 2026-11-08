@@ -58,6 +58,7 @@ def tourism():
  query="""[out:json][timeout:55];
  (
   way["tourism"~"^(attraction|museum|gallery)$"]["name"](48.75,2.15,48.97,2.58);
+  way["building"]["name"~"Louvre",i](48.858,2.329,48.864,2.344);
   way["historic"~"^(monument|castle|memorial|fort|archaeological_site)$"]["name"](48.75,2.15,48.97,2.58);
   way["leisure"~"^(park|garden)$"]["name"](48.75,2.15,48.97,2.58);
  );out geom;"""

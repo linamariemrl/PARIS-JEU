@@ -117,8 +117,17 @@ export class HeritageAtlas{
   });
   const cx=corners.reduce((v,p)=>v+p[0],0)/corners.length;
   const cz=corners.reduce((v,p)=>v+p[1],0)/corners.length;
-  for(const n of this.near(cx,cz)){
-   if(Math.hypot(n.x-cx,n.z-cz)>125)continue;
+  // Un édifice complexe peut dépasser 250 m. Ne pas perdre sa notice
+  // lorsqu'elle tombe dans une aile éloignée du centre de l'emprise.
+  const xs=corners.map(q=>q[0]),zs=corners.map(q=>q[1]);
+  const minX=Math.floor(Math.min(...xs)/TILE),maxX=Math.floor(Math.max(...xs)/TILE);
+  const minZ=Math.floor(Math.min(...zs)/TILE),maxZ=Math.floor(Math.max(...zs)/TILE);
+  const nearby:Notice[]=[];
+  if((maxX-minX+1)*(maxZ-minZ+1)<150){
+   for(let ix=minX;ix<=maxX;ix++)for(let iz=minZ;iz<=maxZ;iz++)
+    nearby.push(...(this.grid.get(ix+':'+iz)??[]));
+  }else nearby.push(...this.near(cx,cz));
+  for(const n of nearby){
    if(!footprintContains(b,n.x,n.z))continue;
    b.heritageRef=n.ref;
    b.heritageName=n.name;
