@@ -1,0 +1,56 @@
+name: Notices réelles Monuments historiques Paris - Mérimée
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/prepare_monument_atlas.py'
+      - '.github/workflows/prepare-monuments.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paris-monument-atlas
+  cancel-in-progress: true
+
+jobs:
+  monuments:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Télécharger les notices MH officielles géolocalisées
+        run: python -u scripts/prepare_monument_atlas.py
+      - name: Contrôler la précision des notices
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          path=Path('public/data/metropole/places/monuments.json')
+          data=json.loads(path.read_text(encoding='utf8'))
+          assert data['schema']==1
+          assert data['count']==len(data['records'])>=100
+          assert len({r['ref'] for r in data['records']})==data['count']
+          for r in data['records']:
+            assert r['name'] and r['sourceUrl'].startswith('https://pop.culture.gouv.fr/')
+          print(data['count'],'notices vérifiées')
+          PY
+      - name: Enregistrer les points de notices sans déduire les emprises
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/data/metropole/places/monuments.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: notices Mérimée Paris sourcées'
+            for attempt in 1 2 3 4 5 6 7 8; do
+              git pull --rebase origin main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            exit 1
+          fi
