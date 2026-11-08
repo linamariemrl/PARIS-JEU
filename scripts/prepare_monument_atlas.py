@@ -88,16 +88,15 @@ def records_datagouv():
         delimiter=";" if header.count(";")>header.count(",") else ","
         rows=csv.DictReader(itertools.chain([header],stream),delimiter=delimiter)
         seen=0
+        # Les colonnes département varient entre versions du CSV.
+        # Examiner toutes les notices, puis retenir uniquement celles dont
+        # les coordonnées vérifiées relèvent du territoire cartographié.
         for row in rows:
             clean_row={str(k).strip().lower():v for k,v in row.items() if k}
-            department=str(clean_row.get("departement_format_numerique") or
-                clean_row.get("code_departement") or "").strip()
-            if department not in ("75","075"):
-                continue
             seen+=1
             yield clean_row
-        if seen<100:
-            raise ValueError("Le miroir Mérimée ne contient pas assez de notices Paris")
+        if seen<15000:
+            raise ValueError("Le CSV ministériel est incomplet : "+str(seen))
 
 
 def records():
