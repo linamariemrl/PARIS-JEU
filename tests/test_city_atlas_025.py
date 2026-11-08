@@ -29,7 +29,7 @@ class CityAtlas(unittest.TestCase):
   overview=(ROOT/"src/metroOverview.ts").read_text(encoding="utf8")
   coverage=(ROOT/"src/cityCoverage.ts").read_text(encoding="utf8")
   self.assertIn("coverage.init().then(()=>showCounts())",main)
-  self.assertIn("this.coverage?.ready&&radius>=4700",overview)
+  self.assertIn("radius>=5000||(this.panoramicAtlas&&radius>4000)",overview)
   self.assertIn("this.coverage?.showExcept(",overview)
   self.assertIn("this.coverage.showExcept([])",overview)
   self.assertIn("this.meshes.size!==manifest.groups.length",coverage)

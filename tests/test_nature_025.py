@@ -7,7 +7,9 @@ class NatureIntegration(unittest.TestCase):
  def test_terrain_initializes_before_geographic_layers(self):
   main=src('src/main.ts')
   self.assertLess(main.index('await terrain.init(ground)'),main.index('await Promise.allSettled(['))
-  self.assertIn('camera.camera.target.y=terrainHeight',main)
+  self.assertIn('else camera.camera.target.y=',main)
+  self.assertIn('terrainHeight(camera.camera.target.x,camera.camera.target.z)',main)
+  self.assertIn('camera.restoreView(restoredView)',main)
   self.assertIn('flatFallback.position.y=-30',src('src/terrain.ts'))
   self.assertIn('mat.diffuseColor=new Color3(.78,.79,.77)',src('src/terrain.ts'))
   self.assertIn('terrainHeight(x,z)+h/2',src('src/metroOverview.ts'))
