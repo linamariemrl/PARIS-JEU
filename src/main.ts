@@ -13,6 +13,7 @@ import { GameClock, type TimeSpeed } from './gameClock';
 import { TreeLayer } from './trees';
 import { MetroTreeLayer } from './metroTrees';
 import { installSurfaceLayer } from './surfaceLayer';
+import { AdaptiveResolution } from './adaptiveResolution';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
@@ -62,6 +63,7 @@ try{
   ground.material=mat;ground.isPickable=false;
 
   const camera=new MobileCamera(scene,canvas);
+  const resolution=new AdaptiveResolution(engine);
   const materials=createMaterials(scene);
   let metroCount=0;
   let overviewCount=0;
@@ -182,8 +184,7 @@ try{
     metro.setQuality(level);
     trees.setQuality(level);
     metroTrees.setQuality(level);
-    engine.setHardwareScalingLevel(level==='low'?1.7:level==='medium'?1.3:1);
-    engine.resize();
+    resolution.configure(level);
   });
   quality.dispatchEvent(new Event('change'));
 
@@ -226,6 +227,7 @@ try{
     metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     metroTrees.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     scene.render();
+    resolution.update(now,engine.getFps(),camera.isMoving);
     if(now-lastFps>=1000){
       fps.textContent=Math.round(engine.getFps())+' FPS';
       lastFps=now;
