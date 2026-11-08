@@ -22,6 +22,10 @@ export class StableWaterLayer{
   setVisible(visible:boolean):void{
     this.visible=visible;
     this.mesh?.setEnabled(visible);
+    // Une seule couche hydraulique visible dans le 4e, sinon deux
+    // polygones coplanaires produisent du scintillement au dézoom.
+    this.scene.getMeshByName('infrastructure-water')
+      ?.setEnabled(!this.ready||!visible);
     if(this.count)this.onStatus(
       this.count.toLocaleString('fr-FR')+
       ' surfaces d’eau IGN'+(visible?' visibles':' masquées à la demande'));
@@ -91,6 +95,7 @@ export class StableWaterLayer{
       mesh.setEnabled(this.visible);
       this.count=data.count;
       this.ready=true;
+      this.setVisible(this.visible);
       this.onStatus(data.count.toLocaleString('fr-FR')+
         ' emprises d’eau IGN : géométrie réelle, un seul maillage');
     }catch(error){
