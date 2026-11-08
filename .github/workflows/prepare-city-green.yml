@@ -1,0 +1,52 @@
+name: Géométrie officielle des parcs et bois de Paris
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/prepare_city_green_spaces.py'
+      - '.github/workflows/prepare-city-green.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paris-data-green
+  cancel-in-progress: true
+
+jobs:
+  publication:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer les bibliothèques géographiques
+        run: python -m pip install --disable-pip-version-check 'shapely>=2.1,<3'
+      - name: Préparer les surfaces officielles Paris Data
+        run: python -u scripts/prepare_city_green_spaces.py
+      - name: Contrôler la provenance et l'intégrité
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          p=Path('public/data/metropole/surfaces/green.json')
+          d=json.loads(p.read_text(encoding='utf-8'))
+          assert d['schema']==1 and d['count']==len(d['features'])
+          assert d['count']>=80 and p.stat().st_size<15_000_000
+          assert all(f['kind'] in {'managed','wood','planted'} for f in d['features'])
+          print(d['count'],'emprises',p.stat().st_size,'octets')
+          PY
+      - name: Committer les géométries uniquement si validées
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/data/metropole/surfaces/green.json
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: parcs et bois Paris Data réels'
+            git pull --rebase origin main
+            git push
+          fi
