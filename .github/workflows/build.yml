@@ -28,6 +28,8 @@ jobs:
           fi
       - name: Préparer les enveloppes LOD de tous les bâtiments IGN
         run: python scripts/prepare_metropole_overview.py
+      - name: Sectoriser les surfaces réelles pour Android
+        run: python scripts/prepare_surface_tiles.py
       - name: Vérifier les géométries
         run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Installer les dépendances Babylon.js
