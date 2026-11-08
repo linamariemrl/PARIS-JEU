@@ -35,6 +35,11 @@ export default defineConfig({
         '**/data/metropole/places/**'
       ],
       runtimeCaching: [{
+        urlPattern: new RegExp('data/metropole/places/.*[.]json'),
+        handler: 'StaleWhileRevalidate',
+        options: {cacheName:'paris-patrimoine-026',
+          expiration:{maxEntries:8,maxAgeSeconds:60*60*24*30}}
+      }, {
         urlPattern: new RegExp('data/metropole/(?:coverage|terrain)/.*'),
         handler: 'CacheFirst',
         options: {cacheName:'paris-socle-geographique-025',

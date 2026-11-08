@@ -1,3 +1,22 @@
+## Détails de jardins patrimoniaux (0.26)
+
+- Le jardin du Luxembourg et les Tuileries sont des domaines cliquables sur
+  leurs contours vectoriels OSM documentés, indépendants des volumes IGN.
+- Les fiches recoupent les informations du Sénat, du Louvre et les notices
+  culturelles POP/Mérimée. Les boisements, pelouses, massifs, bassins, allées
+  et arbres additionnels ne sont tracés que lorsqu'une géométrie OSM réelle
+  existe dans le périmètre reconnu. Sans géométrie, aucune plantation n'est
+  imaginée.
+- Les lignes d'allées n'ont pas de largeur ni de revêtement inventés.
+  Les arbres sans hauteur recensée utilisent une hauteur de représentation
+  explicitement schématique ; leur position est issue des données OSM.
+- Les surfaces officielles existantes et la navigation restent prioritaires ;
+  les nouveaux maillages sont groupés et permanents, sans réallocation à
+  chaque déplacement ou changement de focale.
+- Les notices protégées et les objets touristiques vectorisés ne sont pas
+  une liste exhaustive de tous les sites touristiques. Toute attribution
+  foncière ou patrimoniale reste conditionnée à la provenance de sa source.
+
 # PARIS — prototype de jeu urbain 3D
 
 **Version en cours : 0.26.0 (Prototype 0.26).** La validation réelle Android reste ouverte. La 0.26 était auparavant bloquée

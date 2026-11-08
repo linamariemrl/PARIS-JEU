@@ -22,6 +22,7 @@ import { TerrainModule } from './terrain';
 import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import {HeritageAtlas} from './heritageAtlas';
+import {HeritageGardenLayer} from './heritageGardens';
 import { StreetDirectory } from './streetDirectory';
 import { GameManagement } from './simulation/ui';
 import {prepareAppInstallation,isNativeApp} from './appInstall';
@@ -144,6 +145,9 @@ try{
   const selection:Mesh[]=[];
   const inspector=new PlaceInspector(el('place-extra'));
   const heritage=new HeritageAtlas(scene);
+  const heritageGardens=new HeritageGardenLayer(scene,message=>{
+    el('heritage-gardens-status').textContent=message;
+  });
   const streets=new StreetDirectory();
   void streets.init();
   let management:GameManagement|null=null;
@@ -414,7 +418,7 @@ try{
     else camera.camera.target.y=
       terrainHeight(camera.camera.target.x,camera.camera.target.z);
     await Promise.allSettled([
-      inspector.init(),
+      inspector.init(),heritageGardens.init(),
       ...(STABLE_RENDER?[water.init(),roads.init(),trees.init(),metroTrees.init(),
         installSurfaceLayer(scene,'data/metropole/surfaces/green.json',
           message=>{el('surface-status').textContent=message;})]:

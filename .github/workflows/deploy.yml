@@ -45,6 +45,8 @@ jobs:
         run: python scripts/prepare_surface_tiles.py
       - name: Récupérer les domaines patrimoniaux vectoriels
         run: python scripts/prepare_heritage_domains.py
+      - name: Géométries de jardins historiques documentées
+        run: python scripts/prepare_heritage_gardens.py
       - name: Vérifier les données
         run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Compiler et vérifier la taille du site

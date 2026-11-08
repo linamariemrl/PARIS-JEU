@@ -23,6 +23,16 @@ class Heritage026(unittest.TestCase):
   self.assertIn("Jardin du Luxembourg",src)
   self.assertIn("Jardin des Tuileries",src)
   self.assertIn("pas de polygone fictif",src)
+ def test_park_details_are_documented_and_not_fabricated(self):
+  generator=read("scripts/prepare_heritage_gardens.py")
+  for s in ["scope=unary_union(domains)","p.intersection(scope)",
+    "line.intersection(scope)","aucune géométrie générée"]:
+   self.assertIn(s,generator)
+  renderer=read("src/heritageGardens.ts")
+  self.assertIn("appendDraped(",renderer)
+  self.assertIn("thinInstanceSetBuffer",renderer)
+  self.assertIn("heritageGardens.init()",read("src/main.ts"))
+  self.assertIn("id=\"heritage-gardens-status\"",read("index.html"))
  def test_preexisting_save_contract(self):
   self.assertIn("this.captureView()",read("src/simulation/ui.ts"))
   self.assertIn("if(restoredView!==undefined)camera.restoreView(restoredView)",read("src/main.ts"))

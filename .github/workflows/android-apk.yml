@@ -54,6 +54,8 @@ jobs:
           python scripts/prepare_surface_tiles.py
       - name: Récupérer les emprises historiques sourcées
         run: python scripts/prepare_heritage_domains.py
+      - name: Surfaces, allées et arbres documentés des jardins patrimoniaux
+        run: python scripts/prepare_heritage_gardens.py
       - name: Vérifier les sources et les géométries
         run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Installer le conditionneur Android
