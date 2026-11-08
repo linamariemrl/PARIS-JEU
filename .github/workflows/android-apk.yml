@@ -25,9 +25,11 @@ jobs:
         with:
           distribution: temurin
           java-version: '21'
-      - uses: android-actions/setup-android@v3
-      - name: Installer le SDK Android
-        run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      - name: Préparer le SDK Android déjà installé sur GitHub
+        run: |
+          echo "SDK Android : ${ANDROID_HOME:-/usr/local/lib/android/sdk}"
+          yes | sdkmanager --licenses >/dev/null || true
+          sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
       - name: Installer les dépendances du jeu
         run: npm install --no-audit --no-fund
       - name: Préparer les données officielles
