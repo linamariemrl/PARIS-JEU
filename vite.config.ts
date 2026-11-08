@@ -24,7 +24,8 @@ export default defineConfig({
       globIgnores: [
         '**/data/4e/aerial/**',
         '**/data/metropole/buildings/tiles/**',
-        '**/data/metropole/overview/**'
+        '**/data/metropole/overview/**',
+        '**/data/metropole/surfaces/tiles/**'
       ],
       runtimeCaching: [{
         urlPattern: new RegExp('data/metropole/buildings/tiles/.*[.]json'),
@@ -39,6 +40,13 @@ export default defineConfig({
         options: {
           cacheName: 'metro-overview-v1',
           expiration: { maxEntries: 95, maxAgeSeconds: 60*60*24*14 }
+        }
+      }, {
+        urlPattern: new RegExp('data/metropole/surfaces/tiles/.*[.]json'),
+        handler: 'CacheFirst',
+        options: {
+          cacheName: 'paris-surfaces-geographiques-v1',
+          expiration: { maxEntries: 22, maxAgeSeconds: 60*60*24*14 }
         }
       }, {
         urlPattern: new RegExp('data/metropole/trees/.*[.]bin'),
