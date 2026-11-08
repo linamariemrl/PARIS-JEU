@@ -26,6 +26,6 @@ class TerritorialActions(unittest.TestCase):
   save=src("src/simulation/saveStore.ts")
   self.assertIn("dossiers?:Dossier[]",save)
   self.assertIn("validateDossiers(x.dossiers)",save)
-  self.assertIn("PROTOTYPE 0.24",src("index.html"))
+  self.assertIn("PROTOTYPE 0.25",src("index.html"))
 
 if __name__=="__main__":unittest.main()
