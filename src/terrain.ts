@@ -42,8 +42,9 @@ export function terrainHeight(x:number,z:number):number{
 }
 export function terrainAltitude(x:number,z:number):number|null{
  const g=current;
- const v=g?.get(x,z);
- return g&&v!==null?v+g.meta.displayReferenceAltitudeM:null;
+ if(!g)return null;
+ const v=g.get(x,z);
+ return v===null?null:v+g.meta.displayReferenceAltitudeM;
 }
 export function isTerrainReady(){return current!==null;}
 
@@ -91,7 +92,6 @@ function meshFromGrid(scene:Scene,g:TerrainGrid):Mesh|null{
  */
 export class TerrainModule{
  readonly name='Terrain RGE ALTI IGN';
- private mesh:Mesh|null=null;
  constructor(private scene:Scene,
   private onStatus:(message:string)=>void){}
  async init(flatFallback:Mesh):Promise<void>{
@@ -114,7 +114,6 @@ export class TerrainModule{
      const grid=new TerrainGrid(meta,data);
      const mesh=meshFromGrid(this.scene,grid);
      if(!mesh)throw Error('Aucun triangle altimétrique valide');
-     this.mesh=mesh;
      current=grid;
      flatFallback.setEnabled(false);
      this.onStatus('Relief IGN chargé, pas de '+meta.gridSpacingMeters+
