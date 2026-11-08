@@ -50,7 +50,7 @@ export function isTerrainReady(){return current!==null;}
 
 function meshFromGrid(scene:Scene,g:TerrainGrid):Mesh|null{
  const {extent,gridSpacingMeters:step}=g.meta;
- const positions:number[]=[],indices:number[]=[];
+ const positions:number[]=[],indices:number[]=[],colors:number[]=[];
  const columns=extent.width,rows=extent.height;
  for(let j=0;j<rows;j++){
    for(let i=0;i<columns;i++){
@@ -58,6 +58,14 @@ function meshFromGrid(scene:Scene,g:TerrainGrid):Mesh|null{
      const h=g.values[j*columns+i];
      // Les rares valeurs sans source ne sont pas utilisées par les triangles.
      positions.push(x,h===-32768?0:h*.1,z);
+     // Dégradé altimétrique neutre calculé UNE FOIS sur les vrais relevés,
+     // sans accroître les triangles ni ajouter de texture/ombres mobiles.
+     // Les collines restent à échelle 1:1 : seul le gris permet de lire
+     // la différence de niveau, de la Seine vers Montmartre/Belleville.
+     const rel=h===-32768?0:h*.1;
+     const t=Math.max(0,Math.min(1,(rel+18)/165));
+     const shade=.93-.20*t;
+     colors.push(shade,shade,shade,1);
    }
  }
  for(let j=0;j<rows-1;j++){
@@ -71,11 +79,12 @@ function meshFromGrid(scene:Scene,g:TerrainGrid):Mesh|null{
  if(!indices.length)return null;
  const mesh=new Mesh('terrain-RGE-ALTI-IGN',scene);
  const vd=new VertexData();
- vd.positions=positions;vd.indices=indices;
+ vd.positions=positions;vd.indices=indices;vd.colors=colors;
  const normals:number[]=[];
  VertexData.ComputeNormals(positions,indices,normals);
  vd.normals=normals;
  vd.applyToMesh(mesh);
+ mesh.useVertexColors=true;
  const mat=new StandardMaterial('relief-terrain-IGN-sans-texture',scene);
  mat.diffuseColor=new Color3(.78,.79,.77);
  mat.specularColor=Color3.Black();

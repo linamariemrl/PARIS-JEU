@@ -2,6 +2,7 @@ import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3
 import earcut from 'earcut';
 import { project } from './geo';
 import {terrainHeight} from './terrain';
+import {stableFoundation} from './reliefAnchors';
 import { roofProfile } from './roofGeometry';
 import { steppedHeight, shouldUseVolumes } from './volumeGeometry';
 import type { Building, Point, TileFile, LidarRoofPart } from './types';
@@ -77,6 +78,10 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
   for(const section of sections){
     const rings=section.rings.filter(x=>x.length>=3);
     if(!rings.length)continue;
+    // Une seule altitude d'assise pour la toiture de chaque corps bâti :
+    // échantillonner le MNT à chacun des sommets du toit produisait des
+    // triangles inclinés et de fausses flèches de plusieurs dizaines de m.
+    const foundation=stableFoundation(rings[0],terrainHeight);
     const profile=section.hasDocumentedRoof&&!section.lidar?
       roofProfile(b.roofInfo,height,rings[0]):null;
     const lidar=section.lidar;
@@ -93,9 +98,13 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
         const p=ring[j],q=ring[(j+1)%ring.length];
         const ph=measuredHeights?.[j]??profile?.heightAt(p)??section.height;
         const qh=measuredHeights?.[(j+1)%ring.length]??profile?.heightAt(q)??section.height;
-        const py=terrainHeight(p.x,p.z),qy=terrainHeight(q.x,q.z);
+        // La base des murs reste au contact du terrain sur une pente,
+        // alors que l'altitude des toitures reste cohérente et stable.
+        const topP=foundation+ph,topQ=foundation+qh;
+        const py=Math.min(terrainHeight(p.x,p.z),topP-.35);
+        const qy=Math.min(terrainHeight(q.x,q.z),topQ-.35);
         const a:XYZ=[p.x,py,p.z],bb:XYZ=[q.x,qy,q.z];
-        const c:XYZ=[q.x,qy+qh,q.z],d:XYZ=[p.x,py+ph,p.z];
+        const c:XYZ=[q.x,topQ,q.z],d:XYZ=[p.x,topP,p.z];
         tri(walls,a,bb,c,index);
         tri(walls,a,c,d,index);
       }
@@ -107,9 +116,9 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
         const a=lidar.vertices[lidar.indices[k]];
         const bb=lidar.vertices[lidar.indices[k+1]];
         const c=lidar.vertices[lidar.indices[k+2]];
-        tri(roofs,[a[0],terrainHeight(a[0],a[1])+a[2],a[1]],
-          [bb[0],terrainHeight(bb[0],bb[1])+bb[2],bb[1]],
-          [c[0],terrainHeight(c[0],c[1])+c[2],c[1]],index);
+        tri(roofs,[a[0],foundation+a[2],a[1]],
+          [bb[0],foundation+bb[2],bb[1]],
+          [c[0],foundation+c[2],c[1]],index);
       }
       continue;
     }
@@ -118,12 +127,12 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
       const a=points[triangles[k]],b2=points[triangles[k+1]],c=points[triangles[k+2]];
       const top=(p:{x:number;z:number})=>
         profile?.heightAt(p)??section.height;
-      const pa:XYZ=[a.x,terrainHeight(a.x,a.z)+top(a),a.z],
-        pb:XYZ=[b2.x,terrainHeight(b2.x,b2.z)+top(b2),b2.z],
-        pc:XYZ=[c.x,terrainHeight(c.x,c.z)+top(c),c.z];
+      const pa:XYZ=[a.x,foundation+top(a),a.z],
+        pb:XYZ=[b2.x,foundation+top(b2),b2.z],
+        pc:XYZ=[c.x,foundation+top(c),c.z];
       if(profile&&profile.rise>.05){
         const center={x:(a.x+b2.x+c.x)/3,z:(a.z+b2.z+c.z)/3};
-        const pm:XYZ=[center.x,terrainHeight(center.x,center.z)+top(center),center.z];
+        const pm:XYZ=[center.x,foundation+top(center),center.z];
         tri(roofs,pa,pb,pm,index);
         tri(roofs,pb,pc,pm,index);
         tri(roofs,pc,pa,pm,index);
@@ -212,8 +221,10 @@ export function highlightBuilding(scene:Scene,b:Building):Mesh[]{
   const lines:Mesh[]=[];
   for(const polygon of b.polygons){
     const exterior=polygon[0];if(!exterior||exterior.length<3)continue;
-    const points=exterior.map(p=>b.localCoordinates?
-      {x:p[0],z:p[1]}:project(p)).map(p=>new Vector3(p.x,b.height+.12+terrainHeight(p.x,p.z),p.z));
+    const projectedRing=exterior.map(p=>b.localCoordinates?
+      {x:p[0],z:p[1]}:project(p));
+    const base=stableFoundation(projectedRing,terrainHeight);
+    const points=projectedRing.map(p=>new Vector3(p.x,b.height+.12+base,p.z));
     if(Vector3.Distance(points[0],points[points.length-1])>.01)
       points.push(points[0].clone());
     const line=MeshBuilder.CreateLines('selection',{points},scene);

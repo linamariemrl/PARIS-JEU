@@ -3,6 +3,7 @@ import {
 } from '@babylonjs/core';
 import earcut from 'earcut';
 import {terrainHeight} from './terrain';
+import {stableFoundation} from './reliefAnchors';
 
 /** Tablier et parapets 3D très simplifiés à partir des emprises IGN des
  * tronçons surélevés. L'élévation est illustrative : elle ne restitue
@@ -21,9 +22,13 @@ const RAIL_THICKNESS = 0.35;
 class Batch {
   positions: number[] = [];
   indices: number[] = [];
+  referenceY = 0;
   add(a: XYZ, b: XYZ, c: XYZ) {
     const index = this.positions.length / 3;
-    for(const p of [a,b,c])this.positions.push(p[0],p[1]+terrainHeight(p[0],p[2]),p[2]);
+    // Un tablier rigide ne doit jamais suivre les variations de la grille
+    // altimétrique de rive sommet par sommet (origine des grandes pointes).
+    for(const p of [a,b,c])
+      this.positions.push(p[0],p[1]+this.referenceY,p[2]);
     this.indices.push(index, index + 1, index + 2);
   }
   quad(a: XYZ, b: XYZ, c: XYZ, d: XYZ) {
@@ -93,6 +98,11 @@ export function addBridges(scene: Scene, polygons: Layer): number {
       for (const [x, z] of pts) { flat.push(x, z); countPoints++; }
     }
     if (countPoints < 3) continue;
+    // Assise commune par pont : les parapets et le tablier restent solidaires.
+    const reference=stableFoundation(
+      rings[0].map(([x,z])=>({x,z})),terrainHeight);
+    deck.referenceY=reference;
+    parapets.referenceY=reference;
     const tri = earcut(flat, holes, 2);
     if (!tri.length) continue;
     count++;

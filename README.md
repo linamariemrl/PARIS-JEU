@@ -1,3 +1,29 @@
+## Branche 0.25.4 — correction des pointes et lecture des collines
+
+Les captures Android du 8 novembre ont montré de grandes « voiles »
+triangulaires sur certains bâtiments et ouvrages. Les corrections
+sont ciblées : les toitures IGN/LiDAR conservent leurs hauteurs propres,
+mais utilisent une altitude d'assise stable par corps bâti ; les bases
+de murs suivent toujours le terrain au niveau de chaque angle.
+Chaque pont emploie une altitude cohérente pour son tablier et ses
+parapets. Le MNT RGE ALTI à 200 m n'est pas une mesure fine des
+dalles, des chaussées ni des ponts, et son interpolation ne doit
+pas introduire de pente artificielle dans ces ouvrages rigides.
+
+Une teinte graduée neutre, calculée une seule fois aux nœuds IGN,
+rend les différences d'altitude plus perceptibles sans exagération
+verticale, photographie ou draw call supplémentaire.
+
+Les emprises officielles des parcs, arbres géolocalisés, eau IGN,
+volumes des bâtiments, routes PVP, sélection et dossiers sont
+conservés. La couverture distante et les plafonds d'instances
+des versions antérieures demeurent inchangés.
+
+Tests automatisés : contrôle de la cohérence des toitures et des
+ponts avec une pente artificielle extrême, présence des couches
+officielles et absence de passage prématuré en 0.26. Une validation
+visuelle sur Android reste indispensable.
+
 ## Prototype 0.25.3 — relief IGN et patrimoine végétal officiel
 
 Le relief utilise le RGE ALTI, avec une grille mesurée tous les 200 m,
