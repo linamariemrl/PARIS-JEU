@@ -77,6 +77,7 @@ def main():
     if len(tiles)<20:raise ValueError("Couverture trop faible")
     OUT.mkdir(parents=True,exist_ok=True)
     for path in OUT.glob("*.json"):path.unlink()
+    overview=[]
     manifest={"schema":1,"cellMeters":STEP,"sourceCounts":counts,
         "source":"IGN BD TOPO et Paris Data",
         "note":"Près = contours réels; loin = contours simplifiés et fragments minuscules omis.",
@@ -84,12 +85,18 @@ def main():
     for key,features in sorted(tiles.items()):
         ix,iz=map(int,key.split("_"))
         near=features["near"];far=features["far"]
+        overview.extend([[key,kind,coordinates] for kind,coordinates in far])
         for lod,records in (("near",near),("far",far)):
             file=OUT/(f"{key}-{lod}.json")
             file.write_text(json.dumps({"schema":1,"features":records},
                 ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf8")
         manifest["tiles"].append({"id":key,"ix":ix,"iz":iz,
              "near":len(near),"far":len(far)})
+    (OUT/"overview.json").write_text(json.dumps({
+        "schema":1,"features":overview,
+        "source":"Contours simplifiés, IGN et Paris Data",
+        "note":"LOD distant uniquement, détails des chaussées chargés à proximité."},
+        ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf8")
     (OUT/"manifest.json").write_text(json.dumps(manifest,
         ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf8")
     print("Tuiles surfaciques:",len(tiles),counts,
