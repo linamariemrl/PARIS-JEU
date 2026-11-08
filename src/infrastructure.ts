@@ -24,16 +24,16 @@ type Kind = 'water' | 'bank' | 'sidewalk' | 'road' | 'foot' | 'square';
 // Palette pierre de Paris : contrastes neutres, jamais de photographie.
 export const NEUTRAL_PALETTE = {
   ground: .81, buildings: .92, roofs: .76,
-  river: .74, bank: .83, road: .71, sidewalk: .84,
-  foot: .78, square: .79, border: .54
+  river: .74, bank: .83, road: .56, sidewalk: .86,
+  foot: .78, square: .80, border: .54
 } as const;
 const COLORS: Record<Kind, [number, number, number]> = {
   water: [.73,.74,.75],
   bank: [.83,.83,.82],
-  sidewalk: [.84,.84,.84],
-  road: [.70,.71,.71],
+  sidewalk: [.86,.86,.86],
+  road: [.55,.56,.57],
   foot: [.78,.78,.78],
-  square: [.79,.79,.79],
+  square: [.80,.80,.80],
 };
 const HEIGHTS: Record<Kind, number> = {
   water: 0.05, bank: 0.085, sidewalk: 0.10, road: 0.14,
@@ -89,7 +89,8 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   material.emissiveColor=new Color3(r,g,b);
   material.backFaceCulling = false;
   mesh.material = material;
-  mesh.isPickable = false;
+  // Un clic sur une chaussée ouvre sa fiche sans calcul à chaque frame.
+  mesh.isPickable = kind === 'road';
   mesh.freezeWorldMatrix();
   return mesh;
 }

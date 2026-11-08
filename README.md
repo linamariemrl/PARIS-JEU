@@ -1,3 +1,21 @@
+## Prototype 0.24 — voirie contrastée et premiers dossiers territoriaux
+
+Les chaussées du 4e sont distinctes du sol, des trottoirs et des espaces
+piétons par des gris neutres. La géométrie reste officielle (IGN/OSM),
+les classes « avenue principale / rue secondaire » ne sont pas
+inventées à partir des seules surfaces disponibles. Les chaussées deviennent
+sélectionnables : la dénomination est rapprochée du répertoire officiel des
+rues de Paris, et ce rapprochement approximatif est annoncé dans la fiche.
+
+Depuis un bâtiment, une chaussée ou un lieu, le joueur peut désormais
+**Observer**, **Prioriser** ou **Ouvrir un dossier**. Les dossiers apparaissent
+dans « Gestion et parties » avec suivi temporel après 24 h de jeu. Il s'agit
+de statuts de décision simulés, jamais de réponses administratives réelles.
+Ces dossiers sont automatiquement conservés dans IndexedDB et inclus
+dans les exports JSON ; les anciennes sauvegardes de schéma 1 restent
+compatibles. Les bâtiments, la caméra 360°, l'horloge, les données
+officielles, les budgets et le niveau de détail mobile sont préservés.
+
 ## Prototype 0.23 : palette corrigée et rendu Android stabilisé
 
 La capture Android du 8 novembre 2026 a confirmé **60 FPS** en 0.22, mais les

@@ -20,7 +20,7 @@ class UnlitPalette(unittest.TestCase):
         self.assertIn("material.disableLighting=true",infra)
         self.assertIn("material.emissiveColor=new Color3(r,g,b)",infra)
         self.assertNotIn("material.emissiveColor=new Color3(.025",infra)
-        self.assertIn("road: [.70,.71,.71]",infra)
+        self.assertIn("road: [.55,.56,.57]",infra)
 
     def test_real_water_is_not_black(self):
         water=read("src/stableWater.ts")
@@ -48,7 +48,7 @@ class UnlitPalette(unittest.TestCase):
             values=[float(x.strip()) for x in rgb.split(",")]
             self.assertEqual(len(values),3)
             self.assertLessEqual(max(values)-min(values),.035)
-            self.assertGreaterEqual(min(values),.69)
+            self.assertGreaterEqual(min(values),.55)
             self.assertLessEqual(max(values),.86)
 
 if __name__=="__main__":

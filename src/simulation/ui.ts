@@ -3,6 +3,7 @@ import {IndicatorStore} from './indicatorStore';
 import {FinanceModule} from './modules/finances';
 import {EnvironmentModule} from './modules/environment';
 import {SaveStore,validateSave,type GameSave} from './saveStore';
+import {phaseOf,registerDossier,type Dossier,type DossierAction,type SelectedPlace} from './dossiers';
 
 const money=(v:number)=>new Intl.NumberFormat('fr-FR',{
  style:'currency',currency:'EUR',maximumFractionDigits:0}).format(v);
@@ -17,10 +18,14 @@ export class GameManagement {
  readonly finance=new FinanceModule(this.indicators);
  readonly environment=new EnvironmentModule(this.indicators);
  readonly saves=new SaveStore();
+ private dossiers:Dossier[]=[];
+ private selected:SelectedPlace|null=null;
+ private lastDossierHour=-1;
  private currentName='Partie principale';
  private currentSlot='principal';
  private createdAt=new Date().toISOString();
- constructor(private clock:GameClock, private onRateChange:(rate:0|1|10|60)=>void){
+ constructor(private clock:GameClock, private onRateChange:(rate:0|1|10|60)=>void,
+   private onGoTo:(x:number,z:number)=>void){
   node<HTMLButtonElement>('finance-open').addEventListener('click',()=>this.open());
   node<HTMLButtonElement>('finance-close').addEventListener('click',()=>this.close());
   node<HTMLButtonElement>('budget-propose').addEventListener('click',()=>this.propose());
@@ -30,6 +35,71 @@ export class GameManagement {
   node<HTMLInputElement>('save-import').addEventListener('change',e=>void this.import(e));
   void this.finance.loadOfficial(import.meta.env.BASE_URL).then(()=>this.render());
   void this.environment.load(import.meta.env.BASE_URL).then(()=>this.render());
+  const actions:[string,DossierAction][]=[
+   ['action-observe','observer'],['action-priority','prioriser'],
+   ['action-dossier','ouvrir']
+  ];
+  for(const [id,action] of actions)
+   node<HTMLButtonElement>(id).addEventListener('click',()=>void this.act(action));
+  void this.saves.get('principal').then(value=>{
+   // Reprise locale de la partie principale, sans modifier les anciens fichiers.
+   if(value&&this.currentSlot==='principal')void this.load('principal');
+  }).catch(console.warn);
+ }
+ setSelection(place:SelectedPlace):void{
+  this.selected=place;
+  node('location-actions').classList.remove('hidden');
+  const existing=this.dossiers.find(d=>d.id===place.id);
+  node('location-action-status').textContent=existing?
+   phaseOf(existing,this.clock.current):'Aucune action enregistrée pour ce lieu.';
+ }
+ clearSelection():void{
+  this.selected=null;
+  node('location-actions').classList.add('hidden');
+ }
+ private async act(action:DossierAction):Promise<void>{
+  if(!this.selected)return;
+  try{
+   this.dossiers=registerDossier(this.dossiers,this.selected,action,this.clock.current);
+   node('location-action-status').textContent=phaseOf(this.dossiers[0],this.clock.current);
+   await this.saves.put(this.currentSlot,this.snapshot());
+   this.status('Action territoriale enregistrée et sauvegardée.');
+   this.open();
+  }catch(error){node('location-action-status').textContent='Erreur : '+String(error);}
+ }
+ tickDossiers():void{
+  const hour=Math.floor(this.clock.current/3_600_000);
+  if(hour===this.lastDossierHour)return;
+  this.lastDossierHour=hour;
+  this.renderDossiers();
+  if(this.selected)this.setSelection(this.selected);
+ }
+ private renderDossiers():void{
+  const target=node<HTMLDivElement>('dossier-list');
+  target.replaceChildren();
+  node('dossier-total').textContent=String(this.dossiers.length);
+  if(!this.dossiers.length){
+   const p=document.createElement('p');
+   p.className='finance-source';
+   p.textContent='Aucun dossier. Touchez un bâtiment, une route ou un lieu pour agir.';
+   target.append(p);return;
+  }
+  for(const d of this.dossiers.slice(0,35)){
+   const row=document.createElement('div');row.className='dossier-row';
+   const info=document.createElement('span');
+   const name=document.createElement('strong');name.textContent=d.label;
+   const state=document.createElement('small');state.textContent=phaseOf(d,this.clock.current);
+   info.append(name,state);
+   const go=document.createElement('button');
+   go.textContent='Voir';
+   go.addEventListener('click',()=>{this.close();this.onGoTo(d.x,d.z);});
+   row.append(info,go);target.append(row);
+  }
+  if(this.dossiers.length>35){
+   const p=document.createElement('p');p.className='finance-source';
+   p.textContent='Affichage limité aux 35 dossiers les plus récents.';
+   target.append(p);
+  }
  }
  private status(text:string){node('finance-status').textContent=text;}
  open(){
@@ -38,6 +108,7 @@ export class GameManagement {
  }
  close(){node('finance-panel').classList.add('hidden');}
  private async render(){
+  this.renderDossiers();
   const b=this.finance.baseline;
   node('finance-year').textContent=b?
     'Budget primitif '+b.year+' publié, Ville-département':
@@ -105,7 +176,8 @@ export class GameManagement {
   return {
     schema:1,name:this.currentName,createdAt:this.createdAt,updatedAt:now,
     gameTimestamp:this.clock.current,timeRate:this.clock.rate,
-    plan:this.finance.plan,indicators:this.indicators.list()
+    plan:this.finance.plan,indicators:this.indicators.list(),
+    dossiers:this.dossiers.map(d=>({...d}))
   };
  }
  private async save(newSlot=false){
@@ -133,6 +205,8 @@ export class GameManagement {
     this.onRateChange(v.timeRate);
     this.indicators.restore(v.indicators);
     this.finance.restore(v.plan,v.gameTimestamp);
+    this.dossiers=(v.dossiers??[]).map(d=>({...d}));
+    if(this.selected)this.setSelection(this.selected);
     this.status('Partie restaurée : '+this.currentName);
     await this.render();
   }catch(e){this.status('Chargement impossible : '+String(e));}

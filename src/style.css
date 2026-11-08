@@ -175,6 +175,16 @@ header{background:linear-gradient(#273543dd,#273543aa)}
 #place-extra h3{font-size:13px;margin:3px 0 9px}
 #place-extra p{margin:6px 0;line-height:1.45;font-size:12px}
 #place-extra a{color:#c7ddec;text-decoration:underline}
+#location-actions{border-top:1px solid #ffffff55;margin-top:10px;padding-top:10px}
+.location-action-row{display:flex;flex-wrap:wrap;gap:6px;margin-top:7px}
+.location-action-row button{width:auto;height:34px;padding:5px 9px;font-size:11px;flex:1;min-width:85px}
+#location-action-status{font-size:11px;margin:7px 0 0;color:#dce5eb}
+.dossier-list{display:flex;flex-direction:column;gap:5px;margin:8px 0}
+.dossier-row{display:flex;gap:7px;justify-content:space-between;align-items:center;
+ background:#e6e6e6;padding:7px;border-radius:7px}
+.dossier-row span{display:flex;flex:1;flex-direction:column;gap:3px;min-width:0;overflow-wrap:anywhere}
+.dossier-row small{color:#59636b}
+.dossier-row button{height:32px;width:48px;font-size:11px;flex:none}
 #place-extra .monument-notice{border-top:1px solid #ffffff44;
  margin-top:9px;padding-top:8px}
 #building-fields:empty{display:none}

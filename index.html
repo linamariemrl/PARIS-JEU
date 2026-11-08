@@ -9,7 +9,7 @@
 </head>
 <body>
 <canvas id="scene" aria-label="Vue 3D tactile de Paris"></canvas>
-<header><strong>PARIS</strong><span>PROTOTYPE 0.23 | SOL CLAIR ET FLUIDITÉ</span></header>
+<header><strong>PARIS</strong><span>PROTOTYPE 0.24 | VOIRIE ET DOSSIERS</span></header>
 <aside id="time-panel" aria-label="Temps de simulation">
   <div id="game-clock" aria-live="off">Chargement de l'heure…</div>
   <div class="time-controls">
@@ -20,7 +20,7 @@
     
   </div>
 </aside>
-<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt déplace la maquette. Le bouton 360° transforme le glissement en rotation libre. Deux doigts tournent, inclinent ou zooment. Rue : un doigt regarde partout, flèches pour marcher. Un appui bref sélectionne un immeuble.</p>
+<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt déplace la maquette. Le bouton 360° transforme le glissement en rotation libre. Deux doigts tournent, inclinent ou zooment. Rue : un doigt regarde partout, flèches pour marcher. Un appui bref sélectionne un immeuble, une chaussée ou un lieu et permet d’ouvrir un dossier.</p>
 <label class="precision-switch"><input type="checkbox" id="precision-mode"/> Mode précision, gestes plus lents (35 %)</label>
 <label class="territory-select">Aller directement à une zone
   <select id="territory-jump" aria-label="Choisir une zone de Paris">
@@ -47,10 +47,15 @@
 </div>
 
 <section id="finance-panel" class="hidden" role="dialog" aria-label="Finances de la Ville et sauvegardes">
-  <div class="finance-head"><div><strong>PARIS</strong><small>FINANCES ET PARTIES</small></div>
+  <div class="finance-head"><div><strong>PARIS</strong><small>GESTION ET PARTIES</small></div>
     <button id="finance-close" aria-label="Fermer le panneau">×</button></div>
   <p id="finance-year" class="finance-sub">Chargement des données officielles…</p>
    <p class="finance-source">Montants des sections du budget primitif voté, incluant les opérations d’ordre. Ils ne représentent pas les encaissements et décaissements réalisés.</p>
+  <h3>Dossiers territoriaux</h3>
+  <p class="finance-source">Observations et priorités simulées sur les lieux sélectionnés. Aucun effet réel sur la Ville ni dépense automatique.</p>
+  <div class="finance-line"><span>Dossiers enregistrés</span><b id="dossier-total">0</b></div>
+  <div id="dossier-list" class="dossier-list" aria-live="polite"></div>
+  <div class="finance-divider"></div>
   <h3>Budget de fonctionnement</h3>
   <div class="finance-line"><span>Recettes votées</span><b id="fin-op-revenue">…</b></div>
   <div class="finance-line"><span>Dépenses votées</span><b id="fin-op-expense">…</b></div>
@@ -105,7 +110,12 @@
 <p>Identifiant du bâtiment IGN : <span id="identifier"></span></p>
 <small id="caveat"></small>
 </div>
-<div id="place-extra" aria-live="polite"></div></aside>
+<div id="place-extra" aria-live="polite"></div>
+<div id="location-actions" class="location-actions hidden">
+  <strong>Actions sur ce lieu</strong>
+  <div class="location-action-row"><button id="action-observe">Observer</button><button id="action-priority">Prioriser</button><button id="action-dossier">Ouvrir dossier</button></div>
+  <p id="location-action-status" role="status"></p>
+</div></aside>
 <div id="error" class="hidden" role="alert"></div>
 <footer id="map-hud">
   <span id="count">0 bâtiment représenté</span>
@@ -136,9 +146,9 @@
         <strong>Maquette géométrique stable · niveaux neutres</strong>
         <span><i style="background:#efefef"></i> Façades de la maquette</span>
         <span><i style="background:#cecece"></i> Toitures de la maquette</span>
-        <span><i style="background:#b3b5b5"></i> Chaussées 4e (maillage stable)</span>
+        <span><i style="background:#8c8f91"></i> Chaussées 4e (claires et sélectionnables)</span>
         <span><i style="background:#babdc0"></i> Eau IGN (géométrie officielle, gris clair)</span>
-        <span><i style="background:#cfcdc5"></i> Quais et berges (4e détaillé)</span>
+        <span><i style="background:#d4d4d1"></i> Trottoirs et berges (4e détaillé)</span>
         <span><i style="background:#d1d1d1"></i> Emprises des parcs archivées hors rendu</span>
         <span><i style="background:#bfbfbf"></i> Arbres SIG archivés hors rendu</span>
         <span><i style="background:#cacaca"></i> Ponts 3D (4e détaillé)</span>

@@ -1,0 +1,20 @@
+import assert from 'node:assert/strict';
+import {registerDossier,phaseOf,validateDossiers} from '../src/simulation/dossiers.ts';
+import {nearestStreet} from '../src/streetDirectory.ts';
+const place={id:'voie:123',label:'Rue de test',kind:'voirie',x:12,z:18};
+const day=86_400_000;
+const first=registerDossier([],place,'observer',day);
+assert.equal(first.length,1);
+assert.equal(phaseOf(first[0],day),'Observation programmée');
+assert.equal(phaseOf(first[0],day*2),'Observation à réexaminer');
+const second=registerDossier(first,place,'ouvrir',day*2);
+assert.equal(second.length,1);
+assert.equal(phaseOf(second[0],day*3),'Dossier à suivre');
+assert.deepEqual(validateDossiers(undefined),[]);
+assert.equal(validateDossiers(second).length,1);
+assert.throws(()=>validateDossiers([{...second[0],x:Infinity}]));
+const names=[{id:'1:0',streetId:'1',name:'Rue de test',kind:'rue',
+ x:0,z:0,angle:0,length:120}];
+assert.equal(nearestStreet(names,20,5)?.name,'Rue de test');
+assert.equal(nearestStreet(names,20,70),null);
+console.log('Actions, sauvegardes compatibles et noms officiels : OK.');

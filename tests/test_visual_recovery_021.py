@@ -64,7 +64,7 @@ class VisualRecovery(unittest.TestCase):
         self.assertIn('id="roof-lod-toggle"',html)
         self.assertIn("water.setVisible(waterToggle.checked)",entry)
         self.assertIn("overview.setRoofLodEnabled(lodToggle.checked)",entry)
-        self.assertIn("PROTOTYPE 0.23",html)
+        self.assertIn("PROTOTYPE 0.24",html)
 
 if __name__=="__main__":
     unittest.main()

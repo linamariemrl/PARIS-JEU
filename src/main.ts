@@ -17,6 +17,7 @@ import { AdaptiveResolution } from './adaptiveResolution';
 import { TerrainModule } from './terrain';
 import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
+import { StreetDirectory } from './streetDirectory';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
@@ -120,8 +121,12 @@ try{
   overview.setRoofLodEnabled(lodToggle.checked);
   const selection:Mesh[]=[];
   const inspector=new PlaceInspector(el('place-extra'));
+  const streets=new StreetDirectory();
+  void streets.init();
+  let management:GameManagement|null=null;
   let tapSequence=0;
   const clear=()=>{
+    management?.clearSelection();
     inspector.begin();
     el('selection').classList.add('hidden');
     selection.splice(0).forEach(m=>m.dispose());
@@ -170,6 +175,8 @@ try{
         'Toit LiDAR non disponible ; forme OSM ou toit de secours. ');
     inspector.fill(coords.x,coords.z,
       surfaces.identify(coords.x,coords.z)??water.identify(coords.x,coords.z),b,token);
+    management?.setSelection({id:'batiment:'+b.id,label:'Bâtiment IGN '+b.id,
+      kind:'batiment',x:coords.x,z:coords.z});
   };
   const showLocation=(x:number,z:number)=>{
     clear();
@@ -178,6 +185,25 @@ try{
     el('building-fields').classList.add('hidden');
     el('selection').classList.remove('hidden');
     inspector.fill(x,z,surfaces.identify(x,z)??water.identify(x,z),null,token);
+    management?.setSelection({id:'lieu:'+Math.round(x/25)+':'+Math.round(z/25),
+      label:'Lieu sélectionné',kind:'lieu',x,z});
+  };
+  const showRoad=(x:number,z:number)=>{
+    clear();
+    const street=streets.nearest(x,z);
+    const token=inspector.begin();
+    el('selection-title').textContent=street?street.name:'Chaussée · 4e arrondissement';
+    el('building-fields').classList.add('hidden');
+    el('selection').classList.remove('hidden');
+    inspector.fill(x,z,null,null,token);
+    const note=document.createElement('p');
+    note.textContent=street?
+      'Nom et type de voie : répertoire officiel Ville de Paris. Association au point cliqué indicative.' :
+      'Géométrie de chaussée IGN/OSM ; dénomination officielle non attribuée avec certitude.';
+    el('place-extra').prepend(note);
+    management?.setSelection({id:street?'voie:'+street.streetId:
+      'voirie:'+Math.round(x/25)+':'+Math.round(z/25),
+      label:street?.name??'Chaussée non dénommée',kind:'voirie',x,z});
   };
   camera.onTap=(x,y)=>{
     const requestId=++tapSequence;
@@ -185,6 +211,11 @@ try{
     const selected=hit?.pickedMesh&&hit.faceId>=0?
       getPickedBuilding(hit.pickedMesh as Mesh,hit.faceId):null;
     if(selected){select(selected);return;}
+    const roadHit=scene.pick(x,y,mesh=>mesh.name==='infrastructure-road');
+    if(roadHit?.hit&&roadHit.pickedPoint){
+      showRoad(roadHit.pickedPoint.x,roadHit.pickedPoint.z);
+      return;
+    }
     const groundHit=scene.pick(x,y,m=>m===ground||
       m.name==='terrain-RGE-ALTI-IGN');
     const point=groundHit?.pickedPoint;
@@ -285,8 +316,7 @@ try{
   for(const item of speedButtons)
     el<HTMLButtonElement>(item.id).addEventListener('click',()=>selectRate(item.rate));
   selectRate(1);
-  const management=new GameManagement(clock,selectRate);
-  void management;
+  management=new GameManagement(clock,selectRate,(x,z)=>camera.flyTo(x,z,340));
   window.addEventListener('resize',()=>engine.resize());
   let lastFps=0,lastClock=0,previous=performance.now();
   engine.runRenderLoop(()=>{
@@ -304,6 +334,7 @@ try{
     clock.tick(now);
     if(now-lastClock>=350){
       el('game-clock').textContent=clock.label();
+      management?.tickDossiers();
       lastClock=now;
     }
     manager.update(camera.camera.target.x,camera.camera.target.z);
