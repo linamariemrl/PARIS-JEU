@@ -104,6 +104,15 @@ try{
     metroCount=count;showCounts();
     el('metropole-status').textContent=message;
   },overview);
+  // Les nouvelles couches peuvent être désactivées indépendamment
+  // sans modifier les données officielles ni les sauvegardes du jeu.
+  const waterToggle=el<HTMLInputElement>('water-layer-toggle');
+  const lodToggle=el<HTMLInputElement>('roof-lod-toggle');
+  waterToggle.addEventListener('change',()=>water.setVisible(waterToggle.checked));
+  lodToggle.addEventListener('change',()=>
+    overview.setRoofLodEnabled(lodToggle.checked));
+  water.setVisible(waterToggle.checked);
+  overview.setRoofLodEnabled(lodToggle.checked);
   const selection:Mesh[]=[];
   const inspector=new PlaceInspector(el('place-extra'));
   let tapSequence=0;
