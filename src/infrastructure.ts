@@ -24,16 +24,16 @@ type Kind = 'water' | 'bank' | 'sidewalk' | 'road' | 'foot' | 'square';
 // Palette pierre de Paris : contrastes neutres, jamais de photographie.
 export const NEUTRAL_PALETTE = {
   ground: .94, buildings: .965, roofs: .82,
-  river: .74, bank: .81, road: .655, sidewalk: .91,
-  foot: .85, square: .89, border: .47
+  river:.67,bank:.80,road:.70,sidewalk:.87,
+  foot:.83,square:.90,border:.49
 } as const;
 const COLORS: Record<Kind, [number, number, number]> = {
-  water: [.74,.74,.74],
-  bank: [.81,.81,.81],
-  sidewalk: [.91,.91,.91],
-  road: [.655,.655,.655],
-  foot: [.85,.85,.85],
-  square: [.89,.89,.89],
+  water:[.57,.69,.73],
+  bank:[.80,.79,.75],
+  sidewalk:[.89,.86,.80],
+  road:[.70,.69,.67],
+  foot:[.84,.82,.77],
+  square:[.88,.86,.80],
 };
 const HEIGHTS: Record<Kind, number> = {
   water: 0.05, bank: 0.085, sidewalk: 0.10, road: 0.14,
@@ -202,7 +202,7 @@ function shoreline(scene:Scene,water:Layer):void{
       for(let j=0;j<current.length;j+=3)
         pts.push(new Vector3(current[j],current[j+1],current[j+2]));
       const line=MeshBuilder.CreateLines('berge-'+n++,{points:pts},scene);
-      line.color=new Color3(.53,.53,.53);
+      line.color=new Color3(.55,.59,.61);
       line.alpha=.62;line.isPickable=false;
     }
     current=[];
