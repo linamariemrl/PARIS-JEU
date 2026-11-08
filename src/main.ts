@@ -22,6 +22,8 @@ import { TerrainModule } from './terrain';
 import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import {HeritageAtlas} from './heritageAtlas';
+import {UrbanAtlas} from './urbanAtlas';
+import {PlaceCards} from './placeCards';
 import {HeritageGardenLayer} from './heritageGardens';
 import { StreetDirectory } from './streetDirectory';
 import { GameManagement } from './simulation/ui';
@@ -147,6 +149,8 @@ try{
   const selection:Mesh[]=[];
   const inspector=new PlaceInspector(el('place-extra'));
   const heritage=new HeritageAtlas(scene);
+  const urban=new UrbanAtlas();
+  const placeCards=new PlaceCards(el('place-extra'),urban);
   const heritageGardens=new HeritageGardenLayer(scene,message=>{
     el('heritage-gardens-status').textContent=message;
   });
@@ -157,6 +161,7 @@ try{
   const clear=()=>{
     management?.clearSelection();
     inspector.begin();
+    placeCards.close();
     el('selection').classList.add('hidden');
     el('selection').classList.remove('heritage-selection');
     selection.splice(0).forEach(m=>m.dispose());
@@ -171,8 +176,9 @@ try{
     el('selection-title').textContent=landmark?
       (b.heritageName??domain?.name??'Monument'):
       'Bâtiment identifié · données IGN';
-    el('selection').classList.toggle('heritage-selection',landmark);
-    el('building-fields').classList.toggle('hidden',landmark);
+    // Fiches simples, y compris pour les immeubles ordinaires.
+    el('selection').classList.add('heritage-selection');
+    el('building-fields').classList.add('hidden');
     selection.push(...highlightBuilding(scene,b));
     el('selection').classList.remove('hidden');
     el('height').textContent=b.height.toLocaleString('fr-FR')+' m'+
@@ -208,13 +214,13 @@ try{
         'Relief de couverture MNH LiDAR HD, IGN 50 cm, prioritaire lorsqu’il est valide. ':
         'Toit LiDAR non disponible ; forme OSM ou toit de secours. ');
     if(landmark){
-      // Lecture de jeu : période, type, histoire. Pas de diagnostic IGN.
       heritage.appendDetails(el('place-extra'),
         domain?.kind==='monument'?domain:null,b.heritageRef,b);
     }else{
-      const token=inspector.begin();
-      inspector.fill(coords.x,coords.z,
-        surfaces.identify(coords.x,coords.z)??water.identify(coords.x,coords.z),b,token);
+      const place=placeCards.show(coords.x,coords.z,
+        {kind:'building',buildingId:b.id});
+      el('selection-title').textContent=
+        place.urban.street?.name??'Bâtiment et adresse';
     }
     el('selection').scrollTop=0;
     // Aucune option de gestion sur bâtiment dans cette étape.
@@ -227,33 +233,41 @@ try{
     el('selection-title').textContent=domain?.name??'Fiche du lieu sélectionné';
     el('building-fields').classList.add('hidden');
     el('selection').classList.remove('hidden');
+    el('selection').classList.add('heritage-selection');
     if(domain){
-      el('selection').classList.add('heritage-selection');
       heritage.appendDetails(el('place-extra'),domain);
       management?.clearSelection();
     }else{
-      inspector.fill(x,z,surfaces.identify(x,z)??water.identify(x,z),null,token);
+      const found=urban.identify(x,z);
+      const kind=surfaces.identify(x,z)??water.identify(x,z);
+      const place=placeCards.show(x,z,{kind:
+        found.street?.name?.toLowerCase().startsWith('place ')?'square':
+        found.street?'road':
+        kind?.kind==='managed'||kind?.kind==='planted'||kind?.kind==='wood'?
+        'garden':kind?.kind==='water'?'water':'ground',
+        name:found.street?.name});
+      el('selection-title').textContent=place.title;
       management?.setSelection({id:'lieu:'+Math.round(x/25)+':'+Math.round(z/25),
-        label:'Lieu sélectionné',kind:'lieu',x,z});
+        label:place.title,kind:'lieu',x,z});
     }
     el('selection').scrollTop=0;
   };
   const showRoad=(x:number,z:number)=>{
     clear();
-    const street=streets.nearest(x,z);
-    const token=inspector.begin();
-    el('selection-title').textContent=street?street.name:'Chaussée · 4e arrondissement';
+    const confirmed=urban.identify(x,z);
+    const street=confirmed.street?null:streets.nearest(x,z);
+    const name=confirmed.street?.name??street?.name??'Voie de Paris';
+    el('selection-title').textContent=name;
     el('building-fields').classList.add('hidden');
+    el('selection').classList.add('heritage-selection');
     el('selection').classList.remove('hidden');
-    inspector.fill(x,z,null,null,token);
-    const note=document.createElement('p');
-    note.textContent=street?
-      'Nom et type de voie : répertoire officiel Ville de Paris. Association au point cliqué indicative.' :
-      'Géométrie de chaussée IGN/OSM ; dénomination officielle non attribuée avec certitude.';
-    el('place-extra').prepend(note);
-    management?.setSelection({id:street?'voie:'+street.streetId:
+    placeCards.show(x,z,{kind:confirmed.street?.name?.toLowerCase()
+      .startsWith('place ')?'square':'road',name});
+    el('selection').scrollTop=0;
+    management?.setSelection({id:confirmed.street?
+      'voie-officielle:'+confirmed.street.id:street?'voie:'+street.streetId:
       'voirie:'+Math.round(x/25)+':'+Math.round(z/25),
-      label:street?.name??'Chaussée non dénommée',kind:'voirie',x,z});
+      label:name,kind:'voirie',x,z});
   };
   camera.onTap=(x,y)=>{
     const requestId=++tapSequence;
@@ -434,7 +448,7 @@ try{
     else camera.camera.target.y=
       terrainHeight(camera.camera.target.x,camera.camera.target.z);
     await Promise.allSettled([
-      inspector.init(),heritageGardens.init(),
+      inspector.init(),heritageGardens.init(),urban.init(),
       ...(STABLE_RENDER?[water.init(),roads.init(),trees.init(),metroTrees.init(),
         installSurfaceLayer(scene,'data/metropole/surfaces/green.json',
           message=>{el('surface-status').textContent=message;})]:
@@ -465,7 +479,7 @@ try{
     }
     el('places-status').textContent=inspector.monumentCount?
       inspector.monumentCount.toLocaleString('fr-FR')+
-      ' notices Mérimée + domaines et adresses IGN consultables au clic':
+      ' notices Mérimée + rues, places, quartiers et adresses au clic':
       'Adresses et POI IGN consultables au clic ; notices Mérimée en préparation';
   })().catch((e:unknown)=>{
     console.warn('Initialisation géographique',e);

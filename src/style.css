@@ -219,3 +219,11 @@ header{background:linear-gradient(#273543dd,#273543aa)}
 .heritage-game-card h3{font-size:13px;margin:11px 0 5px}
 .heritage-game-card .heritage-history{font-size:13px;line-height:1.47;margin:4px 0 9px}
 .heritage-game-card .heritage-source{font-size:11px;color:#cfe0eb}
+
+/* Fiches 0.26.2 : tous les lieux ont un contenu court, la carte reste visible. */
+.urban-game-card{font-size:12px;line-height:1.5;overflow-wrap:anywhere}
+.urban-game-card>p{margin:5px 0}
+.urban-game-card h3{font-size:13px;margin:11px 0 5px;font-weight:700}
+.urban-game-card .urban-history{font-size:13px;line-height:1.48;margin:0 0 10px}
+.urban-game-card small{color:#c7d6dc;font-size:10px;line-height:1.3}
+.urban-game-card .heritage-source{display:inline-block;margin:3px 0 3px 0}
