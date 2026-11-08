@@ -1,6 +1,5 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3, VertexData } from '@babylonjs/core';
 import earcut from 'earcut';
-import {terrainHeight} from './terrain';
 import { addBridges } from './bridges';
 
 /** Réseau simplifié issu de géométries IGN ou OSM (coordonnées locales en mètres).
@@ -25,16 +24,16 @@ type Kind = 'water' | 'bank' | 'sidewalk' | 'road' | 'foot' | 'square';
 // Palette pierre de Paris : contrastes neutres, jamais de photographie.
 export const NEUTRAL_PALETTE = {
   ground: .94, buildings: .965, roofs: .82,
-  river:.67,bank:.80,road:.70,sidewalk:.87,
-  foot:.83,square:.90,border:.49
+  river: .74, bank: .81, road: .655, sidewalk: .91,
+  foot: .85, square: .89, border: .47
 } as const;
 const COLORS: Record<Kind, [number, number, number]> = {
-  water:[.57,.69,.73],
-  bank:[.80,.79,.75],
-  sidewalk:[.89,.86,.80],
-  road:[.70,.69,.67],
-  foot:[.84,.82,.77],
-  square:[.88,.86,.80],
+  water: [.74,.74,.74],
+  bank: [.81,.81,.81],
+  sidewalk: [.91,.91,.91],
+  road: [.655,.655,.655],
+  foot: [.85,.85,.85],
+  square: [.89,.89,.89],
 };
 const HEIGHTS: Record<Kind, number> = {
   water: 0.05, bank: 0.085, sidewalk: 0.10, road: 0.14,
@@ -67,7 +66,7 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
     if (!triangles.length) continue;
     const offset = positions.length / 3;
     for (let i = 0; i < flat.length; i += 2) {
-      positions.push(flat[i], h+terrainHeight(flat[i],flat[i+1]), flat[i + 1]);
+      positions.push(flat[i], h, flat[i + 1]);
       normals.push(0, 1, 0);
     }
     for (const index of triangles) indices.push(offset + index);
@@ -84,7 +83,6 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   material.diffuseColor = new Color3(r, g, b);
   material.specularColor = Color3.Black();
   material.backFaceCulling = false;
-  material.disableLighting=true;
   mesh.material = material;
   mesh.isPickable = false;
   mesh.freezeWorldMatrix();
@@ -116,7 +114,7 @@ export async function addAdministrativeOutline(scene:Scene):Promise<number>{
     const boundary=polygon[0];
     if(!boundary||boundary.length<4)continue;
     const points=boundary.map(([lon,lat])=>
-      new Vector3((lon-lon0)*mx,.235+terrainHeight((lon-lon0)*mx,(lat-lat0)*mz),(lat-lat0)*mz));
+      new Vector3((lon-lon0)*mx,.235,(lat-lat0)*mz));
     const mesh=MeshBuilder.CreateLines('limite-officielle-4e-'+total,{
       points,updatable:false
     },scene);
@@ -160,7 +158,7 @@ export async function loadMetropolitanOutlines(scene:Scene):Promise<number>{
       const ring=rawPolygon[0] as number[][];
       if(ring.length<4)continue;
       const points=ring.filter(x=>x.length>=2).map(([lon,lat])=>
-        new Vector3((lon-LON)*mx,conf.height+terrainHeight((lon-LON)*mx,(lat-LAT)*mz),(lat-LAT)*mz));
+        new Vector3((lon-LON)*mx,conf.height,(lat-LAT)*mz));
       if(points.length<4)continue;
       const collection=group.get(f.properties.kind)??[];
       collection.push(points);
@@ -191,7 +189,7 @@ function shoreline(scene:Scene,water:Layer):void{
       if(ring.length<4)continue;
       // Le tracé est continu en monde réel, pas une étiquette d'écran.
       for(const [x,z] of ring){
-        positions.push(x,.078+terrainHeight(x,z),z);
+        positions.push(x,.078,z);
       }
       positions.push(NaN,NaN,NaN);
     }
@@ -204,7 +202,7 @@ function shoreline(scene:Scene,water:Layer):void{
       for(let j=0;j<current.length;j+=3)
         pts.push(new Vector3(current[j],current[j+1],current[j+2]));
       const line=MeshBuilder.CreateLines('berge-'+n++,{points:pts},scene);
-      line.color=new Color3(.55,.59,.61);
+      line.color=new Color3(.53,.53,.53);
       line.alpha=.62;line.isPickable=false;
     }
     current=[];
