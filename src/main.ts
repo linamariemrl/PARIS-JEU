@@ -228,7 +228,6 @@ try{
   };
   const showLocation=(x:number,z:number)=>{
     clear();
-    const token=inspector.begin();
     const domain=heritage.identify(x,z);
     el('selection-title').textContent=domain?.name??'Fiche du lieu sélectionné';
     el('building-fields').classList.add('hidden');

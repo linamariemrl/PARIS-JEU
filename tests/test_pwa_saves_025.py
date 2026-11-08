@@ -27,5 +27,5 @@ class PwaSaves(unittest.TestCase):
   for key in ['export function validateBundle','b.saves.length>30',
               'ids.has(item.slot)','validateSave(item.save)']:
    self.assertIn(key,save)
-  self.assertEqual(json.loads(source('package.json'))['version'],'0.26.1')
+  self.assertEqual(json.loads(source('package.json'))['version'],'0.26.2')
 if __name__=='__main__':unittest.main()

@@ -6,15 +6,17 @@ ROOT=Path(__file__).resolve().parents[1]
 def read(p):return (ROOT/p).read_text(encoding="utf8")
 class Heritage026(unittest.TestCase):
  def test_release_and_monochrome(self):
-  self.assertEqual(json.loads(read("package.json"))["version"],"0.26.1")
+  self.assertEqual(json.loads(read("package.json"))["version"],"0.26.2")
   self.assertIn("PROTOTYPE 0.26",read("index.html"))
-  self.assertIn("REVISION='0.26.1'",read("src/release.ts"))
+  self.assertIn("REVISION='0.26.2'",read("src/release.ts"))
   self.assertNotIn("new AerialLayer",read("src/main.ts"))
  def test_building_pick_and_geometry_are_independent(self):
   heritage=read("src/heritageAtlas.ts")
   for v in ["ringContains(", "footprintContains(", "tagHeritageBuilding(", "appendDetails(", "drawBoundaries(", "monuments.json","heritage-areas.json"]:
    self.assertIn(v,heritage)
-  self.assertIn("b.heritageRef?beigeWalls",read("src/buildings.ts"))
+  self.assertIn("b.heritageRef?[beigeWalls,beigeRoofs]",read("src/buildings.ts"))
+  self.assertIn("politicalWall",read("src/buildings.ts"))
+  self.assertIn("financialWall",read("src/buildings.ts"))
   self.assertIn("tagHeritageBuilding(building)",read("src/metroTiles.ts"))
   self.assertIn("data.buildings.forEach(tagHeritageBuilding)",read("src/tileManager.ts"))
  def test_areas_use_retrieved_not_invented_geometry(self):

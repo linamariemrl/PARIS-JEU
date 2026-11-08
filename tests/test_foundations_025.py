@@ -27,7 +27,7 @@ class FoundationGeometry(unittest.TestCase):
   self.assertIn('const shade=.93-.20*t',code)
   self.assertIn('indices.push(a,c,b,b,c,d)',code)
  def test_no_major_revision_and_nature_remains(self):
-  self.assertEqual(json.loads(src('package.json'))['version'],'0.26.1')
+  self.assertEqual(json.loads(src('package.json'))['version'],'0.26.2')
   main=src('src/main.ts')
   for item in ['roads.init()','water.init()','trees.init()','metroTrees.init()',
                "installSurfaceLayer(scene,'data/metropole/surfaces/green.json'"]:
