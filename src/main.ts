@@ -15,6 +15,7 @@ import { MetroTreeLayer } from './metroTrees';
 import { SurfaceTileManager } from './surfaceTiles';
 import { AdaptiveResolution } from './adaptiveResolution';
 import { TerrainModule } from './terrain';
+import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
@@ -80,6 +81,9 @@ try{
   const materials=createMaterials(scene);
   const surfaces=new SurfaceTileManager(scene,message=>{
     el('surface-status').textContent=message;
+  });
+  const water=new StableWaterLayer(scene,message=>{
+    el('water-status').textContent=message;
   });
   let metroCount=0;
   let overviewCount=0;
@@ -151,7 +155,7 @@ try{
         'Relief de couverture MNH LiDAR HD, IGN 50 cm, prioritaire lorsqu’il est valide. ':
         'Toit LiDAR non disponible ; forme OSM ou toit de secours. ');
     inspector.fill(coords.x,coords.z,
-      surfaces.identify(coords.x,coords.z),b,token);
+      surfaces.identify(coords.x,coords.z)??water.identify(coords.x,coords.z),b,token);
   };
   const showLocation=(x:number,z:number)=>{
     clear();
@@ -159,7 +163,7 @@ try{
     el('selection-title').textContent='Fiche du lieu sélectionné';
     el('building-fields').classList.add('hidden');
     el('selection').classList.remove('hidden');
-    inspector.fill(x,z,surfaces.identify(x,z),null,token);
+    inspector.fill(x,z,surfaces.identify(x,z)??water.identify(x,z),null,token);
   };
   camera.onTap=(x,y)=>{
     const requestId=++tapSequence;
@@ -289,7 +293,8 @@ try{
       lastClock=now;
     }
     manager.update(camera.camera.target.x,camera.camera.target.z);
-    overview.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
+    overview.update(camera.camera.target.x,camera.camera.target.z,
+      camera.camera.radius,camera.isMoving);
     metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     if(!STABLE_RENDER){
       metroTrees.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
@@ -312,7 +317,8 @@ try{
     if(!STABLE_RENDER)await terrain.init(ground);
     await Promise.allSettled([
       inspector.init(),
-      ...(!STABLE_RENDER?[surfaces.init(),metroTrees.init(),trees.init()]:[]),
+      ...(STABLE_RENDER?[water.init()]:
+        [surfaces.init(),metroTrees.init(),trees.init()]),
       overview.init(),metro.init(),manager.init().catch((err:unknown)=>{
         console.warn('Bâtiments du 4e indisponibles',err);
         state.textContent='Bâtiments du 4e : source indisponible';
@@ -330,7 +336,7 @@ try{
     if(STABLE_RENDER){
       el('terrain-status').textContent='Relief IGN archivé · rendu expérimental désactivé';
       el('surface-status').textContent='Parcs : données conservées · rendu expérimental désactivé';
-      el('water-status').textContent='Eau : retour au maillage stable du 4e';
+      // L'état est rempli par StableWaterLayer selon la source IGN.
       el('roads-status').textContent='Chaussées : retour à la géométrie stable du 4e';
       el('trees-status').textContent='Arbres 3D en pause pour stabilité graphique';
       el('metro-trees-status').textContent='Inventaire arboré conservé hors rendu';
