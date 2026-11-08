@@ -61,8 +61,20 @@ def download(dataset):
   items=page["results"]
   if not items and offset<total:
    raise RuntimeError(f"Page vide prématurée {dataset}: {offset}/{total}")
+  if offset==0 and items:
+   example=items[0]
+   raw_geom=example.get("geo_shape") or example.get("geom")
+   print("API Paris diagnostic",dataset,
+    "champs=",sorted(example.keys())[:24],
+    "géométrie=",type(raw_geom).__name__,
+    "aperçu=",str(raw_geom)[:170],flush=True)
   for properties in items:
    geo=properties.get("geo_shape") or properties.get("geom")
+   if isinstance(geo,str):
+    try:geo=json.loads(geo)
+    except ValueError:geo=None
+   if isinstance(geo,dict) and geo.get("type")=="Feature":
+    geo=geo.get("geometry")
    yield {"properties":properties,"geometry":geo}
   offset+=len(items)
   if offset%1000<100 or offset>=total:
