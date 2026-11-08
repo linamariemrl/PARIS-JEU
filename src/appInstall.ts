@@ -13,6 +13,16 @@ export function prepareAppInstallation(){
  const button=document.getElementById('install-app') as HTMLButtonElement;
  const storage=document.getElementById('persist-data') as HTMLButtonElement;
  const status=document.getElementById('app-install-status') as HTMLElement;
+ const network=document.getElementById('network-status') as HTMLElement|null;
+ const showNetwork=()=>{
+  if(!network)return;
+  network.textContent=navigator.onLine?
+   'Connexion réseau détectée : chargement des données officielles possible.':
+   'Hors ligne : les secteurs non mis en cache peuvent manquer.';
+ };
+ window.addEventListener('online',showNetwork);
+ window.addEventListener('offline',showNetwork);
+ showNetwork();
  const update=document.getElementById('update-app') as HTMLButtonElement;
  let deferred:InstallPrompt|null=null;
  const standalone=()=>isNativeApp()||

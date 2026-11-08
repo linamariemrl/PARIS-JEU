@@ -101,6 +101,7 @@ export class MetroOverview {
     }
    }
    this.manifest=m;
+   window.addEventListener('online',()=>void this.prefetchRaw());
    this.report();
    // Les 33 petits fichiers sont préchargés en réserve CPU uniquement,
    // jamais en GPU : téléchargement doux, interrompu pendant les gestes.
@@ -143,9 +144,11 @@ export class MetroOverview {
   try{
    // Favoriser le point visible. Le reste est préparé à bas débit.
    for(const group of this.manifest.groups){
+    if(!navigator.onLine)break;
     if(this.rawCache.has(group.id))continue;
     while(document.hidden||this.cameraMoving||this.inFlight.size>0)
      await new Promise<void>(resolve=>window.setTimeout(resolve,650));
+    if(!navigator.onLine)break;
     try{await this.rawOf(group);}
     catch(error){console.warn('Réserve IGN',group.id,error);}
     this.report();

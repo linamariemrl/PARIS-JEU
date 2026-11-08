@@ -19,6 +19,8 @@ export class CityCoverage {
  private complete=false;
  private applied=false;
  private initialized=false;
+ private retryTimer:number|null=null;
+ private retryCount=0;
  private material:StandardMaterial;
  constructor(private scene:Scene,private onStatus:(message:string)=>void){
   this.material=new StandardMaterial('atlas-presence-batie-IGN',scene);
@@ -28,6 +30,14 @@ export class CityCoverage {
   this.material.disableLighting=true;
   this.material.backFaceCulling=false;
   this.material.freeze();
+  // Relance de l'atlas IGN lors du retour réseau, sans redémarrage du jeu.
+  window.addEventListener('online',()=>{
+   if(this.complete||this.initialized)return;
+   this.retryCount=0;
+   if(this.retryTimer!==null)window.clearTimeout(this.retryTimer);
+   this.retryTimer=null;
+   void this.init();
+  });
  }
  get ready(){return this.complete;}
  get buildings(){return this.complete?this.count:0;}
@@ -43,8 +53,12 @@ export class CityCoverage {
   this.applied=true;
  }
  async init():Promise<void>{
-  if(this.initialized)return;
+  if(this.initialized||this.complete)return;
   this.initialized=true;
+  if(this.retryTimer!==null){
+   window.clearTimeout(this.retryTimer);
+   this.retryTimer=null;
+  }
   try{
    const response=await fetch(ROOT+'manifest.json');
    if(!response.ok)throw Error('Atlas bâti non publié');
@@ -72,6 +86,7 @@ export class CityCoverage {
    if(failed||this.meshes.size!==manifest.groups.length)
     throw Error('Atlas incomplet : '+String(failed));
    this.complete=true;
+   this.retryCount=0;
    this.showExcept([...this.hidden]);
    this.onStatus(this.count.toLocaleString('fr-FR')+
      ' bâtiments IGN couverts sur tous les secteurs (atlas 50 m ; volumes près)');
@@ -80,8 +95,18 @@ export class CityCoverage {
    for(const mesh of this.meshes.values())mesh.dispose();
    this.meshes.clear();
    this.complete=false;
-   this.onStatus('Atlas incomplet : maillages IGN classiques conservés');
+   this.applied=false;
+   this.initialized=false;
+   this.onStatus('Atlas temporairement indisponible : reprise réseau prévue');
    console.warn('Atlas bâtis complet indisponible',error);
+   // Reprise bornée à trois essais afin de préserver la batterie mobile.
+   if(this.retryCount<3){
+    this.retryCount++;
+    this.retryTimer=window.setTimeout(()=>{
+     this.retryTimer=null;
+     if(navigator.onLine)void this.init();
+    },8000*this.retryCount);
+   }
   }
  }
  private async loadGroup(group:CellGroup,version:string):Promise<void>{

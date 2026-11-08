@@ -63,7 +63,18 @@ comportement stable du relief et de l'eau, végétation visible, navigation
 fluide, absence de régression des fonctions du jeu, et sauvegardes
 restaurées après fermeture et import/export.
 
-## 5. Réserves documentées
+## 5. Correctif réseau sans changement de géométrie
+
+- L'atlas IGN abandonne proprement ses maillages incomplets et relance
+  jusqu'à trois chargements espacés ; une reconnexion relance le processus.
+- Le cache CPU des bâtiments éloignés reprend son préchargement au retour
+  du réseau. Le nombre de maillages GPU n'augmente pas pour ce motif.
+- Le panneau d'installation indique en ligne/hors ligne, sans prétendre
+  vérifier chaque serveur ni synchroniser les sauvegardes entre appareils.
+- La version 0.25.9 et l'interdiction de promotion en 0.26 sont maintenues
+  jusqu'à la recette visuelle Android.
+
+## 6. Réserves documentées
 
 - Le relief RGE ALTI à 200 m interpole les pentes ; il ne restitue pas
   tous les talus ou bordures de trottoirs.
