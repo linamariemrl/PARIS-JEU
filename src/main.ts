@@ -63,7 +63,7 @@ try{
   });
 
   const ground=MeshBuilder.CreateGround('sol-neutre',
-    {width:80000,height:80000,sideOrientation:Mesh.DOUBLESIDE},scene);
+    {width:80000,height:80000},scene);
   ground.position.y=-.5;
   const mat=new StandardMaterial('sol-gris-clair',scene);
   // Fond minéral mat, pour séparer les espaces ouverts des façades.
@@ -71,6 +71,7 @@ try{
   mat.diffuseColor=new Color3(.86,.86,.85);
   mat.emissiveColor=new Color3(.06,.06,.06);
   mat.disableLighting=true;
+  mat.backFaceCulling=false;
   mat.specularColor=Color3.Black();
   mat.freeze();
   ground.material=mat;ground.isPickable=true;
