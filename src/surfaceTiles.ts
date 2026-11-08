@@ -202,6 +202,47 @@ export class SurfaceTileManager{
      this.report();
    }
  }
+ /** Classification d'un clic, seulement à partir d'emprises chargées.
+  * Les contours provenaient d'IGN ou de Paris Data; le matériau exact
+  * (asphalte/pavé) ne figure pas dans ces polygones.
+  */
+ identify(x:number,z:number):{kind:Kind;label:string;source:string}|null{
+   const ix=Math.floor(x/2400),iz=Math.floor(z/2400);
+   const tileId=ix+'_'+iz;
+   const level=this.states.get(tileId)?.level;
+   if(!level)return null;
+   const shapes=this.cache.get(tileId+'-'+level);
+   if(!shapes)return null;
+   const inside=(ring:number[][]):boolean=>{
+     let hit=false;
+     for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+       const a=ring[i],b=ring[j];
+       if(!a||!b)continue;
+       if(((a[1]>z)!==(b[1]>z))&&
+          x<(b[0]-a[0])*(z-a[1])/(b[1]-a[1])+a[0])hit=!hit;
+     }
+     return hit;
+   };
+   const found:Kind[]=[];
+   for(const [kind,rings] of shapes){
+     if(!rings[0]||!inside(rings[0]))continue;
+     if(rings.slice(1).some(inside))continue;
+     found.push(kind);
+   }
+   // Les chaussées peuvent empiéter sur un parc selon la précision SIG :
+   // priorité à l'eau et aux voies pour qualifier le clic.
+   const kind=(['water','road','planted','wood','managed'] as Kind[])
+     .find(k=>found.includes(k));
+   if(!kind)return null;
+   const data={
+    water:['Surface d’eau','IGN BD TOPO, emprise hydrographique'],
+    road:['Chaussée','Ville de Paris, Plan de Voirie PVP'],
+    planted:['Espace végétalisé inventorié','Ville de Paris, Espaces verts'],
+    wood:['Bois ou espace forestier inventorié','Ville de Paris, Espaces verts'],
+    managed:['Espace vert ou jardin inventorié','Ville de Paris, Espaces verts']
+   } as Record<Kind,[string,string]>;
+   return {kind,label:data[kind][0],source:data[kind][1]};
+ }
  private report(){
    const msg=this.states.size+' secteurs SIG chargés'+
       (this.fetching.size?' · géométrie en préparation':'')+
