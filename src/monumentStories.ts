@@ -97,7 +97,47 @@ const referenceStories:Record<string,MonumentStory>={
   history:'La tour est le clocher préservé de l’ancienne église Saint-Jacques-de-la-Boucherie. L’église a disparu après la Révolution ; la tour se dresse aujourd’hui dans un square.',
   sourceUrl:'https://www.paris.fr/lieux/tour-saint-jacques-5045'}
 };
+
+/* Ajouts 0.26.2 : lieux institutionnels et histoire de la finance.
+   Conserver les fonctions passées distinctes des occupants actuels. */
+const institutionalStories:Record<string,MonumentStory>={
+ 'PA00088876':{
+  type:'Palais présidentiel',period:'1722 ; résidence présidentielle depuis 1848',
+  history:'Construit au début du XVIIIe siècle comme hôtel d’Évreux, ce palais est acquis plus tard par la marquise de Pompadour. Il devient en 1848 la résidence du président de la République, puis celle des présidents de la IIIe République et des régimes suivants.',
+  sourceUrl:'https://www.elysee.fr/exposition/evreux-300'
+ },
+ 'PA00088722':{
+  type:'Hôtel particulier et siège du Gouvernement',period:'1722–1725 ; affecté en 1935',
+  history:'Édifié par Jean Courtonne pour la famille de Matignon, cet hôtel particulier passe entre les mains de plusieurs propriétaires, dont Talleyrand. Il est affecté au chef du Gouvernement français à partir de 1935.',
+  sourceUrl:'https://www.info.gouv.fr/patrimoine/bienvenue-a-lhotel-de-matignon'
+ },
+ 'PA00088653':{
+  type:'Palais parlementaire',period:'1615–1631',
+  history:'Marie de Médicis commande le palais du Luxembourg à Salomon de Brosse en 1615. Résidence princière puis bâtiment public, il accueille depuis la Révolution diverses assemblées et constitue aujourd’hui le siège du Sénat.',
+  sourceUrl:'https://www.senat.fr/connaitre-le-senat/patrimoine/lhistoire-du-palais-du-luxembourg.html'
+ },
+ 'PA00085993':{
+  type:'Palais politique et culturel',period:'Depuis 1624',
+  history:'Richelieu fait construire le Palais-Cardinal au XVIIe siècle. Devenu Palais-Royal, il est transformé par la famille d’Orléans. Le Conseil d’État s’y installe en 1875 ; le domaine abrite aussi des institutions et des lieux culturels.',
+  sourceUrl:'https://www.conseil-etat.fr/qui-sommes-nous/le-conseil-d-etat/histoire-et-patrimoine/l-histoire-du-palais-royal-lieu-de-vie-du-conseil-d-etat'
+ },
+ 'PA00088873':{
+  type:'Ministère de l’Intérieur',period:'XVIIIe siècle ; ministère depuis 1861',
+  history:'L’hôtel Beauvau est bâti au XVIIIe siècle et accueille un salon littéraire. Racheté par l’État sous le Second Empire, il devient en 1861 le siège du ministère de l’Intérieur.',
+  sourceUrl:'https://www.interieur.gouv.fr/ministere/lhistoire-du-ministere/patrimoine-architectural'
+ },
+ 'PA00085814':{
+  type:'Ministère de la Justice',period:'Fin du XVIIe siècle ; chancellerie depuis 1718',
+  history:'L’hôtel de Bourvallais, place Vendôme, est attribué à la chancellerie du Royaume en 1718. Les régimes changent, mais il demeure le siège de la Justice française et conserve la mémoire des transformations de la place.',
+  sourceUrl:'https://www.justice.gouv.fr/lhotel-bourvallais'
+ },
+ 'PA00086010':{
+  type:'Ancien palais de la Bourse',period:'1808–1826',
+  history:'Napoléon Ier fait édifier le Palais Brongniart pour la Bourse de Paris. Inauguré en 1826, ce monument néoclassique fut longtemps un haut lieu des transactions financières. Il est désormais utilisé pour des événements et des rencontres.',
+  sourceUrl:'https://www.paris.fr/pages/1-lieu-3-histoires-le-palais-brongniart-35063'
+ }
+};
 export function storyForReference(ref?:string):MonumentStory|null{
- return ref?referenceStories[ref]??null:null;
+ return ref?(referenceStories[ref]??institutionalStories[ref]??null):null;
 }
 export const NEW_REFERENCE_STORIES=Object.keys(referenceStories).length;

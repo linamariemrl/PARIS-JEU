@@ -29,7 +29,7 @@ def download(dataset):
     "Accept":"application/geo+json,application/json"})
    with urllib.request.urlopen(request,timeout=42) as response:
     # Limite 24 Mio afin de ne pas épuiser la RAM du runner ou du téléphone.
-    raw=response.read(24*1024*1024+1)
+    raw=response.read(80*1024*1024+1)
    if len(raw)>24*1024*1024:raise ValueError("Export geoJSON trop volumineux")
    doc=json.loads(raw)
    if doc.get("type")!="FeatureCollection" or not isinstance(doc.get("features"),list):

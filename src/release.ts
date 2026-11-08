@@ -2,5 +2,5 @@
  * Ne jamais passer à 0.26 sans validation sur appareil réel.
  */
 export const PROTOTYPE='0.26' as const;
-export const REVISION='0.26.1' as const;
-export const RELEASE_PHASE='fiches courtes, patrimoine enrichi et chargement accéléré' as const;
+export const REVISION='0.26.2' as const;
+export const RELEASE_PHASE='sélection universelle, histoires de lieux et architecture patrimoniale' as const;

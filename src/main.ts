@@ -218,7 +218,7 @@ try{
         domain?.kind==='monument'?domain:null,b.heritageRef,b);
     }else{
       const place=placeCards.show(coords.x,coords.z,
-        {kind:'building',buildingId:b.id});
+        {kind:'building',building:b});
       el('selection-title').textContent=
         place.urban.street?.name??'Bâtiment et adresse';
     }
