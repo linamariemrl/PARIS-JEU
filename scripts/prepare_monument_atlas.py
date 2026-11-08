@@ -9,7 +9,7 @@ from __future__ import annotations
 import json,math,time,re,csv,io,itertools
 from datetime import datetime,timezone
 from pathlib import Path
-from urllib.parse import urlencode
+from urllib.parse import urlencode,urlsplit
 from urllib.request import Request,urlopen
 
 ROOT=Path(__file__).resolve().parents[1]
@@ -74,9 +74,11 @@ def records_datagouv():
         raise ValueError("Miroir ministériel CSV absent de data.gouv.fr")
     csv_resources.sort(key=lambda r:r.get("last_modified") or "",reverse=True)
     url=csv_resources[0].get("url","")
-    if not url.startswith(("https://static.data.gouv.fr/",
-                           "https://www.data.gouv.fr/")):
-        raise ValueError("Miroir CSV hors domaine officiel")
+    domain=urlsplit(url).hostname or ""
+    print("Fournisseur CSV déclaré par data.gouv.fr :",domain,flush=True)
+    if urlsplit(url).scheme!="https" or not (
+        domain.endswith(".gouv.fr") or domain.endswith(".opendatasoft.com")):
+        raise ValueError("Miroir CSV hors domaine approuvé : "+domain)
     req=Request(url,headers={"User-Agent":"PARIS-SKYLINES-Pop/0.19"})
     with urlopen(req,timeout=210) as binary:
         stream=io.TextIOWrapper(binary,encoding="utf-8-sig",errors="replace",
