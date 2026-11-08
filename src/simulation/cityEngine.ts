@@ -137,10 +137,15 @@ export function prepareProject(state:MunicipalState,templateId:string,district:s
 }
 const yearOf=(time:number)=>new Date(time).getUTCFullYear();
 export function capacityOf(state:MunicipalState,now:number,annualCapitalMEUR=500,annualOperatingMEUR=125){
- const accepted=state.projects.filter(p=>
-  p.votes?.adopte&&p.voteAt!==undefined&&yearOf(p.voteAt)===yearOf(now));
- const invest=accepted.reduce((s,p)=>s+(findTemplate(p.templateId)?.investMEUR??0),0);
- const recurrent=accepted.reduce((s,p)=>s+(findTemplate(p.templateId)?.yearlyMEUR??0),0);
+ const accepted=state.projects.filter(p=>p.votes?.adopte&&
+  p.status!=='bloque'&&p.status!=='rejete');
+ const invest=accepted.filter(p=>p.voteAt!==undefined&&
+   yearOf(p.voteAt)===yearOf(now))
+   .reduce((s,p)=>s+(findTemplate(p.templateId)?.investMEUR??0),0);
+ // Les coûts de fonctionnement persistent après l'année du vote :
+ // une crèche ou un centre de santé continue à fonctionner après ouverture.
+ const recurrent=accepted.filter(p=>p.voteAt!==undefined&&p.voteAt<=now)
+   .reduce((s,p)=>s+(findTemplate(p.templateId)?.yearlyMEUR??0),0);
  return {capital:annualCapitalMEUR,operating:annualOperatingMEUR,
   capitalReserved:invest,operatingReserved:recurrent,
   capitalLeft:Math.max(0,annualCapitalMEUR-invest),
@@ -313,4 +318,41 @@ export function simulateCorridors(now:number,anchors:readonly QuarterAnchor[],
    distanceKm:Math.round(distance/100)/10,index,primaryMode:mode});
  }
  return pairs.sort((a,b)=>b.index-a.index).slice(0,Math.max(0,Math.min(10,limit)));
+}
+
+export const CITY_INDICATORS=[
+ ['mobilite','Mobilité'],['climat','Résilience climatique'],
+ ['logement','Habitat'],['services','Services publics'],
+ ['economie','Activité économique'],['cohesion','Cohésion sociale']
+] as const;
+/** Indices d'effets politiques *entièrement* simulés, base 50.
+ * Un chantier peut temporairement perturber la ville, puis améliorer
+ * les résultats après livraison. Ce n'est pas une mesure de satisfaction
+ * réelle, ni une promesse sur les effets politiques d'un projet.
+ */
+export function policyIndicators(projects:readonly MunicipalProject[]):
+ Record<Measure,number>{
+ const values:Record<Measure,number>={
+  mobilite:50,climat:50,logement:50,services:50,economie:50,cohesion:50
+ };
+ for(const p of projects){
+  const template=findTemplate(p.templateId);
+  if(!template)continue;
+  if(p.status==='termine'){
+   for(const [key,impact] of Object.entries(template.impact)){
+    if(Object.hasOwn(values,key))
+     values[key as Measure]+=impact??0;
+   }
+   if(template.kind==='demolition'){
+    values.logement-=2;values.cohesion-=3;
+   }
+  }else if(p.status==='adopte'){
+   values.mobilite-=template.kind==='construction'?2:1;
+   values.services-=template.kind==='renovation'?2:1;
+   values.cohesion-=template.kind==='demolition'?4:0;
+  }
+ }
+ for(const k of Object.keys(values) as Measure[])
+  values[k]=clamp(Math.round(values[k]),0,100);
+ return values;
 }
