@@ -178,3 +178,9 @@ header{background:linear-gradient(#273543dd,#273543aa)}
 #place-extra .monument-notice{border-top:1px solid #ffffff44;
  margin-top:9px;padding-top:8px}
 #building-fields:empty{display:none}
+
+.map-display-switches{display:flex;flex-direction:column;gap:4px;margin:8px 0;
+ border-top:1px solid #ffffff2b;padding-top:8px}
+.map-display-switches label{font-size:11px;display:flex;align-items:center;gap:7px;
+ min-height:30px;cursor:pointer}
+.map-display-switches input{width:17px;height:17px;accent-color:#a8b8c2;flex:none}
