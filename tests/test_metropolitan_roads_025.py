@@ -33,8 +33,8 @@ class MetropolitanRoads(unittest.TestCase):
  def test_mobile_scaler_keeps_quality_bounds_and_hysteresis(self):
   scaler=text("src/adaptiveResolution.ts")
   self.assertIn("medium:{base:1.30,max:1.65}",scaler)
-  self.assertIn("this.lowCount>=3",scaler)
+  self.assertIn("this.lowCount>=(isMoving?2:3)",scaler)
   self.assertIn("this.highCount>=5",scaler)
-  self.assertIn("PROTOTYPE 0.25",text("index.html"))
+  self.assertIn("PROTOTYPE 0.26",text("index.html"))
 
 if __name__=="__main__":unittest.main()

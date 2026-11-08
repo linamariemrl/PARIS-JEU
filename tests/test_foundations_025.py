@@ -27,12 +27,12 @@ class FoundationGeometry(unittest.TestCase):
   self.assertIn('const shade=.93-.20*t',code)
   self.assertIn('indices.push(a,c,b,b,c,d)',code)
  def test_no_major_revision_and_nature_remains(self):
-  self.assertEqual(json.loads(src('package.json'))['version'],'0.25.9')
+  self.assertEqual(json.loads(src('package.json'))['version'],'0.26.0')
   main=src('src/main.ts')
   for item in ['roads.init()','water.init()','trees.init()','metroTrees.init()',
                "installSurfaceLayer(scene,'data/metropole/surfaces/green.json'"]:
    self.assertIn(item,main)
   self.assertIn('const STABLE_RENDER=true',main)
-  self.assertIn('PROTOTYPE 0.25',src('index.html'))
+  self.assertIn('PROTOTYPE 0.26',src('index.html'))
 
 if __name__=='__main__':unittest.main()

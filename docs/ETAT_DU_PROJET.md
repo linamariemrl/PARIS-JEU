@@ -1,8 +1,8 @@
 # PARIS — état de référence et ordre des travaux
 
 **Version en développement : 0.26.0.** Nom visible : **Prototype 0.26**.
-**Statut : validation Android en cours.** La version 0.26 est interdite
-tant que toutes les conditions de réception ci-dessous ne sont pas remplies.
+**Statut : 0.26 engagée après accord explicite le 8 novembre 2026 ; recette Android encore ouverte.**
+Les critères graphiques, patrimoniaux et de performances restent à contrôler.
 
 ## 1. Source unique et livrables
 
@@ -34,7 +34,7 @@ tant que toutes les conditions de réception ci-dessous ne sont pas remplies.
 - L'amélioration d'un quartier ne doit pas dégrader arbitrairement la
   qualité des autres : mêmes règles de LOD, même palette, mêmes priorités.
 
-## 3. Ordre de réalisation de la branche 0.25
+## 3. Ordre de stabilisation de la branche 0.26
 
 1. **Intégrité géographique :** valider les inventaires IGN/PVP/Ville de
    Paris, les coordonnées, la couverture des secteurs et les frontières.
@@ -54,16 +54,15 @@ tant que toutes les conditions de réception ci-dessous ne sont pas remplies.
 7. **Livraison propre :** tests automatiques + essai réel sur Android
    + vérification des fichiers de distribution datés du bon commit.
 
-## 4. Porte de validation pour la 0.26 (toutes obligatoires)
+## 4. Réception de la version 0.26 sur Android (contrôles obligatoires)
 
 Voir `docs/RECETTE_ANDROID.md`. Les CI verts ne prouvent ni le rendu
-WebGL ni la fluidité réelle sur un mobile. La 0.26 ne pourra être
-envisagée qu'avec : zéro artefact majeur, couverture continue,
+WebGL ni la fluidité réelle sur un mobile. La validation finale de la 0.26 nécessite : zéro artefact majeur, couverture continue,
 comportement stable du relief et de l'eau, végétation visible, navigation
 fluide, absence de régression des fonctions du jeu, et sauvegardes
 restaurées après fermeture et import/export.
 
-## 5. Correctif réseau sans changement de géométrie
+## 5. Correctif réseau conservé en 0.26
 
 - L'atlas IGN abandonne proprement ses maillages incomplets et relance
   jusqu'à trois chargements espacés ; une reconnexion relance le processus.
@@ -71,7 +70,7 @@ restaurées après fermeture et import/export.
   du réseau. Le nombre de maillages GPU n'augmente pas pour ce motif.
 - Le panneau d'installation indique en ligne/hors ligne, sans prétendre
   vérifier chaque serveur ni synchroniser les sauvegardes entre appareils.
-- La version 0.25.9 et l'interdiction de promotion en 0.26 sont maintenues
+- La version 0.26 est engagée ; ses évolutions restent à confirmer
   jusqu'à la recette visuelle Android.
 
 ## 6. Réserves documentées

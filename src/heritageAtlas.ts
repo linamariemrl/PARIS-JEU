@@ -134,7 +134,15 @@ export class HeritageAtlas{
    p.append(strong,document.createTextNode(value));section.append(p);
   };
   const source=(label:string,url?:string)=>{
-   if(!url||!/^https:\/\/(?:[\\w-]+\\.)*(?:culture\\.gouv\\.fr|senat\\.fr|louvre\\.fr|openstreetmap\\.org)(?:\/|$)/.test(url))return;
+   if(!url)return;
+   let trusted=false;
+   try{
+    const parsed=new URL(url);
+    trusted=parsed.protocol==='https:'&&[
+     'culture.gouv.fr','senat.fr','louvre.fr','openstreetmap.org'
+    ].some(domain=>parsed.hostname===domain||parsed.hostname.endsWith('.'+domain));
+   }catch{}
+   if(!trusted)return;
    const p=document.createElement('p'),link=document.createElement('a');
    link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=label;
    p.append(link);section.append(p);
