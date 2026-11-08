@@ -28,12 +28,12 @@ export const NEUTRAL_PALETTE = {
   foot: .85, square: .89, border: .47
 } as const;
 const COLORS: Record<Kind, [number, number, number]> = {
-  water: [.74,.74,.74],
-  bank: [.81,.81,.81],
-  sidewalk: [.91,.91,.91],
-  road: [.655,.655,.655],
-  foot: [.85,.85,.85],
-  square: [.89,.89,.89],
+  water: [.54,.66,.70],
+  bank: [.78,.76,.71],
+  sidewalk: [.82,.81,.78],
+  road: [.66,.67,.66],
+  foot: [.78,.77,.72],
+  square: [.77,.76,.72],
 };
 const HEIGHTS: Record<Kind, number> = {
   water: 0.05, bank: 0.085, sidewalk: 0.10, road: 0.14,
@@ -82,6 +82,9 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   const [r, g, b] = COLORS[kind];
   material.diffuseColor = new Color3(r, g, b);
   material.specularColor = Color3.Black();
+  // Une eau sombre ne doit pas devenir noire en lumière rasante ;
+  // les tons cartographiques sont stables quel que soit le 360°.
+  material.disableLighting=true;
   material.backFaceCulling = false;
   mesh.material = material;
   mesh.isPickable = false;
