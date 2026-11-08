@@ -227,3 +227,29 @@ header{background:linear-gradient(#273543dd,#273543aa)}
 .urban-game-card .urban-history{font-size:13px;line-height:1.48;margin:0 0 10px}
 .urban-game-card small{color:#c7d6dc;font-size:10px;line-height:1.3}
 .urban-game-card .heritage-source{display:inline-block;margin:3px 0 3px 0}
+
+/* Hôtel de Ville — scénario 0.26.3, légèreté GPU et tactile. */
+#finance-open{font-size:20px}
+#municipal-room{padding:2px 0 12px}
+#municipal-room h3{font-size:16px;margin:14px 0 6px}
+#municipal-room h4{font-size:13px;margin:13px 0 6px}
+.city-label{display:block;font-size:12px;margin:10px 0 6px}
+.city-label input{width:100%;margin-top:4px;padding:11px;
+ border:1px solid #8da4bb;border-radius:8px;background:#0d2132;color:#fff;font-size:14px}
+.city-choice-list{max-height:175px;overflow-y:auto;display:flex;flex-direction:column;gap:5px}
+button.city-project-choice{width:100%;height:auto;min-height:43px;border-radius:9px;
+ display:flex;align-items:flex-start;flex-direction:column;gap:3px;
+ padding:9px 10px;font-size:12px;text-align:left;background:#182d3c}
+.city-project-choice small{font-size:11px;font-weight:400;color:#b9d2dd}
+button.city-project-choice.is-selected{border-color:#dfceac;background:#2c4351}
+.city-buttons{display:flex;flex-wrap:wrap;gap:7px;margin:8px 0}
+.city-buttons button{width:auto;min-height:36px;height:auto;padding:8px 11px;font-size:12px}
+.city-buttons button:disabled{opacity:.43}
+.city-flow-line{display:grid;grid-template-columns:110px 1fr 30px;align-items:center;
+ gap:6px;font-size:11px;margin:7px 0}
+.city-flow-bar{height:9px;border-radius:5px;background:#263d4a;overflow:hidden}
+.city-flow-bar i{display:block;height:100%;background:#b0d0bd;border-radius:5px}
+.city-flow-bar .flow-auto{background:#aeb8c9}
+.city-flow-bar .flow-velo{background:#a0c9ad}
+.city-flow-bar .flow-collectif{background:#d1b5aa}
+@media(max-width:370px){.city-flow-line{grid-template-columns:89px 1fr 25px;font-size:10px}}

@@ -1,4 +1,5 @@
 import {GameClock} from '../gameClock';
+import {CityDashboard} from './cityDashboard';
 import type {GameView} from '../gameView';
 import {IndicatorStore} from './indicatorStore';
 import {FinanceModule} from './modules/finances';
@@ -19,6 +20,7 @@ export class GameManagement {
  readonly finance=new FinanceModule(this.indicators);
  readonly environment=new EnvironmentModule(this.indicators);
  readonly saves=new SaveStore();
+ readonly city:CityDashboard;
  private dossiers:Dossier[]=[];
  private selected:SelectedPlace|null=null;
  private lastDossierHour=-1;
@@ -32,6 +34,7 @@ export class GameManagement {
  constructor(private clock:GameClock, private onRateChange:(rate:0|1|10|60)=>void,
    private onGoTo:(x:number,z:number)=>void,
    private captureView:()=>GameView,private onRestoreView:(view:GameView)=>void){
+  this.city=new CityDashboard(clock,()=>void this.autosave(true));
   node<HTMLButtonElement>('finance-open').addEventListener('click',()=>this.open());
   node<HTMLButtonElement>('finance-close').addEventListener('click',()=>this.close());
   node<HTMLButtonElement>('budget-propose').addEventListener('click',()=>this.propose());
@@ -108,7 +111,9 @@ export class GameManagement {
    this.open();
   }catch(error){node('location-action-status').textContent='Erreur : '+String(error);}
  }
+ setNeighborhoods(names:string[]):void{this.city.setNeighborhoods(names);}
  tickDossiers():void{
+  this.city.tick();
   if(Date.now()-this.lastAutosave>=30000)void this.autosave();
   const hour=Math.floor(this.clock.current/3_600_000);
   if(hour===this.lastDossierHour)return;
@@ -146,6 +151,7 @@ export class GameManagement {
  private status(text:string){node('finance-status').textContent=text;}
  open(){
   node('finance-panel').classList.remove('hidden');
+  this.city.render();
   void this.render();
  }
  close(){node('finance-panel').classList.add('hidden');}
@@ -220,7 +226,8 @@ export class GameManagement {
     schema:1,name:this.currentName,createdAt:this.createdAt,updatedAt:now,
     gameTimestamp:this.clock.current,timeRate:this.clock.rate,
     plan:this.finance.plan,indicators:this.indicators.list(),
-    dossiers:this.dossiers.map(d=>({...d})),view:this.captureView()
+    dossiers:this.dossiers.map(d=>({...d})),view:this.captureView(),
+    municipal:this.city.snapshot
   };
  }
  private async save(newSlot=false){
@@ -251,6 +258,7 @@ export class GameManagement {
     this.indicators.restore(v.indicators);
     this.finance.restore(v.plan,v.gameTimestamp);
     this.dossiers=(v.dossiers??[]).map(d=>({...d}));
+     this.city.restore(v.municipal);
     if(v.view)this.onRestoreView(v.view);
     if(this.selected)this.setSelection(this.selected);
     this.status('Partie restaurée : '+this.currentName);

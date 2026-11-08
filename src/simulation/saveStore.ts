@@ -1,4 +1,5 @@
 import type {FinancePlan} from './modules/finances';
+import {validateMunicipalState,type MunicipalState} from './cityEngine';
 import type {Indicator} from './indicatorStore';
 import {validateDossiers,type Dossier} from './dossiers';
 import {validateGameView,type GameView} from '../gameView';
@@ -12,6 +13,7 @@ export interface GameSave {
  indicators:Indicator[];
  dossiers?:Dossier[]; // extension facultative : anciens JSON v1 toujours valides
  view?:GameView; // ajout facultatif 0.25.9 ; aucune migration destructrice
+ municipal?:MunicipalState; // 0.26.3 facultatif ; compatibilité ancienne sauvegarde
 }
 export interface DbSave{slot:string;save:GameSave}
 export interface SaveBundle{
@@ -85,6 +87,7 @@ export function validateSave(value:unknown):GameSave{
      throw Error('Montants de scénario invalides');
  }
  validateDossiers(x.dossiers);
+ validateMunicipalState(x.municipal);
  if(x.view!==undefined)validateGameView(x.view);
  for(const indicator of x.indicators){
    if(!indicator||typeof indicator.key!=='string'||typeof indicator.spatialId!=='string'||

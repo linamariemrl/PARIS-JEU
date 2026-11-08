@@ -40,7 +40,7 @@
 <button id="minus" aria-label="Dézoomer">−</button>
 <button id="north" aria-label="Nord">N</button>
 <button id="orbit-view" aria-label="Activer le déplacement orbital à 360 degrés" aria-pressed="false">360°</button>
-<button id="finance-open" aria-label="Gérer les finances et les sauvegardes" title="Finances et sauvegardes">€</button>
+<button id="finance-open" aria-label="Ouvrir l’Hôtel de Ville et la gestion" title="Hôtel de Ville et Conseil de Paris">M</button>
 <button id="street-view" aria-label="Basculer entre carte et vue proche de la rue" aria-pressed="false">Rue</button>
 <label>Qualité <select id="quality" aria-label="Qualité graphique"><option value="low">Basse</option><option value="medium" selected>Moyenne</option><option value="high">Haute</option></select></label>
 </nav>
@@ -53,9 +53,45 @@
   </div>
 </div>
 
-<section id="finance-panel" class="hidden" role="dialog" aria-label="Finances de la Ville et sauvegardes">
-  <div class="finance-head"><div><strong>PARIS</strong><small>GESTION ET PARTIES</small></div>
+<section id="finance-panel" class="hidden" role="dialog" aria-label="Hôtel de Ville : conseil, projets, mobilité, finances et parties">
+  <div class="finance-head"><div><strong>HÔTEL DE VILLE</strong><small>LE MAIRE · CONSEIL · SERVICES · PARTENAIRES</small></div>
     <button id="finance-close" aria-label="Fermer le panneau">×</button></div>
+    <section id="municipal-room" aria-label="Simulation du Conseil de Paris">
+    <h3>Cabinet du maire · politiques publiques</h3>
+    <p class="finance-source">Simulation fictive : les 163 sièges existent dans la réalité, mais les groupes et votes ne reproduisent pas les élus réels. Les projets sont instruits, programmés puis soumis au Conseil. Les compétences de l’État et des opérateurs sont distinctes.</p>
+    <p class="finance-line"><span>Projets au cabinet</span><b id="city-project-total">0</b></p>
+    <p class="finance-line"><span>Investissement de jeu disponible</span><b id="city-capital-left">…</b></p>
+    <p class="finance-line"><span>Fonctionnement de jeu disponible</span><b id="city-op-left">…</b></p>
+    <p class="finance-source">Enveloppes fictives distinctes du budget officiel affiché plus bas. Aucun montant n’est une dépense réelle.</p>
+    <label class="city-label">Chercher une politique, un projet, une innovation
+      <input id="city-search" type="search" placeholder="Logement, école, vélo, patrimoine…" autocomplete="off"/>
+    </label>
+    <p id="city-template-count" class="finance-source">Propositions municipales…</p>
+    <div id="city-templates" class="city-choice-list" aria-label="Catalogue des projets"></div>
+    <h4 id="city-selected-title">Projet</h4>
+    <p id="city-selected-details" class="finance-source"></p>
+    <label class="city-label">Quartier concerné (facultatif)
+      <input id="city-quarter" list="city-quarter-suggestions" placeholder="Paris entier" autocomplete="off"/>
+      <datalist id="city-quarter-suggestions"></datalist>
+    </label>
+    <div class="city-buttons"><button id="city-prepare" type="button">Créer le dossier</button>
+      <button id="city-agenda" type="button" disabled>Inscrire au Conseil</button>
+      <button id="city-vote" type="button" disabled>Tenir le vote fictif</button></div>
+    <p id="city-status" role="status" class="finance-source">Prêt : préparation d’une délibération municipale.</p>
+    <h4>Ordre du jour et projets</h4>
+    <p id="city-project-detail" class="finance-source">Aucun projet préparé.</p>
+    <div id="city-projects" class="city-choice-list" aria-label="Dossiers municipaux en cours"></div>
+    <details><summary>Services, institutions et partenaires</summary>
+      <p id="city-institutions" class="finance-source"></p>
+      <p class="finance-source">Institution réelle, échanges et conventions simulés. Le vote municipal ne remplace pas les autorisations de l’État ni les marchés publics.</p>
+    </details>
+    <h3>Mobilités · flux de population</h3>
+    <p class="finance-source">Modèle agrégé horaire léger pour Android, par quartier. Indices fictifs (base 100) : ni capteurs en direct ni comptages réels. Les véhicules et piétons 3D ne sont pas encore simulés individuellement.</p>
+    <p id="city-mobility-hour" class="finance-source">Heure simulée…</p>
+    <div id="city-mobility" class="city-flow-list" aria-label="Indices de flux de déplacement simulés"></div>
+    <p id="city-mobility-note" class="finance-source"></p>
+  </section>
+  <div class="finance-divider"></div>
   <p id="finance-year" class="finance-sub">Chargement des données officielles…</p>
    <p class="finance-source">Montants des sections du budget primitif voté, incluant les opérations d’ordre. Ils ne représentent pas les encaissements et décaissements réalisés.</p>
   <h3>Dossiers territoriaux</h3>

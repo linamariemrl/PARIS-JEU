@@ -39,6 +39,7 @@ export class UrbanAtlas{
  private quarters:Array<{quarter:QuarterRecord;bounds:Bounds}>=[];
  private loaded=false;
  get ready(){return this.loaded;}
+ quarterNames():string[]{return this.quarters.map(q=>q.quarter.name);}
  async init():Promise<void>{
   try{
    const response=await fetch(import.meta.env.BASE_URL+
