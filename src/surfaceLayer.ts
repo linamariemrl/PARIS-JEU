@@ -3,6 +3,7 @@ import {
 } from '@babylonjs/core';
 import earcut from 'earcut';
 import {terrainHeight} from './terrain';
+import {appendDraped} from './reliefSurface';
 
 /** Habillage surfacique SIG, sans bitmap ni relief inventé.
  * L'emprise d'un parc ne garantit PAS que chaque mètre carré est gazonné.
@@ -45,12 +46,9 @@ function append(batch:Batch,poly:Polygon,kind:SurfaceKind){
  if(flat.length<6)return;
  const triangulated=earcut(flat,holes,2);
  if(!triangulated.length)return;
- const offset=batch.positions.length/3;
- for(let i=0;i<flat.length;i+=2){
-  batch.positions.push(flat[i],terrainHeight(flat[i],flat[i+1])+y[kind]+.13,flat[i+1]);
-  batch.normals.push(0,1,0);
- }
- for(const index of triangulated)batch.indices.push(offset+index);
+ const added=appendDraped(batch,flat,triangulated,terrainHeight,
+   y[kind]+.36,120,12000);
+ for(let n=0;n<added;n++)batch.normals.push(0,1,0);
  batch.count++;
 }
 function commit(scene:Scene,batch:Batch,kind:SurfaceKind):void{

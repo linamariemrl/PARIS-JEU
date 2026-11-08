@@ -1,6 +1,7 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3, VertexData } from '@babylonjs/core';
 import earcut from 'earcut';
 import {terrainHeight} from './terrain';
+import {appendDraped} from './reliefSurface';
 import { addBridges } from './bridges';
 
 /** Réseau simplifié issu de géométries IGN ou OSM (coordonnées locales en mètres).
@@ -37,8 +38,8 @@ const COLORS: Record<Kind, [number, number, number]> = {
   square: [.80,.80,.80],
 };
 const HEIGHTS: Record<Kind, number> = {
-  water: 0.05, bank: 0.085, sidewalk: 0.10, road: 0.14,
-  foot: 0.16, square: 0.17,
+  water: 0.50, bank: 0.62, sidewalk: 0.73, road: 0.87,
+  foot: 0.77, square: 0.79,
 };
 const DRAW_ORDER: Kind[] = ['water', 'bank', 'sidewalk', 'road', 'foot', 'square'];
 
@@ -65,12 +66,9 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
     if (numberOfPoints < 3) continue;
     const triangles = earcut(flat, holes, 2);
     if (!triangles.length) continue;
-    const offset = positions.length / 3;
-    for (let i = 0; i < flat.length; i += 2) {
-      positions.push(flat[i], terrainHeight(flat[i],flat[i+1])+h, flat[i + 1]);
-      normals.push(0, 1, 0);
-    }
-    for (const index of triangles) indices.push(offset + index);
+    const added=appendDraped({positions,indices},flat,triangles,
+      terrainHeight,h,90,9500);
+    for(let n=0;n<added;n++)normals.push(0,1,0);
   }
   if (!indices.length) return null;
   const mesh = new Mesh('infrastructure-' + kind, scene);
@@ -89,6 +87,7 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   // Sans lumière dynamique, la couleur visible provient de l'émission.
   material.emissiveColor=new Color3(r,g,b);
   material.backFaceCulling = false;
+  material.zOffset=-4;
   mesh.material = material;
   // Un clic sur une chaussée ouvre sa fiche sans calcul à chaque frame.
   mesh.isPickable = kind === 'road';

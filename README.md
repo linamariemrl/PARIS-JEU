@@ -1,3 +1,30 @@
+## 0.25.5 — suppression des voiles triangulaires, relief continu
+
+Les captures Android des 5 h 44–5 h 46 le 8 novembre 2026 montrent
+des triangles de centaines de mètres dans la Seine et sur la chaussée.
+La cause technique est confirmée : certaines emprises d'eau IGN traversent
+jusqu'à 7,7 km et les triangles issus d'earcut étaient placés en altitude
+uniquement à leurs sommets. Leur interpolation plane coupait le MNT IGN
+de 200 m et produisait des plages successives en avant/arrière du sol.
+
+Les triangles sont désormais subdivisés **avant transfert GPU** avec
+des milieux d'arête partagés : une seule hauteur interpolée par sommet
+à une maille inférieure au terrain. Un budget strict borne leur coût
+graphique. L'approche s'applique à l'eau IGN, aux routes PVP (échelle
+lointaine et tuiles rapprochées), aux voies du 4e et aux parcs Paris Data.
+Les couches proches disposent de priorités de profondeur cohérentes
+qui évitent les doubles surfaces scintillantes.
+
+L'échantillonnage altimétrique n'alloue plus de tableau temporaire à
+chaque lecture, ce qui réduit les pauses GC pendant les chargements.
+Le rendu panoramique, l'inventaire végétal, les détails architecturaux
+et les fonctions de jeu sont conservés.
+
+Cette adaptation modélise le *terrain sous les emprises*, pas le profil
+hydraulique exact de la Seine ; les altitudes d'eau ne sont pas un levé
+de niveaux d'eau. Ne pas présenter l'échantillonnage et les tests comme
+une validation GPU Android. La montée en version 0.26 reste bloquée.
+
 ## Branche 0.25.4 — correction des pointes et lecture des collines
 
 Les captures Android du 8 novembre ont montré de grandes « voiles »

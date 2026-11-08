@@ -1,6 +1,7 @@
 import {Color3,Mesh,Scene,StandardMaterial,VertexData} from '@babylonjs/core';
 import earcut from 'earcut';
 import {terrainHeight} from './terrain';
+import {appendDraped} from './reliefSurface';
 
 type Ring=number[][];
 type Polygon=Ring[];
@@ -64,12 +65,11 @@ export class StableWaterLayer{
           if(coords.length<6)continue;
           const faces=earcut(coords,holes,2);
           if(!faces.length)continue;
-          const base=positions.length/3;
-          for(let i=0;i<coords.length;i+=2){
-            positions.push(coords[i],terrainHeight(coords[i],coords[i+1])+.065,coords[i+1]);
-            normals.push(0,1,0);
-          }
-          for(const face of faces)indices.push(base+face);
+          // Les grandes pièces d'eau traversaient le MNT entre deux
+          // sommets éloignés : raffinement continu (arêtes partagées).
+          const vertices=appendDraped({positions,indices},coords,faces,
+            terrainHeight,.58,105,26000);
+          for(let n=0;n<vertices;n++)normals.push(0,1,0);
           this.polygons.push(polygon);
         }
         if(++processed%24===0)
@@ -90,6 +90,7 @@ export class StableWaterLayer{
       mat.emissiveColor=new Color3(.73,.74,.75);
       mat.disableLighting=true;
       mat.backFaceCulling=false;
+      mat.zOffset=-2;
       mat.freeze();
       mesh.material=mat;
       mesh.isPickable=false;

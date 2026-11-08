@@ -23,14 +23,14 @@ class TerrainGrid{
    const ix=Math.floor(tx),iz=Math.floor(tz);
    const a=tx-ix,b=tz-iz;
    const w=extent.width;
-   const p=[
-     this.values[iz*w+ix],this.values[iz*w+ix+1],
-     this.values[(iz+1)*w+ix],this.values[(iz+1)*w+ix+1]
-   ];
-   // Ne pas interpoler une altitude mesurée avec une cellule non documentée.
-   if(p.some(v=>v===-32768))return null;
-   return (p[0]*(1-a)*(1-b)+p[1]*a*(1-b)+
-     p[2]*(1-a)*b+p[3]*a*b)*.1;
+   const i=iz*w+ix,j=i+w;
+   const p0=this.values[i],p1=this.values[i+1];
+   const p2=this.values[j],p3=this.values[j+1];
+   // Aucun tableau temporaire lors de l'échantillonnage intensif du MNT.
+   if(p0===-32768||p1===-32768||p2===-32768||p3===-32768)
+     return null;
+   return (p0*(1-a)*(1-b)+p1*a*(1-b)+
+     p2*(1-a)*b+p3*a*b)*.1;
  }
 }
 /** Altitude relative au datum d'affichage, en mètres.

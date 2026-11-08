@@ -1,6 +1,7 @@
 import {Color3,Mesh,Scene,StandardMaterial,VertexData} from '@babylonjs/core';
 import earcut from 'earcut';
 import {terrainHeight} from './terrain';
+import {appendDraped} from './reliefSurface';
 
 /** Chaussées PVP de Paris entier : seule la géométrie officielle est rendue.
  * Une seule emprise lointaine, plus quelques tuiles exactes proches.
@@ -33,10 +34,10 @@ function appendRoad(batch:Batch,rings:Polygon,height:number):void{
  if(flat.length<6)return;
  const triangles=earcut(flat,holes,2);
  if(!triangles.length)return;
- const base=batch.positions.length/3;
- for(let i=0;i<flat.length;i+=2)
-  batch.positions.push(flat[i],height+terrainHeight(flat[i],flat[i+1]),flat[i+1]);
- for(const index of triangles)batch.indices.push(base+index);
+ // Un niveau de détail précis du MNT évite que les grands triangles
+ // PVP alternent dessus/dessous du sol et forment des traits noirs.
+ appendDraped(batch,flat,triangles,terrainHeight,height,
+   height<.6?170:105,height<.6?6500:10000);
 }
 function meshFor(scene:Scene,name:string,batch:Batch,material:StandardMaterial,
  pickable:boolean):Mesh|null{
@@ -75,6 +76,7 @@ export class MetroRoads{
   this.baseMaterial.disableLighting=true;
   this.baseMaterial.backFaceCulling=false;
   this.baseMaterial.specularColor=Color3.Black();
+  this.baseMaterial.zOffset=-1;
   this.baseMaterial.freeze();
   this.nearMaterial=new StandardMaterial('chaussees-PVP-proches',scene);
   this.nearMaterial.diffuseColor=new Color3(.51,.52,.53);
@@ -82,6 +84,7 @@ export class MetroRoads{
   this.nearMaterial.disableLighting=true;
   this.nearMaterial.backFaceCulling=false;
   this.nearMaterial.specularColor=Color3.Black();
+  this.nearMaterial.zOffset=-3;
   this.nearMaterial.freeze();
  }
  setQuality(level:'low'|'medium'|'high'):void{
@@ -107,7 +110,7 @@ export class MetroRoads{
    let processed=0;
    for(const [tile,kind,polygon] of file.features){
     if(kind!=='road'||typeof tile!=='string')continue;
-    appendRoad(batch,polygon,.205);
+    appendRoad(batch,polygon,.42);
     if(++processed%96===0)
      await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
    }
@@ -160,7 +163,7 @@ export class MetroRoads{
    const batch:Batch={positions:[],indices:[]};
    for(let i=0;i<file.features.length;i++){
     const record=file.features[i];
-    if(record?.[0]==='road')appendRoad(batch,record[1],.255);
+    if(record?.[0]==='road')appendRoad(batch,record[1],.74);
     if(i>0&&i%72===0)
      await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
    }

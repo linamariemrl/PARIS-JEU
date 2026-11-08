@@ -28,6 +28,7 @@ class NatureIntegration(unittest.TestCase):
   self.assertIn('if(!this.wanted.has(tile.id))return',trees)
   self.assertIn('radius>3800',trees)
   self.assertIn('radius<3200',trees)
+  self.assertIn('appendDraped',src('src/surfaceLayer.ts'))
   self.assertIn('terrainHeight',src('src/surfaceLayer.ts'))
   self.assertIn('terrainHeight',src('src/bridges.ts'))
  def test_street_camera_uses_real_altitude(self):

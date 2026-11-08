@@ -1,11 +1,11 @@
 {
   "name": "paris-jeu-3d",
   "private": true,
-  "version": "0.25.4",
+  "version": "0.25.5",
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "python scripts/generate_icons.py && tsc --noEmit && npm run test:astronomy && npm run test:street-labels && npm run test:material-catalog && npm run test:roof-geometry && npm run test:camera && npm run test:city-volumes && npm run test:architecture && npm run test:monochrome && npm run test:dossiers && npm run test:relief-foundations && vite build && python scripts/strip_aerial_dist.py dist && python scripts/check_site_size.py dist",
+    "build": "python scripts/generate_icons.py && tsc --noEmit && npm run test:astronomy && npm run test:street-labels && npm run test:material-catalog && npm run test:roof-geometry && npm run test:camera && npm run test:city-volumes && npm run test:architecture && npm run test:monochrome && npm run test:dossiers && npm run test:relief-foundations && npm run test:relief-surfaces && vite build && python scripts/strip_aerial_dist.py dist && python scripts/check_site_size.py dist",
     "preview": "vite preview --host 0.0.0.0",
     "test:astronomy": "node --experimental-strip-types scripts/check_astronomy.mjs",
     "test:street-labels": "node --experimental-strip-types scripts/check_street_labels.mjs",
@@ -16,7 +16,8 @@
     "test:architecture": "node --experimental-strip-types scripts/check_architectural_detail.mjs",
     "test:monochrome": "node --experimental-strip-types scripts/check_monochrome_camera.mjs",
     "test:dossiers": "node --experimental-strip-types scripts/check_dossiers.mjs",
-    "test:relief-foundations": "node --experimental-strip-types scripts/check_relief_foundations.mjs"
+    "test:relief-foundations": "node --experimental-strip-types scripts/check_relief_foundations.mjs",
+    "test:relief-surfaces": "node --experimental-strip-types scripts/check_relief_surfaces.mjs"
   },
   "dependencies": {
     "@babylonjs/core": "^8.0.0",
