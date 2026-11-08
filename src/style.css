@@ -164,3 +164,17 @@ header{background:linear-gradient(#273543dd,#273543aa)}
  width:100%;min-width:0;padding:9px 7px;font-size:11px;
  border-radius:7px;overflow:hidden;text-overflow:ellipsis;
 }
+
+/* Fiches de lieux géographiques et monuments : consultation autonome,
+   scroll vertical limité pour ne pas masquer toute la carte sur Android. */
+#selection{max-height:min(73dvh,680px);overflow-y:auto;
+ overscroll-behavior:contain;scrollbar-width:thin;
+ background:#152638f0;backdrop-filter:blur(5px)}
+#selection h2{font-size:16px;line-height:1.3}
+#place-extra{border-top:1px solid #ffffff3a;margin-top:10px;padding-top:6px}
+#place-extra h3{font-size:13px;margin:3px 0 9px}
+#place-extra p{margin:6px 0;line-height:1.45;font-size:12px}
+#place-extra a{color:#c7ddec;text-decoration:underline}
+#place-extra .monument-notice{border-top:1px solid #ffffff44;
+ margin-top:9px;padding-top:8px}
+#building-fields:empty{display:none}
