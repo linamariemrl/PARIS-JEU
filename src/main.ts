@@ -11,6 +11,7 @@ import { MetroOverview } from './metroOverview';
 import { installTerritoryNavigation } from './territoryNavigation';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { TreeLayer } from './trees';
+import { MetroTreeLayer } from './metroTrees';
 import { installSurfaceLayer } from './surfaceLayer';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
@@ -47,6 +48,9 @@ try{
   const clock=new GameClock();
   const trees=new TreeLayer(scene,message=>{
     el('trees-status').textContent=message;
+  });
+  const metroTrees=new MetroTreeLayer(scene,message=>{
+    el('metro-trees-status').textContent=message;
   });
 
   const ground=MeshBuilder.CreateGround('sol-neutre',
@@ -177,6 +181,7 @@ try{
     manager.setQuality(level);
     metro.setQuality(level);
     trees.setQuality(level);
+    metroTrees.setQuality(level);
     engine.setHardwareScalingLevel(level==='low'?1.7:level==='medium'?1.3:1);
     engine.resize();
   });
@@ -219,6 +224,7 @@ try{
     manager.update(camera.camera.target.x,camera.camera.target.z);
     overview.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
+    metroTrees.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     scene.render();
     if(now-lastFps>=1000){
       fps.textContent=Math.round(engine.getFps())+' FPS';
@@ -238,6 +244,10 @@ try{
     await installSurfaceLayer(scene,'data/metropole/surfaces/roads.json',
       message=>el('roads-status').textContent=message);
   })().catch(console.warn);
+  void metroTrees.init().catch(e=>{
+    console.warn('Arbres des arrondissements non disponibles',e);
+    el('metro-trees-status').textContent='Arbres des arrondissements : source absente';
+  });
   void trees.init().catch(e=>{
     console.warn('Arbres municipaux non disponibles',e);
     el('trees-status').textContent='Arbres : données momentanément indisponibles';
