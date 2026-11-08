@@ -9,7 +9,7 @@ interface MetroManifest{
  schema:2;tileMeters:number;totalBuildings:number;
  buildingsStoredIn4e:number;tiles:Info[];
 }
-interface Loaded {meshes:Mesh[];count:number;lastUsed:number;hidden?:boolean;}
+interface Loaded {meshes:Mesh[];count:number;lastUsed:number;}
 
 /** Bascule monotone vers la géométrie IGN exacte :
  * - préchargement en avant de la caméra ;
@@ -74,26 +74,6 @@ export class MetroTileManager{
     if(!moved&&now-this.lastUpdate<1600)return;
     this.lastUpdate=now;this.lastPointX=x;this.lastPointZ=z;
     this.lastRadius=radius;
-    // Hors échelle de façades perceptibles, substituer progressivement
-    // les toitures IGN à seulement deux secteurs détaillés par cycle.
-    // Le buffer de l'aperçu doit être chargé avant toute substitution.
-    const hideDetailed=radius>7500?true:radius<4900?false:null;
-    if(hideDetailed!==null){
-      let changed=0;
-      for(const [id,loaded] of this.active){
-        if(Boolean(loaded.hidden)===hideDetailed)continue;
-        if(hideDetailed&&!this.overview?.hasTile(id))continue;
-        if(hideDetailed){
-          this.overview?.setDetailed(id,false);
-          loaded.meshes.forEach(mesh=>mesh.setEnabled(false));
-        }else{
-          loaded.meshes.forEach(mesh=>mesh.setEnabled(true));
-          this.overview?.setDetailed(id,true);
-        }
-        loaded.hidden=hideDetailed;
-        if(++changed>=2)break;
-      }
-    }
 
     // Les grands zooms n'exigent pas de charger tous les 287k maillages
     // sur un téléphone. Dès que l'on rapproche la caméra, les emprises
