@@ -55,7 +55,7 @@ class NaturalTerritory(unittest.TestCase):
         surface=(ROOT/"src/surfaceLayer.ts").read_text(encoding="utf-8")
         self.assertIn("new TreeLayer",main)
         self.assertIn("new MetroTreeLayer",main)
-        self.assertIn("installSurfaceLayer",main)
+        self.assertIn("new SurfaceTileManager",main)
         self.assertIn("thinInstanceSetBuffer",tree)
         self.assertIn("requestAnimationFrame",surface)
         self.assertNotIn("diffuseTexture",tree)
