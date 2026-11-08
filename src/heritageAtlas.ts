@@ -1,11 +1,13 @@
 import {Color3,Mesh,MeshBuilder,Scene,Vector3} from '@babylonjs/core';
 import type {Building} from './types';
+import {storyForMonument} from './monumentStories';
 import {project} from './geo';
 import {terrainHeight} from './terrain';
 
 interface Notice{
  ref:string;x:number;z:number;name:string;category?:string;
  protection?:string;date?:string;description?:string;sourceUrl:string;
+ currentUse?:string;address?:string;author?:string;
 }
 export interface HeritageArea{
  id:string;name:string;kind:'garden'|'domain'|'monument';
@@ -154,57 +156,75 @@ export class HeritageAtlas{
   }
   return result;
  }
- appendDetails(target:HTMLElement,area:HeritageArea|null,ref?:string):void{
-  if(!area&&!ref)return;
+ /** Fiche de jeu : lecture immédiate en quelques lignes, pas un registre
+  * cadastralo-technique. Aucune histoire n'est inventée depuis une étiquette
+  * OSM ou une notice POP dépourvue de contenu historique.
+  */
+ appendDetails(target:HTMLElement,area:HeritageArea|null,
+   ref?:string,building?:Building):void{
+  const notice=ref?this.byRef.get(ref):undefined;
+  const name=notice?.name??building?.heritageName??area?.name;
+  if(!name)return;
+  const story=storyForMonument(name)??(area?
+    storyForMonument(area.name):null);
   const section=document.createElement('section');
-  section.className='monument-notice';
-  const heading=document.createElement('h3');
-  heading.textContent=area?.name??this.byRef.get(ref??'')?.name??'Patrimoine documenté';
-  section.append(heading);
-  const add=(label:string,value?:string)=>{
-   if(!value)return;
+  section.className='monument-notice heritage-game-card';
+  const overview=document.createElement('div');
+  overview.className='heritage-essential';
+  const line=(label:string,value?:string)=>{
+   if(!value?.trim())return;
    const p=document.createElement('p');
-   const strong=document.createElement('strong');
-   strong.textContent=label+' : ';
-   p.append(strong,document.createTextNode(value));section.append(p);
+   const term=document.createElement('strong');
+   term.textContent=label+' : ';
+   p.append(term,document.createTextNode(value.trim()));
+   overview.append(p);
   };
-  const source=(label:string,url?:string)=>{
-   if(!url)return;
-   let trusted=false;
+  const category=story?.type??notice?.category??(
+   area?.kind==='garden'?'Jardin historique':
+   area?.kind==='monument'?'Monument / site touristique':
+   area?'Domaine historique':undefined);
+  const period=story?.period??notice?.date;
+  line('Type',category);
+  line('Époque',period);
+  if(notice?.address)line('Lieu',notice.address);
+  if(notice?.author&&!story)line('Architecte / auteur',notice.author);
+  section.append(overview);
+  const heading=document.createElement('h3');
+  heading.textContent='En quelques lignes';
+  section.append(heading);
+  const p=document.createElement('p');
+  p.className='heritage-history';
+  // Une notice peut être une liste de termes techniques, pas une histoire.
+  const officialDescription=notice?.description?.trim();
+  const description=officialDescription&&officialDescription.length>45?
+   officialDescription:undefined;
+  const fromArea=area?.description?.trim();
+  const summary=story?.history??description??(
+   fromArea&&!/dénomination ne constitue|désigné dans OpenStreetMap/i.test(fromArea)?
+    fromArea:undefined);
+  p.textContent=summary?
+   (summary.length<=380?summary:summary.slice(0,377).replace(/\\s+\\S*$/,'')+'…'):
+   'L’histoire de ce lieu n’est pas encore documentée avec assez de précision pour en proposer un résumé fiable.';
+  section.append(p);
+  const url=story?.sourceUrl??notice?.sourceUrl??area?.sourceUrl;
+  if(url){
    try{
     const parsed=new URL(url);
-    trusted=parsed.protocol==='https:'&&[
-     'culture.gouv.fr','senat.fr','louvre.fr','openstreetmap.org'
-    ].some(domain=>parsed.hostname===domain||parsed.hostname.endsWith('.'+domain));
-   }catch{}
-   if(!trusted)return;
-   const p=document.createElement('p'),link=document.createElement('a');
-   link.href=url;link.target='_blank';link.rel='noopener noreferrer';link.textContent=label;
-   p.append(link);section.append(p);
-  };
-  if(area){
-   add('Nature',area.kind==='garden'?'Jardin / domaine paysager':
-     area.kind==='monument'?'Édifice ou ensemble patrimonial':'Domaine historique');
-   add('Présentation',area.description);
-   for(const fact of area.facts)add('Caractéristique documentée',fact);
-   add('Emprise','Contour cartographique documenté ; les sols et plantations conservent leurs couches réelles.');
-   add('Géométrie',area.provenance);
-   source('Source institutionnelle',area.sourceUrl);
-   source('Données géographiques OpenStreetMap',area.geometryUrl);
+    const allowed=['culture.gouv.fr','senat.fr','louvre.fr',
+     'openstreetmap.org','notredamedeparis.fr','sainte-chapelle.fr',
+     'toureiffel.paris','paris-arc-de-triomphe.fr',
+     'sacre-coeur-montmartre.com'];
+    if(parsed.protocol==='https:'&&allowed.some(domain=>
+      parsed.hostname===domain||parsed.hostname.endsWith('.'+domain))){
+     const link=document.createElement('a');
+     link.href=parsed.href;link.target='_blank';link.rel='noopener noreferrer';
+     link.className='heritage-source';
+     link.textContent=story||notice?'Source historique':'Source cartographique';
+     section.append(link);
+    }
+   }catch{/* URL non validée, ne pas afficher de lien externe. */}
   }
-  if(ref){
-   const n=this.byRef.get(ref);
-   if(n){
-    add('Notice Culture',n.name);
-    add('Dénomination',n.category);
-    add('Protection recensée',n.protection);
-    add('Datation',n.date);
-    add('Description',n.description);
-    add('Précaution','Le point de la notice est inclus dans l’emprise IGN ; cela ne démontre pas la protection de toutes ses parties.');
-    source('Notice POP/Mérimée',n.sourceUrl);
-   }
-  }
-  target.prepend(section);
+  target.replaceChildren(section);
  }
  private drawBoundaries():void{
   for(const area of this.areas){
