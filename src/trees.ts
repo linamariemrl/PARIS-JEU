@@ -15,6 +15,8 @@ interface TreesJson{
   schema:number;source:string;sourceUrl?:string;count:number;trees:TreeRecord[];
 }
 export type QualityLevel='low'|'medium'|'high';
+import {terrainHeight} from './terrain';
+
 const evergreen=new Set(['pinus','picea','cedrus','abies','taxus','thuja','cupressus','chamaecyparis']);
 const identity=Quaternion.Identity();
 const tones:[number,number,number][]=[
@@ -83,19 +85,20 @@ export class TreeLayer{
          !Number.isFinite(item.h)||item.h<2||item.h>38)continue;
       seen.add(item.id);
       const h=item.h;
+      const ground=terrainHeight(item.x,item.z);
       const trunkHeight=h*.50;
       const width=item.circumference>0?
         Math.min(1.05,Math.max(.16,item.circumference/(100*Math.PI))):
         Math.min(.58,Math.max(.17,h*.035));
-      trunk.push(...transform(item.x,trunkHeight/2,item.z,width,trunkHeight,width));
+      trunk.push(...transform(item.x,ground+trunkHeight/2,item.z,width,trunkHeight,width));
       const species=(item.genre||'').trim().toLowerCase();
       const radius=Math.min(5.8,Math.max(1.2,h*.30));
       if(evergreen.has(species)){
-        cone.push(...transform(item.x,h*.68,item.z,
+        cone.push(...transform(item.x,ground+h*.68,item.z,
           radius*.88,h*.30,radius*.88));
       }else{
         const index=stableHash(item.id+'-'+species)%tones.length;
-        crown[index].push(...transform(item.x,h*.76,item.z,
+        crown[index].push(...transform(item.x,ground+h*.76,item.z,
           radius,h*.26,radius));
       }
     }
