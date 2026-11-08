@@ -1,6 +1,6 @@
 import {
   Color3, Color4, DirectionalLight, Engine, HemisphericLight,
-  Mesh, MeshBuilder, Scene, StandardMaterial, Vector3
+  Matrix, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3
 } from '@babylonjs/core';
 import { createMaterials, getPickedBuilding, highlightBuilding } from './buildings';
 import { MobileCamera } from './mobileCamera';
@@ -15,6 +15,7 @@ import { MetroTreeLayer } from './metroTrees';
 import { SurfaceTileManager } from './surfaceTiles';
 import { AdaptiveResolution } from './adaptiveResolution';
 import { TerrainModule } from './terrain';
+import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
@@ -92,12 +93,21 @@ try{
     el('metropole-status').textContent=message;
   },overview);
   const selection:Mesh[]=[];
+  const inspector=new PlaceInspector(el('place-extra'));
+  let tapSequence=0;
   const clear=()=>{
+    inspector.begin();
     el('selection').classList.add('hidden');
     selection.splice(0).forEach(m=>m.dispose());
   };
   const select=(b:Building)=>{
     clear();
+    const coords=centerOfBuilding(b)??{
+      x:camera.camera.target.x,z:camera.camera.target.z
+    };
+    const token=inspector.begin();
+    el('selection-title').textContent='Bâtiment identifié · données IGN';
+    el('building-fields').classList.remove('hidden');
     selection.push(...highlightBuilding(scene,b));
     el('selection').classList.remove('hidden');
     el('height').textContent=b.height.toLocaleString('fr-FR')+' m'+
@@ -132,14 +142,46 @@ try{
       (b.lidarRoof?
         'Relief de couverture MNH LiDAR HD, IGN 50 cm, prioritaire lorsqu’il est valide. ':
         'Toit LiDAR non disponible ; forme OSM ou toit de secours. ');
+    inspector.fill(coords.x,coords.z,
+      surfaces.identify(coords.x,coords.z),b,token);
+  };
+  const showLocation=(x:number,z:number)=>{
+    clear();
+    const token=inspector.begin();
+    el('selection-title').textContent='Fiche du lieu sélectionné';
+    el('building-fields').classList.add('hidden');
+    el('selection').classList.remove('hidden');
+    inspector.fill(x,z,surfaces.identify(x,z),null,token);
   };
   camera.onTap=(x,y)=>{
+    const requestId=++tapSequence;
     const hit=scene.pick(x,y,mesh=>mesh.isPickable&&Boolean(mesh.metadata));
     const selected=hit?.pickedMesh&&hit.faceId>=0?
       getPickedBuilding(hit.pickedMesh as Mesh,hit.faceId):null;
-    if(selected)select(selected);else clear();
+    if(selected){select(selected);return;}
+    const groundHit=scene.pick(x,y,m=>m===ground||
+      m.name==='terrain-RGE-ALTI-IGN');
+    const point=groundHit?.pickedPoint;
+    let px=point?.x,pz=point?.z;
+    if(px===undefined||pz===undefined){
+      const ray=scene.createPickingRay(x,y,Matrix.Identity(),camera.camera);
+      const scale=Math.abs(ray.direction.y)>1e-6?
+        -ray.origin.y/ray.direction.y:NaN;
+      px=Number.isFinite(scale)&&scale>0?
+        ray.origin.x+scale*ray.direction.x:camera.camera.target.x;
+      pz=Number.isFinite(scale)&&scale>0?
+        ray.origin.z+scale*ray.direction.z:camera.camera.target.z;
+    }
+    showLocation(px,pz);
+    // Même en vue générale, une emprise IGN dans les tuiles légères
+    // peut être retrouvée sur demande sans lancer un chargement 3D.
+    void metro.buildingAt(px,pz).then(building=>{
+      if(requestId===tapSequence&&building)select(building);
+    }).catch(console.warn);
   };
-  el('close').addEventListener('click',clear);
+  el('close').addEventListener('click',()=>{
+    tapSequence++;clear();
+  });
   el('north').addEventListener('click',()=>camera.north());
   el('plus').addEventListener('click',()=>camera.zoom(.78));
   el('minus').addEventListener('click',()=>camera.zoom(1.28));
@@ -249,7 +291,7 @@ try{
   void (async()=>{
     await terrain.init(ground);
     await Promise.allSettled([
-      surfaces.init(),metroTrees.init(),trees.init(),
+      surfaces.init(),metroTrees.init(),trees.init(),inspector.init(),
       overview.init(),metro.init(),manager.init(),
       loadMetropolitanOutlines(scene).catch(()=>
         addAdministrativeOutline(scene)),
