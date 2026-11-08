@@ -50,6 +50,7 @@ export class TreeLayer{
   private conifers:Mesh;
   private initialized=false;
   private count=0;
+  private hiddenFar=false;
   constructor(scene:Scene,private onStatus:(label:string)=>void){
     this.trunks=MeshBuilder.CreateCylinder('arbres-troncs-geolocalises',{
       height:1,diameter:1,tessellation:6
@@ -109,6 +110,21 @@ export class TreeLayer{
     this.initialized=true;
     this.onStatus(this.count.toLocaleString('fr-FR')+
       ' arbres municipaux géolocalisés (4e ; couronnes stylisées)');
+  }
+  /** Les 2 941 couronnes deviennent sous-pixel à grande distance.
+   * Leur empreinte végétale reste visible via les surfaces SIG.
+   */
+  update(radius:number):void{
+    if(!this.initialized)return;
+    if(!this.hiddenFar&&radius>6500){
+      for(const mesh of [this.trunks,...this.leaves,this.conifers])
+        mesh.setEnabled(false);
+      this.hiddenFar=true;
+    }else if(this.hiddenFar&&radius<4700){
+      for(const mesh of [this.trunks,...this.leaves,this.conifers])
+        mesh.setEnabled(mesh.thinInstanceCount>0);
+      this.hiddenFar=false;
+    }
   }
   setQuality(_quality:QualityLevel):void{
     // Aucun retrait d'arbres lorsqu'on change la résolution GPU.
