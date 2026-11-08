@@ -105,7 +105,7 @@ header{background:linear-gradient(#273543dd,#273543aa)}
 
 /* 0.12 : reliefs ivoire et repères en gris de pierre. Les boutons et
    l'horloge restent lisibles, sans ajout de photographie. */
-#scene{background:#f0f0f0}
+#scene{background:#d0d3cf}
 #time-panel{backdrop-filter:blur(6px)}
 
 /* Gestion municipale, taille adaptée à Android, sans couvrir toute la ville. */
