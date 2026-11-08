@@ -107,3 +107,13 @@ restaurées après fermeture et import/export.
 
 **Changement de règle :** toute évolution doit être adossée à un test
 de non-régression, puis à une recette Android avant promotion.
+
+## Enrichissement du patrimoine à chaque version
+
+L'ajout de nouvelles fiches touristiques sourcées est obligatoire à chaque
+nouvelle révision. Le registre `data/heritage-release.json` doit reprendre
+le numéro de version et indiquer les références officielles nouvellement
+traitées. Le test `scripts/audit_heritage_releases.py` bloque toute
+révision dépourvue d'ajout réel ou qui régresse sur les notices POP.
+Le rattachement à une emprise IGN ne se déduit jamais d'une simple proximité.
+Les interactions de gestion sur bâtiments sont expressément reportées.

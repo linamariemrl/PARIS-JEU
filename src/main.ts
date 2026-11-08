@@ -91,6 +91,8 @@ try{
     el('terrain-status').textContent=status;
   });
 
+  // Les raycasts de la scène ne servent qu'aux taps, jamais au glissement.
+  scene.skipPointerMovePicking=true;
   const notifyAppUpdate=prepareAppInstallation();
   el('build-revision').textContent='Version '+REVISION+' · '+
     (isNativeApp()?'Application Android de test':'Site / application installable')+
@@ -156,6 +158,7 @@ try{
     management?.clearSelection();
     inspector.begin();
     el('selection').classList.add('hidden');
+    el('selection').classList.remove('heritage-selection');
     selection.splice(0).forEach(m=>m.dispose());
   };
   const select=(b:Building)=>{
@@ -163,12 +166,13 @@ try{
     const coords=centerOfBuilding(b)??{
       x:camera.camera.target.x,z:camera.camera.target.z
     };
-    const token=inspector.begin();
     const domain=heritage.identify(coords.x,coords.z);
-    el('selection-title').textContent=b.heritageName?
-      b.heritageName+' · monument documenté':
+    const landmark=Boolean(b.heritageName||domain?.kind==='monument');
+    el('selection-title').textContent=landmark?
+      (b.heritageName??domain?.name??'Monument'):
       'Bâtiment identifié · données IGN';
-    el('building-fields').classList.remove('hidden');
+    el('selection').classList.toggle('heritage-selection',landmark);
+    el('building-fields').classList.toggle('hidden',landmark);
     selection.push(...highlightBuilding(scene,b));
     el('selection').classList.remove('hidden');
     el('height').textContent=b.height.toLocaleString('fr-FR')+' m'+
@@ -203,11 +207,18 @@ try{
       (b.lidarRoof?
         'Relief de couverture MNH LiDAR HD, IGN 50 cm, prioritaire lorsqu’il est valide. ':
         'Toit LiDAR non disponible ; forme OSM ou toit de secours. ');
-    inspector.fill(coords.x,coords.z,
-      surfaces.identify(coords.x,coords.z)??water.identify(coords.x,coords.z),b,token);
-    heritage.appendDetails(el('place-extra'),domain,b.heritageRef);
-    management?.setSelection({id:'batiment:'+b.id,label:b.heritageName??'Bâtiment IGN '+b.id,
-      kind:'batiment',x:coords.x,z:coords.z});
+    if(landmark){
+      // Lecture de jeu : période, type, histoire. Pas de diagnostic IGN.
+      heritage.appendDetails(el('place-extra'),
+        domain?.kind==='monument'?domain:null,b.heritageRef,b);
+    }else{
+      const token=inspector.begin();
+      inspector.fill(coords.x,coords.z,
+        surfaces.identify(coords.x,coords.z)??water.identify(coords.x,coords.z),b,token);
+    }
+    el('selection').scrollTop=0;
+    // Aucune option de gestion sur bâtiment dans cette étape.
+    management?.clearSelection();
   };
   const showLocation=(x:number,z:number)=>{
     clear();
@@ -216,11 +227,16 @@ try{
     el('selection-title').textContent=domain?.name??'Fiche du lieu sélectionné';
     el('building-fields').classList.add('hidden');
     el('selection').classList.remove('hidden');
-    inspector.fill(x,z,surfaces.identify(x,z)??water.identify(x,z),null,token);
-    heritage.appendDetails(el('place-extra'),domain);
-    management?.setSelection({id:domain?'domaine:'+domain.id:
-      'lieu:'+Math.round(x/25)+':'+Math.round(z/25),
-      label:domain?.name??'Lieu sélectionné',kind:'lieu',x,z});
+    if(domain){
+      el('selection').classList.add('heritage-selection');
+      heritage.appendDetails(el('place-extra'),domain);
+      management?.clearSelection();
+    }else{
+      inspector.fill(x,z,surfaces.identify(x,z)??water.identify(x,z),null,token);
+      management?.setSelection({id:'lieu:'+Math.round(x/25)+':'+Math.round(z/25),
+        label:'Lieu sélectionné',kind:'lieu',x,z});
+    }
+    el('selection').scrollTop=0;
   };
   const showRoad=(x:number,z:number)=>{
     clear();
