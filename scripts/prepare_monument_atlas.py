@@ -85,9 +85,8 @@ def records_datagouv():
         stream=io.TextIOWrapper(binary,encoding="utf-8-sig",errors="replace",
                                 newline="")
         header=stream.readline()
-        delimiter=";" if header.count(";")>header.count(",") else ","
+        delimiter=max(("|",";",",","\t"),key=lambda sep:header.count(sep))
         rows=csv.DictReader(itertools.chain([header],stream),delimiter=delimiter)
-        print("Colonnes du CSV Culture :",rows.fieldnames,flush=True)
         seen=0
         # Les colonnes département varient entre versions du CSV.
         # Examiner toutes les notices, puis retenir uniquement celles dont
@@ -95,8 +94,6 @@ def records_datagouv():
         for row in rows:
             clean_row={str(k).strip().lower():v for k,v in row.items() if k}
             seen+=1
-            if seen==1:
-                print("Première notice CSV :",list(clean_row.items())[:12],flush=True)
             yield clean_row
         if seen<15000:
             raise ValueError("Le CSV ministériel est incomplet : "+str(seen))
