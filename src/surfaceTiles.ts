@@ -2,6 +2,7 @@ import {
   Color3,Mesh,Scene,StandardMaterial,VertexData
 } from '@babylonjs/core';
 import earcut from 'earcut';
+import {terrainHeight} from './terrain';
 
 type Kind='managed'|'wood'|'planted'|'water'|'road';
 type Quality='low'|'medium'|'high';
@@ -43,7 +44,7 @@ function append(batch:Batch,rings:number[][][],kind:Kind):void{
  const indices=earcut(flat,holes,2);
  if(!indices.length)return;
  const start=batch.pos.length/3;
- for(let i=0;i<flat.length;i+=2)batch.pos.push(flat[i],HEIGHT[kind],flat[i+1]);
+ for(let i=0;i<flat.length;i+=2)batch.pos.push(flat[i],HEIGHT[kind]+terrainHeight(flat[i],flat[i+1]),flat[i+1]);
  for(const i of indices)batch.idx.push(start+i);
  batch.count++;
 }
@@ -86,6 +87,8 @@ export class SurfaceTileManager{
      const mat=new StandardMaterial('sol-SIG-'+kind,scene);
      mat.diffuseColor=new Color3(...RGB[kind]);
      mat.emissiveColor=new Color3(...RGB[kind]).scale(.17);
+     // Couleur de matériau SIG indépendante des normales/tours de caméra.
+     mat.disableLighting=true;
      mat.specularColor=Color3.Black();
      mat.backFaceCulling=false;
      mat.freeze();
