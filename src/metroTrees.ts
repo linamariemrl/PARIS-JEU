@@ -2,6 +2,8 @@ import {
   Color3,Mesh,MeshBuilder,Scene,StandardMaterial
 } from '@babylonjs/core';
 
+import {terrainHeight} from './terrain';
+
 const PREFIX=import.meta.env.BASE_URL+'data/metropole/trees/';
 type Quality='low'|'medium'|'high';
 interface TileInfo{id:string;ix:number;iz:number;count:number;bytes:number;}
@@ -159,15 +161,16 @@ export class MetroTreeLayer{
        const x=tile.ix*800+data.getInt16(at,true)*.25;
        const z=tile.iz*800+data.getInt16(at+2,true)*.25;
        const h=Math.max(2,data.getUint8(at+4)*.25);
+       const ground=terrainHeight(x,z);
        const kind=data.getUint8(at+5);
        const diameter=Math.max(.12,data.getUint8(at+6)*.02);
        const trunkH=h*.50;
        const radius=Math.max(1.2,Math.min(5.8,h*.30));
-       one(trunk,x,trunkH/2,z,diameter,trunkH,diameter);
+       one(trunk,x,ground+trunkH/2,z,diameter,trunkH,diameter);
        if(kind===2)
-         one(conifer,x,h*.68,z,radius*.88,h*.16,radius*.88);
+         one(conifer,x,ground+h*.68,z,radius*.88,h*.16,radius*.88);
        else
-         one(kind===0?light:dark,x,h*.76,z,radius,h*.26,radius);
+         one(kind===0?light:dark,x,ground+h*.76,z,radius,h*.26,radius);
      }
      const meshes=(['trunk','light','dark','conifer'] as const)
        .map((name,i)=>this.mesh(name,[trunk,light,dark,conifer][i],tile.id))
