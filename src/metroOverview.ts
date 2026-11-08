@@ -12,7 +12,9 @@ interface Manifest {
 }
 interface VisibleGroup {
  mesh:Mesh;
+ roof:Mesh;
  buffer:Float32Array;
+ roofBuffer:Float32Array;
  bytes:DataView;
  group:Group;
 }
@@ -34,6 +36,8 @@ export class MetroOverview {
  private detailed=new Set<string>();
  private currentCount=0;
  private overviewMaterial:StandardMaterial;
+ private roofMaterial:StandardMaterial;
+ private roofsOnly=false;
  private lastUpdate=0;
  private lastX=Infinity;
  private lastZ=Infinity;
@@ -45,9 +49,17 @@ export class MetroOverview {
    // Matériau unique pour toutes les silhouettes éloignées.
    // Teintes de face directement dans la géométrie, aucune texture.
    this.overviewMaterial=new StandardMaterial('volume-eloigne-pierre',scene);
-   this.overviewMaterial.diffuseColor=new Color3(.93,.93,.93);
+   this.overviewMaterial.diffuseColor=Color3.White();
    this.overviewMaterial.specularColor=Color3.Black();
    this.overviewMaterial.freeze();
+   // Deux triangles horizontaux par empreinte IGN au dézoom,
+   // au lieu des 12 triangles de chacune des enveloppes 3D.
+   this.roofMaterial=new StandardMaterial('toitures-metropole-legere',scene);
+   this.roofMaterial.diffuseColor=new Color3(.62,.66,.69);
+   this.roofMaterial.specularColor=Color3.Black();
+   this.roofMaterial.disableLighting=true;
+   this.roofMaterial.backFaceCulling=false;
+   this.roofMaterial.freeze();
  }
  async init():Promise<void>{
   try{
@@ -96,17 +108,25 @@ export class MetroOverview {
   const tile=group?.tiles.find(t=>t.id===id);
   if(!state||!tile)return;
   this.writeTile(state.buffer,state.bytes,tile,enabled);
+  this.writeRoofTile(state.roofBuffer,state.bytes,tile,enabled);
   state.mesh.thinInstanceBufferUpdated('matrix');
+  state.roof.thinInstanceBufferUpdated('matrix');
   // Bornes de rendu conservatrices établies à la première création :
   // recalculer à chaque changement serait très coûteux sur Android.
   this.currentCount+=enabled?-tile.count:tile.count;
   this.report();
  }
 
- update(x:number,z:number,radius:number):void{
+ update(x:number,z:number,radius:number,isMoving=false):void{
   const m=this.manifest;
   if(!m)return;
   const now=performance.now();
+  // Niveaux de détail avec hystérésis. Jamais de bascule durant
+  // une rotation, un zoom tactile ou une animation de caméra.
+  if(!isMoving){
+    if(!this.roofsOnly&&radius>7800)this.setRoofMode(true);
+    else if(this.roofsOnly&&radius<5400)this.setRoofMode(false);
+  }
   if(now-this.lastUpdate<190)return;
   const moving=Math.hypot(x-this.lastX,z-this.lastZ)>120||
    Math.abs(radius-this.lastRadius)>120;
@@ -126,6 +146,52 @@ export class MetroOverview {
    if(this.loaded.has(group.id)||this.inFlight.has(group.id)||
       now-(this.failures.get(group.id)??-Infinity)<retryAfterMs)continue;
    void this.load(group);
+  }
+ }
+
+ /** L'empreinte est la même enveloppe IGN orientée que le cube.
+  * Le rendu éloigné ne prétend pas reconstituer la pente du toit.
+  */
+ private writeRoofTile(
+  matrix:Float32Array,data:DataView,tile:TileRef,hide:boolean
+ ):void{
+  const step=this.manifest?.quantizationMeters??.25;
+  const unit=this.manifest?.tileMeters??800;
+  for(let j=0;j<tile.count;j++){
+   const i=tile.offset+j,at=i*12,k=i*16;
+   const x=tile.ix*unit+data.getInt16(at,true)*step;
+   const z=tile.iz*unit+data.getInt16(at+2,true)*step;
+   const width=Math.max(step,data.getUint16(at+4,true)*step);
+   const depth=Math.max(step,data.getUint16(at+6,true)*step);
+   const height=Math.max(2,data.getUint16(at+8,true)*step);
+   const angle=data.getInt16(at+10,true)*Math.PI/32768;
+   const c=Math.cos(angle),sin=Math.sin(angle);
+   matrix[k]=hide?0:width*c;
+   matrix[k+1]=0;
+   matrix[k+2]=hide?0:width*sin;
+   matrix[k+3]=0;
+   matrix[k+4]=0;
+   matrix[k+5]=hide?0:1;
+   matrix[k+6]=0;
+   matrix[k+7]=0;
+   matrix[k+8]=hide?0:-depth*sin;
+   matrix[k+9]=0;
+   matrix[k+10]=hide?0:depth*c;
+   matrix[k+11]=0;
+   matrix[k+12]=x;
+   matrix[k+13]=height+.035;
+   matrix[k+14]=z;
+   matrix[k+15]=1;
+  }
+ }
+ private setRoofMode(enabled:boolean):void{
+  if(this.roofsOnly===enabled)return;
+  this.roofsOnly=enabled;
+  for(const group of this.loaded.values()){
+   // Une seule représentation visible par groupe : jamais d'intersection
+   // entre ses cuboïdes et leurs toitures LOD.
+   group.mesh.setEnabled(!enabled);
+   group.roof.setEnabled(enabled);
   }
  }
 
@@ -165,14 +231,17 @@ export class MetroOverview {
    if(bytes.byteLength!==group.bytes)throw Error('Groupe incomplet : '+group.id);
    const source=new DataView(bytes);
    const matrices=new Float32Array(group.count*16);
+   const rooftops=new Float32Array(group.count*16);
    // D'abord toutes les silhouettes, pour construire des bornes de
    // culling qui restent valables même lorsqu'une tuile est masquée.
    for(const tile of group.tiles){
     this.writeTile(matrices,source,tile,false);
+    this.writeRoofTile(rooftops,source,tile,false);
    }
-   const c=(value:number)=>new Color4(value,value,value,1);
+   const c=(r:number,g:number,b:number)=>new Color4(r,g,b,1);
+   const wall=c(.86,.85,.82),roofTint=c(.69,.72,.74);
    const mesh=MeshBuilder.CreateBox('enveloppes-metropole-'+group.id,
-    {size:1,faceColors:[c(.80),c(.80),c(.84),c(.84),c(.98),c(.77)]},
+    {size:1,faceColors:[wall,wall,wall,wall,roofTint,c(.82,.81,.78)]},
     this.scene);
    mesh.material=this.overviewMaterial;
    mesh.isPickable=false;
@@ -180,15 +249,30 @@ export class MetroOverview {
    // le GPU. Un buffer statique provoque des superpositions scintillantes.
    mesh.thinInstanceSetBuffer('matrix',matrices,16,false);
    mesh.thinInstanceRefreshBoundingInfo();
+   const roof=MeshBuilder.CreateGround('toits-legers-'+group.id,
+     {width:1,height:1},this.scene);
+   roof.material=this.roofMaterial;
+   roof.isPickable=false;
+   roof.thinInstanceSetBuffer('matrix',rooftops,16,false);
+   roof.thinInstanceRefreshBoundingInfo();
    let hidden=0;
    for(const tile of group.tiles){
     if(!this.detailed.has(tile.id))continue;
     this.writeTile(matrices,source,tile,true);
+    this.writeRoofTile(rooftops,source,tile,true);
     hidden+=tile.count;
    }
-   if(hidden)mesh.thinInstanceBufferUpdated('matrix');
+   if(hidden){
+     mesh.thinInstanceBufferUpdated('matrix');
+     roof.thinInstanceBufferUpdated('matrix');
+   }
    mesh.freezeWorldMatrix();
-   this.loaded.set(group.id,{mesh,buffer:matrices,bytes:source,group});
+   roof.freezeWorldMatrix();
+   mesh.setEnabled(!this.roofsOnly);
+   roof.setEnabled(this.roofsOnly);
+   this.loaded.set(group.id,{
+     mesh,roof,buffer:matrices,roofBuffer:rooftops,bytes:source,group
+   });
    this.currentCount+=group.tiles.reduce((sum,t)=>
     sum+(this.detailed.has(t.id)?0:t.count),0);
    this.failures.delete(group.id);
