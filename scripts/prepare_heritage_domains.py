@@ -62,17 +62,22 @@ def tourism():
   way["historic"~"^(monument|castle|memorial|fort|archaeological_site)$"]["name"](48.75,2.15,48.97,2.58);
   way["leisure"~"^(park|garden)$"]["name"](48.75,2.15,48.97,2.58);
  );out geom;"""
- endpoint="https://overpass.kumi.systems/api/interpreter"
- try:
-  req=urllib.request.Request(endpoint,data=urlencode({"data":query}).encode(),
-    headers={"User-Agent":"PARIS-le-jeu/0.26 contact via github project",
-             "Content-Type":"application/x-www-form-urlencoded"})
-  with urllib.request.urlopen(req,timeout=65) as response:
-   dataset=json.load(response)
-  elements=dataset.get("elements",[])
-  if not isinstance(elements,list):return []
- except Exception as exc:
-  print("Inventaire OSM touristique facultatif indisponible :",str(exc),flush=True)
+ elements=[]
+ for endpoint in ("https://overpass-api.de/api/interpreter",
+                  "https://overpass.kumi.systems/api/interpreter"):
+  try:
+   req=urllib.request.Request(endpoint,data=urlencode({"data":query}).encode(),
+     headers={"User-Agent":"PARIS-le-jeu/0.26 patrimoine sourcé",
+              "Content-Type":"application/x-www-form-urlencoded"})
+   with urllib.request.urlopen(req,timeout=65) as response:
+    dataset=json.load(response)
+   if isinstance(dataset.get("elements"),list):
+    elements=dataset["elements"]
+    break
+  except Exception as exc:
+   print("Serveur OSM tourisme temporairement indisponible :",str(exc)[:160],flush=True)
+ if not elements:
+  print("Inventaire touristique supplémentaire absent, notices POP conservées",flush=True)
   return []
  result=[]
  seen=set()

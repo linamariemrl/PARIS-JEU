@@ -37,8 +37,8 @@ def overpass():
   node["natural"="tree"](48.842,2.317,48.869,2.353);
  );out geom;"""
  payload=urlencode({"data":query}).encode()
- for server in ("https://overpass.kumi.systems/api/interpreter",
-                "https://overpass-api.de/api/interpreter"):
+ for server in ("https://overpass-api.de/api/interpreter",
+                "https://overpass.kumi.systems/api/interpreter"):
   try:
    req=urllib.request.Request(server,payload,headers={
     "User-Agent":"PARIS-le-jeu/0.26 jardins documentés",
