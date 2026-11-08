@@ -2,7 +2,8 @@ import { defineConfig } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
-  base: process.env.GITHUB_ACTIONS === 'true' ? '/Paris-le-jeu/' : '/',
+  base: process.env.CAPACITOR_BUILD === 'true' ? './' :
+    process.env.GITHUB_ACTIONS === 'true' ? '/Paris-le-jeu/' : '/',
   plugins: [VitePWA({
     registerType: 'prompt',
     includeAssets: ['icons/icon-192.png', 'icons/icon-512.png'],

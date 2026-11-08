@@ -3,16 +3,24 @@ interface InstallPrompt extends Event{
  prompt():Promise<void>;
  userChoice:Promise<{outcome:'accepted'|'dismissed'}>;
 }
+export function isNativeApp():boolean{
+ const w=window as Window&{
+  Capacitor?:{isNativePlatform?:()=>boolean};
+ };
+ return Boolean(w.Capacitor?.isNativePlatform?.());
+}
 export function prepareAppInstallation(){
  const button=document.getElementById('install-app') as HTMLButtonElement;
  const storage=document.getElementById('persist-data') as HTMLButtonElement;
  const status=document.getElementById('app-install-status') as HTMLElement;
  const update=document.getElementById('update-app') as HTMLButtonElement;
  let deferred:InstallPrompt|null=null;
- const standalone=()=>window.matchMedia('(display-mode: standalone)').matches;
+ const standalone=()=>isNativeApp()||
+  window.matchMedia('(display-mode: standalone)').matches;
  if(standalone()){
   button.disabled=true;button.textContent='PARIS installé';
-  status.textContent='Application installée et ouverte sans barre Chrome.';
+  status.textContent=isNativeApp()?'Application Android native détectée.':
+   'Application installée et ouverte sans barre Chrome.';
  }
  window.addEventListener('beforeinstallprompt',event=>{
   event.preventDefault();deferred=event as InstallPrompt;

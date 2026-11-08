@@ -23,7 +23,7 @@ import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import { StreetDirectory } from './streetDirectory';
 import { GameManagement } from './simulation/ui';
-import {prepareAppInstallation} from './appInstall';
+import {prepareAppInstallation,isNativeApp} from './appInstall';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
 import { project } from './geo';
@@ -422,7 +422,7 @@ try{
   });
   if('caches' in window)
     void window.caches.delete('ortho-4e-images').catch(console.warn);
-  if('serviceWorker' in navigator)
+  if(!isNativeApp()&&'serviceWorker' in navigator)
     void import('virtual:pwa-register').then(({registerSW})=>{
       const updateSW=registerSW({immediate:true,onNeedRefresh:()=>{
        notifyAppUpdate(async()=>{

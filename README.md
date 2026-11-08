@@ -1,3 +1,25 @@
+## Conditionnement natif Android de test — séparé du site PWA
+
+Le dépôt comporte maintenant un conteneur Capacitor et un workflow
+GitHub Actions permettant de produire un APK Android de développement.
+La compilation utilise `CAPACITOR_BUILD=true` pour charger les ressources
+locales dans la WebView Android ; cela ne modifie PAS le site GitHub Pages.
+Le service worker PWA est désactivé dans le conteneur natif, car les
+ressources sont embarquées.
+
+Le premier déclenchement se fait lors de l'ajout du workflow ; les
+reconstructions ultérieures se lancent depuis GitHub Actions, en manuel.
+Le fichier généré est un APK DEBUG, pas une version Play Store, ni un
+logiciel prêt pour la distribution grand public. Il est signé avec une
+clé de test susceptible de changer entre builds ; ne pas compter dessus
+pour les mises à jour de production.
+
+**Attention sauvegardes** : le conteneur Android utilise le stockage
+local de sa WebView et ne partage pas automatiquement celui de Chrome.
+Exportez la partie JSON depuis la PWA puis importez-la dans l'application
+native. La signature définitive, les mises à jour natives automatiques
+et la sauvegarde externe doivent être traitées avant publication finale.
+
 ## 0.25.8 — application Android installable, autosauvegardes
 
 L'application PWA (déjà configurée) s'installe depuis le nouveau bouton

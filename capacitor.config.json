@@ -1,0 +1,8 @@
+{
+  "appId": "fr.parisjeu.ville",
+  "appName": "PARIS - Le jeu de la ville",
+  "webDir": "dist",
+  "server": {
+    "androidScheme": "https"
+  }
+}
