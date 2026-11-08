@@ -145,6 +145,15 @@ export class SurfaceTileManager{
        createMesh(this.scene,kind,'metropole','far',batches[kind],
          this.materials[kind])).filter((m):m is Mesh=>Boolean(m));
      this.overviewReady=this.overviewMeshes.length>0;
+     // Les anciennes tuiles lointaines seraient coplanaires avec la
+     // couche fusionnée : les détruire évite le scintillement noir.
+     if(this.overviewReady){
+       for(const [id,state] of this.states){
+         if(state.level!=='far')continue;
+         state.meshes.forEach(mesh=>mesh.dispose());
+         this.states.delete(id);
+       }
+     }
      this.lastX=Infinity;
    }catch(error){
      console.warn('Surfaces fusionnées indisponibles, tuiles SIG conservées',error);
@@ -230,6 +239,9 @@ export class SurfaceTileManager{
        if(i>0&&i%90===0)
          await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
      }
+     // La vue métropolitaine fusionnée est désormais prioritaire.
+     // Un ancien téléchargement far ne doit plus recréer une doublure.
+     if(level==='far'&&this.overviewReady)return;
      // Construire les meshes hors animation ; remplacement sans frame vide.
      const meshes=KINDS.map(kind=>createMesh(this.scene,kind,tile.id,level,
        batches[kind],this.materials[kind])).filter((m):m is Mesh=>Boolean(m));
