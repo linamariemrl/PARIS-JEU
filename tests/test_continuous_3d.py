@@ -21,7 +21,9 @@ class ContinuityInvariants(unittest.TestCase):
         self.assertIn("this.overview?.setDetailed(tile.id,true)",streamed)
         self.assertIn("this.overview?.setDetailed(id,false)",streamed)
         self.assertIn("this.tileCache",streamed)
-        self.assertNotIn("this.active.delete(id);",streamed.split("private makeRoom")[0])
+        self.assertIn("if(!this.overview?.hasTile(id))continue",streamed)
+        self.assertIn("this.overview.setDetailed(id,false)",streamed)
+        self.assertIn("this.active.delete(id);",streamed)
 
     def test_camera_has_proportional_near_clip_plane(self):
         code=(ROOT/"src/mobileCamera.ts").read_text(encoding="utf-8")
