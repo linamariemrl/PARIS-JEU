@@ -12,7 +12,7 @@ import { installTerritoryNavigation } from './territoryNavigation';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { TreeLayer } from './trees';
 import { MetroTreeLayer } from './metroTrees';
-import { installSurfaceLayer } from './surfaceLayer';
+import { SurfaceTileManager } from './surfaceTiles';
 import { AdaptiveResolution } from './adaptiveResolution';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
@@ -65,6 +65,9 @@ try{
   const camera=new MobileCamera(scene,canvas);
   const resolution=new AdaptiveResolution(engine);
   const materials=createMaterials(scene);
+  const surfaces=new SurfaceTileManager(scene,message=>{
+    el('surface-status').textContent=message;
+  });
   let metroCount=0;
   let overviewCount=0;
   let fourthCount=0;
@@ -184,6 +187,7 @@ try{
     metro.setQuality(level);
     trees.setQuality(level);
     metroTrees.setQuality(level);
+    surfaces.setQuality(level);
     resolution.configure(level);
   });
   quality.dispatchEvent(new Event('change'));
@@ -226,6 +230,7 @@ try{
     overview.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     metroTrees.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
+    surfaces.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius,camera.isMoving);
     scene.render();
     resolution.update(now,engine.getFps(),camera.isMoving);
     if(now-lastFps>=1000){
@@ -236,16 +241,12 @@ try{
 
   // Données géographiques réelles : arbres municipaux, sans arbres
   // inventés ni textures photographiques, sans cycle visuel jour/nuit.
-  // Ordre de chargement : espaces verts, eau, chaussées. Chaque couche
-  // est vectorielle, stable dans le monde et indépendante des gestes.
-  void (async()=>{
-    await installSurfaceLayer(scene,'data/metropole/surfaces/green.json',
-      message=>el('surface-status').textContent=message);
-    await installSurfaceLayer(scene,'data/metropole/surfaces/water.json',
-      message=>el('water-status').textContent=message);
-    await installSurfaceLayer(scene,'data/metropole/surfaces/roads.json',
-      message=>el('roads-status').textContent=message);
-  })().catch(console.warn);
+  // Les surfaces restent vectorielles ; tuiles proches pour le détail,
+  // contours officiels simplifiés en vue métropolitaine.
+  void surfaces.init().then(()=>{
+    el('water-status').textContent='Hydrographie IGN : couverture SIG indexée';
+    el('roads-status').textContent='Chaussées PVP : couverture SIG indexée';
+  }).catch(console.warn);
   void metroTrees.init().catch(e=>{
     console.warn('Arbres des arrondissements non disponibles',e);
     el('metro-trees-status').textContent='Arbres des arrondissements : source absente';
