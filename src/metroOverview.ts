@@ -45,7 +45,7 @@ export class MetroOverview {
    // Matériau unique pour toutes les silhouettes éloignées.
    // Teintes de face directement dans la géométrie, aucune texture.
    this.overviewMaterial=new StandardMaterial('volume-eloigne-pierre',scene);
-   this.overviewMaterial.diffuseColor=new Color3(.93,.93,.93);
+   this.overviewMaterial.diffuseColor=Color3.White();
    this.overviewMaterial.specularColor=Color3.Black();
    this.overviewMaterial.freeze();
  }
@@ -170,9 +170,12 @@ export class MetroOverview {
    for(const tile of group.tiles){
     this.writeTile(matrices,source,tile,false);
    }
-   const c=(value:number)=>new Color4(value,value,value,1);
+   // Même palette que les géométries IGN de proximité pour atténuer
+   // les transitions : murs pierre claire et couvertures gris zinc.
+   const c=(r:number,g:number,b:number)=>new Color4(r,g,b,1);
+   const wall=c(.91,.875,.80),roof=c(.60,.64,.68);
    const mesh=MeshBuilder.CreateBox('enveloppes-metropole-'+group.id,
-    {size:1,faceColors:[c(.80),c(.80),c(.84),c(.84),c(.98),c(.77)]},
+    {size:1,faceColors:[wall,wall,wall,wall,roof,c(.83,.81,.76)]},
     this.scene);
    mesh.material=this.overviewMaterial;
    mesh.isPickable=false;
