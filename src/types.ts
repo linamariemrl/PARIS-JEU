@@ -1,4 +1,5 @@
 import type { RoofInfo } from './roofGeometry';
+import type {HeritageRole} from './heritageCategories';
 export type Point = [number, number];
 export interface CityVolumePart {
   id:string;
@@ -37,6 +38,7 @@ export interface Building {
   floors?: number;
   heritageRef?:string;
   heritageName?:string;
+  heritageRole?:HeritageRole;
 }
 export interface TileInfo { id: string; ix: number; iz: number; count: number; }
 export interface Manifest {

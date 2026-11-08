@@ -1,6 +1,7 @@
 import {Color3,Mesh,MeshBuilder,Scene,Vector3} from '@babylonjs/core';
 import type {Building} from './types';
 import {storyForMonument,storyForReference} from './monumentStories';
+import {roleOfHeritage,heritageRoleLabel} from './heritageCategories';
 import {project} from './geo';
 import {terrainHeight} from './terrain';
 
@@ -133,6 +134,7 @@ export class HeritageAtlas{
    if(!footprintContains(b,n.x,n.z))continue;
    b.heritageRef=n.ref;
    b.heritageName=n.name;
+   b.heritageRole=roleOfHeritage(n.ref,n.name,n.currentUse);
    return;
   }
   // Uniquement si un contour OSM de tourisme/monument couvre le
@@ -141,6 +143,7 @@ export class HeritageAtlas{
   if(site?.kind==='monument'){
    b.heritageRef='osm:'+site.id;
    b.heritageName=site.name;
+   b.heritageRole=roleOfHeritage(b.heritageRef,site.name);
   }
  }
  identify(x:number,z:number):HeritageArea|null{
@@ -185,6 +188,8 @@ export class HeritageAtlas{
    area?'Domaine historique':undefined);
   const period=story?.period??notice?.date;
   line('Type',category);
+  if(building?.heritageRole)
+   line('Domaine',heritageRoleLabel[building.heritageRole]);
   line('Époque',period);
   if(notice?.address)line('Lieu',notice.address);
   if(notice?.author&&!story)line('Architecte / auteur',notice.author);
