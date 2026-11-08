@@ -281,3 +281,36 @@ export function simulateMobility(now:number,districts:readonly string[],
  return {hour,districts:districts.length,modes:mass,
   pressure,projectEffect:effect,label:'Indices de mobilité fictifs, base 100 ; non calibrés sur des comptages'};
 }
+
+export interface QuarterAnchor{name:string;x:number;z:number;}
+export interface MobilityCorridor{
+ from:string;to:string;distanceKm:number;index:number;primaryMode:FlowMode;
+}
+/** Matrice origine-destination fictive : position approchée des enveloppes
+ * officielles des 80 quartiers, aucun trajet ou comptage réel. Au maximum
+ * 80² paires recalculées seulement à l'heure de jeu, hors boucle 3D.
+ */
+export function simulateCorridors(now:number,anchors:readonly QuarterAnchor[],
+ projects:readonly MunicipalProject[],limit=5):MobilityCorridor[]{
+ if(anchors.length<2)return [];
+ const snap=simulateMobility(now,anchors.map(a=>a.name),projects);
+ const pairs:MobilityCorridor[]=[];
+ const commute=snap.hour>=7&&snap.hour<=9?1.22:
+   snap.hour>=17&&snap.hour<=20?1.32:.88;
+ const scope=anchors.slice(0,80);
+ for(let i=0;i<scope.length;i++)for(let j=i+1;j<scope.length;j++){
+  const a=scope[i],b=scope[j];
+  if(![a.x,a.z,b.x,b.z].every(Number.isFinite))continue;
+  const distance=Math.hypot(a.x-b.x,a.z-b.z);
+  if(distance<250||distance>19000)continue;
+  const seed=hash(a.name+'|'+b.name);
+  const attraction=.55+((seed>>>3)%80)/100;
+  const proximity=1/(1+distance/3500);
+  const index=Math.max(1,Math.round(100*attraction*proximity*commute));
+  const mode:FlowMode=distance<1500?'pietons':
+   distance<3200?'velo':distance<6500?'auto':'collectif';
+  pairs.push({from:a.name,to:b.name,
+   distanceKm:Math.round(distance/100)/10,index,primaryMode:mode});
+ }
+ return pairs.sort((a,b)=>b.index-a.index).slice(0,Math.max(0,Math.min(10,limit)));
+}
