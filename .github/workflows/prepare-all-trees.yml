@@ -1,0 +1,58 @@
+name: Étendre les arbres municipaux sur les 20 arrondissements
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/prepare_all_trees.py'
+      - '.github/workflows/prepare-all-trees.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paris-all-trees
+  cancel-in-progress: true
+
+jobs:
+  trees:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Installer Shapely
+        run: python -m pip install --disable-pip-version-check 'shapely>=2.1,<3'
+      - name: Extraire les arbres municipaux hors du pilote 4e
+        run: python -u scripts/prepare_all_trees.py
+      - name: Vérifier toutes les tuiles
+        run: |
+          python - <<'PY'
+          import json
+          from pathlib import Path
+          root=Path('public/data/metropole/trees')
+          d=json.loads((root/'manifest.json').read_text())
+          assert d['schema']==1 and d['recordBytes']==7
+          assert len(d['tiles'])>=60 and d['count']>=50000
+          assert sum(x['count'] for x in d['tiles'])==d['count']
+          for item in d['tiles']:
+            assert (root/(item['id']+'.bin')).stat().st_size == item['count']*7
+          print(d['count'],'arbres,',len(d['tiles']),'tuiles')
+          PY
+      - name: Enregistrer les arbres vérifiés
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/data/metropole/trees
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: arbres municipaux de Paris en tuiles'
+            for attempt in 1 2 3 4 5 6 7 8; do
+              git pull --rebase origin main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            exit 1
+          fi
