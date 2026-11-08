@@ -1,5 +1,6 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, Vector3, VertexData } from '@babylonjs/core';
 import earcut from 'earcut';
+import {terrainHeight} from './terrain';
 import { addBridges } from './bridges';
 
 /** Réseau simplifié issu de géométries IGN ou OSM (coordonnées locales en mètres).
@@ -66,7 +67,7 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
     if (!triangles.length) continue;
     const offset = positions.length / 3;
     for (let i = 0; i < flat.length; i += 2) {
-      positions.push(flat[i], h, flat[i + 1]);
+      positions.push(flat[i], h+terrainHeight(flat[i],flat[i+1]), flat[i + 1]);
       normals.push(0, 1, 0);
     }
     for (const index of triangles) indices.push(offset + index);
@@ -83,6 +84,7 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   material.diffuseColor = new Color3(r, g, b);
   material.specularColor = Color3.Black();
   material.backFaceCulling = false;
+  material.disableLighting=true;
   mesh.material = material;
   mesh.isPickable = false;
   mesh.freezeWorldMatrix();
@@ -114,7 +116,7 @@ export async function addAdministrativeOutline(scene:Scene):Promise<number>{
     const boundary=polygon[0];
     if(!boundary||boundary.length<4)continue;
     const points=boundary.map(([lon,lat])=>
-      new Vector3((lon-lon0)*mx,.235,(lat-lat0)*mz));
+      new Vector3((lon-lon0)*mx,.235+terrainHeight((lon-lon0)*mx,(lat-lat0)*mz),(lat-lat0)*mz));
     const mesh=MeshBuilder.CreateLines('limite-officielle-4e-'+total,{
       points,updatable:false
     },scene);
@@ -158,7 +160,7 @@ export async function loadMetropolitanOutlines(scene:Scene):Promise<number>{
       const ring=rawPolygon[0] as number[][];
       if(ring.length<4)continue;
       const points=ring.filter(x=>x.length>=2).map(([lon,lat])=>
-        new Vector3((lon-LON)*mx,conf.height,(lat-LAT)*mz));
+        new Vector3((lon-LON)*mx,conf.height+terrainHeight((lon-LON)*mx,(lat-LAT)*mz),(lat-LAT)*mz));
       if(points.length<4)continue;
       const collection=group.get(f.properties.kind)??[];
       collection.push(points);
@@ -189,7 +191,7 @@ function shoreline(scene:Scene,water:Layer):void{
       if(ring.length<4)continue;
       // Le tracé est continu en monde réel, pas une étiquette d'écran.
       for(const [x,z] of ring){
-        positions.push(x,.078,z);
+        positions.push(x,.078+terrainHeight(x,z),z);
       }
       positions.push(NaN,NaN,NaN);
     }
