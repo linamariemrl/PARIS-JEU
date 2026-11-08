@@ -1,3 +1,18 @@
+## 0.25.6 — cache CPU borné de la voirie détaillée
+
+Une seconde passe de stabilisation limite les latences lors d'un retour
+sur un quartier déjà parcouru. La triangulation PVP et les positions
+altimétriques pré-calculées des chaussées proches sont conservées dans un
+cache CPU de 6 secteurs au plus et 180 000 sommets au total, évincé LRU.
+Le cache n'ajoute aucune géométrie au GPU : les secteurs hors champ
+continuent d'être libérés comme auparavant. Un mouvement de caméra
+annule la préparation des secteurs devenus inutiles à chaque tranche
+de 48 entités, évitant de bloquer un geste tactile pour une autre zone.
+
+L'affichage reste en 0.25. Les correctifs d'eau, parcs, ponts et relief
+de la 0.25.5 sont intacts ; le maintien des FPS sur Android reste à
+confirmer visuellement.
+
 ## 0.25.5 — suppression des voiles triangulaires, relief continu
 
 Les captures Android des 5 h 44–5 h 46 le 8 novembre 2026 montrent

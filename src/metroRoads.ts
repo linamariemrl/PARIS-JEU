@@ -59,6 +59,10 @@ export class MetroRoads{
  private ready=false;
  private overview:Mesh|null=null;
  private near=new Map<string,Mesh>();
+ // Cache CPU borné : revenir dans une rue déjà visitée ne déclenche
+ // ni nouveau téléchargement PVP ni triangulation earcut à refaire.
+ private nearCache=new Map<string,Batch>();
+ private cachedVertices=0;
  private fetching=new Set<string>();
  private failures=new Map<string,number>();
  private wanted=new Set<string>();
@@ -153,19 +157,47 @@ export class MetroRoads{
    if(tile)void this.loadNear(tile);
   }
  }
+ private keepNear(id:string,batch:Batch):void{
+  const vertices=batch.positions.length/3;
+  if(vertices===0||vertices>75000)return;
+  const previous=this.nearCache.get(id);
+  if(previous){this.cachedVertices-=previous.positions.length/3;
+   this.nearCache.delete(id);}
+  // Budget CPU et politique LRU indépendante du plafond GPU.
+  while(this.nearCache.size>=6||this.cachedVertices+vertices>180000){
+   const oldest=this.nearCache.keys().next().value;
+   if(oldest===undefined)break;
+   const old=this.nearCache.get(oldest);
+   if(old)this.cachedVertices-=old.positions.length/3;
+   this.nearCache.delete(oldest);
+  }
+  this.nearCache.set(id,batch);
+  this.cachedVertices+=vertices;
+ }
  private async loadNear(tile:Tile):Promise<void>{
   this.fetching.add(tile.id);
   try{
-   const result=await fetch(ROOT+tile.id+'-near.json');
-   if(!result.ok)throw Error('Chaussée PVP manquante '+tile.id);
-   const file=await result.json() as {schema:number;features:Shape[]};
-   if(file.schema!==1||!Array.isArray(file.features))throw Error('Tuile PVP invalide');
-   const batch:Batch={positions:[],indices:[]};
-   for(let i=0;i<file.features.length;i++){
-    const record=file.features[i];
-    if(record?.[0]==='road')appendRoad(batch,record[1],.74);
-    if(i>0&&i%72===0)
-     await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+   let batch=this.nearCache.get(tile.id);
+   if(batch){
+    // Un accès fait du secteur le plus récent pour l'éviction LRU.
+    this.nearCache.delete(tile.id);this.nearCache.set(tile.id,batch);
+   }else{
+    const result=await fetch(ROOT+tile.id+'-near.json');
+    if(!result.ok)throw Error('Chaussée PVP manquante '+tile.id);
+    if(!this.wanted.has(tile.id))return;
+    const file=await result.json() as {schema:number;features:Shape[]};
+    if(file.schema!==1||!Array.isArray(file.features))throw Error('Tuile PVP invalide');
+    batch={positions:[],indices:[]};
+    for(let i=0;i<file.features.length;i++){
+     const record=file.features[i];
+     if(record?.[0]==='road')appendRoad(batch,record[1],.74);
+     if(i>0&&i%48===0){
+      await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+      if(!this.wanted.has(tile.id))return;
+     }
+    }
+    if(!this.wanted.has(tile.id))return;
+    this.keepNear(tile.id,batch);
    }
    if(!this.wanted.has(tile.id))return;
    const mesh=meshFor(this.scene,'routes-metropole-proches-'+tile.id,
