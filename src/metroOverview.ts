@@ -235,9 +235,9 @@ export class MetroOverview {
    // Même palette que les géométries IGN de proximité pour atténuer
    // les transitions : murs pierre claire et couvertures gris zinc.
    const c=(r:number,g:number,b:number)=>new Color4(r,g,b,1);
-   const wall=c(.91,.875,.80),roof=c(.60,.64,.68);
+   const wall=c(.91,.875,.80),roofTint=c(.60,.64,.68);
    const mesh=MeshBuilder.CreateBox('enveloppes-metropole-'+group.id,
-    {size:1,faceColors:[wall,wall,wall,wall,roof,c(.83,.81,.76)]},
+    {size:1,faceColors:[wall,wall,wall,wall,roofTint,c(.83,.81,.76)]},
     this.scene);
    mesh.material=this.overviewMaterial;
    mesh.isPickable=false;
