@@ -55,7 +55,8 @@ class TerrainAndPlaces(unittest.TestCase):
         client=(ROOT/"src/surfaceTiles.ts").read_text(encoding="utf8")
         self.assertIn("overview.json",source)
         self.assertIn("loadOverview()",client)
-        self.assertNotIn("setRoofMode", (ROOT/"src/metroOverview.ts").read_text(encoding="utf8"))
+        self.assertIn("setRoofMode", (ROOT/"src/metroOverview.ts").read_text(encoding="utf8"))
+        self.assertIn("setRoofLodEnabled", (ROOT/"src/metroOverview.ts").read_text(encoding="utf8"))
         self.assertIn("identify(x:number,z:number)",client)
 
 if __name__=="__main__":
