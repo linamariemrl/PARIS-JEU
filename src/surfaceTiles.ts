@@ -26,7 +26,7 @@ const HEIGHT:Record<Kind,number>={
 };
 interface Batch{pos:number[];idx:number[];count:number;}
 function blank():Batch{return {pos:[],idx:[],count:0};}
-function append(batch:Batch,rings:number[][][],kind:Kind):void{
+function append(batch:Batch,rings:number[][][],kind:Kind,level:Level):void{
  const flat:number[]=[],holes:number[]=[];
  for(const ring of rings){
   if(!Array.isArray(ring)||ring.length<4)continue;
@@ -44,7 +44,9 @@ function append(batch:Batch,rings:number[][][],kind:Kind):void{
  const indices=earcut(flat,holes,2);
  if(!indices.length)return;
  const start=batch.pos.length/3;
- for(let i=0;i<flat.length;i+=2)batch.pos.push(flat[i],HEIGHT[kind]+terrainHeight(flat[i],flat[i+1]),flat[i+1]);
+ for(let i=0;i<flat.length;i+=2)
+  batch.pos.push(flat[i],HEIGHT[kind]+(level==='near'?.12:0)+
+    terrainHeight(flat[i],flat[i+1]),flat[i+1]);
  for(const i of indices)batch.idx.push(start+i);
  batch.count++;
 }
@@ -81,6 +83,9 @@ export class SurfaceTileManager{
  private lastRadius=Infinity;
  private status='';
  private pendingBuild=false;
+ private overviewReady=false;
+ private overviewMeshes:Mesh[]=[];
+ private overviewShapes=new Map<string,Shape[]>();
  constructor(private scene:Scene,private onStatus:(s:string)=>void){
    this.materials={} as Record<Kind,StandardMaterial>;
    for(const kind of KINDS){
@@ -105,10 +110,46 @@ export class SurfaceTileManager{
        throw Error('Index SIG incorrect');
      this.manifest=result;
      this.report();
+     await this.loadOverview();
    }catch(error){
      console.warn('Sol SIG',error);
      this.onStatus('Sol sectorisé indisponible : voirie 4e conservée');
    }
+ }
+ /** Vue d'ensemble unique, cinq draw calls environ au lieu de
+  * centaines de petits secteurs hors champ. Les formes proviennent
+  * exclusivement des mêmes polygones officiels simplifiés.
+  */
+ private async loadOverview():Promise<void>{
+   try{
+     const response=await fetch(ROOT+'overview.json');
+     if(!response.ok)throw Error('Vue surfacique fusionnée absente');
+     const data=await response.json() as {
+       schema:number;features:Array<[string,Kind,number[][][]]>
+     };
+     if(data.schema!==1||!Array.isArray(data.features)||
+       data.features.length<300)throw Error('Vue surfacique incomplète');
+     const batches={} as Record<Kind,Batch>;
+     KINDS.forEach(kind=>batches[kind]=blank());
+     for(let i=0;i<data.features.length;i++){
+       const [tile,kind,rings]=data.features[i];
+       if(!KINDS.includes(kind)||typeof tile!=='string')continue;
+       const group=this.overviewShapes.get(tile)??[];
+       group.push([kind,rings]);
+       this.overviewShapes.set(tile,group);
+       append(batches[kind],rings,kind,'far');
+       if(i>0&&i%130===0)
+         await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+     }
+     this.overviewMeshes=KINDS.map(kind=>
+       createMesh(this.scene,kind,'metropole','far',batches[kind],
+         this.materials[kind])).filter((m):m is Mesh=>Boolean(m));
+     this.overviewReady=this.overviewMeshes.length>0;
+     this.lastX=Infinity;
+   }catch(error){
+     console.warn('Surfaces fusionnées indisponibles, tuiles SIG conservées',error);
+   }
+   this.report();
  }
  setQuality(value:Quality){this.quality=value;this.lastX=Infinity;}
  update(x:number,z:number,radius:number,moving:boolean){
@@ -138,6 +179,9 @@ export class SurfaceTileManager{
        nearRadius+900&&nearCount<nearBudget;
      const target:Level=near?'near':'far';
      if(near)nearCount++;
+     // La mosaïque officielle fusionnée dessine déjà toutes les zones
+     // hors du détail local, sans autre texture ni téléchargement.
+     if(this.overviewReady&&!near)continue;
      wants.set(tile.id,target);
      const state=this.states.get(tile.id);
      if(state&&state.level===target){
@@ -181,7 +225,8 @@ export class SurfaceTileManager{
      KINDS.forEach(kind=>batches[kind]=blank());
      for(let i=0;i<features.length;i++){
        const feature=features[i];
-       if(feature&&KINDS.includes(feature[0]))append(batches[feature[0]],feature[1],feature[0]);
+       if(feature&&KINDS.includes(feature[0]))
+         append(batches[feature[0]],feature[1],feature[0],level);
        if(i>0&&i%90===0)
          await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
      }
@@ -210,8 +255,8 @@ export class SurfaceTileManager{
    const ix=Math.floor(x/2400),iz=Math.floor(z/2400);
    const tileId=ix+'_'+iz;
    const level=this.states.get(tileId)?.level;
-   if(!level)return null;
-   const shapes=this.cache.get(tileId+'-'+level);
+   const shapes=(level&&this.cache.get(tileId+'-'+level))||
+     this.overviewShapes.get(tileId);
    if(!shapes)return null;
    const inside=(ring:number[][]):boolean=>{
      let hit=false;
@@ -244,7 +289,8 @@ export class SurfaceTileManager{
    return {kind,label:data[kind][0],source:data[kind][1]};
  }
  private report(){
-   const msg=this.states.size+' secteurs SIG chargés'+
+   const msg=(this.overviewReady?'Vue d’ensemble SIG fusionnée + ':'')+
+      this.states.size+' secteurs SIG chargés'+
       (this.fetching.size?' · géométrie en préparation':'')+
       (this.errors.size?' · '+this.errors.size+' erreurs temporaires':'');
    if(msg===this.status)return;
