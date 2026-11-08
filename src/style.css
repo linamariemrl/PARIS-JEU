@@ -256,3 +256,5 @@ button.city-project-choice.is-selected{border-color:#dfceac;background:#2c4351}
 
 .city-corridor{margin:5px 0;padding:5px 8px;border-left:2px solid #9fb7bc;
  font-size:11px;line-height:1.4;background:#11283c}
+
+.city-indicator-line .city-flow-bar i{background:#c4c3ad}

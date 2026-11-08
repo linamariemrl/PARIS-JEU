@@ -1,8 +1,9 @@
 import assert from 'node:assert/strict';
 import {
  CITY_DOMAINS,PROJECT_CATALOG,PARTNERS,EMPTY_MUNICIPAL_STATE,
- prepareProject,submitProject,holdCouncilVote,advanceMunicipal,
- validateMunicipalState,capacityOf,simulateMobility
+ prepareProject,submitProject,holdCouncilVote,negotiatePartnership,advanceMunicipal,
+ validateMunicipalState,capacityOf,simulateMobility,
+ policyIndicators,simulateCorridors
 } from '../src/simulation/cityEngine.ts';
 const now=Date.UTC(2026,10,9,9,0,0);
 assert.equal(CITY_DOMAINS.length,28);
@@ -11,6 +12,7 @@ assert.ok(PARTNERS.length>=10);
 assert.ok(PROJECT_CATALOG.some(x=>x.kind==='demolition'));
 assert.ok(PROJECT_CATALOG.some(x=>x.kind==='innovation'));
 assert.ok(PROJECT_CATALOG.some(x=>x.authority==='partagee'));
+assert.equal(policyIndicators([]).mobilite,50);
 assert.ok(PROJECT_CATALOG.every(x=>x.investMEUR>=0&&x.yearlyMEUR>=0&&
  Number.isFinite(x.durationDays)&&x.durationDays>0));
 const original=EMPTY_MUNICIPAL_STATE();
@@ -44,4 +46,21 @@ assert.equal(rush.districts,80);
 assert.notDeepEqual(rush.modes,night.modes);
 assert.ok(rush.modes.pietons>0);
 assert.equal(simulateMobility(now,districts,voted.projects).pressure,rush.pressure);
+const anchors=districts.map((name,i)=>({name,x:i*180,z:(i%9)*270}));
+const od=simulateCorridors(now,anchors,voted.projects);
+assert.ok(od.length>0&&od.length<=5);
+assert.ok(od.every(x=>x.index>0&&x.distanceKm>0));
+assert.throws(()=>negotiatePartnership(voted,voted.projects[0].id,now));
+const shared=PROJECT_CATALOG.find(p=>p.authority==='partagee');
+assert.ok(shared);
+let multi=prepareProject(EMPTY_MUNICIPAL_STATE(),shared.id,'Paris entier',now);
+multi=submitProject(multi,multi.projects[0].id,now);
+multi=holdCouncilVote(multi,multi.projects[0].id,now);
+if(multi.projects[0].votes.adopte){
+ assert.equal(multi.projects[0].status,'accords');
+ assert.equal(advanceMunicipal(multi,now+1000*86400000).projects[0].status,'accords');
+ multi=negotiatePartnership(multi,multi.projects[0].id,now);
+ assert.ok(['adopte','bloque'].includes(multi.projects[0].status));
+}
+assert.ok(Object.values(policyIndicators(multi.projects)).every(n=>n>=0&&n<=100));
 console.log('Conseil, 28 domaines, vote de 163 sièges, phases, finances et flux horaires : OK.');

@@ -2,6 +2,7 @@ import {GameClock} from '../gameClock';
 import {CITY_DOMAINS,PROJECT_CATALOG,PARTNERS,EMPTY_MUNICIPAL_STATE,
  findTemplate,prepareProject,submitProject,holdCouncilVote,negotiatePartnership,advanceMunicipal,
  validateMunicipalState,capacityOf,simulateMobility,simulateCorridors,
+ policyIndicators,CITY_INDICATORS,
  type MunicipalState,type ProjectTemplate,type QuarterAnchor} from './cityEngine';
 
 const el=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
@@ -167,6 +168,20 @@ export class CityDashboard{
   el<HTMLButtonElement>('city-partners').disabled=current?.status!=='accords';
   el('city-project-total').textContent=String(this.state.projects.length);
  }
+ private renderIndicators():void{
+  const result=policyIndicators(this.state.projects);
+  const root=el('city-indicators');root.replaceChildren();
+  for(const [key,label] of CITY_INDICATORS){
+   const line=document.createElement('div');
+   line.className='city-flow-line city-indicator-line';
+   const text=document.createElement('span');text.textContent=label;
+   const bar=document.createElement('div');bar.className='city-flow-bar';
+   const fill=document.createElement('i');
+   fill.style.width=result[key]+'%';bar.append(fill);
+   const value=document.createElement('b');value.textContent=String(result[key]);
+   line.append(text,bar,value);root.append(line);
+  }
+ }
  private renderMobility():void{
   const snapshot=simulateMobility(this.clock.current,this.quarters,this.state.projects);
   const signature=JSON.stringify([snapshot.hour,snapshot.modes,
@@ -222,6 +237,7 @@ export class CityDashboard{
   el('city-op-left').textContent=rounded(balance.operatingLeft)+' / '+
    rounded(balance.operating)+' M€/an';
   this.renderProjects();
+  this.renderIndicators();
   this.renderMobility();
   el('city-institutions').textContent=PARTNERS.map(p=>p[0]+' : '+p[1]).join(' · ');
  }

@@ -159,3 +159,15 @@ Prochaines phases : permissions et patrimoines fonciers individuels, achats,
 consultation publique, commissions et amendements, budgets pluriannuels,
 demandes des citoyens, flux et réseaux spatialisés calibrés sur observations
 anonymisées officielles, services et agents, conséquences intersectorielles.
+
+## Premières rétroactions du simulateur
+
+Les votes créent des projets dont les impacts ne se réalisent qu'après les
+travaux et, en cas de compétence partagée, après un accord fictif extérieur.
+Six indices synthétiques (mobilité, climat, habitat, services, économie,
+cohésion) varient en fonction des projets terminés et des perturbations de
+chantier. Leur niveau initial 50 est un choix de game design, **pas** une
+statistique réelle. L'enveloppe de fonctionnement conserve les charges des
+projets votés au-delà de l'exercice initial. Les projets bloqués ne dépensent
+pas leurs enveloppes. Les travaux de démolition ne modifient pas les emprises
+réelles de l'IGN sans dossier d'autorisation et modèle cadastral dédié.
