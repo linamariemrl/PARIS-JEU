@@ -1,5 +1,6 @@
 import {GameClock} from '../gameClock';
 import {CityDashboard} from './cityDashboard';
+import type {QuarterAnchor} from './cityEngine';
 import type {GameView} from '../gameView';
 import {IndicatorStore} from './indicatorStore';
 import {FinanceModule} from './modules/finances';
@@ -111,7 +112,7 @@ export class GameManagement {
    this.open();
   }catch(error){node('location-action-status').textContent='Erreur : '+String(error);}
  }
- setNeighborhoods(names:string[]):void{this.city.setNeighborhoods(names);}
+ setNeighborhoods(anchors:QuarterAnchor[]):void{this.city.setNeighborhoods(anchors);}
  tickDossiers():void{
   this.city.tick();
   if(Date.now()-this.lastAutosave>=30000)void this.autosave();

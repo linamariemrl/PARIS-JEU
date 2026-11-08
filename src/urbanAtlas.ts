@@ -40,6 +40,10 @@ export class UrbanAtlas{
  private loaded=false;
  get ready(){return this.loaded;}
  quarterNames():string[]{return this.quarters.map(q=>q.quarter.name);}
+ quarterAnchors():Array<{name:string;x:number;z:number}>{
+  return this.quarters.map(({quarter,bounds})=>({name:quarter.name,
+    x:(bounds[0]+bounds[2])/2,z:(bounds[1]+bounds[3])/2}));
+ }
  async init():Promise<void>{
   try{
    const response=await fetch(import.meta.env.BASE_URL+

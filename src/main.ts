@@ -453,7 +453,7 @@ try{
       terrainHeight(camera.camera.target.x,camera.camera.target.z);
     await Promise.allSettled([
       inspector.init(),heritageGardens.init(),
-      urbanAtlas.init().then(()=>management?.setNeighborhoods(urbanAtlas.quarterNames())),
+      urbanAtlas.init().then(()=>management?.setNeighborhoods(urbanAtlas.quarterAnchors())),
       ...(STABLE_RENDER?[water.init(),roads.init(),trees.init(),metroTrees.init(),
         installSurfaceLayer(scene,'data/metropole/surfaces/green.json',
           message=>{el('surface-status').textContent=message;})]:

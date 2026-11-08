@@ -1,8 +1,8 @@
 import {GameClock} from '../gameClock';
 import {CITY_DOMAINS,PROJECT_CATALOG,PARTNERS,EMPTY_MUNICIPAL_STATE,
  findTemplate,prepareProject,submitProject,holdCouncilVote,negotiatePartnership,advanceMunicipal,
- validateMunicipalState,capacityOf,simulateMobility,
- type MunicipalState,type ProjectTemplate} from './cityEngine';
+ validateMunicipalState,capacityOf,simulateMobility,simulateCorridors,
+ type MunicipalState,type ProjectTemplate,type QuarterAnchor} from './cityEngine';
 
 const el=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
 const rounded=(x:number)=>new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1}).format(x);
@@ -20,6 +20,7 @@ export class CityDashboard{
  private selectedTemplate=PROJECT_CATALOG[0].id;
  private selectedProject='';
  private quarters:string[]=[];
+ private anchors:QuarterAnchor[]=[];
  private lastHour=-1;
  private lastMobilityLabel='';
  constructor(private clock:GameClock,private changed:()=>void){
@@ -35,8 +36,10 @@ export class CityDashboard{
   this.state=validateMunicipalState(value);this.selectedProject='';
   this.render();
  }
- setNeighborhoods(names:string[]):void{
-  this.quarters=[...new Set(names)].sort((a,b)=>a.localeCompare(b,'fr'));
+ setNeighborhoods(anchors:QuarterAnchor[]):void{
+  this.anchors=anchors.slice(0,80);
+  this.quarters=[...new Set(anchors.map(q=>q.name))]
+   .sort((a,b)=>a.localeCompare(b,'fr'));
   const suggestions=el('city-quarter-suggestions');
   suggestions.replaceChildren();
   for(const name of this.quarters){
@@ -193,6 +196,19 @@ export class CityDashboard{
    fill.style.width=Math.min(100,value/2)+'%';bar.append(fill);
    const val=document.createElement('b');val.textContent=String(value);
    line.append(title,bar,val);container.append(line);
+  }
+  const corridors=simulateCorridors(this.clock.current,this.anchors,this.state.projects);
+  const routes=el('city-mobility-corridors');routes.replaceChildren();
+  for(const trip of corridors){
+   const row=document.createElement('p');row.className='city-corridor';
+   row.textContent=trip.from+' → '+trip.to+' · '+trip.distanceKm+
+    ' km (distance à vol d’oiseau) · indice '+trip.index;
+   routes.append(row);
+  }
+  if(!corridors.length){
+   const row=document.createElement('p');row.className='finance-source';
+   row.textContent='Corridors disponibles après chargement des quartiers officiels.';
+   routes.append(row);
   }
   el('city-mobility-note').textContent=snapshot.label+
    (snapshot.projectEffect?' · Effet des projets réalisés : '+snapshot.projectEffect+
