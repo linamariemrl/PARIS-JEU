@@ -7,7 +7,7 @@ class CityGovernance(unittest.TestCase):
  def test_civic_ui_is_wired(self):
   html=read("index.html")
   for id in ["municipal-room","city-prepare","city-vote","city-agenda","city-mobility",
-             "city-templates","city-projects","city-quarter"]:
+             "city-templates","city-projects","city-quarter","city-partners"]:
    self.assertIn('id="'+id+'"',html)
   ui=read("src/simulation/ui.ts")
   for fragment in ["new CityDashboard(clock","this.city.tick()",

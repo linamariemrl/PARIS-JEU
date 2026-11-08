@@ -1,6 +1,6 @@
 import {GameClock} from '../gameClock';
 import {CITY_DOMAINS,PROJECT_CATALOG,PARTNERS,EMPTY_MUNICIPAL_STATE,
- findTemplate,prepareProject,submitProject,holdCouncilVote,advanceMunicipal,
+ findTemplate,prepareProject,submitProject,holdCouncilVote,negotiatePartnership,advanceMunicipal,
  validateMunicipalState,capacityOf,simulateMobility,
  type MunicipalState,type ProjectTemplate} from './cityEngine';
 
@@ -8,6 +8,7 @@ const el=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById
 const rounded=(x:number)=>new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1}).format(x);
 const stage:Record<string,string>={
  instruction:'À instruire',programme:'À l’ordre du jour',
+ accords:'Accords extérieurs attendus',
  adopte:'Adopté, en travaux',rejete:'Rejeté',bloque:'À reprendre',
  termine:'Terminé (simulation)'
 };
@@ -26,6 +27,7 @@ export class CityDashboard{
   el<HTMLButtonElement>('city-prepare').addEventListener('click',()=>this.prepare());
   el<HTMLButtonElement>('city-agenda').addEventListener('click',()=>this.schedule());
   el<HTMLButtonElement>('city-vote').addEventListener('click',()=>this.vote());
+  el<HTMLButtonElement>('city-partners').addEventListener('click',()=>this.partner());
   this.render();
  }
  get snapshot():MunicipalState{return validateMunicipalState(this.state);}
@@ -127,6 +129,14 @@ export class CityDashboard{
     (v.adopte?'Délibération adoptée.':'Délibération rejetée.'));
   }catch(error){this.status(String(error));}
  }
+ private partner():void{
+  try{
+   if(!this.selectedProject)throw Error('Choisir un dossier avec accords à obtenir.');
+   this.state=negotiatePartnership(this.state,this.selectedProject,this.clock.current);
+   this.changed();this.render();
+   this.status(this.state.projects.find(p=>p.id===this.selectedProject)?.message??'Accord examiné');
+  }catch(error){this.status(String(error));}
+ }
  private renderProjects():void{
   const root=el('city-projects');
   root.replaceChildren();
@@ -151,6 +161,7 @@ export class CityDashboard{
    'Sélectionner un dossier pour poursuivre son instruction.';
   el<HTMLButtonElement>('city-agenda').disabled=current?.status!=='instruction';
   el<HTMLButtonElement>('city-vote').disabled=current?.status!=='programme';
+  el<HTMLButtonElement>('city-partners').disabled=current?.status!=='accords';
   el('city-project-total').textContent=String(this.state.projects.length);
  }
  private renderMobility():void{

@@ -82,12 +82,12 @@ export const PARTNERS=[
  ['Eau de Paris / opérateurs','Exploitation et ingénierie spécialisées'],
  ['APUR / agences / associations','Expertise, études et concertation']
 ] as const;
-export type ProjectStatus='instruction'|'programme'|'adopte'|'rejete'|'bloque'|'termine';
+export type ProjectStatus='instruction'|'programme'|'accords'|'adopte'|'rejete'|'bloque'|'termine';
 export interface SimulatedVotes{pour:number;contre:number;abstention:number;absents:number;adopte:boolean;}
 export interface MunicipalProject{
  id:string;templateId:string;district:string;createdAt:number;
  status:ProjectStatus;votes?:SimulatedVotes;voteAt?:number;
- finishedAt?:number;message:string;
+ finishedAt?:number;partnerApproval?:{approved:boolean;date:number};message:string;
 }
 export interface MunicipalState{version:1;projects:MunicipalProject[];nextId:number;}
 export const EMPTY_MUNICIPAL_STATE=():MunicipalState=>({version:1,projects:[],nextId:1});
@@ -108,9 +108,12 @@ export function validateMunicipalState(value:unknown):MunicipalState{
  for(const p of s.projects){
   if(!p||typeof p.id!=='string'||ids.has(p.id)||p.id.length>50||
    !findTemplate(p.templateId)||typeof p.district!=='string'||p.district.length>90||
-   !Number.isFinite(p.createdAt)||!['instruction','programme','adopte','rejete','bloque','termine'].includes(p.status)||
+   !Number.isFinite(p.createdAt)||!['instruction','programme','accords','adopte','rejete','bloque','termine'].includes(p.status)||
    typeof p.message!=='string'||p.message.length>600)throw Error('Projet municipal corrompu');
   ids.add(p.id);
+  if(p.partnerApproval&&(!Number.isFinite(p.partnerApproval.date)||
+     typeof p.partnerApproval.approved!=='boolean'))
+    throw Error('Accord institutionnel invalide');
   if(p.votes){
    const v=p.votes;
    if(![v.pour,v.contre,v.abstention,v.absents].every(x=>Number.isInteger(x)&&x>=0)||
@@ -119,7 +122,8 @@ export function validateMunicipalState(value:unknown):MunicipalState{
   }
  }
  return {version:1,nextId:s.nextId,projects:s.projects.map(p=>({
-  ...p,votes:p.votes?{...p.votes}:undefined
+  ...p,votes:p.votes?{...p.votes}:undefined,
+  partnerApproval:p.partnerApproval?{...p.partnerApproval}:undefined
  }))};
 }
 export function prepareProject(state:MunicipalState,templateId:string,district:string,now:number):MunicipalState{
@@ -186,12 +190,34 @@ export function holdCouncilVote(state:MunicipalState,id:string,now:number):Munic
  const adopted=presence>=82&&pour>contre;
  const voted:SimulatedVotes={pour,contre,abstention,absents:absence,adopte:adopted};
  return {...state,projects:state.projects.map(x=>x.id!==id?x:{
-  ...x,votes:voted,voteAt:now,status:adopted?'adopte':'rejete',
-  finishedAt:adopted?now+t.durationDays*86_400_000:undefined,
+  ...x,votes:voted,voteAt:now,
+  status:adopted?(t.authority==='partagee'?'accords':'adopte'):'rejete',
+  finishedAt:adopted&&t.authority==='municipal'?
+    now+t.durationDays*86_400_000:undefined,
   message:adopted?(t.authority==='partagee'?
-   'Délibération adoptée dans le jeu. Convention avec partenaires à finaliser (non automatiquement acquise).':
+   'Délibération municipale adoptée dans le jeu. En attente de l’avis fictif des autorités partenaires avant toute exécution.':
    'Délibération adoptée dans le jeu. Chantier et marchés simulés en cours.'):
    'Délibération rejetée par le conseil fictif ; le projet n’est pas exécuté.'
+ })};
+}
+/** Une autorité extérieure fictive peut accorder ou refuser sa convention.
+ * Cette simulation ne contacte AUCUNE institution réelle.
+ */
+export function negotiatePartnership(state:MunicipalState,id:string,now:number):MunicipalState{
+ const selected=state.projects.find(p=>p.id===id);
+ if(!selected||selected.status!=='accords'||!selected.votes?.adopte)
+  throw Error('Aucun accord extérieur à examiner sur ce projet');
+ const t=findTemplate(selected.templateId)!;
+ if(t.authority!=='partagee')throw Error('Projet sans partenaire décisionnaire');
+ const seed=hash(id+'|'+t.id+'|'+selected.district+'|convention');
+ const approved=(seed%100)<70; // règle fictive publique, non probabilité empirique
+ return {...state,projects:state.projects.map(p=>p.id!==id?p:{
+  ...p,partnerApproval:{approved,date:now},
+  status:approved?'adopte':'bloque',
+  finishedAt:approved?now+t.durationDays*86_400_000:undefined,
+  message:approved?
+   'Accord simulé des partenaires obtenu. Le projet passe à l’exécution fictive.':
+   'Accord simulé refusé : projet suspendu, nouvelle convention à négocier.'
  })};
 }
 export function advanceMunicipal(state:MunicipalState,now:number):MunicipalState{
