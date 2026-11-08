@@ -13,6 +13,28 @@ interface Batch {
 }
 const empty=():Batch=>({positions:[],indices:[],faceToBuilding:[]});
 export type BuildingMaterials={wall:StandardMaterial;roof:StandardMaterial};
+/** Couleurs indicatives : les codes fiscaux décrivent les matériaux et
+ * non la teinte effectivement photographiée de chaque couverture.
+ * Façades sans couleur déduite abusivement des gros murs cadastraux.
+ */
+function roofTint(code?:string):[number,number,number]{
+  if(!code||!/^\d{2}$/.test(code))return [.60,.64,.68];
+  switch(code[0]){
+    case '1':return [.66,.48,.40]; // tuile : terre cuite, symbolique
+    case '2':return [.44,.49,.53]; // ardoise
+    case '3':return [.64,.69,.72]; // zinc / aluminium
+    case '4':return [.68,.67,.62]; // béton
+    default:return [.60,.64,.68];
+  }
+}
+function wallTint(usage:string):[number,number,number]{
+  const name=(usage||'').toLowerCase();
+  if(/relig|église|eglise|cathed|cathéd|culte/.test(name))
+    return [.86,.82,.72];
+  if(/industri|entrepôt|entrepot/.test(name))
+    return [.80,.80,.77];
+  return [.91,.875,.80];
+}
 
 function tri(out:Batch,a:XYZ,b:XYZ,c:XYZ,id:number){
   const start=out.positions.length/3;
@@ -131,12 +153,12 @@ export function createMaterials(scene:Scene):BuildingMaterials{
   // Deux matériaux en tout pour les immeubles du 4e. Aucun atlas,
   // photographie, façade dessinée ni teinte selon les matériaux fiscaux.
   const wall=new StandardMaterial('maquette-murs-blanc-mat',scene);
-  wall.diffuseColor=new Color3(.94,.94,.94);
+  wall.diffuseColor=Color3.White();
   wall.specularColor=Color3.Black();
   wall.backFaceCulling=false;
   wall.freeze();
   const roof=new StandardMaterial('maquette-toits-gris-mat',scene);
-  roof.diffuseColor=new Color3(.79,.79,.79);
+  roof.diffuseColor=Color3.White();
   roof.specularColor=Color3.Black();
   roof.backFaceCulling=false;
   roof.freeze();
@@ -151,6 +173,16 @@ function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
   const normals:number[]=[];
   VertexData.ComputeNormals(batch.positions,batch.indices,normals);
   vd.normals=normals;
+  // Couleurs par face, regroupées dans les mêmes deux draw calls.
+  // Aucune ressource bitmap, chaque triangle garde la teinte du bâtiment.
+  const colors:number[]=[];
+  for(const index of batch.faceToBuilding){
+    const building=tile.buildings[index];
+    const tint=kind==='roof'?roofTint(building?.roofCode):
+      wallTint(building?.usage??'');
+    for(let i=0;i<3;i++)colors.push(tint[0],tint[1],tint[2],1);
+  }
+  vd.colors=colors;
   const mesh=new Mesh('batiments-'+kind+'-'+tile.id,scene);
   vd.applyToMesh(mesh);
   mesh.material=mat;
