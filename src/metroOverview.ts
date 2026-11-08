@@ -204,7 +204,8 @@ export class MetroOverview {
   if(!m)return;
   // Le panorama bénéficie de TOUTES les cellules agrégées plutôt que
   // d'un échantillon arbitraire de toitures et de quartiers manquants.
-  if(this.coverage?.ready&&radius>=4700){
+  if(this.coverage?.ready&&
+    (radius>=5000||(this.panoramicAtlas&&radius>4000))){
    if(!this.panoramicAtlas){
     this.panoramicAtlas=true;
     this.roofsOnly=true;
@@ -280,7 +281,7 @@ export class MetroOverview {
   // Dès qu'un groupe IGN 3D est disponible, enlever uniquement la
   // cellule atlas de CE groupe. Tous les autres restent visibles.
   this.coverage?.showExcept([...this.loaded.keys()]
-    .filter(id=>next.has(id)&&!this.roofsOnly));
+    .filter(id=>next.has(id)));
   for(const [id,state] of this.loaded){
    state.mesh.setEnabled(this.visible.has(id)&&!this.roofsOnly);
    state.roof.setEnabled(this.visible.has(id)&&this.roofsOnly);
@@ -457,7 +458,7 @@ export class MetroOverview {
      mesh,roof,buffer:matrices,roofBuffer:rooftops,
      sampledRoofBuffer,sampledIndices,bytes:source,group
    });
-   if(this.coverage?.ready&&!this.roofsOnly&&this.visible.has(group.id))
+   if(this.coverage?.ready&&this.visible.has(group.id))
     this.coverage.showExcept([...this.loaded.keys()]
       .filter(id=>this.visible.has(id)));
    this.currentCount+=group.tiles.reduce((sum,t)=>

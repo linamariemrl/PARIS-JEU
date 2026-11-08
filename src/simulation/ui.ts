@@ -1,4 +1,5 @@
 import {GameClock} from '../gameClock';
+import type {GameView} from '../gameView';
 import {IndicatorStore} from './indicatorStore';
 import {FinanceModule} from './modules/finances';
 import {EnvironmentModule} from './modules/environment';
@@ -29,7 +30,8 @@ export class GameManagement {
  private currentSlot='principal';
  private createdAt=new Date().toISOString();
  constructor(private clock:GameClock, private onRateChange:(rate:0|1|10|60)=>void,
-   private onGoTo:(x:number,z:number)=>void){
+   private onGoTo:(x:number,z:number)=>void,
+   private captureView:()=>GameView,private onRestoreView:(view:GameView)=>void){
   node<HTMLButtonElement>('finance-open').addEventListener('click',()=>this.open());
   node<HTMLButtonElement>('finance-close').addEventListener('click',()=>this.close());
   node<HTMLButtonElement>('budget-propose').addEventListener('click',()=>this.propose());
@@ -218,7 +220,7 @@ export class GameManagement {
     schema:1,name:this.currentName,createdAt:this.createdAt,updatedAt:now,
     gameTimestamp:this.clock.current,timeRate:this.clock.rate,
     plan:this.finance.plan,indicators:this.indicators.list(),
-    dossiers:this.dossiers.map(d=>({...d}))
+    dossiers:this.dossiers.map(d=>({...d})),view:this.captureView()
   };
  }
  private async save(newSlot=false){
@@ -249,6 +251,7 @@ export class GameManagement {
     this.indicators.restore(v.indicators);
     this.finance.restore(v.plan,v.gameTimestamp);
     this.dossiers=(v.dossiers??[]).map(d=>({...d}));
+    if(v.view)this.onRestoreView(v.view);
     if(this.selected)this.setSelection(this.selected);
     this.status('Partie restaurée : '+this.currentName);
     await this.render();

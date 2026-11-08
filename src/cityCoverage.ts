@@ -17,6 +17,7 @@ export class CityCoverage {
  private hidden=new Set<string>();
  private count=0;
  private complete=false;
+ private applied=false;
  private initialized=false;
  private material:StandardMaterial;
  constructor(private scene:Scene,private onStatus:(message:string)=>void){
@@ -32,10 +33,14 @@ export class CityCoverage {
  get buildings(){return this.complete?this.count:0;}
  get groupCount(){return this.meshes.size;}
  showExcept(groupIds:readonly string[]):void{
-  this.hidden=new Set(groupIds);
+  const next=new Set(groupIds);
+  if(this.complete&&this.applied&&next.size===this.hidden.size&&
+     [...next].every(id=>this.hidden.has(id)))return;
+  this.hidden=next;
   if(!this.complete)return;
   for(const [id,mesh] of this.meshes)
    mesh.setEnabled(!this.hidden.has(id));
+  this.applied=true;
  }
  async init():Promise<void>{
   if(this.initialized)return;

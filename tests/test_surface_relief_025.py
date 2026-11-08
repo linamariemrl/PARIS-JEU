@@ -29,7 +29,7 @@ class SurfaceDraping(unittest.TestCase):
   self.assertNotIn('const p=[',t)
   self.assertIn('const p0=this.values[i],p1=this.values[i+1]',t)
  def test_budget_and_version_gate(self):
-  self.assertEqual(json.loads(read('package.json'))['version'],'0.25.8')
+  self.assertEqual(json.loads(read('package.json'))['version'],'0.25.9')
   self.assertIn('PROTOTYPE 0.25',read('index.html'))
   self.assertNotIn('PROTOTYPE 0.26',read('index.html'))
 if __name__=='__main__':unittest.main()

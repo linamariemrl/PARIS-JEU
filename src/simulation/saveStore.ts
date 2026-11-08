@@ -1,6 +1,7 @@
 import type {FinancePlan} from './modules/finances';
 import type {Indicator} from './indicatorStore';
 import {validateDossiers,type Dossier} from './dossiers';
+import {validateGameView,type GameView} from '../gameView';
 
 export const SAVE_SCHEMA=1;
 export const BUNDLE_SCHEMA=1;
@@ -10,6 +11,7 @@ export interface GameSave {
  plan:FinancePlan;
  indicators:Indicator[];
  dossiers?:Dossier[]; // extension facultative : anciens JSON v1 toujours valides
+ view?:GameView; // ajout facultatif 0.25.9 ; aucune migration destructrice
 }
 export interface DbSave{slot:string;save:GameSave}
 export interface SaveBundle{
@@ -83,6 +85,7 @@ export function validateSave(value:unknown):GameSave{
      throw Error('Montants de scénario invalides');
  }
  validateDossiers(x.dossiers);
+ if(x.view!==undefined)validateGameView(x.view);
  for(const indicator of x.indicators){
    if(!indicator||typeof indicator.key!=='string'||typeof indicator.spatialId!=='string'||
       !Number.isFinite(indicator.value)||!Number.isFinite(indicator.asOf))

@@ -1,4 +1,5 @@
 import {terrainHeight} from './terrain';
+import type {GameView} from './gameView';
 import { ArcRotateCamera, Matrix, Scene, Vector3 } from '@babylonjs/core';
 import { clamp } from './geo';
 import {
@@ -66,6 +67,35 @@ export class MobileCamera{
       this.zoom(Math.exp(e.deltaY*.001));
     },{passive:false});
     scene.activeCamera=this.camera;
+  }
+  /** Etat transportable de la focale, sans matrices ni références GPU. */
+  captureView(quality:GameView['quality']):GameView{
+    return {x:this.camera.target.x,z:this.camera.target.z,
+      radius:this.camera.radius,alpha:this.camera.alpha,
+      beta:this.camera.beta,street:this.street,quality};
+  }
+  /** Reprise instantanée : ne pas animer la vue pendant la restauration. */
+  restoreView(view:GameView):void{
+    this.transition=null;
+    this.pointers.clear();
+    this.stopInertia();
+    this.street=view.street;
+    this.orbit=false;
+    const radius=clamp(view.radius,12,26000);
+    const beta=clamp(view.beta,this.street?.2:.12,this.street?2.68:1.49);
+    this.camera.radius=radius;
+    this.camera.beta=beta;
+    this.camera.alpha=view.alpha;
+    this.camera.target.x=clamp(view.x,-WORLD_LIMIT,WORLD_LIMIT);
+    this.camera.target.z=clamp(view.z,-WORLD_LIMIT,WORLD_LIMIT);
+    if(this.street){
+      this.previousView={radius:Math.max(100,radius*2),
+        beta:.85,eye:terrainHeight(view.x,view.z)+220};
+      this.lockStreetEye();
+    }else{
+      this.previousView=null;
+      this.camera.target.y=terrainHeight(view.x,view.z);
+    }
   }
   get isStreetMode(){return this.street;}
   get isOrbitMode(){return this.orbit;}

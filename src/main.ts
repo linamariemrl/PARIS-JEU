@@ -24,6 +24,8 @@ import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import { StreetDirectory } from './streetDirectory';
 import { GameManagement } from './simulation/ui';
 import {prepareAppInstallation,isNativeApp} from './appInstall';
+import {REVISION,RELEASE_PHASE} from './release';
+import type {GameView} from './gameView';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
 import { project } from './geo';
@@ -88,6 +90,9 @@ try{
   });
 
   const notifyAppUpdate=prepareAppInstallation();
+  el('build-revision').textContent='Version '+REVISION+' · '+
+    (isNativeApp()?'Application Android de test':'Site / application installable')+
+    ' · '+RELEASE_PHASE;
   const camera=new MobileCamera(scene,canvas);
   const resolution=new AdaptiveResolution(engine);
   const materials=createMaterials(scene);
@@ -110,9 +115,9 @@ try{
     const total=coverage.buildings;
     counter.textContent=total?
       (total+2696).toLocaleString('fr-FR')+
-        ' bâtiments IGN couverts · détails progressifs':
+        ' bâtiments IGN indexés · niveaux de détail':
       (fourthCount+metroCount+overviewCount)
-        .toLocaleString('fr-FR')+' volumes visibles · atlas en préparation';
+        .toLocaleString('fr-FR')+' volumes rendus · atlas en préparation';
   };
   const manager=new TileManager(scene,materials,(message,count)=>{
     state.textContent=message;
@@ -333,7 +338,16 @@ try{
   for(const item of speedButtons)
     el<HTMLButtonElement>(item.id).addEventListener('click',()=>selectRate(item.rate));
   selectRate(1);
-  management=new GameManagement(clock,selectRate,(x,z)=>camera.flyTo(x,z,340));
+  let restoredView:GameView|undefined;
+  const applySavedView=(view:GameView)=>{
+    restoredView=view;
+    camera.restoreView(view);
+    quality.value=view.quality;
+    quality.dispatchEvent(new Event('change'));
+    updateCameraButtons();
+  };
+  management=new GameManagement(clock,selectRate,(x,z)=>camera.flyTo(x,z,340),
+    ()=>camera.captureView(quality.value as GameView['quality']),applySavedView);
   window.addEventListener('resize',()=>engine.resize());
   let lastFps=0,lastClock=0,previous=performance.now();
   engine.runRenderLoop(()=>{
@@ -381,7 +395,11 @@ try{
   void (async()=>{
     // Référentiel vertical officiel d'abord, puis maillages géographiques.
     await terrain.init(ground);
-    camera.camera.target.y=terrainHeight(camera.camera.target.x,camera.camera.target.z);
+    // La partie peut être restaurée avant le chargement asynchrone du MNT.
+    // Réappliquer la focale sauvegardée sur l'altitude réellement chargée.
+    if(restoredView!==undefined)camera.restoreView(restoredView);
+    else camera.camera.target.y=
+      terrainHeight(camera.camera.target.x,camera.camera.target.z);
     await Promise.allSettled([
       inspector.init(),
       ...(STABLE_RENDER?[water.init(),roads.init(),trees.init(),metroTrees.init(),

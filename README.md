@@ -1,3 +1,21 @@
+# PARIS — prototype de jeu urbain 3D
+
+**Version en cours : 0.25.9 (Prototype 0.25).** La 0.26 est bloquée
+jusqu'à la validation complète du rendu et des sauvegardes sur Android.
+
+**Commencer ici :**
+- [État du projet et ordre des travaux](docs/ETAT_DU_PROJET.md)
+- [Recette Android et critères de validation](docs/RECETTE_ANDROID.md)
+- [Jeu web et installation PWA](https://meyameya677-sketch.github.io/Paris-le-jeu/)
+- [Historique des prototypes ci-dessous](#historique-des-prototypes)
+
+La vue panoramique repose sur un atlas agrégé de 50 m pour maintenir
+la couverture ; seuls les bâtiments proches utilisent leur géométrie
+précise. Les sauvegardes JSON peuvent être transférées de Chrome/PWA
+à l'APK ; leurs données locales ne sont pas automatiquement communes.
+
+## Historique des prototypes
+
 ## Conditionnement natif Android de test — séparé du site PWA
 
 Le dépôt comporte maintenant un conteneur Capacitor et un workflow
