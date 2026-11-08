@@ -13,6 +13,7 @@ import { GameClock, type TimeSpeed } from './gameClock';
 import { TreeLayer } from './trees';
 import { MetroTreeLayer } from './metroTrees';
 import { SurfaceTileManager } from './surfaceTiles';
+import { MetroRoads } from './metroRoads';
 import { AdaptiveResolution } from './adaptiveResolution';
 import { TerrainModule } from './terrain';
 import { StableWaterLayer } from './stableWater';
@@ -90,6 +91,9 @@ try{
   });
   const water=new StableWaterLayer(scene,message=>{
     el('water-status').textContent=message;
+  });
+  const roads=new MetroRoads(scene,message=>{
+    el('roads-status').textContent=message;
   });
   let metroCount=0;
   let overviewCount=0;
@@ -211,7 +215,8 @@ try{
     const selected=hit?.pickedMesh&&hit.faceId>=0?
       getPickedBuilding(hit.pickedMesh as Mesh,hit.faceId):null;
     if(selected){select(selected);return;}
-    const roadHit=scene.pick(x,y,mesh=>mesh.name==='infrastructure-road');
+    const roadHit=scene.pick(x,y,mesh=>mesh.name==='infrastructure-road'||
+      mesh.name.startsWith('routes-metropole-proches-'));
     if(roadHit?.hit&&roadHit.pickedPoint){
       showRoad(roadHit.pickedPoint.x,roadHit.pickedPoint.z);
       return;
@@ -288,12 +293,10 @@ try{
     const level=quality.value as 'low'|'medium'|'high';
     manager.setQuality(level);
     metro.setQuality(level);
+    roads.setQuality(level);
     if(STABLE_RENDER){
-      // Échelle GPU constante au cours des mouvements : comportement 0.17.
-      engine.setHardwareScalingLevel(
-        level==='low'?1.7:level==='medium'?1.3:1
-      );
-      engine.resize();
+      // Ajustement GPU progressif : uniquement si la chute de FPS dure.
+      resolution.configure(level);
     }else{
       trees.setQuality(level);
       metroTrees.setQuality(level);
@@ -341,14 +344,15 @@ try{
     overview.update(camera.camera.target.x,camera.camera.target.z,
       camera.camera.radius,camera.isMoving);
     metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
+    roads.update(camera.camera.target.x,camera.camera.target.z,
+      camera.camera.radius,camera.isMoving);
     if(!STABLE_RENDER){
       metroTrees.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
       trees.update(camera.camera.radius);
       surfaces.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius,camera.isMoving);
     }
     scene.render();
-    if(!STABLE_RENDER)
-      resolution.update(now,engine.getFps(),camera.isMoving);
+    resolution.update(now,engine.getFps(),camera.isMoving);
     if(now-lastFps>=1000){
       fps.textContent=Math.round(engine.getFps())+' FPS';
       lastFps=now;
@@ -362,7 +366,7 @@ try{
     if(!STABLE_RENDER)await terrain.init(ground);
     await Promise.allSettled([
       inspector.init(),
-      ...(STABLE_RENDER?[water.init()]:
+      ...(STABLE_RENDER?[water.init(),roads.init()]:
         [surfaces.init(),metroTrees.init(),trees.init()]),
       overview.init(),metro.init(),manager.init().catch((err:unknown)=>{
         console.warn('Bâtiments du 4e indisponibles',err);
@@ -383,7 +387,7 @@ try{
       el('terrain-status').textContent='Relief IGN archivé · rendu expérimental désactivé';
       el('surface-status').textContent='Parcs : données conservées · rendu expérimental désactivé';
       // L'état est rempli par StableWaterLayer selon la source IGN.
-      el('roads-status').textContent='Chaussées : retour à la géométrie stable du 4e';
+      // L'état des chaussées métropolitaines est géré par MetroRoads.
       el('trees-status').textContent='Arbres 3D en pause pour stabilité graphique';
       el('metro-trees-status').textContent='Inventaire arboré conservé hors rendu';
     }else{

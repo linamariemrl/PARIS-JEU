@@ -1,3 +1,18 @@
+## Prototype 0.25 — chaussées PVP dans Paris entier, performance Android
+
+Les emprises réelles du Plan de voirie de Paris sont affichées dans toute
+la capitale, et non plus uniquement dans le pilote du 4e arrondissement.
+Une unique couche de chaussées simplifiées est dessinée à distance ; trois
+secteurs proches (jusqu'à cinq selon la qualité) complètent les tracés exacts.
+Les données proviennent des fichiers PVP déjà préparés, sans requête de
+géocodage supplémentaire ni voie inventée. La couverture ne prétend pas
+inclure les communes limitrophes. Les chaussées proches sont sélectionnables.
+
+La résolution s'ajuste seulement après une chute prolongée des FPS :
+une hystérésis évite le pompage pendant une rotation rapide. L'ancien
+rendu neutre des bâtiments, les dossiers territoriaux, la vue de rue,
+les sauvegardes et l'horloge sont conservés.
+
 ## Prototype 0.24 — voirie contrastée et premiers dossiers territoriaux
 
 Les chaussées du 4e sont distinctes du sol, des trottoirs et des espaces

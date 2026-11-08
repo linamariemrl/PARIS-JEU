@@ -19,9 +19,9 @@ export class AdaptiveResolution{
  constructor(private engine:Engine){}
  configure(level:GraphicsQuality){
    const settings={
-     low:{base:1.65,max:2.10},
-     medium:{base:1.30,max:1.95},
-     high:{base:1.00,max:1.63}
+     low:{base:1.70,max:2.00},
+     medium:{base:1.30,max:1.65},
+     high:{base:1.00,max:1.40}
    }[level];
    this.base=settings.base;
    this.max=settings.max;
@@ -44,10 +44,10 @@ export class AdaptiveResolution{
    let scale=this.current;
    // En mouvement, limiter les changements aux situations de FPS
    // réellement dégradés : l'utilisateur ne subit pas de flou variable.
-   if(this.lowCount>=2&&(!isMoving||this.smoothedFps<26)){
-     scale=Math.min(this.max,Math.round((scale+.10)*100)/100);
+   if(this.lowCount>=3&&(!isMoving||this.smoothedFps<32)){
+     scale=Math.min(this.max,Math.round((scale+.12)*100)/100);
      this.lowCount=0;
-   }else if(this.highCount>=4){
+   }else if(this.highCount>=5){
      scale=Math.max(this.base,Math.round((scale-.06)*100)/100);
      this.highCount=0;
    }
