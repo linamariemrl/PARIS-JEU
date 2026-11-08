@@ -8,10 +8,10 @@ def src(path):return (ROOT/path).read_text(encoding='utf-8')
 class OrderedRelease(unittest.TestCase):
  def test_revision_declared_and_major_version_blocked(self):
   pkg=json.loads(src('package.json'))
-  self.assertEqual(pkg['version'],'0.25.9')
-  self.assertIn("REVISION='0.25.9'",src('src/release.ts'))
-  self.assertIn("PROTOTYPE='0.25'",src('src/release.ts'))
-  self.assertIn('PROTOTYPE 0.25',src('index.html'))
+  self.assertEqual(pkg['version'],'0.26.0')
+  self.assertIn("REVISION='0.26.0'",src('src/release.ts'))
+  self.assertIn("PROTOTYPE='0.26'",src('src/release.ts'))
+  self.assertIn('PROTOTYPE 0.26',src('index.html'))
   self.assertIn('id="build-revision"',src('index.html'))
  def test_saved_view_optional_and_restored_after_terrain(self):
   store=src('src/simulation/saveStore.ts')

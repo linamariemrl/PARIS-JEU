@@ -1,6 +1,6 @@
 # PARIS — état de référence et ordre des travaux
 
-**Version en développement : 0.25.9.** Nom visible : **Prototype 0.25**.
+**Version en développement : 0.26.0.** Nom visible : **Prototype 0.26**.
 **Statut : validation Android en cours.** La version 0.26 est interdite
 tant que toutes les conditions de réception ci-dessous ne sont pas remplies.
 

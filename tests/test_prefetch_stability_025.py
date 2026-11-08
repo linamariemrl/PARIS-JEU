@@ -32,8 +32,8 @@ class StreamingStability(unittest.TestCase):
  def test_major_version_gate(self):
   html=src('index.html')
   pkg=json.loads(src('package.json'))
-  self.assertIn('PROTOTYPE 0.25',html)
-  self.assertEqual(pkg['version'],'0.25.9')
-  self.assertNotIn('PROTOTYPE 0.26',html)
+  self.assertIn('PROTOTYPE 0.26',html)
+  self.assertEqual(pkg['version'],'0.26.0')
+  self.assertNotIn('PROTOTYPE 0.27',html)
 
 if __name__=='__main__':unittest.main()

@@ -21,6 +21,7 @@ import { AdaptiveResolution } from './adaptiveResolution';
 import { TerrainModule } from './terrain';
 import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
+import {HeritageAtlas} from './heritageAtlas';
 import { StreetDirectory } from './streetDirectory';
 import { GameManagement } from './simulation/ui';
 import {prepareAppInstallation,isNativeApp} from './appInstall';
@@ -142,6 +143,7 @@ try{
   overview.setRoofLodEnabled(lodToggle.checked);
   const selection:Mesh[]=[];
   const inspector=new PlaceInspector(el('place-extra'));
+  const heritage=new HeritageAtlas(scene);
   const streets=new StreetDirectory();
   void streets.init();
   let management:GameManagement|null=null;
@@ -158,7 +160,10 @@ try{
       x:camera.camera.target.x,z:camera.camera.target.z
     };
     const token=inspector.begin();
-    el('selection-title').textContent='Bâtiment identifié · données IGN';
+    const domain=heritage.identify(coords.x,coords.z);
+    el('selection-title').textContent=b.heritageName?
+      b.heritageName+' · monument documenté':
+      'Bâtiment identifié · données IGN';
     el('building-fields').classList.remove('hidden');
     selection.push(...highlightBuilding(scene,b));
     el('selection').classList.remove('hidden');
@@ -196,18 +201,22 @@ try{
         'Toit LiDAR non disponible ; forme OSM ou toit de secours. ');
     inspector.fill(coords.x,coords.z,
       surfaces.identify(coords.x,coords.z)??water.identify(coords.x,coords.z),b,token);
-    management?.setSelection({id:'batiment:'+b.id,label:'Bâtiment IGN '+b.id,
+    heritage.appendDetails(el('place-extra'),domain,b.heritageRef);
+    management?.setSelection({id:'batiment:'+b.id,label:b.heritageName??'Bâtiment IGN '+b.id,
       kind:'batiment',x:coords.x,z:coords.z});
   };
   const showLocation=(x:number,z:number)=>{
     clear();
     const token=inspector.begin();
-    el('selection-title').textContent='Fiche du lieu sélectionné';
+    const domain=heritage.identify(x,z);
+    el('selection-title').textContent=domain?.name??'Fiche du lieu sélectionné';
     el('building-fields').classList.add('hidden');
     el('selection').classList.remove('hidden');
     inspector.fill(x,z,surfaces.identify(x,z)??water.identify(x,z),null,token);
-    management?.setSelection({id:'lieu:'+Math.round(x/25)+':'+Math.round(z/25),
-      label:'Lieu sélectionné',kind:'lieu',x,z});
+    heritage.appendDetails(el('place-extra'),domain);
+    management?.setSelection({id:domain?'domaine:'+domain.id:
+      'lieu:'+Math.round(x/25)+':'+Math.round(z/25),
+      label:domain?.name??'Lieu sélectionné',kind:'lieu',x,z});
   };
   const showRoad=(x:number,z:number)=>{
     clear();
@@ -235,7 +244,11 @@ try{
     const roadHit=scene.pick(x,y,mesh=>mesh.name==='infrastructure-road'||
       mesh.name.startsWith('routes-metropole-proches-'));
     if(roadHit?.hit&&roadHit.pickedPoint){
-      showRoad(roadHit.pickedPoint.x,roadHit.pickedPoint.z);
+      const point=roadHit.pickedPoint;
+      if(heritage.identify(point.x,point.z)){
+        showLocation(point.x,point.z);return;
+      }
+      showRoad(point.x,point.z);
       return;
     }
     const groundHit=scene.pick(x,y,m=>m===ground||
@@ -407,7 +420,8 @@ try{
           message=>{el('surface-status').textContent=message;})]:
         [surfaces.init(),metroTrees.init(),trees.init()]),
       overview.init(),coverage.init().then(()=>showCounts()),
-      metro.init(),manager.init().catch((err:unknown)=>{
+      // Classification patrimoniale avant création des volumes proches.
+      heritage.init().then(()=>Promise.all([metro.init(),manager.init()])).catch((err:unknown)=>{
         console.warn('Bâtiments du 4e indisponibles',err);
         state.textContent='Bâtiments du 4e : source indisponible';
         error.textContent=err instanceof Error?err.message:'Source IGN indisponible';
@@ -431,7 +445,7 @@ try{
     }
     el('places-status').textContent=inspector.monumentCount?
       inspector.monumentCount.toLocaleString('fr-FR')+
-      ' notices Mérimée géolocalisées + adresses et POI IGN disponibles au clic':
+      ' notices Mérimée + domaines et adresses IGN consultables au clic':
       'Adresses et POI IGN consultables au clic ; notices Mérimée en préparation';
   })().catch((e:unknown)=>{
     console.warn('Initialisation géographique',e);

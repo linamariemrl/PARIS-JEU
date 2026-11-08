@@ -1,6 +1,6 @@
 # PARIS — prototype de jeu urbain 3D
 
-**Version en cours : 0.25.9 (Prototype 0.25).** La 0.26 est bloquée
+**Version en cours : 0.26.0 (Prototype 0.26).** La validation réelle Android reste ouverte. La 0.26 était auparavant bloquée
 jusqu'à la validation complète du rendu et des sauvegardes sur Android.
 
 **Commencer ici :**

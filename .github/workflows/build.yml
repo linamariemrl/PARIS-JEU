@@ -32,6 +32,8 @@ jobs:
         run: python scripts/prepare_city_coverage.py
       - name: Sectoriser les surfaces réelles pour Android
         run: python scripts/prepare_surface_tiles.py
+      - name: Récupérer les domaines patrimoniaux vectoriels
+        run: python scripts/prepare_heritage_domains.py
       - name: Vérifier les géométries
         run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Installer les dépendances Babylon.js
