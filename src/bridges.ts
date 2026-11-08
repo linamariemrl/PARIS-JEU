@@ -131,7 +131,7 @@ export function addBridges(scene: Scene, polygons: Layer): number {
       if (parallel >= 0.83) addBeam(parapets, a, b);
     }
   }
-  geometry(scene, 'tabliers-ponts-3D', deck, new Color3(.79,.79,.79));
-  geometry(scene, 'parapets-ponts-3D', parapets, new Color3(.90,.90,.90));
+  geometry(scene, 'tabliers-ponts-3D', deck, new Color3(.80,.78,.74));
+  geometry(scene, 'parapets-ponts-3D', parapets, new Color3(.92,.89,.82));
   return count;
 }
