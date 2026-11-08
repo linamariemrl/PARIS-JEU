@@ -7,7 +7,7 @@ import earcut from 'earcut';
  * L'emprise d'un parc ne garantit PAS que chaque mètre carré est gazonné.
  * Seules les géométries officielles publiées sont affichées.
  */
-export type SurfaceKind='managed'|'wood'|'planted'|'water';
+export type SurfaceKind='managed'|'wood'|'planted'|'water'|'road';
 type Polygon=number[][][];
 interface Feature {kind:SurfaceKind;polygons:Polygon[];}
 interface SurfaceFile{
@@ -17,10 +17,11 @@ interface SurfaceFile{
 interface Batch {positions:number[];normals:number[];indices:number[];count:number;}
 const palette:Record<SurfaceKind,[number,number,number]>={
  managed:[.71,.77,.67], wood:[.51,.64,.51],
- planted:[.63,.73,.60], water:[.57,.69,.73]
+ planted:[.63,.73,.60], water:[.57,.69,.73],
+ road:[.70,.69,.67]
 };
 const y:Record<SurfaceKind,number>={
- managed:.022,wood:.023,planted:.024,water:.030
+ managed:.022,wood:.023,planted:.024,water:.030,road:.040
 };
 function empty():Batch{return {positions:[],normals:[],indices:[],count:0};}
 function append(batch:Batch,poly:Polygon,kind:SurfaceKind){
@@ -82,7 +83,7 @@ export async function installSurfaceLayer(
   const data=await result.json() as SurfaceFile;
   if(!fileValid(data))throw Error('Données de surfaces invalides');
   const batches:Record<SurfaceKind,Batch>={
-   managed:empty(),wood:empty(),planted:empty(),water:empty()
+   managed:empty(),wood:empty(),planted:empty(),water:empty(),road:empty()
   };
   let processed=0;
   for(const item of data.features){
@@ -93,7 +94,7 @@ export async function installSurfaceLayer(
     await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
   }
   let count=0;
-  for(const kind of ['managed','wood','planted','water'] as SurfaceKind[]){
+  for(const kind of ['managed','wood','planted','water','road'] as SurfaceKind[]){
    commit(scene,batches[kind],kind);count+=batches[kind].count;
   }
   onStatus(count.toLocaleString('fr-FR')+
