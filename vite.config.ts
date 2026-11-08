@@ -40,6 +40,17 @@ export default defineConfig({
           cacheName: 'metro-overview-v1',
           expiration: { maxEntries: 95, maxAgeSeconds: 60*60*24*14 }
         }
+      }, {
+        urlPattern: new RegExp('data/metropole/trees/.*[.]bin
+    }
+  })]
+});
+),
+        handler: 'CacheFirst',
+        options: {
+          cacheName: 'paris-arbres-municipaux-v1',
+          expiration: { maxEntries: 45, maxAgeSeconds: 60*60*24*30 }
+        }
       }],
       cleanupOutdatedCaches: true
     }
