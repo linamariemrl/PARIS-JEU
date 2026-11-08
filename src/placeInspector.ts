@@ -125,6 +125,40 @@ export class PlaceInspector{
     this.target.append(group);
   }
   void this.reverseAddress(coords.lon,coords.lat,token);
+  void this.reversePOI(coords.lon,coords.lat,token);
+ }
+ /** Les POI BD TOPO incluent parfois les équipements, services publics,
+  * musées et lieux nommés, au-delà du seul patrimoine protégé.
+  * Une présence voisine ne vaut pas certitude sur l'occupation du bâti.
+  */
+ private async reversePOI(lon:number,lat:number,token:number):Promise<void>{
+   try{
+     const url='https://data.geopf.fr/geocodage/reverse?lon='+
+      lon.toFixed(7)+'&lat='+lat.toFixed(7)+'&index=poi&limit=4';
+     const result=await fetch(url);
+     if(!result.ok)return;
+     const json=await result.json() as {features?:Array<{
+       geometry?:{coordinates?:number[]};
+       properties?:Record<string,unknown>;
+     }>};
+     if(token!==this.current)return;
+     for(const feature of (json.features??[]).slice(0,3)){
+       const position=feature.geometry?.coordinates;
+       if(!position||position.length<2)continue;
+       const dist=Math.hypot((position[0]-lon)*X_SCALE,
+         (position[1]-lat)*Z_SCALE);
+       if(!Number.isFinite(dist)||dist>65)continue;
+       const p=feature.properties??{};
+       const label=p.label??p.name??p.toponym;
+       if(typeof label!=='string'||!label.trim())continue;
+       const type=p.type??p.classification;
+       row(this.target,'Lieu nommé / équipement IGN à proximité',
+         label+' ('+Math.round(dist)+' m ; point POI, attribution au bâtiment non certifiée)');
+       if(typeof type==='string')row(this.target,'Catégorie POI',type);
+     }
+   }catch(error){
+     console.warn('Index POI IGN momentanément inaccessible',error);
+   }
  }
  private async reverseAddress(lon:number,lat:number,token:number){
    try{
