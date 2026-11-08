@@ -22,7 +22,9 @@ import { TerrainModule } from './terrain';
 import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import {HeritageAtlas} from './heritageAtlas';
-import {UrbanAtlas} from './urbanAtlas';
+import {UrbanAtlas,type QuarterRecord} from './urbanAtlas';
+import {QuarterOverlay,quarterAreaKm2} from './quarterSelection';
+import {neighborhoodHistory,administrativeParis} from './neighborhoodHistory';
 import {PlaceCards} from './placeCards';
 import {HeritageGardenLayer} from './heritageGardens';
 import { StreetDirectory } from './streetDirectory';
@@ -150,6 +152,14 @@ try{
   const inspector=new PlaceInspector(el('place-extra'));
   const heritage=new HeritageAtlas(scene);
   const urbanAtlas=new UrbanAtlas();
+  const quarterOverlay=new QuarterOverlay(scene);
+  const quarterButton=el<HTMLButtonElement>('quarter-mode');
+  const quarterTools=el<HTMLElement>('quarter-tools');
+  const quarterSelect=el<HTMLSelectElement>('quarter-pick');
+  const quarterHint=el<HTMLElement>('quarter-hint');
+  let quarterMode=false;
+  const quarterIndex=new Map<string,QuarterRecord>();
+  quarterButton.disabled=true;
   const placeCards=new PlaceCards(el('place-extra'),urbanAtlas);
   const heritageGardens=new HeritageGardenLayer(scene,message=>{
     el('heritage-gardens-status').textContent=message;
@@ -268,8 +278,115 @@ try{
       'voirie:'+Math.round(x/25)+':'+Math.round(z/25),
       label:name,kind:'voirie',x,z});
   };
+  const showQuarter=(quarter:QuarterRecord,x:number,z:number)=>{
+    clear();
+    quarterOverlay.show(quarter);
+    const key=(quarter.arr??0)+':'+quarter.name;
+    quarterSelect.value=key;
+    el('building-fields').classList.add('hidden');
+    el('selection').classList.add('heritage-selection');
+    el('selection').classList.remove('hidden');
+    el('selection-title').textContent='Quartier '+quarter.name;
+    const root=el('place-extra');
+    const brief=document.createElement('section');
+    brief.className='quarter-game-card';
+    const arr=quarter.arr;
+    const stats=document.createElement('p');
+    stats.textContent=(typeof arr==='number'&&arr>=1&&arr<=20?
+      arr+'e arrondissement · ':'Paris · ')+
+      'surface cartographique ≈ '+quarterAreaKm2(quarter).toLocaleString(
+       'fr-FR',{maximumFractionDigits:2})+' km²';
+    brief.append(stats);
+    const note=neighborhoodHistory(quarter.name);
+    const history=document.createElement('p');
+    history.textContent=note?.summary?.slice(0,220)??
+      'Histoire spécifique non encore documentée ; ce contour est administratif.';
+    brief.append(history);
+    const details=document.createElement('details');
+    const heading=document.createElement('summary');
+    heading.textContent='Histoire et données du quartier';
+    details.append(heading);
+    const full=document.createElement('p');
+    full.textContent=note?.summary??administrativeParis.summary;
+    details.append(full);
+    const provenance=document.createElement('a');
+    provenance.href=note?.source??administrativeParis.source;
+    provenance.textContent='Source historique : '+(note?.label??administrativeParis.label);
+    provenance.target='_blank';provenance.rel='noopener noreferrer';
+    details.append(provenance);
+    const source=document.createElement('a');
+    source.href='https://opendata.paris.fr/explore/dataset/quartier_paris/';
+    source.textContent='Contour : Ville de Paris (ODbL)';
+    source.target='_blank';source.rel='noopener noreferrer';
+    details.append(document.createElement('p'),source);
+    const missing=document.createElement('p');
+    missing.textContent='Population, services et équipements : données locales non encore intégrées. Les dossiers simulés sont accessibles par M.';
+    details.append(missing);
+    brief.append(details);root.replaceChildren(brief);
+    el('selection').scrollTop=0;
+    management?.setSelection({id:'quartier:'+key,label:'Quartier '+quarter.name,
+      kind:'lieu',x,z});
+  };
+  const setQuarterMode=(enabled:boolean)=>{
+    quarterMode=enabled&&urbanAtlas.quartersReady;
+    quarterButton.setAttribute('aria-pressed',String(quarterMode));
+    quarterTools.classList.toggle('hidden',!quarterMode);
+    quarterButton.title=quarterMode?'Quitter la sélection des quartiers':
+      'Choisir un quartier administratif';
+    quarterOverlay.clear();
+    tapSequence++;clear();
+    quarterSelect.value='';
+    quarterHint.textContent=quarterMode?
+      'Touchez la carte ou choisissez un quartier.':'';
+  };
+  quarterButton.addEventListener('click',()=>setQuarterMode(!quarterMode));
+  quarterSelect.addEventListener('change',()=>{
+    const q=quarterIndex.get(quarterSelect.value);
+    if(!q)return;
+    const anchor=urbanAtlas.quarterAnchors().find(a=>a.name===q.name);
+    if(!anchor)return;
+    camera.flyTo(anchor.x,anchor.z,1100);
+    showQuarter(q,anchor.x,anchor.z);
+  });
+  const populateQuarters=()=>{
+    if(!urbanAtlas.quartersReady){
+      quarterHint.textContent='Contours des quartiers non disponibles.';
+      return;
+    }
+    for(const q of [...urbanAtlas.quarterRecords()].sort(
+      (a,b)=>(a.arr??0)-(b.arr??0)||a.name.localeCompare(b.name,'fr'))){
+      const key=(q.arr??0)+':'+q.name;
+      quarterIndex.set(key,q);
+      const option=document.createElement('option');
+      option.value=key;
+      option.textContent=(q.arr??'?')+'e · '+q.name;
+      quarterSelect.append(option);
+    }
+    quarterButton.disabled=false;
+    quarterHint.textContent='80 quartiers officiels disponibles.';
+  };
   camera.onTap=(x,y)=>{
     const requestId=++tapSequence;
+    if(quarterMode){
+      const hit=scene.pick(x,y,mesh=>mesh.isPickable&&(
+        mesh===ground||mesh.name==='terrain-RGE-ALTI-IGN'||
+        Boolean(mesh.metadata)||mesh.name==='infrastructure-road'||
+        mesh.name.startsWith('routes-metropole-proches-')));
+      let px=hit?.pickedPoint?.x,pz=hit?.pickedPoint?.z;
+      if(px===undefined||pz===undefined){
+        const ray=scene.createPickingRay(x,y,Matrix.Identity(),camera.camera);
+        const scale=Math.abs(ray.direction.y)>1e-6?
+          -ray.origin.y/ray.direction.y:NaN;
+        px=Number.isFinite(scale)&&scale>0?
+          ray.origin.x+scale*ray.direction.x:camera.camera.target.x;
+        pz=Number.isFinite(scale)&&scale>0?
+          ray.origin.z+scale*ray.direction.z:camera.camera.target.z;
+      }
+      const quarter=urbanAtlas.quarterAt(px,pz);
+      if(quarter)showQuarter(quarter,px,pz);
+      else quarterHint.textContent='Aucun quartier administratif à cet endroit.';
+      return;
+    }
     const hit=scene.pick(x,y,mesh=>mesh.isPickable&&Boolean(mesh.metadata));
     const selected=hit?.pickedMesh&&hit.faceId>=0?
       getPickedBuilding(hit.pickedMesh as Mesh,hit.faceId):null;
@@ -305,7 +422,7 @@ try{
     }).catch(console.warn);
   };
   el('close').addEventListener('click',()=>{
-    tapSequence++;clear();
+    tapSequence++;clear();quarterOverlay.clear();quarterSelect.value='';
   });
   el('north').addEventListener('click',()=>camera.north());
   el('plus').addEventListener('click',()=>camera.zoom(.78));
@@ -453,7 +570,10 @@ try{
       terrainHeight(camera.camera.target.x,camera.camera.target.z);
     await Promise.allSettled([
       inspector.init(),heritageGardens.init(),
-      urbanAtlas.init().then(()=>management?.setNeighborhoods(urbanAtlas.quarterAnchors())),
+      urbanAtlas.init().then(()=>{
+         management?.setNeighborhoods(urbanAtlas.quarterAnchors());
+         populateQuarters();
+       }),
       ...(STABLE_RENDER?[water.init(),roads.init(),trees.init(),metroTrees.init(),
         installSurfaceLayer(scene,'data/metropole/surfaces/green.json',
           message=>{el('surface-status').textContent=message;})]:
