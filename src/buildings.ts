@@ -1,6 +1,7 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
 import earcut from 'earcut';
 import { project } from './geo';
+import { terrainHeight } from './terrain';
 import { roofProfile } from './roofGeometry';
 import { steppedHeight, shouldUseVolumes } from './volumeGeometry';
 import type { Building, Point, TileFile, LidarRoofPart } from './types';
@@ -98,6 +99,14 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
   for(const section of sections){
     const rings=section.rings.filter(x=>x.length>=3);
     if(!rings.length)continue;
+    // Un bâtiment reste vertical et son toit cohérent : niveau d'assise
+    // obtenu sur l'emprise documentée, et bases de façades suivant le MNT.
+    const exterior=rings[0];
+    const minX=Math.min(...exterior.map(p=>p.x));
+    const maxX=Math.max(...exterior.map(p=>p.x));
+    const minZ=Math.min(...exterior.map(p=>p.z));
+    const maxZ=Math.max(...exterior.map(p=>p.z));
+    const base=terrainHeight((minX+maxX)/2,(minZ+maxZ)/2);
     const profile=section.hasDocumentedRoof&&!section.lidar?
       roofProfile(b.roofInfo,height,rings[0]):null;
     const lidar=section.lidar;
@@ -114,8 +123,9 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
         const p=ring[j],q=ring[(j+1)%ring.length];
         const ph=measuredHeights?.[j]??profile?.heightAt(p)??section.height;
         const qh=measuredHeights?.[(j+1)%ring.length]??profile?.heightAt(q)??section.height;
-        const a:XYZ=[p.x,0,p.z],bb:XYZ=[q.x,0,q.z];
-        const c:XYZ=[q.x,qh,q.z],d:XYZ=[p.x,ph,p.z];
+        const a:XYZ=[p.x,terrainHeight(p.x,p.z),p.z];
+        const bb:XYZ=[q.x,terrainHeight(q.x,q.z),q.z];
+        const c:XYZ=[q.x,qh+base,q.z],d:XYZ=[p.x,ph+base,p.z];
         tri(walls,a,bb,c,index);
         tri(walls,a,c,d,index);
       }
@@ -127,8 +137,8 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
         const a=lidar.vertices[lidar.indices[k]];
         const bb=lidar.vertices[lidar.indices[k+1]];
         const c=lidar.vertices[lidar.indices[k+2]];
-        tri(roofs,[a[0],a[2],a[1]],[bb[0],bb[2],bb[1]],
-          [c[0],c[2],c[1]],index);
+        tri(roofs,[a[0],a[2]+base,a[1]],[bb[0],bb[2]+base,bb[1]],
+          [c[0],c[2]+base,c[1]],index);
       }
       continue;
     }
@@ -137,10 +147,10 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
       const a=points[triangles[k]],b2=points[triangles[k+1]],c=points[triangles[k+2]];
       const top=(p:{x:number;z:number})=>
         profile?.heightAt(p)??section.height;
-      const pa:XYZ=[a.x,top(a),a.z],pb:XYZ=[b2.x,top(b2),b2.z],pc:XYZ=[c.x,top(c),c.z];
+      const pa:XYZ=[a.x,top(a)+base,a.z],pb:XYZ=[b2.x,top(b2)+base,b2.z],pc:XYZ=[c.x,top(c)+base,c.z];
       if(profile&&profile.rise>.05){
         const center={x:(a.x+b2.x+c.x)/3,z:(a.z+b2.z+c.z)/3};
-        const pm:XYZ=[center.x,top(center),center.z];
+        const pm:XYZ=[center.x,top(center)+base,center.z];
         tri(roofs,pa,pb,pm,index);
         tri(roofs,pb,pc,pm,index);
         tri(roofs,pc,pa,pm,index);
@@ -240,7 +250,7 @@ export function highlightBuilding(scene:Scene,b:Building):Mesh[]{
   for(const polygon of b.polygons){
     const exterior=polygon[0];if(!exterior||exterior.length<3)continue;
     const points=exterior.map(p=>b.localCoordinates?
-      {x:p[0],z:p[1]}:project(p)).map(p=>new Vector3(p.x,b.height+.12,p.z));
+      {x:p[0],z:p[1]}:project(p)).map(p=>new Vector3(p.x,b.height+.12+terrainHeight(p.x,p.z),p.z));
     if(Vector3.Distance(points[0],points[points.length-1])>.01)
       points.push(points[0].clone());
     const line=MeshBuilder.CreateLines('selection',{points},scene);
