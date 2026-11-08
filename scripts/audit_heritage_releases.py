@@ -16,5 +16,14 @@ def main():
   assert re.fullmatch(r"PA\d{8}",ref) and ref in pop,"Référence ministérielle non vérifiée: "+ref
   assert ("'"+ref+"'") in source,"Fiche absente: "+ref
  assert len(re.findall(r"'PA\d{8}'\s*:\s*\{",source))>=p["previousCuratedReferenceCount"]+len(new)
+ history=p.get("history",[])
+ assert history and history[-1]["version"]==p["release"],"Ajouter une livraison dans le registre"
+ previously=set()
+ for version in history:
+  batch=version["references"]
+  assert batch,"Chaque version doit ajouter des monuments"
+  assert not set(batch)&previously,"Références historiques déjà livrées"
+  previously.update(batch)
+ assert history[-1]["references"]==new,"Actualiser les nouvelles fiches de cette version"
  print(p["release"],len(new),"nouvelles fiches sourcées; POP:",len(pop))
 if __name__=="__main__":main()

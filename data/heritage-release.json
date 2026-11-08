@@ -13,5 +13,19 @@
     "PA00086479"
   ],
   "minimumOfficialNotices": 2284,
-  "requireGrowthEachRelease": true
+  "requireGrowthEachRelease": true,
+  "history": [
+    {
+      "version": "0.26.1",
+      "references": [
+        "PA00089004",
+        "PA00088689",
+        "PA00088714",
+        "PA00088877",
+        "PA00088878",
+        "PA00088420",
+        "PA00086479"
+      ]
+    }
+  ]
 }
