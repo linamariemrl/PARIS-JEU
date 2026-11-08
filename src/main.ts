@@ -149,8 +149,8 @@ try{
   const selection:Mesh[]=[];
   const inspector=new PlaceInspector(el('place-extra'));
   const heritage=new HeritageAtlas(scene);
-  const urban=new UrbanAtlas();
-  const placeCards=new PlaceCards(el('place-extra'),urban);
+  const urbanAtlas=new UrbanAtlas();
+  const placeCards=new PlaceCards(el('place-extra'),urbanAtlas);
   const heritageGardens=new HeritageGardenLayer(scene,message=>{
     el('heritage-gardens-status').textContent=message;
   });
@@ -237,7 +237,7 @@ try{
       heritage.appendDetails(el('place-extra'),domain);
       management?.clearSelection();
     }else{
-      const found=urban.identify(x,z);
+      const found=urbanAtlas.identify(x,z);
       const kind=surfaces.identify(x,z)??water.identify(x,z);
       const place=placeCards.show(x,z,{kind:
         found.street?.name?.toLowerCase().startsWith('place ')?'square':
@@ -253,7 +253,7 @@ try{
   };
   const showRoad=(x:number,z:number)=>{
     clear();
-    const confirmed=urban.identify(x,z);
+    const confirmed=urbanAtlas.identify(x,z);
     const street=confirmed.street?null:streets.nearest(x,z);
     const name=confirmed.street?.name??street?.name??'Voie de Paris';
     el('selection-title').textContent=name;
@@ -447,7 +447,7 @@ try{
     else camera.camera.target.y=
       terrainHeight(camera.camera.target.x,camera.camera.target.z);
     await Promise.allSettled([
-      inspector.init(),heritageGardens.init(),urban.init(),
+      inspector.init(),heritageGardens.init(),urbanAtlas.init(),
       ...(STABLE_RENDER?[water.init(),roads.init(),trees.init(),metroTrees.init(),
         installSurfaceLayer(scene,'data/metropole/surfaces/green.json',
           message=>{el('surface-status').textContent=message;})]:
