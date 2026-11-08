@@ -2,7 +2,7 @@
  * Identifiants IRIS/îlots ne seront ajoutés qu'après import de référentiels
  * officiels, pour ne pas confondre ces découpages.
  */
-export type SpatialLevel='paris'|'arrondissement'|'quartier'|'ilot'|'commune';
+export type SpatialLevel='paris'|'arrondissement'|'quartier'|'ilot'|'commune'|'metropole';
 export type Provenance='official'|'derived'|'estimated'|'simulated';
 export interface Indicator{
   key:string;level:SpatialLevel;spatialId:string;value:number;
