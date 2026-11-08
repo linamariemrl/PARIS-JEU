@@ -70,11 +70,19 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew --no-daemon assembleDebug
+          # Archive binaire plus petite et délai réel de téléchargement
+          # suffisamment long pour les liaisons GitHub Actions variables.
+          sed -i 's/-all.zip/-bin.zip/g' gradle/wrapper/gradle-wrapper.properties
+          if grep -q '^networkTimeout=' gradle/wrapper/gradle-wrapper.properties; then
+            sed -i 's/^networkTimeout=.*/networkTimeout=120000/' gradle/wrapper/gradle-wrapper.properties
+          else
+            echo 'networkTimeout=120000' >> gradle/wrapper/gradle-wrapper.properties
+          fi
+          ./gradlew --no-daemon assembleDebug || ./gradlew --no-daemon assembleDebug
       - name: Publier l'APK comme artefact GitHub
         uses: actions/upload-artifact@v4
         with:
-          name: PARIS-Android-0_25-debug-${{ github.run_number }}
+          name: PARIS-Android-0_26-debug-${{ github.run_number }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
           if-no-files-found: error
