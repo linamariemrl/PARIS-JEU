@@ -1,8 +1,10 @@
 import {UrbanAtlas,type UrbanResult} from './urbanAtlas';
+import type {Building} from './types';
+import {project} from './geo';
 import {coordsOf} from './placeInspector';
 
 export type PlaceKind='building'|'road'|'square'|'garden'|'ground'|'water';
-export interface PlaceInfo{kind:PlaceKind;name?:string;buildingId?:string;}
+export interface PlaceInfo{kind:PlaceKind;name?:string;building?:Building;}
 function line(parent:HTMLElement,label:string,value:string):HTMLElement{
  const p=document.createElement('p');
  const key=document.createElement('strong');key.textContent=label+' : ';
@@ -30,7 +32,7 @@ function source(parent:HTMLElement,label:string,url:string):void{
 export class PlaceCards{
  private token=0;
  private addressController:AbortController|null=null;
- private addressCache=new Map<string,{value:string;distance:number}>();
+ private addressCache=new Map<string,{value:string;distance:number;x:number;z:number}>();
  constructor(private root:HTMLElement,private atlas:UrbanAtlas){}
  close():void{
   this.token++;
@@ -90,15 +92,16 @@ export class PlaceCards{
    section.append(small);
   }
   this.root.replaceChildren(section);
-  if(address)void this.resolveAddress(x,z,address,token);
+  if(address)void this.resolveAddress(x,z,address,token,place.building);
   return {title:name,urban};
  }
- private async resolveAddress(x:number,z:number,p:HTMLElement,token:number):Promise<void>{
+ private async resolveAddress(x:number,z:number,p:HTMLElement,token:number,building?:Building):Promise<void>{
   const coordinates=coordsOf(x,z);
   const cacheKey=Math.round(x/5)+':'+Math.round(z/5);
   const stored=this.addressCache.get(cacheKey);
   if(stored){
-   this.writeAddress(p,stored.value,stored.distance);return;
+   this.writeAddress(p,stored.value,stored.distance,
+    this.inBuilding(stored.x,stored.z,building));return;
   }
   const controller=new AbortController();
   this.addressController=controller;
@@ -127,12 +130,16 @@ export class PlaceCards{
     (coordinatesFound[1]-coordinates.lat)*metersZ);
    if(!Number.isFinite(distance)||distance>80)
     throw Error('Aucune adresse suffisamment proche');
-   this.addressCache.set(cacheKey,{value:label,distance});
+   this.addressCache.set(cacheKey,{value:label,distance,
+    x:(coordinatesFound[0]-2.3537)*metersX,
+    z:(coordinatesFound[1]-48.8545)*metersZ});
    while(this.addressCache.size>180){
     const oldest=this.addressCache.keys().next().value;
     if(oldest)this.addressCache.delete(oldest);else break;
    }
-   this.writeAddress(p,label,distance);
+   this.writeAddress(p,label,distance,this.inBuilding(
+    (coordinatesFound[0]-2.3537)*metersX,
+    (coordinatesFound[1]-48.8545)*metersZ,building));
   }catch(error){
    if(token!==this.token)return;
    p.textContent='';
@@ -147,11 +154,31 @@ export class PlaceCards{
    if(this.addressController===controller)this.addressController=null;
   }
  }
- private writeAddress(p:HTMLElement,label:string,distance:number):void{
+ private inBuilding(x:number,z:number,b?:Building):boolean{
+  if(!b)return false;
+  const ringContains=(ring:number[][]):boolean=>{
+   let inside=false;
+   for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+    const a=ring[i],d=ring[j];
+    if((a[1]>z)!==(d[1]>z)&&x<(d[0]-a[0])*
+       (z-a[1])/(d[1]-a[1])+a[0])inside=!inside;
+   }
+   return inside;
+  };
+  return b.polygons.some(poly=>{
+   const rings=poly.map(ring=>ring.map(pt=>b.localCoordinates?pt:
+    [project(pt).x,project(pt).z]));
+   return rings.length>0&&ringContains(rings[0])&&
+    !rings.slice(1).some(ringContains);
+  });
+ }
+ private writeAddress(p:HTMLElement,label:string,distance:number,matched:boolean):void{
   p.textContent='';
   const heading=document.createElement('strong');
-  heading.textContent='Adresse la plus proche : ';
-  const precision=distance<=12?
+  heading.textContent=matched?'Adresse officielle localisée : ':
+   'Adresse la plus proche : ';
+  const precision=matched?
+   ' (point d’adresse inclus dans l’emprise IGN ; plusieurs numéros possibles)':distance<=12?
    ' (point adressé voisin ; association cadastrale non confirmée)':
    ' (à '+Math.round(distance)+' m ; association au bâtiment non garantie)';
   p.append(heading,document.createTextNode(label+precision));

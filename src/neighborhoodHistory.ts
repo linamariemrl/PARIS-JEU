@@ -54,8 +54,8 @@ const notes:Record<string,HistoryNote>={
   label:"Ville de Paris"},
  'faubourg-saint-antoine':{
   summary:"Le faubourg Saint-Antoine est un ancien quartier d’artisans, particulièrement des métiers du bois et du meuble. Ses cours et passages rappellent l’activité d’ébénisterie et de menuiserie qui s’y développe.",
-  source:"https://www.paris.fr/pages/avec-breves-d-histoire-plongez-dans-la-memoire-des-halles-3455",
-  label:"Ville de Paris (contexte urbain général)"},
+  source:"https://cdn.paris.fr/paris/2022/06/29/945dbdf4531f5aabb4c2f5aa79dfe465.pdf",
+  label:"Ville de Paris — patrimoine du faubourg Saint-Antoine"},
  'picpus':{
   summary:"Le nom de Picpus vient d’un ancien village proche du faubourg Saint-Antoine, où était établi un ordre religieux connu sous ce nom. La mémoire de cette implantation subsiste dans la toponymie.",
   source:"https://www.paris.fr/pages/champs-elysees-cadet-picpus-connaissez-vous-l-origine-des-noms-de-ces-voies-parisiennes-7499",
