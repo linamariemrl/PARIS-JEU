@@ -11,6 +11,7 @@ import { MetroOverview } from './metroOverview';
 import { installTerritoryNavigation } from './territoryNavigation';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { TreeLayer } from './trees';
+import { installSurfaceLayer } from './surfaceLayer';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
@@ -227,6 +228,16 @@ try{
 
   // Données géographiques réelles : arbres municipaux, sans arbres
   // inventés ni textures photographiques, sans cycle visuel jour/nuit.
+  // Ordre de chargement : espaces verts, eau, chaussées. Chaque couche
+  // est vectorielle, stable dans le monde et indépendante des gestes.
+  void (async()=>{
+    await installSurfaceLayer(scene,'data/metropole/surfaces/green.json',
+      message=>el('surface-status').textContent=message);
+    await installSurfaceLayer(scene,'data/metropole/surfaces/water.json',
+      message=>el('water-status').textContent=message);
+    await installSurfaceLayer(scene,'data/metropole/surfaces/roads.json',
+      message=>el('roads-status').textContent=message);
+  })().catch(console.warn);
   void trees.init().catch(e=>{
     console.warn('Arbres municipaux non disponibles',e);
     el('trees-status').textContent='Arbres : données momentanément indisponibles';
