@@ -183,6 +183,58 @@ export class MetroTileManager{
     }
   }
 
+  /** Rechercher précisément une emprise IGN au point choisi, même si
+   * son maillage 3D est simplifié à cette échelle. Un seul chargement
+   * JSON est nécessaire au clic; aucune recherche durant le rendu.
+   */
+  async buildingAt(x:number,z:number):Promise<Building|null>{
+    if(!this.ready)return null;
+    const candidates=this.tiles.filter(t=>
+      Math.abs((t.ix+.5)*this.tileMeters-x)<this.tileMeters*1.5&&
+      Math.abs((t.iz+.5)*this.tileMeters-z)<this.tileMeters*1.5
+    ).sort((a,b)=>
+      Math.hypot((a.ix+.5)*this.tileMeters-x,(a.iz+.5)*this.tileMeters-z)-
+      Math.hypot((b.ix+.5)*this.tileMeters-x,(b.iz+.5)*this.tileMeters-z)
+    ).slice(0,5);
+    const inside=(ring:number[][]):boolean=>{
+      let answer=false;
+      for(let i=0,j=ring.length-1;i<ring.length;j=i++){
+        const a=ring[i],b=ring[j];
+        if(!a||!b)continue;
+        if((a[1]>z)!==(b[1]>z)){
+          const ab=(b[0]-a[0])*(z-a[1])/(b[1]-a[1])+a[0];
+          if(x<ab)answer=!answer;
+        }
+      }
+      return answer;
+    };
+    for(const info of candidates){
+      try{
+        let doc=this.tileCache.get(info.id);
+        if(!doc){
+          const result=await fetch(PREFIX+'tiles/'+info.id+'.json');
+          if(!result.ok)continue;
+          doc=await result.json() as TileFile;
+          if(doc.schema!==2||doc.id!==info.id||
+             !Array.isArray(doc.buildings)||doc.buildings.length!==info.count)
+            continue;
+          doc.buildings.forEach(b=>b.localCoordinates=true);
+          this.remember(info.id,doc);
+        }
+        for(const building of doc.buildings){
+          if(building.polygons.some(poly=>poly[0]&&
+             inside(poly[0])&&!poly.slice(1).some(inside))){
+            building.localCoordinates=true;
+            return building;
+          }
+        }
+      }catch(error){
+        console.warn('Fiche IGN : secteur indisponible',info.id,error);
+      }
+    }
+    return null;
+  }
+
   private report():void{
     const exact=[...this.active.values()].reduce((n,v)=>n+v.count,0);
     const notice=exact.toLocaleString('fr-FR')+
