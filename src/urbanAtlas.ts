@@ -1,7 +1,7 @@
 import {neighborhoodHistory,administrativeParis,type HistoryNote} from './neighborhoodHistory';
 interface StreetRecord{id:string;name:string;type:string;orig:string;history:string;
  opening:string;polygons:number[][][][];}
-interface QuarterRecord{name:string;arr?:number;polygons:number[][][][];}
+export interface QuarterRecord{name:string;arr?:number;polygons:number[][][][];}
 interface IndexDoc{schema:1;streets:StreetRecord[];quarters:QuarterRecord[];}
 type Bounds=[number,number,number,number];
 interface SpatialRecord{street:StreetRecord;bounds:Bounds;area:number;}
@@ -39,6 +39,16 @@ export class UrbanAtlas{
  private quarters:Array<{quarter:QuarterRecord;bounds:Bounds}>=[];
  private loaded=false;
  get ready(){return this.loaded;}
+ get quartersReady(){return this.quarters.length===80;}
+ quarterRecords():readonly QuarterRecord[]{return this.quarters.map(q=>q.quarter);}
+ quarterAt(x:number,z:number):QuarterRecord|null{
+  for(const item of this.quarters){
+   const [a,b,c,d]=item.bounds;
+   if(x>=a&&x<=c&&z>=b&&z<=d&&inside(item.quarter.polygons,x,z))
+    return item.quarter;
+  }
+  return null;
+ }
  quarterNames():string[]{return this.quarters.map(q=>q.quarter.name);}
  quarterAnchors():Array<{name:string;x:number;z:number}>{
   return this.quarters.map(({quarter,bounds})=>({name:quarter.name,
@@ -46,12 +56,29 @@ export class UrbanAtlas{
  }
  async init():Promise<void>{
   try{
-   const response=await fetch(import.meta.env.BASE_URL+
-     'data/metropole/places/urban-places.json');
-   if(!response.ok)return;
-   const doc=await response.json() as IndexDoc;
-   if(doc.schema!==1||!Array.isArray(doc.streets)||
-      !Array.isArray(doc.quarters)||doc.quarters.length<75)return;
+   // Un index de quartiers léger reste utilisable si l'API des rues
+   // dépasse son délai ou échoue : la sélection ne dépend pas des voies.
+   let doc:IndexDoc|null=null;
+   try{
+    const full=await fetch(import.meta.env.BASE_URL+
+      'data/metropole/places/urban-places.json');
+    if(full.ok){
+     const value=await full.json() as IndexDoc;
+     if(value.schema===1&&Array.isArray(value.streets)&&
+        Array.isArray(value.quarters)&&value.quarters.length===80)
+      doc=value;
+    }
+   }catch(error){console.warn('Index des voies indisponible',error);}
+   if(!doc){
+    const response=await fetch(import.meta.env.BASE_URL+
+      'data/metropole/places/quarters.json');
+    if(!response.ok)throw Error('Contours officiels des quartiers indisponibles');
+    const light=await response.json() as {schema:number;quarters:QuarterRecord[]};
+    if(light.schema!==1||!Array.isArray(light.quarters)||
+       light.quarters.length!==80)
+     throw Error('Atlas des 80 quartiers incomplet');
+    doc={schema:1,streets:[],quarters:light.quarters};
+   }
    let indexed=0;
    for(const street of doc.streets){
     // Construire l'index spatial en tranches pour conserver l'interactivité
@@ -77,7 +104,7 @@ export class UrbanAtlas{
     const bounds=bbox(quarter.polygons);
     if(bounds)this.quarters.push({quarter,bounds});
    }
-   this.loaded=this.byCell.size>0&&this.quarters.length>=75;
+   this.loaded=this.byCell.size>0&&this.quarters.length===80;
    console.info('Atlas historique :',doc.streets.length,'voies',
      this.quarters.length,'quartiers');
   }catch(error){console.warn('Nomenclature officielle temporairement absente',error);}
@@ -91,12 +118,7 @@ export class UrbanAtlas{
    return x>=a&&x<=c&&z>=b&&z<=d;
   }).sort((a,b)=>a.area-b.area);
   const street=candidates.find(({street})=>inside(street.polygons,x,z))?.street??null;
-  let quarter:QuarterRecord|null=null;
-  for(const item of this.quarters){
-   const [a,b,c,d]=item.bounds;
-   if(x<a||x>c||z<b||z>d)continue;
-   if(inside(item.quarter.polygons,x,z)){quarter=item.quarter;break;}
-  }
+  const quarter=this.quarterAt(x,z);
   const note=quarter?(neighborhoodHistory(quarter.name)??administrativeParis):null;
   const fragments=[street?.orig,street?.history,street?.opening]
    .filter((v):v is string=>Boolean(v&&v.trim()));
