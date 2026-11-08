@@ -26,10 +26,14 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Préparer le SDK Android déjà installé sur GitHub
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
         run: |
-          echo "SDK Android : ${ANDROID_HOME:-/usr/local/lib/android/sdk}"
-          yes | sdkmanager --licenses >/dev/null || true
-          sdkmanager "platforms;android-35" "build-tools;35.0.0" "platform-tools"
+          echo "SDK Android : $ANDROID_HOME"
+          MANAGER="$(find "$ANDROID_HOME/cmdline-tools" -type f -name sdkmanager | head -n 1)"
+          test -n "$MANAGER" || { echo "sdkmanager non trouvé dans le SDK"; exit 1; }
+          yes | "$MANAGER" --sdk_root="$ANDROID_HOME" --licenses >/dev/null || true
+          "$MANAGER" --sdk_root="$ANDROID_HOME" "platforms;android-35" "build-tools;35.0.0" "platform-tools"
       - name: Installer les dépendances du jeu
         run: npm install --no-audit --no-fund
       - name: Préparer les données officielles
