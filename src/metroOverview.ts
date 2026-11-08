@@ -38,6 +38,7 @@ export class MetroOverview {
  private overviewMaterial:StandardMaterial;
  private roofMaterial:StandardMaterial;
  private roofsOnly=false;
+ private roofLODEnabled=true;
  private lastUpdate=0;
  private lastX=Infinity;
  private lastZ=Infinity;
@@ -90,6 +91,14 @@ export class MetroOverview {
   }
  }
 
+ /** Désactivation immédiate sans retirer une seule tuile IGN.
+  * Contrôle de sécurité accessible dans le panneau Détails.
+  */
+ setRoofLodEnabled(enabled:boolean):void{
+  this.roofLODEnabled=enabled;
+  if(!enabled)this.setRoofMode(false);
+ }
+
  hasTile(id:string):boolean{
   const group=this.byTile.get(id);
   return Boolean(group&&this.loaded.has(group.id));
@@ -123,7 +132,7 @@ export class MetroOverview {
   const now=performance.now();
   // Niveaux de détail avec hystérésis. Jamais de bascule durant
   // une rotation, un zoom tactile ou une animation de caméra.
-  if(!isMoving){
+  if(this.roofLODEnabled&&!isMoving){
     if(!this.roofsOnly&&radius>7800)this.setRoofMode(true);
     else if(this.roofsOnly&&radius<5400)this.setRoofMode(false);
   }
