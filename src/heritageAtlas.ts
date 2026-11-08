@@ -16,7 +16,8 @@ export interface HeritageArea{
  description:string;facts:string[];sourceUrl:string;
  geometryUrl:string;provenance:string;
 }
-interface HeritagePayload{schema:1;areas:HeritageArea[];}
+type HeritagePoint=[id:string,name:string,x:number,z:number,category:string];
+interface HeritagePayload{schema:1;areas:HeritageArea[];points?:HeritagePoint[];}
 const TILE=150;
 const key=(x:number,z:number)=>Math.floor(x/TILE)+':'+Math.floor(z/TILE);
 function ringContains(r:number[][],x:number,z:number):boolean{
@@ -56,6 +57,7 @@ export class HeritageAtlas{
  private byRef=new Map<string,Notice>();
  private areas:HeritageArea[]=[];
  private areaIndex=new Map<string,HeritageArea[]>();
+ private pointIndex=new Map<string,HeritagePoint[]>();
  private lines:Mesh[]=[];
  constructor(private scene:Scene){singleton=this;}
  async init():Promise<void>{
@@ -82,6 +84,15 @@ export class HeritageAtlas{
      this.areas=doc.areas.filter(a=>a.id&&a.name&&
        Array.isArray(a.polygons)&&a.polygons.length>0);
      this.indexAreas();
+     if(Array.isArray(doc.points)){
+      for(const point of doc.points){
+       if(!Array.isArray(point)||point.length!==5||!point[0]||
+        !Number.isFinite(point[2])||!Number.isFinite(point[3]))continue;
+       const k=key(point[2],point[3]);
+       const bucket=this.pointIndex.get(k)??[];
+       bucket.push(point);this.pointIndex.set(k,bucket);
+      }
+     }
      this.drawBoundaries();
     }
    }
@@ -139,7 +150,7 @@ export class HeritageAtlas{
   }
   // Uniquement si un contour OSM de tourisme/monument couvre le
   // centre géométrique : une simple proximité ne suffit jamais.
-  const site=this.identify(cx,cz);
+  const site=this.identifyArea(cx,cz);
   if(site?.kind==='monument'){
    b.heritageRef='osm:'+site.id;
    b.heritageName=site.name;
@@ -147,6 +158,29 @@ export class HeritageAtlas{
   }
  }
  identify(x:number,z:number):HeritageArea|null{
+  // Les statues et fontaines OSM ont souvent un point mais aucun contour.
+  // La fiche présente clairement ce statut, sans créer de faux bâtiment.
+  const ix=Math.floor(x/TILE),iz=Math.floor(z/TILE);
+  let closest:HeritagePoint|null=null,minimum=14;
+  for(let dx=-1;dx<=1;dx++)for(let dz=-1;dz<=1;dz++){
+   const items=this.pointIndex.get((ix+dx)+':'+(iz+dz))??[];
+   for(const p of items){
+    const distance=Math.hypot(p[2]-x,p[3]-z);
+    if(distance<minimum){minimum=distance;closest=p;}
+   }
+  }
+  if(closest){
+   const url='https://www.openstreetmap.org/node/'+closest[0];
+   return {id:'osm-point-'+closest[0],name:closest[1],
+    kind:'monument',polygons:[],
+    description:'Petit monument ou objet patrimonial localisé par un point OSM. Sa taille et son emprise ne sont pas connues par cette source.',
+    facts:['Catégorie cartographique : '+closest[4]],
+    sourceUrl:url,geometryUrl:url,
+    provenance:'Point cartographique OpenStreetMap ; proximité de sélection de 14 m, non emprise au sol.'};
+  }
+  return this.identifyArea(x,z);
+ }
+ private identifyArea(x:number,z:number):HeritageArea|null{
   // La plus petite emprise est prioritaire : bâtiment dans un jardin.
   let result:HeritageArea|null=null,area=Infinity;
   for(const p of this.areaIndex.get(key(x,z))??[]){
