@@ -69,6 +69,11 @@ export class MobileCamera{
   get isStreetMode(){return this.street;}
   get isOrbitMode(){return this.orbit;}
   get isPrecisionMode(){return this.precision;}
+  get isMoving(){
+    return this.pointers.size>0||this.transition!==null||
+      this.wheelRadius!==null||Math.hypot(this.panX,this.panZ)>2||
+      Math.abs(this.yawVelocity)>.03||Math.abs(this.pitchVelocity)>.03;
+  }
   setPrecisionMode(v:boolean){this.precision=v;}
   setOrbitMode(v:boolean){
     this.orbit=v&&!this.street;
