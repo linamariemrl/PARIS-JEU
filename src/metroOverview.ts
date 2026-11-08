@@ -1,5 +1,7 @@
 import {Color3,Color4,Mesh,MeshBuilder,Scene,StandardMaterial} from '@babylonjs/core';
 
+import {terrainHeight} from './terrain';
+
 const PREFIX=import.meta.env.BASE_URL+'data/metropole/overview/';
 interface TileRef {id:string;ix:number;iz:number;offset:number;count:number;}
 interface Group {
@@ -149,7 +151,7 @@ export class MetroOverview {
    matrix[k+8]=hide?0:-d*s;
    matrix[k+10]=hide?0:d*c;
    matrix[k+12]=x;
-   matrix[k+13]=h/2;
+   matrix[k+13]=h/2+terrainHeight(x,z);
    matrix[k+14]=z;
    matrix[k+15]=1;
   }
