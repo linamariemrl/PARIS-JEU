@@ -48,7 +48,7 @@ export class TreeLayer{
   private conifers:Mesh;
   private initialized=false;
   private count=0;
-  constructor(private scene:Scene,private onStatus:(label:string)=>void){
+  constructor(scene:Scene,private onStatus:(label:string)=>void){
     this.trunks=MeshBuilder.CreateCylinder('arbres-troncs-geolocalises',{
       height:1,diameter:1,tessellation:6
     },scene);
