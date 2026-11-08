@@ -77,7 +77,8 @@ def records_datagouv():
     domain=urlsplit(url).hostname or ""
     print("Fournisseur CSV déclaré par data.gouv.fr :",domain,flush=True)
     if urlsplit(url).scheme!="https" or not (
-        domain.endswith(".gouv.fr") or domain.endswith(".opendatasoft.com")):
+        domain.endswith(".gouv.fr") or domain.endswith(".opendatasoft.com") or
+        domain=="ministere-culture.s3.sbg.io.cloud.ovh.net"):
         raise ValueError("Miroir CSV hors domaine approuvé : "+domain)
     req=Request(url,headers={"User-Agent":"PARIS-SKYLINES-Pop/0.19"})
     with urlopen(req,timeout=210) as binary:
