@@ -25,7 +25,7 @@ class ContinuityInvariants(unittest.TestCase):
 
     def test_camera_has_proportional_near_clip_plane(self):
         code=(ROOT/"src/mobileCamera.ts").read_text(encoding="utf-8")
-        self.assertIn("clamp(this.camera.radius/24,.15,1100)",code)
+        self.assertIn("clamp(this.camera.radius/60,.15,380)",code)
         self.assertIn("this.camera.maxZ=65000",code)
 
 if __name__=="__main__":

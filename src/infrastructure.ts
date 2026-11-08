@@ -28,10 +28,10 @@ export const NEUTRAL_PALETTE = {
   foot: .85, square: .89, border: .47
 } as const;
 const COLORS: Record<Kind, [number, number, number]> = {
-  water: [.54,.66,.70],
+  water: [.73,.75,.76],
   bank: [.78,.76,.71],
   sidewalk: [.82,.81,.78],
-  road: [.66,.67,.66],
+  road: [.73,.73,.72],
   foot: [.78,.77,.72],
   square: [.77,.76,.72],
 };
@@ -85,6 +85,7 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   // Une eau sombre ne doit pas devenir noire en lumière rasante ;
   // les tons cartographiques sont stables quel que soit le 360°.
   material.disableLighting=true;
+  material.emissiveColor=new Color3(.025,.025,.025);
   material.backFaceCulling = false;
   mesh.material = material;
   mesh.isPickable = false;

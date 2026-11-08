@@ -4,7 +4,7 @@ import {
 } from '@babylonjs/core';
 import { createMaterials, getPickedBuilding, highlightBuilding } from './buildings';
 import { MobileCamera } from './mobileCamera';
-import { loadInfrastructure, addAdministrativeOutline, loadMetropolitanOutlines } from './infrastructure';
+import { loadInfrastructure } from './infrastructure';
 import { TileManager } from './tileManager';
 import { MetroTileManager } from './metroTiles';
 import { MetroOverview } from './metroOverview';
@@ -47,7 +47,7 @@ try{
   },true);
   const scene=new Scene(engine);
   scene.fogMode=Scene.FOGMODE_NONE;
-  scene.clearColor=new Color4(.82,.83,.82,1);
+  scene.clearColor=new Color4(.89,.89,.88,1);
   const ambient=new HemisphericLight('éclairage-fixe',new Vector3(0,1,0),scene);
   ambient.intensity=.69;
   ambient.groundColor=new Color3(.62,.62,.62);
@@ -63,11 +63,13 @@ try{
   });
 
   const ground=MeshBuilder.CreateGround('sol-neutre',
-    {width:40000,height:40000},scene);
+    {width:80000,height:80000,sideOrientation:Mesh.DOUBLESIDE},scene);
+  ground.position.y=-.5;
   const mat=new StandardMaterial('sol-gris-clair',scene);
   // Fond minéral mat, pour séparer les espaces ouverts des façades.
   // Aucun éclairage temporel ni texture ajoutée.
-  mat.diffuseColor=new Color3(.78,.79,.78);
+  mat.diffuseColor=new Color3(.86,.86,.85);
+  mat.emissiveColor=new Color3(.06,.06,.06);
   mat.disableLighting=true;
   mat.specularColor=Color3.Black();
   mat.freeze();
@@ -90,7 +92,7 @@ try{
   let fourthCount=0;
   const showCounts=()=>{
     counter.textContent=(fourthCount+metroCount+overviewCount)
-      .toLocaleString('fr-FR')+' bâtiments représentés';
+      .toLocaleString('fr-FR')+' bâtiments chargés dans la vue';
   };
   const manager=new TileManager(scene,materials,(message,count)=>{
     state.textContent=message;
@@ -334,8 +336,6 @@ try{
         error.textContent=err instanceof Error?err.message:'Source IGN indisponible';
         error.classList.remove('hidden');
       }),
-      loadMetropolitanOutlines(scene).catch(()=>
-        addAdministrativeOutline(scene)),
       loadInfrastructure(scene).then(message=>{
         // Si la géométrie du 4e arrive après l'eau IGN, on neutralise
         // son ancien polygone : jamais de double rendu au même endroit.

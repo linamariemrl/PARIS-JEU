@@ -1,4 +1,4 @@
-"""Régressions v0.21 : lisibilité du sol, eau unique et LOD mobile réversible."""
+"""Régressions v0.22 : lisibilité du sol, eau unique et budget LOD mobile."""
 import json
 from pathlib import Path
 import unittest
@@ -39,13 +39,23 @@ class VisualRecovery(unittest.TestCase):
         self.assertIn("CreateGround('toits-legers-'",lod)
         self.assertIn("setRoofLodEnabled(enabled:boolean)",lod)
         self.assertIn("this.roofLODEnabled&&!isMoving",lod)
-        self.assertIn("group.mesh.setEnabled(!enabled)",lod)
-        self.assertIn("group.roof.setEnabled(enabled)",lod)
-        self.assertIn("mesh.setEnabled(!this.roofsOnly)",lod)
-        self.assertIn("roof.setEnabled(this.roofsOnly)",lod)
+        self.assertIn("group.mesh.setEnabled(this.visible.has(id)&&!enabled)",lod)
+        self.assertIn("group.roof.setEnabled(this.visible.has(id)&&enabled)",lod)
+        self.assertIn("mesh.setEnabled(this.visible.has(group.id)&&!this.roofsOnly)",lod)
+        self.assertIn("roof.setEnabled(this.visible.has(group.id)&&this.roofsOnly)",lod)
         self.assertIn("this.writeTile(state.buffer",lod)
         self.assertIn("this.writeRoofTile(state.roofBuffer",lod)
         self.assertNotIn("diffuseTexture",lod)
+
+    def test_gpu_budget_and_grey_floor(self):
+        lod=source("src/metroOverview.ts")
+        entry=source("src/main.ts")
+        self.assertIn("const maxInstances=this.roofsOnly?36000:16000",lod)
+        self.assertIn("const maxGroups=this.roofsOnly?7:4",lod)
+        self.assertIn("this.trimLoaded(x,z)",lod)
+        self.assertIn("ground.position.y=-.5",entry)
+        self.assertIn("mat.emissiveColor=new Color3(.06,.06,.06)",entry)
+        self.assertNotIn("loadMetropolitanOutlines(scene)",entry)
 
     def test_mobile_has_independent_fallback_switches(self):
         html=source("index.html")
@@ -54,7 +64,7 @@ class VisualRecovery(unittest.TestCase):
         self.assertIn('id="roof-lod-toggle"',html)
         self.assertIn("water.setVisible(waterToggle.checked)",entry)
         self.assertIn("overview.setRoofLodEnabled(lodToggle.checked)",entry)
-        self.assertIn("PROTOTYPE 0.21",html)
+        self.assertIn("PROTOTYPE 0.22",html)
 
 if __name__=="__main__":
     unittest.main()

@@ -61,7 +61,7 @@ export class MetroTileManager{
 
   setQuality(level:'low'|'medium'|'high'):void{
     // Le budget borne les maillages EXACTS et non les bâtiments représentés.
-    this.budget=level==='low'?10:level==='high'?24:18;
+    this.budget=level==='low'?6:level==='high'?14:10;
     this.lastPointX=Infinity;
   }
 
@@ -92,6 +92,16 @@ export class MetroTileManager{
     }).slice(0,this.budget);
 
     this.wanted=new Set(candidates.map(t=>t.id));
+    // Au grand dézoom, restituer les tuiles exactes à la couche LOD
+    // déjà disponible : les anciennes géométries ne saturent plus le GPU.
+    if(radius>5600){
+      for(const [id,data] of this.active){
+        if(!this.overview?.hasTile(id))continue;
+        this.overview.setDetailed(id,false);
+        for(const mesh of data.meshes)mesh.dispose();
+        this.active.delete(id);
+      }
+    }
     for(const id of this.wanted){
       const current=this.active.get(id);
       if(current)current.lastUsed=now;

@@ -174,7 +174,7 @@ export class MobileCamera{
     if(this.street&&!this.transition)this.lockStreetEye();
     // Au zoom métropolitain, un plan proche trop petit dégrade les
     // valeurs du depth buffer : bâtiments et routes scintillent.
-    const near=this.street ? 0.12 : clamp(this.camera.radius/24,.15,1100);
+    const near=this.street ? 0.12 : clamp(this.camera.radius/60,.15,380);
     if(Math.abs(this.camera.minZ-near)>.025)this.camera.minZ=near;
   }
   private transitionEnd=0;

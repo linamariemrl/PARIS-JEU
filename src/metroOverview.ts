@@ -31,6 +31,7 @@ export class MetroOverview {
  private manifest:Manifest|null=null;
  private byTile=new Map<string,Group>();
  private loaded=new Map<string,VisibleGroup>();
+ private visible=new Set<string>();
  private inFlight=new Set<string>();
  private failures=new Map<string,number>();
  private detailed=new Set<string>();
@@ -130,31 +131,74 @@ export class MetroOverview {
   const m=this.manifest;
   if(!m)return;
   const now=performance.now();
-  // Niveaux de détail avec hystérésis. Jamais de bascule durant
-  // une rotation, un zoom tactile ou une animation de caméra.
+  // Les volumes restent prioritaires à proximité ; au loin, deux
+  // triangles par toiture divisent par six le coût géométrique.
+  // La bascule est différée pendant les gestes pour éviter le scintillement.
   if(this.roofLODEnabled&&!isMoving){
-    if(!this.roofsOnly&&radius>7800)this.setRoofMode(true);
-    else if(this.roofsOnly&&radius<5400)this.setRoofMode(false);
+   if(!this.roofsOnly&&radius>3900)this.setRoofMode(true);
+   else if(this.roofsOnly&&radius<3000)this.setRoofMode(false);
   }
-  if(now-this.lastUpdate<190)return;
-  const moving=Math.hypot(x-this.lastX,z-this.lastZ)>120||
-   Math.abs(radius-this.lastRadius)>120;
-  if(!moving&&this.inFlight.size>0)return;
+  if(now-this.lastUpdate<260)return;
+  const moved=Math.hypot(x-this.lastX,z-this.lastZ)>95||
+   Math.abs(radius-this.lastRadius)>100;
+  if(!moved&&now-this.lastUpdate<1600)return;
   this.lastUpdate=now;this.lastX=x;this.lastZ=z;this.lastRadius=radius;
   const cellSize=m.tileMeters*m.cellsPerGroup;
-  const range=Math.max(3000,Math.min(45000,radius*2.2));
-  const near=m.groups.filter(g=>
-   Math.hypot((g.gx+.5)*cellSize-x,(g.gz+.5)*cellSize-z)<range+2300
+  const range=Math.max(2500,Math.min(16000,radius*1.35));
+  const candidates=m.groups.filter(g=>
+   Math.hypot((g.gx+.5)*cellSize-x,(g.gz+.5)*cellSize-z)<range+1800
   ).sort((a,b)=>{
    const da=Math.hypot((a.gx+.5)*cellSize-x,(a.gz+.5)*cellSize-z);
    const db=Math.hypot((b.gx+.5)*cellSize-x,(b.gz+.5)*cellSize-z);
    return da-db;
   });
+  // Budget GPU explicite. Auparavant le dézoom laissait jusqu'à 280 000
+  // instances actives ; Android tombait à 15 FPS. Les groupes ne sont
+  // pas des bâtiments supplémentaires et leur source reste intacte.
+  const maxInstances=this.roofsOnly?36000:16000;
+  const maxGroups=this.roofsOnly?7:4;
+  const near:Group[]=[];
+  let count=0;
+  for(const group of candidates){
+   if(near.length>=maxGroups)break;
+   if(near.length&&count+group.count>maxInstances)continue;
+   near.push(group);
+   count+=group.count;
+  }
+  this.visible=new Set(near.map(g=>g.id));
+  for(const [id,state] of this.loaded){
+   state.mesh.setEnabled(this.visible.has(id)&&!this.roofsOnly);
+   state.roof.setEnabled(this.visible.has(id)&&this.roofsOnly);
+  }
+  this.trimLoaded(x,z);
   for(const group of near){
-   if(this.inFlight.size>=2)break;
+   if(this.inFlight.size>=1)break;
    if(this.loaded.has(group.id)||this.inFlight.has(group.id)||
-      now-(this.failures.get(group.id)??-Infinity)<retryAfterMs)continue;
+    now-(this.failures.get(group.id)??-Infinity)<retryAfterMs)continue;
    void this.load(group);
+  }
+  this.report();
+ }
+
+ /** Les buffers hors champ sont évincés : la mémoire GPU reste bornée
+  * même après une longue promenade et les données IGN restent au serveur.
+  */
+ private trimLoaded(x:number,z:number):void{
+  if(this.loaded.size<=9)return;
+  const cellSize=(this.manifest?.tileMeters??800)*
+   (this.manifest?.cellsPerGroup??4);
+  const unused=[...this.loaded.entries()]
+   .filter(([id])=>!this.visible.has(id))
+   .sort((a,b)=>{
+    const distance=(g:Group)=>Math.hypot(
+     (g.gx+.5)*cellSize-x,(g.gz+.5)*cellSize-z);
+    return distance(b[1].group)-distance(a[1].group);
+   });
+  for(const [id,state] of unused){
+   if(this.loaded.size<=9)break;
+   state.mesh.dispose();
+   state.roof.dispose();
+   this.loaded.delete(id);
   }
  }
 
@@ -196,11 +240,10 @@ export class MetroOverview {
  private setRoofMode(enabled:boolean):void{
   if(this.roofsOnly===enabled)return;
   this.roofsOnly=enabled;
-  for(const group of this.loaded.values()){
-   // Une seule représentation visible par groupe : jamais d'intersection
-   // entre ses cuboïdes et leurs toitures LOD.
-   group.mesh.setEnabled(!enabled);
-   group.roof.setEnabled(enabled);
+  for(const [id,group] of this.loaded){
+   // Les groupes hors du budget visuel ne sollicitent pas le GPU.
+   group.mesh.setEnabled(this.visible.has(id)&&!enabled);
+   group.roof.setEnabled(this.visible.has(id)&&enabled);
   }
  }
 
@@ -238,6 +281,7 @@ export class MetroOverview {
    if(!response.ok)throw Error('Groupe absent : '+group.id);
    const bytes=await response.arrayBuffer();
    if(bytes.byteLength!==group.bytes)throw Error('Groupe incomplet : '+group.id);
+   if(!this.visible.has(group.id))return;
    const source=new DataView(bytes);
    const matrices=new Float32Array(group.count*16);
    const rooftops=new Float32Array(group.count*16);
@@ -277,8 +321,8 @@ export class MetroOverview {
    }
    mesh.freezeWorldMatrix();
    roof.freezeWorldMatrix();
-   mesh.setEnabled(!this.roofsOnly);
-   roof.setEnabled(this.roofsOnly);
+   mesh.setEnabled(this.visible.has(group.id)&&!this.roofsOnly);
+   roof.setEnabled(this.visible.has(group.id)&&this.roofsOnly);
    this.loaded.set(group.id,{
      mesh,roof,buffer:matrices,roofBuffer:rooftops,bytes:source,group
    });
@@ -292,16 +336,22 @@ export class MetroOverview {
    this.inFlight.delete(group.id);
    this.lastUpdate=0;
    this.lastX=Infinity;
+   this.trimLoaded(this.lastX===Infinity?0:this.lastX,this.lastZ===Infinity?0:this.lastZ);
    this.report();
   }
  }
 
  private report():void{
   const total=this.manifest?.totalBuildings??0;
-  const represented=[...this.loaded.values()].reduce((sum,g)=>sum+g.group.count,0);
+  const active=[...this.loaded.values()].filter(s=>
+   this.visible.has(s.group.id));
+  const shown=active.reduce((sum,state)=>sum+
+   state.group.tiles.reduce((subtotal,tile)=>subtotal+
+    (this.detailed.has(tile.id)?0:tile.count),0),0);
+  this.currentCount=shown;
   this.onStatus(
-   represented.toLocaleString('fr-FR')+'/'+total.toLocaleString('fr-FR')+
-   ' bâtiments couverts par les volumes LOD simplifiés'+
+   shown.toLocaleString('fr-FR')+' volumes IGN visibles (réserve '+
+   total.toLocaleString('fr-FR')+' bâtiments)'+
    (this.failures.size?' · '+this.failures.size+' groupes à réessayer':''),
    this.currentCount);
  }
