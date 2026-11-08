@@ -14,6 +14,7 @@ import { TreeLayer } from './trees';
 import { MetroTreeLayer } from './metroTrees';
 import { SurfaceTileManager } from './surfaceTiles';
 import { AdaptiveResolution } from './adaptiveResolution';
+import { TerrainModule } from './terrain';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
@@ -60,7 +61,10 @@ try{
   mat.diffuseColor=new Color3(.89,.88,.86);
   mat.specularColor=Color3.Black();
   mat.freeze();
-  ground.material=mat;ground.isPickable=false;
+  ground.material=mat;ground.isPickable=true;
+  const terrain=new TerrainModule(scene,status=>{
+    el('terrain-status').textContent=status;
+  });
 
   const camera=new MobileCamera(scene,canvas);
   const resolution=new AdaptiveResolution(engine);
@@ -239,37 +243,26 @@ try{
     }
   });
 
-  // Données géographiques réelles : arbres municipaux, sans arbres
-  // inventés ni textures photographiques, sans cycle visuel jour/nuit.
-  // Les surfaces restent vectorielles ; tuiles proches pour le détail,
-  // contours officiels simplifiés en vue métropolitaine.
-  void surfaces.init().then(()=>{
-    el('water-status').textContent='Hydrographie IGN : couverture SIG indexée';
-    el('roads-status').textContent='Chaussées PVP : couverture SIG indexée';
-  }).catch(console.warn);
-  void metroTrees.init().catch(e=>{
-    console.warn('Arbres des arrondissements non disponibles',e);
-    el('metro-trees-status').textContent='Arbres des arrondissements : source absente';
-  });
-  void trees.init().catch(e=>{
-    console.warn('Arbres municipaux non disponibles',e);
-    el('trees-status').textContent='Arbres : données momentanément indisponibles';
-  });
-  void loadMetropolitanOutlines(scene).catch(()=>{
-    void addAdministrativeOutline(scene).catch(console.warn);
-  });
-  void loadInfrastructure(scene).then(message=>{
-    urban.textContent=message+' (couleurs et matériaux schématiques)';
-  }).catch(e=>{
-    console.warn('Réseau des rues non disponible',e);
-    urban.textContent='Voirie non disponible';
-  });
-  void overview.init().catch(console.warn);
-  void metro.init().catch(console.warn);
-  void manager.init().catch((e:unknown)=>{
-    error.textContent=e instanceof Error?e.message:'Données IGN non disponibles';
+  // La source IGN est chargée en premier pour que toutes les couches
+  // utilisent un seul repère vertical. Si l'IGN n'est pas publié,
+  // les géométries restent dans leur mode plan initial, sans crash.
+  void (async()=>{
+    await terrain.init(ground);
+    await Promise.allSettled([
+      surfaces.init(),metroTrees.init(),trees.init(),
+      overview.init(),metro.init(),manager.init(),
+      loadMetropolitanOutlines(scene).catch(()=>
+        addAdministrativeOutline(scene)),
+      loadInfrastructure(scene).then(message=>{
+        urban.textContent=message+' (surfaces réelles, teintes schématiques)';
+      })
+    ]);
+    el('water-status').textContent='Surfaces d’eau IGN : emprises sectorisées';
+    el('roads-status').textContent='Chaussées PVP : emprises sectorisées';
+  })().catch((e:unknown)=>{
+    console.warn('Initialisation géographique',e);
+    error.textContent=e instanceof Error?e.message:'Initialisation géographique indisponible';
     error.classList.remove('hidden');
-    state.textContent='Données indisponibles';
   });
   if('caches' in window)
     void window.caches.delete('ortho-4e-images').catch(console.warn);
