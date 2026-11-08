@@ -20,26 +20,53 @@ SOURCES={
  "quarters":"quartier_paris"
 }
 def download(dataset):
- url=BASE+dataset+"/exports/geojson?lang=fr"
- error=None
- for attempt in range(2):
-  try:
-   request=urllib.request.Request(url,headers={
-    "User-Agent":"PARIS-le-jeu/0.26 - urban history documentary export",
-    "Accept":"application/geo+json,application/json"})
-   with urllib.request.urlopen(request,timeout=42) as response:
-    # Limite 24 Mio afin de ne pas épuiser la RAM du runner ou du téléphone.
-    raw=response.read(80*1024*1024+1)
-   if len(raw)>24*1024*1024:raise ValueError("Export geoJSON trop volumineux")
-   doc=json.loads(raw)
-   if doc.get("type")!="FeatureCollection" or not isinstance(doc.get("features"),list):
-    raise ValueError("Export non GeoJSON")
-   return doc["features"]
-  except Exception as exc:
-   error=exc
-   print("Données parisiennes indisponibles",dataset,str(exc)[:130],flush=True)
-   if attempt==0:time.sleep(1)
- raise RuntimeError(f"Source {dataset} absente: {error}")
+ """Lire l'API Explore 2.1 en pages de 100 résultats.
+ L'export GeoJSON global (plus de 80 Mo) était rejeté, ce qui privait
+ le jeu du répertoire historique des rues, malgré un build vert.
+ """
+ from urllib.parse import urlencode
+ selected={
+  "denominations-emprises-voies-actuelles":
+   "id,typo_min,typvoie,prevoie,nomvoie,orig,historique,ouverture,geo_shape",
+  "quartier_paris":"l_qu,c_ar,geom",
+ }[dataset]
+ offset=0
+ total=None
+ while total is None or offset<total:
+  query=urlencode({"limit":100,"offset":offset,"select":selected,"lang":"fr"})
+  url=BASE+dataset+"/records?"+query
+  error=None
+  page=None
+  for attempt in range(3):
+   try:
+    request=urllib.request.Request(url,headers={
+     "User-Agent":"PARIS-le-jeu/0.26 - urban history paginated documentary data",
+     "Accept":"application/json"})
+    with urllib.request.urlopen(request,timeout=45) as response:
+     raw=response.read(6*1024*1024+1)
+    if len(raw)>6*1024*1024:raise ValueError("Page de données trop volumineuse")
+    page=json.loads(raw)
+    if not isinstance(page.get("results"),list):
+     raise ValueError("Résultats API absents")
+    break
+   except Exception as exc:
+    error=exc
+    if attempt<2:time.sleep(attempt+1)
+  if page is None:
+   raise RuntimeError(f"API paginée {dataset} offset={offset}: {error}")
+  if total is None:
+   total=page.get("total_count")
+   if not isinstance(total,int) or total<1 or total>10000:
+    raise RuntimeError(f"Pagination non couverte : {total} lignes")
+  items=page["results"]
+  if not items and offset<total:
+   raise RuntimeError(f"Page vide prématurée {dataset}: {offset}/{total}")
+  for properties in items:
+   geo=properties.get("geo_shape") or properties.get("geom")
+   yield {"properties":properties,"geometry":geo}
+  offset+=len(items)
+  if offset%1000<100 or offset>=total:
+   print("Répertoire",dataset,":",offset,"/",total,flush=True)
 def field(p,*names):
  for name in names:
   v=p.get(name)
@@ -48,7 +75,7 @@ def field(p,*names):
 def fixed(v,max_chars=480):
  return " ".join(v.split())[:max_chars] if isinstance(v,str) else ""
 def polygon_geometry(feature):
- geometry=feature.get("geometry") or feature.get("properties",{}).get("geo_shape")
+ geometry=feature.get("geometry") or feature.get("properties",{}).get("geo_shape") or feature.get("properties",{}).get("geom")
  if not isinstance(geometry,dict):return []
  if geometry.get("type") not in ("Polygon","MultiPolygon"):return []
  try:
@@ -62,7 +89,7 @@ def polygon_geometry(feature):
   for part in polys:
    if part.area<1e-11:continue
    # Tolérance métrique de ~50 cm (convertie de 1/111132°).
-   part=part.simplify(.0000045,preserve_topology=True)
+   part=part.simplify(.000006,preserve_topology=True)
    rings=[]
    for ring in [part.exterior,*part.interiors]:
     pts=[[round((lon-LON)*MX,1),round((lat-LAT)*MZ,1)]
@@ -83,7 +110,7 @@ def names(p):
  name=field(p,"nomvoie","nom_voie","nomvoie_libelle")
  full=" ".join(x for x in (typ,article,name) if x)
  if full:return full
- return field(p,"denom_com","l_voie","libelle","nom_complet",
+ return field(p,"typo_min","typo","denom_com","l_voie","libelle","nom_complet",
               "denom_complete","denomination_complete","nom")
 def encode():
  streets=[]
