@@ -1,153 +1,115 @@
 import {
   Color3, Matrix, Mesh, MeshBuilder, Quaternion,
-  Scene, StandardMaterial, Vector3,
+  Scene, StandardMaterial, Vector3
 } from '@babylonjs/core';
 
-/** Arbres réels Paris Data ; géométrie végétale stylisée, instanciée en GPU.
- * Une instance n'est pas un relevé précis de couronne ou de tronc.
+/** Arbres à coordonnées publiées par la Ville de Paris.
+ * Couronnes et troncs schématiques : localisation mesurée, silhouette illustrative.
+ * Les instances restent constamment chargées : aucun saut au zoom ou à 360°.
  */
-interface TreeRecord {
-  id: string;
-  x: number;
-  z: number;
-  h: number;
-  estimated: boolean;
-  genre: string;
-  domain: string;
-  circumference: number;
+interface TreeRecord{
+  id:string;x:number;z:number;h:number;estimated:boolean;
+  genre:string;domain:string;circumference:number;
 }
-interface TreesJson {
-  schema: number;
-  source: string;
-  count: number;
-  trees: TreeRecord[];
+interface TreesJson{
+  schema:number;source:string;sourceUrl?:string;count:number;trees:TreeRecord[];
 }
-export type QualityLevel = 'low' | 'medium' | 'high';
-
-const evergreen = new Set(['pinus', 'picea', 'cedrus', 'abies', 'taxus', 'thuja', 'cupressus']);
-const qIdentity = Quaternion.Identity();
-
-function material(scene: Scene, name: string, rgb: [number, number, number]): StandardMaterial {
-  const mat = new StandardMaterial(name, scene);
-  mat.diffuseColor = new Color3(...rgb);
-  mat.specularColor = new Color3(0.025, 0.035, 0.018);
-  mat.backFaceCulling = true;
+export type QualityLevel='low'|'medium'|'high';
+const evergreen=new Set(['pinus','picea','cedrus','abies','taxus','thuja','cupressus','chamaecyparis']);
+const identity=Quaternion.Identity();
+const tones:[number,number,number][]=[
+  [.34,.47,.35], [.40,.49,.32], [.31,.43,.37], [.47,.52,.35]
+];
+function material(scene:Scene,name:string,rgb:[number,number,number]){
+  const mat=new StandardMaterial(name,scene);
+  mat.diffuseColor=new Color3(...rgb);
+  mat.specularColor=Color3.Black();
+  mat.freeze();
   return mat;
 }
-function matrix(x: number, y: number, z: number, sx: number, sy: number, sz: number): number[] {
-  return Array.from(Matrix.Compose(new Vector3(sx, sy, sz), qIdentity, new Vector3(x, y, z)).toArray());
+function transform(x:number,y:number,z:number,sx:number,sy:number,sz:number):number[]{
+  return Array.from(Matrix.Compose(new Vector3(sx,sy,sz),identity,
+    new Vector3(x,y,z)).toArray());
 }
-function hash(s: string): number {
-  let h = 2166136261;
-  for (const c of s) h = Math.imul(h ^ c.charCodeAt(0), 16777619);
-  return h >>> 0;
+function stableHash(value:string):number{
+  let out=2166136261;
+  for(let i=0;i<value.length;i++)out=Math.imul(out^value.charCodeAt(i),16777619);
+  return out>>>0;
 }
-function installInstances(mesh: Mesh, matrices: number[]) {
-  mesh.thinInstanceSetBuffer('matrix', new Float32Array(matrices), 16, true);
+function instances(mesh:Mesh,transforms:number[]){
+  if(!transforms.length){mesh.setEnabled(false);return;}
+  mesh.thinInstanceSetBuffer('matrix',new Float32Array(transforms),16,true);
   mesh.thinInstanceRefreshBoundingInfo();
-  mesh.isPickable = false;
+  mesh.setEnabled(true);
 }
-export class TreeLayer {
-  private quality: QualityLevel = 'medium';
-  private trees: TreeRecord[] = [];
-  private trunks: Mesh;
-  private crowns: Mesh;
-  private conifers: Mesh;
-  private loaded = false;
-  private x = 0;
-  private z = 0;
-  private previousX = Number.POSITIVE_INFINITY;
-  private previousZ = Number.POSITIVE_INFINITY;
-  private onStatus: (text: string) => void;
-
-  constructor(scene: Scene, onStatus: (text: string) => void) {
-    this.onStatus = onStatus;
-    this.trunks = MeshBuilder.CreateCylinder('arbres-troncs', {
-      height: 1, diameter: 1, tessellation: 5
-    }, scene);
-    this.trunks.material = material(scene, 'écorce', [0.39, 0.32, 0.25]);
-    this.crowns = MeshBuilder.CreateSphere('arbres-feuillus', {
-      diameter: 2, segments: 5
-    }, scene);
-    this.crowns.material = material(scene, 'feuillage', [0.25, 0.43, 0.28]);
-    this.conifers = MeshBuilder.CreateCylinder('arbres-persistants', {
-      height: 2, diameterBottom: 2, diameterTop: 0.02, tessellation: 7
-    }, scene);
-    this.conifers.material = material(scene, 'conifères', [0.18, 0.32, 0.26]);
-    for (const mesh of [this.trunks, this.crowns, this.conifers]) {
-      mesh.isPickable = false;
+export class TreeLayer{
+  private trunks:Mesh;
+  private leaves:Mesh[];
+  private conifers:Mesh;
+  private initialized=false;
+  private count=0;
+  constructor(private scene:Scene,private onStatus:(label:string)=>void){
+    this.trunks=MeshBuilder.CreateCylinder('arbres-troncs-geolocalises',{
+      height:1,diameter:1,tessellation:6
+    },scene);
+    this.trunks.material=material(scene,'écorce-douce',[.43,.39,.32]);
+    this.leaves=tones.map((tone,i)=>{
+      const mesh=MeshBuilder.CreateSphere('houppiers-ton-'+i,{
+        diameter:2,segments:6
+      },scene);
+      mesh.material=material(scene,'feuillage-mat-'+i,tone);
+      return mesh;
+    });
+    this.conifers=MeshBuilder.CreateCylinder('arbres-persistants-geolocalises',{
+      height:2,diameterBottom:2,diameterTop:.03,tessellation:8
+    },scene);
+    this.conifers.material=material(scene,'persistants-mat',[.27,.38,.33]);
+    for(const mesh of [this.trunks,...this.leaves,this.conifers]){
+      mesh.isPickable=false;
       mesh.setEnabled(false);
+      mesh.freezeWorldMatrix();
     }
   }
-
-  async init() {
-    const url = import.meta.env.BASE_URL + 'data/4e/trees.json';
-    const response = await fetch(url);
-    if (!response.ok) {
-      this.onStatus('Arbres : données municipales absentes');
-      return;
-    }
-    const parsed = await response.json() as TreesJson;
-    if (parsed.schema !== 1 || !Array.isArray(parsed.trees) || parsed.trees.length < 100) {
-      throw new Error('Données des arbres invalides');
-    }
-    this.trees = parsed.trees.filter(t =>
-      Number.isFinite(t.x) && Number.isFinite(t.z) &&
-      Number.isFinite(t.h) && t.h >= 2 && t.h <= 38
-    );
-    this.loaded = true;
-    this.render();
-  }
-
-  setQuality(q: QualityLevel) {
-    this.quality = q;
-    if (this.loaded) this.render();
-  }
-
-  update(x: number, z: number) {
-    if (!this.loaded) return;
-    if (Math.hypot(x-this.previousX, z-this.previousZ) < 110) return;
-    this.x = x;
-    this.z = z;
-    this.render();
-  }
-
-  private render() {
-    this.previousX = this.x;
-    this.previousZ = this.z;
-    const radius = this.quality === 'low' ? 520 :
-                   this.quality === 'medium' ? 720 : 1000;
-    const radiusSquared = radius * radius;
-    const keep = this.quality === 'low' ? 0.28 :
-                 this.quality === 'medium' ? 0.60 : 1;
-    const trunks: number[] = [];
-    const crowns: number[] = [];
-    const conifers: number[] = [];
-    let shown = 0;
-    for (const tree of this.trees) {
-      const dx = tree.x - this.x, dz = tree.z - this.z;
-      if (dx*dx + dz*dz > radiusSquared) continue;
-      if ((hash(tree.id) % 1000) / 1000 >= keep) continue;
-      const h = tree.h;
-      const trunkH = h * 0.46;
-      const diameter = tree.circumference > 0 ?
-        Math.min(1.2, Math.max(0.17, tree.circumference / (Math.PI * 100))) :
-        Math.max(0.18, Math.min(0.65, h * 0.042));
-      const radius = Math.max(1, Math.min(4.8, h * 0.27));
-      trunks.push(...matrix(tree.x, trunkH / 2, tree.z, diameter, trunkH, diameter));
-      if (evergreen.has((tree.genre || '').trim().toLowerCase())) {
-        conifers.push(...matrix(tree.x, h * 0.66, tree.z, radius, h * 0.34, radius));
-      } else {
-        crowns.push(...matrix(tree.x, h * 0.74, tree.z, radius, h * 0.28, radius));
+  async init():Promise<void>{
+    const response=await fetch(import.meta.env.BASE_URL+'data/4e/trees.json');
+    if(!response.ok){this.onStatus('Arbres municipaux : fichier absent');return;}
+    const data=await response.json() as TreesJson;
+    if(data.schema!==1||!Array.isArray(data.trees)||data.trees.length<100||
+       data.trees.length!==data.count)throw Error('Arbres de Paris non vérifiés');
+    const trunk:number[]=[],crown=tones.map(()=>[] as number[]),cone:number[]=[];
+    const seen=new Set<string>();
+    for(const item of data.trees){
+      if(seen.has(item.id)||!Number.isFinite(item.x)||!Number.isFinite(item.z)||
+         !Number.isFinite(item.h)||item.h<2||item.h>38)continue;
+      seen.add(item.id);
+      const h=item.h;
+      const trunkHeight=h*.50;
+      const width=item.circumference>0?
+        Math.min(1.05,Math.max(.16,item.circumference/(100*Math.PI))):
+        Math.min(.58,Math.max(.17,h*.035));
+      trunk.push(...transform(item.x,trunkHeight/2,item.z,width,trunkHeight,width));
+      const species=(item.genre||'').trim().toLowerCase();
+      const radius=Math.min(5.8,Math.max(1.2,h*.30));
+      if(evergreen.has(species)){
+        cone.push(...transform(item.x,h*.68,item.z,
+          radius*.88,h*.30,radius*.88));
+      }else{
+        const index=stableHash(item.id+'-'+species)%tones.length;
+        crown[index].push(...transform(item.x,h*.76,item.z,
+          radius,h*.26,radius));
       }
-      shown++;
     }
-    for (const [mesh, matrices] of [
-      [this.trunks, trunks], [this.crowns, crowns], [this.conifers, conifers],
-    ] as [Mesh, number[]][]) {
-      mesh.setEnabled(matrices.length > 0);
-      installInstances(mesh, matrices);
-    }
-    this.onStatus(shown.toLocaleString('fr-FR') + ' arbres');
+    instances(this.trunks,trunk);
+    this.leaves.forEach((mesh,index)=>instances(mesh,crown[index]));
+    instances(this.conifers,cone);
+    this.count=seen.size;
+    this.initialized=true;
+    this.onStatus(this.count.toLocaleString('fr-FR')+
+      ' arbres municipaux géolocalisés (4e ; couronnes stylisées)');
+  }
+  setQuality(_quality:QualityLevel):void{
+    // Aucun retrait d'arbres lorsqu'on change la résolution GPU.
+    if(this.initialized)this.onStatus(this.count.toLocaleString('fr-FR')+
+      ' arbres conservés au zoom et en rotation');
   }
 }
