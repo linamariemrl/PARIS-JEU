@@ -1,7 +1,6 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
 import earcut from 'earcut';
 import { project } from './geo';
-import { terrainHeight } from './terrain';
 import { roofProfile } from './roofGeometry';
 import { steppedHeight, shouldUseVolumes } from './volumeGeometry';
 import type { Building, Point, TileFile, LidarRoofPart } from './types';
@@ -14,28 +13,6 @@ interface Batch {
 }
 const empty=():Batch=>({positions:[],indices:[],faceToBuilding:[]});
 export type BuildingMaterials={wall:StandardMaterial;roof:StandardMaterial};
-/** Couleurs indicatives : les codes fiscaux décrivent les matériaux et
- * non la teinte effectivement photographiée de chaque couverture.
- * Façades sans couleur déduite abusivement des gros murs cadastraux.
- */
-function roofTint(code?:string):[number,number,number]{
-  if(!code||!/^\d{2}$/.test(code))return [.60,.64,.68];
-  switch(code[0]){
-    case '1':return [.66,.48,.40]; // tuile : terre cuite, symbolique
-    case '2':return [.44,.49,.53]; // ardoise
-    case '3':return [.64,.69,.72]; // zinc / aluminium
-    case '4':return [.68,.67,.62]; // béton
-    default:return [.60,.64,.68];
-  }
-}
-function wallTint(usage:string):[number,number,number]{
-  const name=(usage||'').toLowerCase();
-  if(/relig|église|eglise|cathed|cathéd|culte/.test(name))
-    return [.86,.82,.72];
-  if(/industri|entrepôt|entrepot/.test(name))
-    return [.80,.80,.77];
-  return [.91,.875,.80];
-}
 
 function tri(out:Batch,a:XYZ,b:XYZ,c:XYZ,id:number){
   const start=out.positions.length/3;
@@ -99,14 +76,6 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
   for(const section of sections){
     const rings=section.rings.filter(x=>x.length>=3);
     if(!rings.length)continue;
-    // Un bâtiment reste vertical et son toit cohérent : niveau d'assise
-    // obtenu sur l'emprise documentée, et bases de façades suivant le MNT.
-    const exterior=rings[0];
-    const minX=Math.min(...exterior.map(p=>p.x));
-    const maxX=Math.max(...exterior.map(p=>p.x));
-    const minZ=Math.min(...exterior.map(p=>p.z));
-    const maxZ=Math.max(...exterior.map(p=>p.z));
-    const base=terrainHeight((minX+maxX)/2,(minZ+maxZ)/2);
     const profile=section.hasDocumentedRoof&&!section.lidar?
       roofProfile(b.roofInfo,height,rings[0]):null;
     const lidar=section.lidar;
@@ -123,9 +92,8 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
         const p=ring[j],q=ring[(j+1)%ring.length];
         const ph=measuredHeights?.[j]??profile?.heightAt(p)??section.height;
         const qh=measuredHeights?.[(j+1)%ring.length]??profile?.heightAt(q)??section.height;
-        const a:XYZ=[p.x,terrainHeight(p.x,p.z),p.z];
-        const bb:XYZ=[q.x,terrainHeight(q.x,q.z),q.z];
-        const c:XYZ=[q.x,qh+base,q.z],d:XYZ=[p.x,ph+base,p.z];
+        const a:XYZ=[p.x,0,p.z],bb:XYZ=[q.x,0,q.z];
+        const c:XYZ=[q.x,qh,q.z],d:XYZ=[p.x,ph,p.z];
         tri(walls,a,bb,c,index);
         tri(walls,a,c,d,index);
       }
@@ -137,8 +105,8 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
         const a=lidar.vertices[lidar.indices[k]];
         const bb=lidar.vertices[lidar.indices[k+1]];
         const c=lidar.vertices[lidar.indices[k+2]];
-        tri(roofs,[a[0],a[2]+base,a[1]],[bb[0],bb[2]+base,bb[1]],
-          [c[0],c[2]+base,c[1]],index);
+        tri(roofs,[a[0],a[2],a[1]],[bb[0],bb[2],bb[1]],
+          [c[0],c[2],c[1]],index);
       }
       continue;
     }
@@ -147,10 +115,10 @@ function addBuilding(walls:Batch,roofs:Batch,b:Building,index:number){
       const a=points[triangles[k]],b2=points[triangles[k+1]],c=points[triangles[k+2]];
       const top=(p:{x:number;z:number})=>
         profile?.heightAt(p)??section.height;
-      const pa:XYZ=[a.x,top(a)+base,a.z],pb:XYZ=[b2.x,top(b2)+base,b2.z],pc:XYZ=[c.x,top(c)+base,c.z];
+      const pa:XYZ=[a.x,top(a),a.z],pb:XYZ=[b2.x,top(b2),b2.z],pc:XYZ=[c.x,top(c),c.z];
       if(profile&&profile.rise>.05){
         const center={x:(a.x+b2.x+c.x)/3,z:(a.z+b2.z+c.z)/3};
-        const pm:XYZ=[center.x,top(center)+base,center.z];
+        const pm:XYZ=[center.x,top(center),center.z];
         tri(roofs,pa,pb,pm,index);
         tri(roofs,pb,pc,pm,index);
         tri(roofs,pc,pa,pm,index);
@@ -163,12 +131,12 @@ export function createMaterials(scene:Scene):BuildingMaterials{
   // Deux matériaux en tout pour les immeubles du 4e. Aucun atlas,
   // photographie, façade dessinée ni teinte selon les matériaux fiscaux.
   const wall=new StandardMaterial('maquette-murs-blanc-mat',scene);
-  wall.diffuseColor=Color3.White();
+  wall.diffuseColor=new Color3(.94,.94,.94);
   wall.specularColor=Color3.Black();
   wall.backFaceCulling=false;
   wall.freeze();
   const roof=new StandardMaterial('maquette-toits-gris-mat',scene);
-  roof.diffuseColor=Color3.White();
+  roof.diffuseColor=new Color3(.79,.79,.79);
   roof.specularColor=Color3.Black();
   roof.backFaceCulling=false;
   roof.freeze();
@@ -183,16 +151,6 @@ function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
   const normals:number[]=[];
   VertexData.ComputeNormals(batch.positions,batch.indices,normals);
   vd.normals=normals;
-  // Couleurs par face, regroupées dans les mêmes deux draw calls.
-  // Aucune ressource bitmap, chaque triangle garde la teinte du bâtiment.
-  const colors:number[]=[];
-  for(const index of batch.faceToBuilding){
-    const building=tile.buildings[index];
-    const tint=kind==='roof'?roofTint(building?.roofCode):
-      wallTint(building?.usage??'');
-    for(let i=0;i<3;i++)colors.push(tint[0],tint[1],tint[2],1);
-  }
-  vd.colors=colors;
   const mesh=new Mesh('batiments-'+kind+'-'+tile.id,scene);
   vd.applyToMesh(mesh);
   mesh.material=mat;
@@ -250,7 +208,7 @@ export function highlightBuilding(scene:Scene,b:Building):Mesh[]{
   for(const polygon of b.polygons){
     const exterior=polygon[0];if(!exterior||exterior.length<3)continue;
     const points=exterior.map(p=>b.localCoordinates?
-      {x:p[0],z:p[1]}:project(p)).map(p=>new Vector3(p.x,b.height+.12+terrainHeight(p.x,p.z),p.z));
+      {x:p[0],z:p[1]}:project(p)).map(p=>new Vector3(p.x,b.height+.12,p.z));
     if(Vector3.Distance(points[0],points[points.length-1])>.01)
       points.push(points[0].clone());
     const line=MeshBuilder.CreateLines('selection',{points},scene);
