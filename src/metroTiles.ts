@@ -1,4 +1,5 @@
 import type {Mesh,Scene} from '@babylonjs/core';
+import {tagHeritageBuilding} from './heritageAtlas';
 import {createTileProgressive} from './buildings';
 import type {MetroOverview} from './metroOverview';
 import type {Building,TileFile} from './types';
@@ -94,7 +95,7 @@ export class MetroTileManager{
     this.wanted=new Set(candidates.map(t=>t.id));
     // Au grand dézoom, restituer les tuiles exactes à la couche LOD
     // déjà disponible : les anciennes géométries ne saturent plus le GPU.
-    if(radius>5600){
+    if(radius>5600&&!isMoving){
       for(const [id,data] of this.active){
         if(!this.overview?.hasTile(id))continue;
         this.overview.setDetailed(id,false);
@@ -167,8 +168,10 @@ export class MetroTileManager{
         if(data.schema!==2||data.id!==tile.id||
           data.buildings.length!==tile.count||!data.localCoordinates)
           throw Error('Tuile IGN invalide : '+tile.id);
-        for(const building of data.buildings as Building[])
+        for(const building of data.buildings as Building[]){
           building.localCoordinates=true;
+          tagHeritageBuilding(building);
+        }
         this.remember(tile.id,data);
       }
       if(!this.wanted.has(tile.id))return;

@@ -2,6 +2,7 @@ import type { Mesh, Scene } from '@babylonjs/core';
 import { createTile } from './buildings';
 import type { Manifest, TileFile, TileInfo } from './types';
 import type { RoofInfo } from './roofGeometry';
+import {tagHeritageBuilding} from './heritageAtlas';
 import type { CityVolumeGroup, LidarRoof } from './types';
 import { shouldUseVolumes } from './volumeGeometry';
 
@@ -182,6 +183,7 @@ export class TileManager {
           building.volumes=volumes;
         }
       }
+      data.buildings.forEach(tagHeritageBuilding);
       const meshes=createTile(this.scene,data,this.materials);
       this.active.set(tile.id,{meshes,count:data.buildings.length});
     } catch (e) {

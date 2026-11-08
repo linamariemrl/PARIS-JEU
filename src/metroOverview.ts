@@ -236,6 +236,8 @@ export class MetroOverview {
    if(!this.roofsOnly&&radius>3900)this.setRoofMode(true);
    else if(this.roofsOnly&&radius<3000)this.setRoofMode(false);
   }
+  // Pendant le geste, préserver les maillages présents et le budget GPU.
+  if(isMoving&&this.lastUpdate>0)return;
   if(now-this.lastUpdate<260)return;
   const moved=Math.hypot(x-this.lastX,z-this.lastZ)>95||
    Math.abs(radius-this.lastRadius)>100;

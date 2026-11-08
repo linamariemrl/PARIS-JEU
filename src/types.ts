@@ -35,6 +35,8 @@ export interface Building {
   roofInfo?: RoofInfo;
   volumes?: CityVolumeGroup;
   floors?: number;
+  heritageRef?:string;
+  heritageName?:string;
 }
 export interface TileInfo { id: string; ix: number; iz: number; count: number; }
 export interface Manifest {

@@ -14,7 +14,7 @@ interface Batch {
   faceToBuilding:number[];
 }
 const empty=():Batch=>({positions:[],indices:[],faceToBuilding:[]});
-export type BuildingMaterials={wall:StandardMaterial;roof:StandardMaterial};
+export type BuildingMaterials={wall:StandardMaterial;roof:StandardMaterial;heritageWall:StandardMaterial;heritageRoof:StandardMaterial};
 
 function tri(out:Batch,a:XYZ,b:XYZ,c:XYZ,id:number){
   const start=out.positions.length/3;
@@ -154,7 +154,15 @@ export function createMaterials(scene:Scene):BuildingMaterials{
   roof.specularColor=Color3.Black();
   roof.backFaceCulling=false;
   roof.freeze();
-  return {wall,roof};
+  const heritageWall=new StandardMaterial('monuments-beige-pierre',scene);
+  heritageWall.diffuseColor=new Color3(.87,.80,.69);
+  heritageWall.specularColor=Color3.Black();
+  heritageWall.backFaceCulling=false;heritageWall.freeze();
+  const heritageRoof=new StandardMaterial('monuments-beige-toits',scene);
+  heritageRoof.diffuseColor=new Color3(.78,.71,.62);
+  heritageRoof.specularColor=Color3.Black();
+  heritageRoof.backFaceCulling=false;heritageRoof.freeze();
+  return {wall,roof,heritageWall,heritageRoof};
 }
 function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
                 batch:Batch,mat:StandardMaterial):Mesh|null{
@@ -174,13 +182,18 @@ function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
   return mesh;
 }
 export function createTile(scene:Scene,tile:TileFile,materials:BuildingMaterials):Mesh[]{
-  const walls=empty(),roofs=empty();
-  tile.buildings.forEach((b,index)=>addBuilding(walls,roofs,b,index));
+  const walls=empty(),roofs=empty(),beigeWalls=empty(),beigeRoofs=empty();
+  tile.buildings.forEach((b,index)=>addBuilding(
+    b.heritageRef?beigeWalls:walls,b.heritageRef?beigeRoofs:roofs,b,index));
   const result:Mesh[]=[];
-  const w=asMesh(scene,tile,'wall',walls,materials.wall);
-  const r=asMesh(scene,tile,'roof',roofs,materials.roof);
-  if(w)result.push(w);
-  if(r)result.push(r);
+  for(const [kind,geometry,material] of [
+    ['wall',walls,materials.wall],['roof',roofs,materials.roof],
+    ['wall',beigeWalls,materials.heritageWall],
+    ['roof',beigeRoofs,materials.heritageRoof]
+  ] as const){
+    const mesh=asMesh(scene,tile,kind,geometry,material);
+    if(mesh)result.push(mesh);
+  }
   return result;
 }
 
@@ -195,21 +208,27 @@ export async function createTileProgressive(
   scene:Scene,tile:TileFile,materials:BuildingMaterials,
   stillWanted:()=>boolean=()=>true
 ):Promise<Mesh[]>{
-  const walls=empty(),roofs=empty();
+  const walls=empty(),roofs=empty(),beigeWalls=empty(),beigeRoofs=empty();
   const batch=100;
   for(let i=0;i<tile.buildings.length;i++){
     if(i>0&&i%batch===0){
       await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
       if(!stillWanted())return [];
     }
-    addBuilding(walls,roofs,tile.buildings[i],i);
+    const b=tile.buildings[i];
+    addBuilding(b.heritageRef?beigeWalls:walls,
+      b.heritageRef?beigeRoofs:roofs,b,i);
   }
   if(!stillWanted())return [];
   const result:Mesh[]=[];
-  const w=asMesh(scene,tile,'wall',walls,materials.wall);
-  const r=asMesh(scene,tile,'roof',roofs,materials.roof);
-  if(w)result.push(w);
-  if(r)result.push(r);
+  for(const [kind,geometry,material] of [
+    ['wall',walls,materials.wall],['roof',roofs,materials.roof],
+    ['wall',beigeWalls,materials.heritageWall],
+    ['roof',beigeRoofs,materials.heritageRoof]
+  ] as const){
+    const mesh=asMesh(scene,tile,kind,geometry,material);
+    if(mesh)result.push(mesh);
+  }
   return result;
 }
 export function getPickedBuilding(mesh:Mesh,faceId:number):Building|null{

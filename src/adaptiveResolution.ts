@@ -44,8 +44,8 @@ export class AdaptiveResolution{
    let scale=this.current;
    // En mouvement, limiter les changements aux situations de FPS
    // réellement dégradés : l'utilisateur ne subit pas de flou variable.
-   if(this.lowCount>=3&&(!isMoving||this.smoothedFps<32)){
-     scale=Math.min(this.max,Math.round((scale+.12)*100)/100);
+   if(this.lowCount>=(isMoving?2:3)&&(!isMoving||this.smoothedFps<35)){
+     scale=Math.min(this.max,Math.round((scale+(isMoving?.18:.12))*100)/100);
      this.lowCount=0;
    }else if(this.highCount>=5){
      scale=Math.max(this.base,Math.round((scale-.06)*100)/100);

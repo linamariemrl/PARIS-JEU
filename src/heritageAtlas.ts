@@ -1,4 +1,4 @@
-import {Color3,Mesh,MeshBuilder,Scene,StandardMaterial,Vector3} from '@babylonjs/core';
+import {Color3,Mesh,MeshBuilder,Scene,Vector3} from '@babylonjs/core';
 import type {Building} from './types';
 import {project} from './geo';
 import {terrainHeight} from './terrain';
@@ -164,10 +164,6 @@ export class HeritageAtlas{
   target.prepend(section);
  }
  private drawBoundaries():void{
-  const material=new StandardMaterial('limites-domaines-beige',this.scene);
-  material.diffuseColor=new Color3(.78,.69,.54);
-  material.emissiveColor=new Color3(.78,.69,.54);
-  material.disableLighting=true;material.freeze();
   for(const area of this.areas){
    for(const rings of area.polygons)for(const ring of rings){
     if(ring.length<3)continue;
