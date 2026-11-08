@@ -6,7 +6,7 @@ Une notice géopositionnée ne garantit pas que tout bâtiment proche relève
 du même monument : l'interface doit montrer la distance et la source.
 """
 from __future__ import annotations
-import json,math,time,re
+import json,math,time,re,csv,io,itertools
 from datetime import datetime,timezone
 from pathlib import Path
 from urllib.parse import urlencode
@@ -36,7 +36,7 @@ def api(params):
             if attempt<4:time.sleep(2+attempt*2)
     raise RuntimeError("Ministère de la Culture indisponible : "+str(last))
 
-def records():
+def records_api():
     for condition in (
         "departement_format_numerique = '75'",
         "departement_format_numerique = 75",
@@ -47,13 +47,67 @@ def records():
         except RuntimeError:
             continue
     else:
-        raise ValueError("Notices MH de Paris non filtrables par département")
+        raise ValueError("API Culture ne permet pas le filtrage Paris")
     total=first["total_count"]
     yield from first["results"]
     for offset in range(100,total,100):
         result=api({"where":condition,"limit":100,"offset":offset})
         yield from result["results"]
         time.sleep(.15)
+
+
+def records_datagouv():
+    # Miroir officiel Open Data des notices Mérimée (CSV ministériel).
+    meta_url=("https://www.data.gouv.fr/api/1/datasets/"
+              "immeubles-proteges-au-titre-des-monuments-historiques-2/")
+    request=Request(meta_url,headers={"Accept":"application/json",
+                                      "User-Agent":"PARIS-SKYLINES-Pop/0.19"})
+    with urlopen(request,timeout=90) as response:
+        metadata=json.load(response)
+    csv_resources=[r for r in metadata.get("resources",[]) if
+        str(r.get("format","")).lower()=="csv" and
+        "immeubles-proteges" in str(r.get("title","")).lower()]
+    if not csv_resources:
+        csv_resources=[r for r in metadata.get("resources",[]) if
+            str(r.get("format","")).lower()=="csv"]
+    if not csv_resources:
+        raise ValueError("Miroir ministériel CSV absent de data.gouv.fr")
+    csv_resources.sort(key=lambda r:r.get("last_modified") or "",reverse=True)
+    url=csv_resources[0].get("url","")
+    if not url.startswith(("https://static.data.gouv.fr/",
+                           "https://www.data.gouv.fr/")):
+        raise ValueError("Miroir CSV hors domaine officiel")
+    req=Request(url,headers={"User-Agent":"PARIS-SKYLINES-Pop/0.19"})
+    with urlopen(req,timeout=210) as binary:
+        stream=io.TextIOWrapper(binary,encoding="utf-8-sig",errors="replace",
+                                newline="")
+        header=stream.readline()
+        delimiter=";" if header.count(";")>header.count(",") else ","
+        rows=csv.DictReader(itertools.chain([header],stream),delimiter=delimiter)
+        seen=0
+        for row in rows:
+            clean_row={str(k).strip().lower():v for k,v in row.items() if k}
+            department=str(clean_row.get("departement_format_numerique") or
+                clean_row.get("code_departement") or "").strip()
+            if department not in ("75","075"):
+                continue
+            seen+=1
+            yield clean_row
+        if seen<100:
+            raise ValueError("Le miroir Mérimée ne contient pas assez de notices Paris")
+
+
+def records():
+    try:
+        # Les erreurs de l'API Opendatasoft ne bloquent pas la voie CSV officielle.
+        all_rows=list(records_api())
+        if len(all_rows)<100:raise ValueError("Réponse Culture incomplète")
+        yield from all_rows
+    except (ValueError,RuntimeError) as exc:
+        print("API Culture non disponible, miroir CSV data.gouv.fr :",exc,
+              flush=True)
+        yield from records_datagouv()
+
 
 def coordinates(value):
     if isinstance(value,dict):
