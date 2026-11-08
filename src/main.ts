@@ -10,6 +10,7 @@ import { MetroTileManager } from './metroTiles';
 import { MetroOverview } from './metroOverview';
 import { installTerritoryNavigation } from './territoryNavigation';
 import { GameClock, type TimeSpeed } from './gameClock';
+import { TreeLayer } from './trees';
 import { GameManagement } from './simulation/ui';
 import { describeMaterial } from './materialCatalog';
 import { roofProfile, roofShapeDescription } from './roofGeometry';
@@ -35,7 +36,7 @@ try{
   },true);
   const scene=new Scene(engine);
   scene.fogMode=Scene.FOGMODE_NONE;
-  scene.clearColor=new Color4(.89,.89,.89,1);
+  scene.clearColor=new Color4(.88,.875,.855,1);
   const ambient=new HemisphericLight('éclairage-fixe',new Vector3(0,1,0),scene);
   ambient.intensity=.69;
   ambient.groundColor=new Color3(.62,.62,.62);
@@ -43,11 +44,14 @@ try{
     new Vector3(-.45,-1,-.28),scene);
   directional.intensity=.42;
   const clock=new GameClock();
+  const trees=new TreeLayer(scene,message=>{
+    el('trees-status').textContent=message;
+  });
 
   const ground=MeshBuilder.CreateGround('sol-neutre',
     {width:40000,height:40000},scene);
   const mat=new StandardMaterial('sol-gris-clair',scene);
-  mat.diffuseColor=new Color3(.90,.90,.90);
+  mat.diffuseColor=new Color3(.89,.88,.86);
   mat.specularColor=Color3.Black();
   mat.freeze();
   ground.material=mat;ground.isPickable=false;
@@ -85,7 +89,7 @@ try{
     el('height').textContent=b.height.toLocaleString('fr-FR')+' m'+
       (b.estimatedHeight?' (estimée)':' (IGN)');
     el('usage').textContent=b.usage||'Non renseigné';
-    el('skin').textContent='Maquette monochrome, aucun parement illustratif';
+    el('skin').textContent='Pierre claire stylisée, sans texture photographique';
     el('wall-real').textContent=describeMaterial(b.wallCode,false);
     el('roof-real').textContent=describeMaterial(b.roofCode,true);
     el('floors-real').textContent=b.floors?
@@ -171,6 +175,7 @@ try{
     const level=quality.value as 'low'|'medium'|'high';
     manager.setQuality(level);
     metro.setQuality(level);
+    trees.setQuality(level);
     engine.setHardwareScalingLevel(level==='low'?1.7:level==='medium'?1.3:1);
     engine.resize();
   });
@@ -220,13 +225,17 @@ try{
     }
   });
 
-  // Géométrie SIG neutre, sans photographie aérienne, textures de rue,
-  // végétation décorative, éclairage temporel ou variation jour/nuit.
+  // Données géographiques réelles : arbres municipaux, sans arbres
+  // inventés ni textures photographiques, sans cycle visuel jour/nuit.
+  void trees.init().catch(e=>{
+    console.warn('Arbres municipaux non disponibles',e);
+    el('trees-status').textContent='Arbres : données momentanément indisponibles';
+  });
   void loadMetropolitanOutlines(scene).catch(()=>{
     void addAdministrativeOutline(scene).catch(console.warn);
   });
   void loadInfrastructure(scene).then(message=>{
-    urban.textContent=message+' (maquette monochrome)';
+    urban.textContent=message+' (couleurs et matériaux schématiques)';
   }).catch(e=>{
     console.warn('Réseau des rues non disponible',e);
     urban.textContent='Voirie non disponible';
