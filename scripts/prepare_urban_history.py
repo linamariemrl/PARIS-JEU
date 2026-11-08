@@ -145,7 +145,7 @@ def prepare_quarters():
  lightweight.write_text(json.dumps({"schema":1,"quarters":quarters,
   "source":"Ville de Paris — quartiers administratifs (ODbL)",
   "sourceUrl":"https://opendata.paris.fr/explore/dataset/quartier_paris/"},
-   ensure_ascii=False,separators=(",",":"))+"\\n",encoding="utf8")
+   ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf8")
  print("Quartiers autonomes : 80 contours officiels, "+
        str(lightweight.stat().st_size)+" octets",flush=True)
  return quarters
@@ -173,7 +173,7 @@ def encode():
   "source":"Ville de Paris — nomenclature officielle des voies et quartiers administratifs (ODbL)",
   "sources":{k:"https://opendata.paris.fr/explore/dataset/"+v+"/"
     for k,v in SOURCES.items()}}
- OUTPUT.write_text(json.dumps(payload,ensure_ascii=False,separators=(",",":"))+"\\n",encoding="utf8")
+ OUTPUT.write_text(json.dumps(payload,ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf8")
  print("Paris : "+str(len(streets))+" voies officielles et "+
   str(len(quarters))+" quartiers indexés, "+str(OUTPUT.stat().st_size)+
   " octets ; descriptions historiques uniquement si renseignées.",flush=True)
