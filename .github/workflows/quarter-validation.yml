@@ -1,0 +1,35 @@
+name: Contrôler les quartiers (TypeScript et tests)
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'scripts/prepare_urban_history.py'
+      - 'tests/test_quarter_selection_026.py'
+      - 'index.html'
+      - 'package.json'
+      - '.github/workflows/quarter-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  typescript-and-quarters:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Vérifier le script des contours
+        run: python -m py_compile scripts/prepare_urban_history.py
+      - name: Vérifier les contrats des 80 quartiers
+        run: python -m unittest discover -s tests -p 'test_quarter_selection_026.py' -v
+      - name: Installer Babylon.js et TypeScript
+        run: npm install --no-audit --no-fund
+      - name: Vérifier TypeScript
+        run: npx tsc --noEmit
