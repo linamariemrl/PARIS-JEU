@@ -62,6 +62,7 @@ export class PlaceInspector{
  private monuments:Monument[]=[];
  private current=0;
  constructor(private readonly target:HTMLElement){}
+ get monumentCount():number{return this.monuments.length;}
  async init():Promise<void>{
   try{
    const response=await fetch(import.meta.env.BASE_URL+
