@@ -337,6 +337,9 @@ try{
       loadMetropolitanOutlines(scene).catch(()=>
         addAdministrativeOutline(scene)),
       loadInfrastructure(scene).then(message=>{
+        // Si la géométrie du 4e arrive après l'eau IGN, on neutralise
+        // son ancien polygone : jamais de double rendu au même endroit.
+        water.setVisible(waterToggle.checked);
         urban.textContent=message+
           (STABLE_RENDER?' (moteur géométrique stable 0.17)':
             ' (surfaces réelles, teintes schématiques)');
