@@ -9,7 +9,7 @@
 </head>
 <body>
 <canvas id="scene" aria-label="Vue 3D tactile de Paris"></canvas>
-<header><strong>PARIS</strong><span>PROTOTYPE 0.18 | PARIS ET MÉTROPOLE</span></header>
+<header><strong>PARIS</strong><span>PROTOTYPE 0.19 | PARIS ET MÉTROPOLE</span></header>
 <aside id="time-panel" aria-label="Temps de simulation">
   <div id="game-clock" aria-live="off">Chargement de l'heure…</div>
   <div class="time-controls">
@@ -91,12 +91,21 @@
   <p class="finance-source">Conservation locale IndexedDB. Une suppression des données du navigateur peut effacer les parties non exportées.</p>
   <p id="finance-status" role="status">Prêt.</p>
 </section>
-<aside id="selection" class="hidden"><button id="close" aria-label="Fermer">×</button><h2>Bâtiment sélectionné</h2><p>Hauteur : <span id="height"></span></p><p>Usage : <span id="usage"></span></p><p>Façade : <span id="skin"></span></p>
-<p>Gros murs : <span id="wall-real"></span></p>
-<p>Couverture : <span id="roof-real"></span></p>
+<aside id="selection" class="hidden" aria-label="Fiche descriptive du lieu"><button id="close" aria-label="Fermer">×</button>
+<h2 id="selection-title">Lieu sélectionné</h2>
+<div id="building-fields">
+<p>Hauteur du bâtiment : <span id="height"></span></p>
+<p>Usage principal recensé : <span id="usage"></span></p>
+<p>Façade dessinée : <span id="skin"></span></p>
+<p>Gros murs (données fiscales) : <span id="wall-real"></span></p>
+<p>Couverture (données fiscales) : <span id="roof-real"></span></p>
 <p>Forme de toiture : <span id="roof-form"></span></p>
-<p>Étages : <span id="floors-real"></span></p>
-<p>Volumes : <span id="volume-information"></span></p><p>Identifiant IGN : <span id="identifier"></span></p><small id="caveat"></small></aside>
+<p>Étages déclarés : <span id="floors-real"></span></p>
+<p>Volumétrie : <span id="volume-information"></span></p>
+<p>Identifiant du bâtiment IGN : <span id="identifier"></span></p>
+<small id="caveat"></small>
+</div>
+<div id="place-extra" aria-live="polite"></div></aside>
 <div id="error" class="hidden" role="alert"></div>
 <footer id="map-hud">
   <span id="count">0 bâtiment représenté</span>
@@ -117,6 +126,8 @@
       <span id="surface-status">Surfaces des parcs : vérification…</span>
       <span id="water-status">Hydrographie métropolitaine : vérification…</span>
       <span id="roads-status">Chaussées Paris Data : vérification…</span>
+      <span id="terrain-status">Relief IGN RGE ALTI : vérification…</span>
+      <span id="places-status">Fiches des lieux : géolocalisation et patrimoine</span>
       <div class="map-legend" aria-label="Légende des nuances de la maquette">
         <strong>Palette urbaine · couleurs sans textures</strong>
         <span><i style="background:#e6dfd1"></i> Façades, pierre claire</span>
