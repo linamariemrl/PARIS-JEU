@@ -124,7 +124,35 @@ def names(p):
  if full:return full
  return field(p,"typo_min","typo","denom_com","l_voie","libelle","nom_complet",
               "denom_complete","denomination_complete","nom")
+def prepare_quarters():
+ """Toujours publier les 80 géométries avant l'index volumineux des rues.
+ La sélection reste disponible même quand le serveur des rues est lent.
+ """
+ quarters=[]
+ for f in download(SOURCES["quarters"]):
+  p=f.get("properties") or {}
+  name=fixed(field(p,"l_qu","l_quartier","nom_quartier","nom","libelle"),120)
+  polys=polygon_geometry(f)
+  try:arr=int(p.get("c_ar"))
+  except (TypeError,ValueError):arr=None
+  if name and polys and arr is not None and 1<=arr<=20:
+   quarters.append({"name":name,"arr":arr,"polygons":polys})
+ if len(quarters)!=80 or len({(q["arr"],q["name"]) for q in quarters})!=80:
+  raise RuntimeError("Limites officielles incomplètes : "+
+                     str(len(quarters))+" quartiers valides sur 80")
+ OUTPUT.parent.mkdir(parents=True,exist_ok=True)
+ lightweight=OUTPUT.with_name("quarters.json")
+ lightweight.write_text(json.dumps({"schema":1,"quarters":quarters,
+  "source":"Ville de Paris — quartiers administratifs (ODbL)",
+  "sourceUrl":"https://opendata.paris.fr/explore/dataset/quartier_paris/"},
+   ensure_ascii=False,separators=(",",":"))+"\\n",encoding="utf8")
+ print("Quartiers autonomes : 80 contours officiels, "+
+       str(lightweight.stat().st_size)+" octets",flush=True)
+ return quarters
+
 def encode():
+ # Le fichier léger est enregistré en premier, indépendamment des rues.
+ quarters=prepare_quarters()
  streets=[]
  for f in download(SOURCES["streets"]):
   p=f.get("properties") or {}
@@ -139,22 +167,13 @@ def encode():
   street_type=fixed(field(p,"typvoie","type_voie"),50)
   streets.append({"id":ident,"name":name,"type":street_type,
    "orig":orig,"history":historique,"opening":opened,"polygons":poly})
- quarters=[]
- for f in download(SOURCES["quarters"]):
-  p=f.get("properties") or {}
-  name=fixed(field(p,"l_qu","l_quartier","nom_quartier","nom","libelle"),120)
-  polys=polygon_geometry(f)
-  if name and polys:
-   quarters.append({"name":name,"arr":p.get("c_ar"),"polygons":polys})
- if len(streets)<3500 or len(quarters)<75:
-  raise RuntimeError("Index historique géographique incomplet : "+
-   str(len(streets))+" voies ; "+str(len(quarters))+" quartiers")
- OUTPUT.parent.mkdir(parents=True,exist_ok=True)
+ if len(streets)<3500:
+  raise RuntimeError("Index des voies incomplet : "+str(len(streets)))
  payload={"schema":1,"streets":streets,"quarters":quarters,
   "source":"Ville de Paris — nomenclature officielle des voies et quartiers administratifs (ODbL)",
   "sources":{k:"https://opendata.paris.fr/explore/dataset/"+v+"/"
     for k,v in SOURCES.items()}}
- OUTPUT.write_text(json.dumps(payload,ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf8")
+ OUTPUT.write_text(json.dumps(payload,ensure_ascii=False,separators=(",",":"))+"\\n",encoding="utf8")
  print("Paris : "+str(len(streets))+" voies officielles et "+
   str(len(quarters))+" quartiers indexés, "+str(OUTPUT.stat().st_size)+
   " octets ; descriptions historiques uniquement si renseignées.",flush=True)
