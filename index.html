@@ -20,7 +20,7 @@
     
   </div>
 </aside>
-<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt déplace la maquette. Le bouton 360° transforme le glissement en rotation libre. Deux doigts tournent, inclinent ou zooment. Rue : un doigt regarde partout, flèches pour marcher. Un appui bref sélectionne un immeuble, une chaussée ou un lieu. Les options de jeu sur les bâtiments seront intégrées ultérieurement.</p>
+<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt déplace la maquette. Le bouton 360° transforme le glissement en rotation libre. Deux doigts tournent, inclinent ou zooment. Rue : un doigt regarde partout, flèches pour marcher. Un appui bref sélectionne un immeuble, une chaussée ou un lieu. Le bouton Q active la sélection des 80 quartiers et leur coloration discrète. Les options de jeu sur les bâtiments seront intégrées ultérieurement.</p>
 <label class="precision-switch"><input type="checkbox" id="precision-mode"/> Mode précision, gestes plus lents (35 %)</label>
 <div class="app-install-controls">
   <button id="install-app" type="button">Installer PARIS</button>
@@ -40,10 +40,18 @@
 <button id="minus" aria-label="Dézoomer">−</button>
 <button id="north" aria-label="Nord">N</button>
 <button id="orbit-view" aria-label="Activer le déplacement orbital à 360 degrés" aria-pressed="false">360°</button>
+<button id="quarter-mode" aria-label="Sélectionner un quartier administratif" aria-pressed="false" title="Mode quartiers" disabled>Q</button>
 <button id="finance-open" aria-label="Ouvrir l’Hôtel de Ville et la gestion" title="Hôtel de Ville et Conseil de Paris">M</button>
 <button id="street-view" aria-label="Basculer entre carte et vue proche de la rue" aria-pressed="false">Rue</button>
 <label>Qualité <select id="quality" aria-label="Qualité graphique"><option value="low">Basse</option><option value="medium" selected>Moyenne</option><option value="high">Haute</option></select></label>
 </nav>
+<section id="quarter-tools" class="hidden" aria-label="Sélection des quartiers">
+  <label for="quarter-pick">Quartiers de Paris</label>
+  <select id="quarter-pick" aria-label="Choisir un quartier administratif">
+    <option value="">Choisir parmi les 80 quartiers…</option>
+  </select>
+  <small id="quarter-hint" aria-live="polite">Chargement de l’atlas…</small>
+</section>
 <div id="movement-pad" class="hidden" aria-label="Commandes de déplacement en vue de rue">
   <button data-move="forward" aria-label="Avancer">▲</button>
   <div>

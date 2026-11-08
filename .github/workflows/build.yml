@@ -37,7 +37,7 @@ jobs:
       - name: Géométries de jardins historiques documentées
         run: python scripts/prepare_heritage_gardens.py
       - name: Indexer l’histoire des rues et les 80 quartiers officiels
-        run: python scripts/prepare_urban_history.py
+        run: python scripts/prepare_urban_history.py && test -s public/data/metropole/places/quarters.json
       - name: Vérifier les géométries
         run: python -m unittest discover -s tests -p 'test_*.py'
       - name: Installer les dépendances Babylon.js
