@@ -62,6 +62,10 @@ function commit(scene:Scene,batch:Batch,kind:SurfaceKind):void{
  mat.diffuseColor=new Color3(...palette[kind]);
  mat.specularColor=Color3.Black();
  mat.disableLighting=true;
+ // Décalage de profondeur GPU : empêche les polygones plats de scintiller
+ // contre le grand sol lors des zooms ou des orientations de caméra.
+ // La géométrie reste à la hauteur SIG du rendu.
+ mat.zOffset=-1;
  mat.backFaceCulling=false;
  mat.freeze();
  mesh.material=mat;mesh.isPickable=false;
