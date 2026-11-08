@@ -6,8 +6,6 @@ import {CITY_DOMAINS,PROJECT_CATALOG,PARTNERS,EMPTY_MUNICIPAL_STATE,
 
 const el=<T extends HTMLElement=HTMLElement>(id:string)=>document.getElementById(id) as T;
 const rounded=(x:number)=>new Intl.NumberFormat('fr-FR',{maximumFractionDigits:1}).format(x);
-const date=(ms:number)=>new Intl.DateTimeFormat('fr-FR',{
- dateStyle:'short',timeZone:'Europe/Paris'}).format(new Date(ms));
 const stage:Record<string,string>={
  instruction:'À instruire',programme:'À l’ordre du jour',
  adopte:'Adopté, en travaux',rejete:'Rejeté',bloque:'À reprendre',
