@@ -1,6 +1,7 @@
 import {GameClock} from '../gameClock';
 import {IndicatorStore} from './indicatorStore';
 import {FinanceModule} from './modules/finances';
+import {EnvironmentModule} from './modules/environment';
 import {SaveStore,validateSave,type GameSave} from './saveStore';
 
 const money=(v:number)=>new Intl.NumberFormat('fr-FR',{
@@ -14,6 +15,7 @@ function safe(value:string){return value.replace(/[&<>"']/g,c=>({
 export class GameManagement {
  readonly indicators=new IndicatorStore();
  readonly finance=new FinanceModule(this.indicators);
+ readonly environment=new EnvironmentModule(this.indicators);
  readonly saves=new SaveStore();
  private currentName='Partie principale';
  private currentSlot='principal';
@@ -27,6 +29,7 @@ export class GameManagement {
   node<HTMLButtonElement>('save-export').addEventListener('click',()=>void this.export());
   node<HTMLInputElement>('save-import').addEventListener('change',e=>void this.import(e));
   void this.finance.loadOfficial(import.meta.env.BASE_URL).then(()=>this.render());
+  void this.environment.load(import.meta.env.BASE_URL).then(()=>this.render());
  }
  private status(text:string){node('finance-status').textContent=text;}
  open(){
@@ -64,6 +67,17 @@ export class GameManagement {
   node('fin-borrowing').textContent=money(this.finance.plan.projectedBorrowingEUR);
   node('fin-uncovered').textContent=need===null?'Indisponible':
     money(Math.max(0,need-this.finance.plan.projectedBorrowingEUR));
+  const env=this.environment.snapshot;
+  const count=(n:number|null)=>n===null?'Source non publiée':
+    n.toLocaleString('fr-FR');
+  node('env-trees').textContent=count(env.trees);
+  node('env-green').textContent=count(env.green);
+  node('env-water').textContent=count(env.water);
+  node('env-roads').textContent=count(env.roads);
+  node('env-source-date').textContent=env.lastSourceUpdate?
+    'Dernière extraction : '+new Intl.DateTimeFormat('fr-FR',{
+      day:'2-digit',month:'2-digit',year:'numeric',timeZone:'Europe/Paris'
+    }).format(new Date(env.lastSourceUpdate)):'Certaines sources sont encore absentes.';
   const list=await this.saves.list().catch(()=>[]);
   const target=node<HTMLDivElement>('save-list');
   target.replaceChildren();
