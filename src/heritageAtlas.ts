@@ -52,6 +52,7 @@ export class HeritageAtlas{
  private grid=new Map<string,Notice[]>();
  private byRef=new Map<string,Notice>();
  private areas:HeritageArea[]=[];
+ private areaIndex=new Map<string,HeritageArea[]>();
  private lines:Mesh[]=[];
  constructor(private scene:Scene){singleton=this;}
  async init():Promise<void>{
@@ -77,6 +78,7 @@ export class HeritageAtlas{
     if(doc.schema===1&&Array.isArray(doc.areas)){
      this.areas=doc.areas.filter(a=>a.id&&a.name&&
        Array.isArray(a.polygons)&&a.polygons.length>0);
+     this.indexAreas();
      this.drawBoundaries();
     }
    }
@@ -88,6 +90,23 @@ export class HeritageAtlas{
   for(let dx=-1;dx<=1;dx++)for(let dz=-1;dz<=1;dz++)
    result.push(...(this.grid.get((ix+dx)+':'+(iz+dz))??[]));
   return result;
+ }
+ private indexAreas():void{
+  this.areaIndex.clear();
+  for(const a of this.areas){
+   const all=a.polygons.flat(2);
+   if(!all.length)continue;
+   const xs=all.map(p=>p[0]),zs=all.map(p=>p[1]);
+   const x0=Math.floor(Math.min(...xs)/TILE),x1=Math.floor(Math.max(...xs)/TILE);
+   const z0=Math.floor(Math.min(...zs)/TILE),z1=Math.floor(Math.max(...zs)/TILE);
+   if((x1-x0+1)*(z1-z0+1)>600)continue;
+   for(let i=x0;i<=x1;i++)for(let j=z0;j<=z1;j++){
+    const k=i+':'+j;
+    const bucket=this.areaIndex.get(k)??[];
+    bucket.push(a);
+    this.areaIndex.set(k,bucket);
+   }
+  }
  }
  tag(b:Building):void{
   if(b.heritageRef)return;
@@ -105,11 +124,18 @@ export class HeritageAtlas{
    b.heritageName=n.name;
    return;
   }
+  // Uniquement si un contour OSM de tourisme/monument couvre le
+  // centre géométrique : une simple proximité ne suffit jamais.
+  const site=this.identify(cx,cz);
+  if(site?.kind==='monument'){
+   b.heritageRef='osm:'+site.id;
+   b.heritageName=site.name;
+  }
  }
  identify(x:number,z:number):HeritageArea|null{
   // La plus petite emprise est prioritaire : bâtiment dans un jardin.
   let result:HeritageArea|null=null,area=Infinity;
-  for(const p of this.areas){
+  for(const p of this.areaIndex.get(key(x,z))??[]){
    if(!inPolygons(p.polygons,x,z))continue;
    const poly=p.polygons[0]?.[0]??[];
    const xs=poly.map(v=>v[0]),zs=poly.map(v=>v[1]);
@@ -173,6 +199,9 @@ export class HeritageAtlas{
  }
  private drawBoundaries():void{
   for(const area of this.areas){
+   // Les petits édifices sont teints via les bâtiments IGN : ne pas
+   // ajouter 2 000 draw calls en dessinant toutes les notices OSM.
+   if(area.id!=='luxembourg'&&area.id!=='tuileries')continue;
    for(const rings of area.polygons)for(const ring of rings){
     if(ring.length<3)continue;
     const pts=ring.map(v=>new Vector3(v[0],terrainHeight(v[0],v[1])+.8,v[1]));
