@@ -1,0 +1,56 @@
+name: Terrain réel de Paris - IGN RGE ALTI
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'scripts/prepare_ign_terrain.py'
+      - '.github/workflows/prepare-ign-terrain.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: paris-ign-terrain
+  cancel-in-progress: true
+
+jobs:
+  acquisition:
+    runs-on: ubuntu-latest
+    timeout-minutes: 38
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Échantillonner le relief RGE ALTI officiel
+        run: python -u scripts/prepare_ign_terrain.py
+      - name: Valider la grille sans données artificielles
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json
+          d=Path('public/data/metropole/terrain')
+          m=json.loads((d/'manifest.json').read_text())
+          assert m['schema']==1 and m['measured'] is True
+          assert m['gridSpacingMeters']==200
+          assert m['validSamples']>=int(m['samples']*.96)
+          assert (d/'elevation.bin').stat().st_size==2*m['samples']
+          assert m['maxAltitudeM']>m['minAltitudeM']
+          print(m['samples'],'points IGN',m['minAltitudeM'],m['maxAltitudeM'])
+          PY
+      - name: Publier le relief réel
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add public/data/metropole/terrain/
+          if ! git diff --cached --quiet; then
+            git commit -m 'data: relief géographique IGN RGE ALTI'
+            for attempt in 1 2 3 4 5 6 7 8; do
+              git pull --rebase origin main
+              if git push origin HEAD:main; then exit 0; fi
+              sleep 3
+            done
+            exit 1
+          fi
