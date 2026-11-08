@@ -41,6 +41,7 @@ export class MetroTreeLayer{
  private errors=new Map<string,number>();
  private wanted=new Set<string>();
  private budget=14;
+ private hiddenFar=false;
  private lastUpdate=0;
  private prevX=Infinity;
  private prevZ=Infinity;
@@ -90,7 +91,18 @@ export class MetroTreeLayer{
     Math.abs(radius-this.prevRadius)>400;
   if(!moved&&now-this.lastUpdate<1700)return;
   this.lastUpdate=now;this.prevX=x;this.prevZ=z;this.prevRadius=radius;
-  if(radius>5800)return; // les parcs couvrent les vues d'ensemble
+  // La géométrie arborée n'est pas dessinée quand les houppiers
+  // deviennent inférieurs au pixel. Les emprises végétales SIG restent.
+  if(!this.hiddenFar&&radius>6500){
+    for(const state of this.active.values())
+      state.meshes.forEach(mesh=>mesh.setEnabled(false));
+    this.hiddenFar=true;
+  }else if(this.hiddenFar&&radius<4700){
+    for(const state of this.active.values())
+      state.meshes.forEach(mesh=>mesh.setEnabled(true));
+    this.hiddenFar=false;
+  }
+  if(this.hiddenFar)return;
   const range=Math.max(1200,Math.min(2600,radius*1.25));
   const candidates=this.tiles.filter(t=>
     Math.hypot((t.ix+.5)*800-x,(t.iz+.5)*800-z)<range
