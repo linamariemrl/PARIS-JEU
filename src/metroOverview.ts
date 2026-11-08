@@ -1,5 +1,6 @@
 import {Color3,Color4,Mesh,MeshBuilder,Scene,StandardMaterial} from '@babylonjs/core';
 import {terrainHeight} from './terrain';
+import type {CityCoverage} from './cityCoverage';
 
 const PREFIX=import.meta.env.BASE_URL+'data/metropole/overview/';
 interface TileRef {id:string;ix:number;iz:number;offset:number;count:number;}
@@ -51,13 +52,15 @@ export class MetroOverview {
  private roofMaterial:StandardMaterial;
  private roofsOnly=false;
  private roofLODEnabled=true;
+ private panoramicAtlas=false;
  private lastUpdate=0;
  private lastX=Infinity;
  private lastZ=Infinity;
  private lastRadius=Infinity;
  constructor(
   private scene:Scene,
-  private onStatus:(label:string,count:number)=>void
+  private onStatus:(label:string,count:number)=>void,
+  private coverage?:CityCoverage
  ){
    // Matériau unique pour toutes les silhouettes éloignées.
    // Teintes de face directement dans la géométrie, aucune texture.
@@ -199,6 +202,28 @@ export class MetroOverview {
   this.cameraMoving=isMoving;
   const m=this.manifest;
   if(!m)return;
+  // Le panorama bénéficie de TOUTES les cellules agrégées plutôt que
+  // d'un échantillon arbitraire de toitures et de quartiers manquants.
+  if(this.coverage?.ready&&radius>=4700){
+   if(!this.panoramicAtlas){
+    this.panoramicAtlas=true;
+    this.roofsOnly=true;
+    this.visible.clear();
+    for(const group of this.loaded.values()){
+     group.mesh.setEnabled(false);
+     group.roof.setEnabled(false);
+    }
+    this.coverage.showExcept([]);
+    this.report();
+   }
+   return;
+  }
+  if(this.panoramicAtlas){
+   this.panoramicAtlas=false;
+   this.roofsOnly=false;
+   this.lastUpdate=0;
+   this.lastX=Infinity;
+  }
   const now=performance.now();
   // Les volumes restent prioritaires à proximité ; au loin, deux
   // triangles par toiture divisent par six le coût géométrique.
@@ -252,6 +277,10 @@ export class MetroOverview {
    if(closest)next.add(closest.group.id);
   }
   this.visible=next;
+  // Dès qu'un groupe IGN 3D est disponible, enlever uniquement la
+  // cellule atlas de CE groupe. Tous les autres restent visibles.
+  this.coverage?.showExcept([...this.loaded.keys()]
+    .filter(id=>next.has(id)&&!this.roofsOnly));
   for(const [id,state] of this.loaded){
    state.mesh.setEnabled(this.visible.has(id)&&!this.roofsOnly);
    state.roof.setEnabled(this.visible.has(id)&&this.roofsOnly);
@@ -428,6 +457,9 @@ export class MetroOverview {
      mesh,roof,buffer:matrices,roofBuffer:rooftops,
      sampledRoofBuffer,sampledIndices,bytes:source,group
    });
+   if(this.coverage?.ready&&!this.roofsOnly&&this.visible.has(group.id))
+    this.coverage.showExcept([...this.loaded.keys()]
+      .filter(id=>this.visible.has(id)));
    this.currentCount+=group.tiles.reduce((sum,t)=>
     sum+(this.detailed.has(t.id)?0:t.count),0);
    this.failures.delete(group.id);

@@ -28,6 +28,8 @@ jobs:
           fi
       - name: Préparer les enveloppes LOD de tous les bâtiments IGN
         run: python scripts/prepare_metropole_overview.py
+      - name: Préparer l'atlas IGN de couverture complète
+        run: python scripts/prepare_city_coverage.py
       - name: Sectoriser les surfaces réelles pour Android
         run: python scripts/prepare_surface_tiles.py
       - name: Vérifier les géométries

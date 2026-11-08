@@ -22,6 +22,6 @@ class RoadsCache(unittest.TestCase):
   self.assertIn("if(!moving&&this.fetching.size===0)",roads)
   self.assertIn("mesh.dispose()",roads)
  def test_0_26_still_locked(self):
-  self.assertEqual(json.loads(read('package.json'))['version'],'0.25.6')
+  self.assertEqual(json.loads(read('package.json'))['version'],'0.25.7')
   self.assertIn("PROTOTYPE 0.25",read("index.html"))
 if __name__=='__main__':unittest.main()

@@ -8,6 +8,7 @@ import { loadInfrastructure } from './infrastructure';
 import { TileManager } from './tileManager';
 import { MetroTileManager } from './metroTiles';
 import { MetroOverview } from './metroOverview';
+import { CityCoverage } from './cityCoverage';
 import { installTerritoryNavigation } from './territoryNavigation';
 import { GameClock, type TimeSpeed } from './gameClock';
 import { TreeLayer } from './trees';
@@ -97,12 +98,19 @@ try{
   const roads=new MetroRoads(scene,message=>{
     el('roads-status').textContent=message;
   });
+  const coverage=new CityCoverage(scene,message=>{
+    el('metropole-status').textContent=message;
+  });
   let metroCount=0;
   let overviewCount=0;
   let fourthCount=0;
   const showCounts=()=>{
-    counter.textContent=(fourthCount+metroCount+overviewCount)
-      .toLocaleString('fr-FR')+' bâtiments chargés dans la vue';
+    const total=coverage.buildings;
+    counter.textContent=total?
+      (total+2696).toLocaleString('fr-FR')+
+        ' bâtiments IGN couverts · détails progressifs':
+      (fourthCount+metroCount+overviewCount)
+        .toLocaleString('fr-FR')+' volumes visibles · atlas en préparation';
   };
   const manager=new TileManager(scene,materials,(message,count)=>{
     state.textContent=message;
@@ -111,7 +119,7 @@ try{
   const overview=new MetroOverview(scene,(message,count)=>{
     overviewCount=count;showCounts();
     el('overview-status').textContent=message;
-  });
+  },coverage);
   const metro=new MetroTileManager(scene,materials,(message,count)=>{
     metroCount=count;showCounts();
     el('metropole-status').textContent=message;
@@ -378,7 +386,8 @@ try{
         installSurfaceLayer(scene,'data/metropole/surfaces/green.json',
           message=>{el('surface-status').textContent=message;})]:
         [surfaces.init(),metroTrees.init(),trees.init()]),
-      overview.init(),metro.init(),manager.init().catch((err:unknown)=>{
+      overview.init(),coverage.init().then(()=>showCounts()),
+      metro.init(),manager.init().catch((err:unknown)=>{
         console.warn('Bâtiments du 4e indisponibles',err);
         state.textContent='Bâtiments du 4e : source indisponible';
         error.textContent=err instanceof Error?err.message:'Source IGN indisponible';

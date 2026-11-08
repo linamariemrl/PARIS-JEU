@@ -1,3 +1,24 @@
+## 0.25.7 — atlas géographique complet, sans trous de quartiers
+
+La précédente limite de 15 groupes de toitures panoramiques retirait
+des secteurs entiers. Un atlas permanent est maintenant produit à partir
+de la totalité des enveloppes IGN 12 octets : aucun bâtiment n'est omis
+du comptage, mais les formes lointaines sont agrégées en cellules de
+présence bâtie de 50 mètres. Ces rectangles ne sont PAS les empreintes
+officielles et ne doivent jamais être présentés comme tels.
+
+L'atlas reste visible partout dès qu'il a validé TOUS les groupes ;
+les groupes de bâtiments détaillés proches remplacent l'atlas localement
+sans effacer les autres. Au panoramique, l'atlas allégé évite de dessiner
+des dizaines de milliers de toitures répétitives, libérant une marge
+GPU pour les parcs, reliefs et arbres. Les polygones IGN précis et
+les toitures documentées restent réservés au point de focalisation.
+
+La préparation se déroule dans GitHub Actions après la création du LOD
+officiel. Des tests vérifient le comptage par groupe, le total des
+bâtiments, le format binaire et la disponibilité de la couverture.
+En cas de perte réseau, le rendu existant reste disponible.
+
 ## 0.25.6 — cache CPU borné de la voirie détaillée
 
 Une seconde passe de stabilisation limite les latences lors d'un retour
