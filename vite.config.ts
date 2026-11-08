@@ -10,7 +10,7 @@ export default defineConfig({
       name: 'PARIS SKYLINES - Le jeu de la ville',
       short_name: 'PARIS',
       lang: 'fr',
-      description: 'Maquette 3D de Paris, arbres municipaux, espaces verts et gestion urbaine',
+      description: 'Paris SKYLINES, relief IGN réel, surfaces SIG et fiches de lieux sourcées',
       start_url: '.', scope: '.', display: 'standalone',
       background_color: '#e3e0d9', theme_color: '#273543',
       icons: [
