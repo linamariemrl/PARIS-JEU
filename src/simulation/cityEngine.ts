@@ -221,9 +221,10 @@ export function simulateMobility(now:number,districts:readonly string[],
  const hour=Number(new Intl.DateTimeFormat('en-GB',{
   timeZone:'Europe/Paris',hour:'2-digit',hourCycle:'h23'
  }).format(date));
- const weekday=Number(new Intl.DateTimeFormat('en-US',{
+ const weekdayText=new Intl.DateTimeFormat('en-US',{
   timeZone:'Europe/Paris',weekday:'short'
- }).format(date).match(/Sun/)?0:date.getUTCDay());
+ }).format(date);
+ const weekday=['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(weekdayText);
  const weekend=weekday===0||weekday===6;
  const peak=((hour>=7&&hour<=9)||(hour>=17&&hour<=19))?1.44:
   hour>=22||hour<5?.31:hour>=11&&hour<=14?1.16:.88;

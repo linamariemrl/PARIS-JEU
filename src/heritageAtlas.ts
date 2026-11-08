@@ -255,6 +255,7 @@ export class HeritageAtlas{
      'sacre-coeur-montmartre.com','operadeparis.fr',
      'elysee.fr','info.gouv.fr','senat.fr','interieur.gouv.fr',
      'conseil-etat.fr','justice.gouv.fr',
+     'mnhn.fr','paris-conciergerie.fr',
      'musee-orsay.fr','musee-armee.fr','grandpalais.fr',
      'petitpalais.paris.fr','paris-pantheon.fr','paris.fr'];
     if(parsed.protocol==='https:'&&allowed.some(domain=>

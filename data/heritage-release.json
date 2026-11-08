@@ -1,16 +1,17 @@
 {
   "schema": 1,
-  "release": "0.26.2",
-  "previousCuratedReferenceCount": 7,
-  "newCuratedReferenceCount": 7,
+  "release": "0.26.3",
+  "previousCuratedReferenceCount": 14,
+  "newCuratedReferenceCount": 8,
   "newMerimeeReferences": [
-    "PA00088876",
-    "PA00088722",
-    "PA00088653",
-    "PA00085993",
-    "PA00088873",
-    "PA00085814",
-    "PA00086010"
+    "PA00086319",
+    "PA00088804",
+    "PA00086476",
+    "PA00088482",
+    "PA00085991",
+    "PA00088812",
+    "PA00088798",
+    "PA00085795"
   ],
   "minimumOfficialNotices": 2284,
   "requireGrowthEachRelease": true,
@@ -37,6 +38,19 @@
         "PA00088873",
         "PA00085814",
         "PA00086010"
+      ]
+    },
+    {
+      "version": "0.26.3",
+      "references": [
+        "PA00086319",
+        "PA00088804",
+        "PA00086476",
+        "PA00088482",
+        "PA00085991",
+        "PA00088812",
+        "PA00088798",
+        "PA00085795"
       ]
     }
   ]

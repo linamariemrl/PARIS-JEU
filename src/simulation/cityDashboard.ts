@@ -188,7 +188,6 @@ export class CityDashboard{
     ' points de politique de mobilité.':' · Aucune politique achevée.');
  }
  render():void{
-  this.renderTemplates();
   this.chooseTemplate(this.chosen());
   const balance=capacityOf(this.state,this.clock.current);
   el('city-capital-left').textContent=rounded(balance.capitalLeft)+' / '+

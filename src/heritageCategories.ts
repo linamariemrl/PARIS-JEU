@@ -4,6 +4,7 @@
  */
 export type HeritageRole='cultural'|'political'|'financial';
 const POLITICAL=new Set([
+ 'PA00086319', // Hôtel de Ville, gouvernance municipale
  'PA00088876', // Palais de l'Élysée
  'PA00088722', // Hôtel de Matignon
  'PA00088653', // Palais du Luxembourg, Sénat

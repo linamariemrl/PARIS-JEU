@@ -73,3 +73,25 @@ Avant chaque évolution graphique coûteuse, mesurer son impact sur la
 navigation mobile. Si elle détériore la fluidité, choisir la version
 simplifiée. Ne pas modifier la palette ou ajouter des textures photo
 pour masquer une géométrie ou un niveau de détail manquant.
+
+## Hôtel de Ville — première tranche jouable (0.26.3)
+
+- Catalogue de 32 projets simulés dans 28 domaines de gestion.
+- Création de dossiers, instruction, inscription au Conseil de Paris fictif,
+  vote de 163 sièges fictifs, adoption/rejet et suivi des travaux dans le
+  temps de jeu. Le vote fictif n'est pas celui des conseillers réels.
+- Deux enveloppes de programmation municipales purement fictives (investissement
+  et fonctionnement), séparées des montants du budget officiel publié.
+- Partenaires réels identifiés ; les compétences de l’État, de la région,
+  d’Île-de-France Mobilités et d'autres organismes ne sont pas usurpées.
+- Un projet de démolition ne modifie pas automatiquement les bâtiments
+  IGN et n'autorise pas de démolir un monument protégé.
+- Simulation de mobilité agrégée par 80 quartiers (indices relatifs fictifs,
+  base 100, pas de vraies fréquentations ni véhicules/personnes 3D) ;
+  aucun calcul coûteux n'est ajouté à chaque image.
+- Sauvegardes v1 antérieures compatibles avec le champ municipal facultatif.
+
+Prochaines phases : permissions et patrimoines fonciers individuels, achats,
+consultation publique, commissions et amendements, budgets pluriannuels,
+demandes des citoyens, flux et réseaux spatialisés calibrés sur observations
+anonymisées officielles, services et agents, conséquences intersectorielles.

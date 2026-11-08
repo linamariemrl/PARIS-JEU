@@ -395,7 +395,7 @@ try{
   management=new GameManagement(clock,selectRate,(x,z)=>camera.flyTo(x,z,340),
     ()=>camera.captureView(quality.value as GameView['quality']),applySavedView);
   window.addEventListener('resize',()=>engine.resize());
-  let lastFps=0,lastClock=0,previous=performance.now();
+  let lastFps=0,lastClock=0,lastAux=0,previous=performance.now();
   engine.runRenderLoop(()=>{
     const now=performance.now();
     const dt=Math.min(.05,Math.max(0,(now-previous)/1000));
@@ -419,11 +419,16 @@ try{
       camera.camera.radius,camera.isMoving);
     metro.update(camera.camera.target.x,camera.camera.target.z,
       camera.camera.radius,camera.isMoving);
-    roads.update(camera.camera.target.x,camera.camera.target.z,
-      camera.camera.radius,camera.isMoving);
-    metroTrees.update(camera.camera.target.x,camera.camera.target.z,
-      camera.camera.radius,camera.isMoving);
-    trees.update(camera.camera.radius,camera.camera.target.x,camera.camera.target.z);
+    // Les décorations légères ne nécessitent pas de mise à jour à 60 Hz :
+    // libérer des cycles CPU pendant le panoramique/zoom sur Android.
+    if(!camera.isMoving||now-lastAux>=210){
+      roads.update(camera.camera.target.x,camera.camera.target.z,
+        camera.camera.radius,camera.isMoving);
+      metroTrees.update(camera.camera.target.x,camera.camera.target.z,
+        camera.camera.radius,camera.isMoving);
+      trees.update(camera.camera.radius,camera.camera.target.x,camera.camera.target.z);
+      lastAux=now;
+    }
     if(!STABLE_RENDER){
       surfaces.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius,camera.isMoving);
     }

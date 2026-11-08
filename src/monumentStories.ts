@@ -137,7 +137,52 @@ const institutionalStories:Record<string,MonumentStory>={
   sourceUrl:'https://www.paris.fr/pages/1-lieu-3-histoires-le-palais-brongniart-35063'
  }
 };
+
+/* Révision 0.26.3 : nouvelles chroniques issues des institutions
+ * compétentes, vérifiées et associées aux identifiants POP/Mérimée. */
+const civicStories:Record<string,MonumentStory>={
+ 'PA00086319':{
+  type:'Hôtel de Ville · siège de la municipalité',period:'XIVe siècle ; reconstruit 1874–1882',
+  history:'Le pouvoir municipal s’installe sur la place de Grève au XIVe siècle. L’Hôtel de Ville de la Renaissance est incendié durant la Commune, en mai 1871. Le bâtiment actuel est reconstruit entre 1874 et 1882 : il accueille le maire et le Conseil de Paris.',
+  sourceUrl:'https://www.paris.fr/pages/l-histoire-de-l-hotel-de-ville-en-sept-dates-marquantes-7667'
+ },
+ 'PA00088804':{
+  type:'Monument commémoratif',period:'1806–1836',
+  history:'Napoléon Ier lance en 1806 le projet d’un arc monumental sur la place de l’Étoile. Le chantier se prolonge sous plusieurs régimes et l’Arc de triomphe est inauguré en 1836. Il est devenu un lieu majeur de mémoire nationale.',
+  sourceUrl:'https://www.paris-arc-de-triomphe.fr/decouvrir/histoire-de-l-arc-de-triomphe'
+ },
+ 'PA00086476':{
+  type:'Place royale, puis place publique',period:'1605–1612',
+  history:'Henri IV fait aménager la place Royale à partir de 1605, selon un plan régulier bordé de pavillons à arcades. Achevée en 1612, elle prend ensuite le nom de place des Vosges. Son jardin central porte le nom de square Louis-XIII.',
+  sourceUrl:'https://www.paris.fr/lieux/square-louis-xiii-36'
+ },
+ 'PA00088482':{
+  type:'Jardin botanique et lieu de recherche',period:'1635 ; ouvert en 1640',
+  history:'Louis XIII établit le Jardin royal des plantes médicinales au XVIIe siècle. Ouvert en 1640, il propose un enseignement scientifique gratuit. Il devient en 1793 une pièce centrale du Muséum national d’Histoire naturelle.',
+  sourceUrl:'https://www.mnhn.fr/fr/collection-du-jardin-des-plantes'
+ },
+ 'PA00085991':{
+  type:'Palais médiéval et ancienne prison',period:'Moyen Âge ; prison dès le XIVe siècle',
+  history:'La Conciergerie appartient à l’ancien palais royal de l’île de la Cité. Elle devient une prison du Parlement de Paris, puis l’un des grands lieux de détention pendant la Révolution. Marie-Antoinette y est enfermée en 1793.',
+  sourceUrl:'https://www.paris-conciergerie.fr/decouvrir/histoire-de-la-conciergerie'
+ },
+ 'PA00088812':{
+  type:'Église néoclassique',period:'1763–1842',
+  history:'Commencée sous Louis XV, l’église de la Madeleine change de destination pendant la Révolution et l’Empire. Elle est achevée en 1842 sous Louis-Philippe. Son péristyle de colonnes corinthiennes rappelle les temples antiques.',
+  sourceUrl:'https://www.paris.fr/pages/debut-des-travaux-pour-l-eglise-de-la-madeleine-18409'
+ },
+ 'PA00088798':{
+  type:'Pont monumental',period:'1896–1900',
+  history:'Le pont Alexandre-III est construit pour l’Exposition universelle de 1900. Il relie l’esplanade des Invalides aux nouveaux Grand et Petit Palais. Sa décoration célèbre l’amitié franco-russe.',
+  sourceUrl:'https://www.paris.fr/pages/sur-les-traces-des-expositions-universelles-de-paris-2-2-19671'
+ },
+ 'PA00085795':{
+  type:'Église des Halles',period:'À partir de 1532',
+  history:'L’église Saint-Eustache est construite à partir de 1532 sur une chapelle médiévale. Son architecture associe structure gothique et décors Renaissance. Elle accompagne les mutations du quartier des Halles, des anciens marchés au quartier actuel.',
+  sourceUrl:'https://www.paris.fr/lieux/eglise-saint-eustache-19451'
+ }
+};
 export function storyForReference(ref?:string):MonumentStory|null{
- return ref?(referenceStories[ref]??institutionalStories[ref]??null):null;
+ return ref?(referenceStories[ref]??institutionalStories[ref]??civicStories[ref]??null):null;
 }
 export const NEW_REFERENCE_STORIES=Object.keys(referenceStories).length;

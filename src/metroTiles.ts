@@ -84,17 +84,16 @@ export class MetroTileManager{
     // sur un téléphone. Dès que l'on rapproche la caméra, les emprises
     // réelles de toutes les tuiles proches prennent le relais.
     const range=Math.max(1300,Math.min(3700,radius*1.55));
-    const candidates=radius>4700?[]:this.tiles.filter(t=>{
-      const cx=(t.ix+.5)*this.tileMeters;
-      const cz=(t.iz+.5)*this.tileMeters;
-      return Math.hypot(cx-x,cz-z)<range;
-    }).sort((a,b)=>{
-      const ax=(a.ix+.5)*this.tileMeters-x;
-      const az=(a.iz+.5)*this.tileMeters-z;
-      const bx=(b.ix+.5)*this.tileMeters-x;
-      const bz=(b.iz+.5)*this.tileMeters-z;
-      return ax*ax+az*az-bx*bx-bz*bz;
-    }).slice(0,this.budget);
+    const rangeSquared=range*range;
+    const distSquared=(tile:Info)=>{
+      const dx=(tile.ix+.5)*this.tileMeters-x;
+      const dz=(tile.iz+.5)*this.tileMeters-z;
+      return dx*dx+dz*dz;
+    };
+    const candidates=radius>4700?[]:this.tiles
+      .filter(t=>distSquared(t)<rangeSquared)
+      .sort((a,b)=>distSquared(a)-distSquared(b))
+      .slice(0,this.budget);
 
     this.wanted=new Set(candidates.map(t=>t.id));
     // Pendant le déplacement, ne lancer que les téléchargements des deux
