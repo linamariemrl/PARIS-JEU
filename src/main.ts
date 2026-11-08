@@ -293,7 +293,12 @@ try{
     await terrain.init(ground);
     await Promise.allSettled([
       surfaces.init(),metroTrees.init(),trees.init(),inspector.init(),
-      overview.init(),metro.init(),manager.init(),
+      overview.init(),metro.init(),manager.init().catch((err:unknown)=>{
+        console.warn('Bâtiments du 4e indisponibles',err);
+        state.textContent='Bâtiments du 4e : source indisponible';
+        error.textContent=err instanceof Error?err.message:'Source IGN indisponible';
+        error.classList.remove('hidden');
+      }),
       loadMetropolitanOutlines(scene).catch(()=>
         addAdministrativeOutline(scene)),
       loadInfrastructure(scene).then(message=>{
@@ -302,6 +307,10 @@ try{
     ]);
     el('water-status').textContent='Surfaces d’eau IGN : emprises sectorisées';
     el('roads-status').textContent='Chaussées PVP : emprises sectorisées';
+    el('places-status').textContent=inspector.monumentCount?
+      inspector.monumentCount.toLocaleString('fr-FR')+
+      ' notices Mérimée géolocalisées + adresses et POI IGN disponibles au clic':
+      'Adresses et POI IGN consultables au clic ; notices Mérimée en préparation';
   })().catch((e:unknown)=>{
     console.warn('Initialisation géographique',e);
     error.textContent=e instanceof Error?e.message:'Initialisation géographique indisponible';
