@@ -258,3 +258,26 @@ button.city-project-choice.is-selected{border-color:#dfceac;background:#2c4351}
  font-size:11px;line-height:1.4;background:#11283c}
 
 .city-indicator-line .city-flow-bar i{background:#c4c3ad}
+
+/* Sélection administrative 0.26 : panneau compact, aucun habillage permanent. */
+#quarter-mode[aria-pressed="true"]{background:#516b73;border-color:#a5bec5}
+#quarter-mode:disabled{opacity:.45}
+#quarter-tools{
+ position:fixed;left:10px;top:calc(env(safe-area-inset-top) + 127px);
+ z-index:4;width:min(262px,calc(100vw - 90px));
+ padding:9px 11px;border:1px solid #ffffff50;border-radius:11px;
+ background:#102336e8;box-shadow:0 5px 16px #0004;
+ display:flex;flex-direction:column;gap:5px;
+}
+#quarter-tools label{font-size:11px;font-weight:700}
+#quarter-tools select{width:100%;min-height:37px;font-size:12px;
+ padding:7px 8px;background:#1d3443}
+#quarter-tools small{font-size:10px;color:#cad8df;line-height:1.3}
+.quarter-game-card{font-size:12px;line-height:1.4}
+.quarter-game-card>p{margin:4px 0 7px}
+.quarter-game-card details{margin-top:6px;border-top:1px solid #ffffff25;
+ padding-top:6px}
+.quarter-game-card summary{cursor:pointer;font-weight:700;font-size:12px}
+.quarter-game-card details p{margin:8px 0;font-size:12px}
+.quarter-game-card a{display:inline-block;margin:4px 0;color:#cfe0eb;
+ font-size:11px;overflow-wrap:anywhere}
