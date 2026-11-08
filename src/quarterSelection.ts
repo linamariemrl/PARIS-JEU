@@ -12,7 +12,7 @@ const COLORS:ReadonlyArray<readonly [number,number,number]>=[
  [.55,.70,.69],[.66,.67,.77],[.76,.65,.62],[.67,.72,.65]
 ];
 export function quarterColor(arr?:number):readonly [number,number,number]{
- return COLORS[((Number.isInteger(arr)&&arr!>=1?arr!-1:0)%COLORS.length)];
+ return COLORS[(typeof arr==='number'&&Number.isInteger(arr)&&arr>=1&&arr<=20?arr-1:0)%COLORS.length];
 }
 export function quarterAreaKm2(quarter:QuarterRecord):number{
  const area=(ring:number[][]):number=>{
