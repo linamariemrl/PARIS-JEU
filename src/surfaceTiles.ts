@@ -91,7 +91,7 @@ export class SurfaceTileManager{
    for(const kind of KINDS){
      const mat=new StandardMaterial('sol-SIG-'+kind,scene);
      mat.diffuseColor=new Color3(...RGB[kind]);
-     mat.emissiveColor=new Color3(...RGB[kind]).scale(.17);
+     mat.emissiveColor=new Color3(...RGB[kind]);
      // Couleur de matériau SIG indépendante des normales/tours de caméra.
      mat.disableLighting=true;
      mat.specularColor=Color3.Black();

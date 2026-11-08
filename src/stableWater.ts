@@ -83,9 +83,10 @@ export class StableWaterLayer{
       vertex.normals=normals;
       vertex.applyToMesh(mesh);
       const mat=new StandardMaterial('eau-bleu-gris-stable',this.scene);
-      mat.diffuseColor=new Color3(.73,.75,.76);
+      mat.diffuseColor=new Color3(.73,.74,.75);
       mat.specularColor=Color3.Black();
-      mat.emissiveColor=new Color3(.03,.03,.03);
+      // L'ancien gris .03 produisait une Seine quasiment noire.
+      mat.emissiveColor=new Color3(.73,.74,.75);
       mat.disableLighting=true;
       mat.backFaceCulling=false;
       mat.freeze();

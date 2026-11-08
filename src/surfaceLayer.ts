@@ -62,6 +62,8 @@ function commit(scene:Scene,batch:Batch,kind:SurfaceKind):void{
  mat.diffuseColor=new Color3(...palette[kind]);
  mat.specularColor=Color3.Black();
  mat.disableLighting=true;
+  // Prévenir la même régression si ce module SIG est réactivé.
+  mat.emissiveColor=new Color3(...palette[kind]);
  // Décalage de profondeur GPU : empêche les polygones plats de scintiller
  // contre le grand sol lors des zooms ou des orientations de caméra.
  // La géométrie reste à la hauteur SIG du rendu.

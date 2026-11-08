@@ -57,7 +57,9 @@ export class MetroOverview {
    // Deux triangles horizontaux par empreinte IGN au dézoom,
    // au lieu des 12 triangles de chacune des enveloppes 3D.
    this.roofMaterial=new StandardMaterial('toitures-metropole-legere',scene);
-   this.roofMaterial.diffuseColor=new Color3(.62,.66,.69);
+   this.roofMaterial.diffuseColor=new Color3(.76,.76,.76);
+   // Les toits distants sont éclairés par émission, sans lampe dynamique.
+   this.roofMaterial.emissiveColor=new Color3(.76,.76,.76);
    this.roofMaterial.specularColor=Color3.Black();
    this.roofMaterial.disableLighting=true;
    this.roofMaterial.backFaceCulling=false;
@@ -292,9 +294,9 @@ export class MetroOverview {
     this.writeRoofTile(rooftops,source,tile,false);
    }
    const c=(r:number,g:number,b:number)=>new Color4(r,g,b,1);
-   const wall=c(.86,.85,.82),roofTint=c(.69,.72,.74);
+   const wall=c(.90,.90,.90),roofTint=c(.76,.76,.76);
    const mesh=MeshBuilder.CreateBox('enveloppes-metropole-'+group.id,
-    {size:1,faceColors:[wall,wall,wall,wall,roofTint,c(.82,.81,.78)]},
+    {size:1,faceColors:[wall,wall,wall,wall,roofTint,c(.82,.82,.82)]},
     this.scene);
    mesh.material=this.overviewMaterial;
    mesh.isPickable=false;

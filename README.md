@@ -1,3 +1,18 @@
+## Prototype 0.23 : palette corrigée et rendu Android stabilisé
+
+La capture Android du 8 novembre 2026 a confirmé **60 FPS** en 0.22, mais les
+sols et les chaussées apparaissaient noirs. La cause était l'association
+`StandardMaterial.disableLighting=true` à une émission lumineuse quasi nulle.
+Le rendu 0.23 associe dorénavant des teintes émissives calibrées à toutes les
+surfaces non éclairées : sol, voirie, eau IGN et toitures distantes.
+
+Les données officielles et les sauvegardes ne changent pas. Le budget de
+géométrie LOD limitant la charge du GPU mobile est conservé. Les modules SIG
+expérimentaux non actifs ont été corrigés afin de ne pas réintroduire ce défaut.
+
+Cette correction est validée par compilation et tests automatisés ; son rendu
+doit encore être confirmé sur l'appareil Android.
+
 ## Prototype 0.11 : maquette géométrique blanche et grise
 
 Le rendu satellite, les textures, les arbres décoratifs et le cycle de

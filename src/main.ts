@@ -68,8 +68,10 @@ try{
   const mat=new StandardMaterial('sol-gris-clair',scene);
   // Fond minéral mat, pour séparer les espaces ouverts des façades.
   // Aucun éclairage temporel ni texture ajoutée.
-  mat.diffuseColor=new Color3(.86,.86,.85);
-  mat.emissiveColor=new Color3(.06,.06,.06);
+  mat.diffuseColor=new Color3(.81,.81,.80);
+  // Babylon StandardMaterial déséclairé: seule l'émission garantit
+  // une couleur visible. Une émission de .06 rendait le sol presque noir.
+  mat.emissiveColor=new Color3(.81,.81,.80);
   mat.disableLighting=true;
   mat.backFaceCulling=false;
   mat.specularColor=Color3.Black();

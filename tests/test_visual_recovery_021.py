@@ -1,4 +1,4 @@
-"""Régressions v0.22 : lisibilité du sol, eau unique et budget LOD mobile."""
+"""Régressions v0.23 : couleur des matériaux, eau unique et budget LOD mobile."""
 import json
 from pathlib import Path
 import unittest
@@ -54,7 +54,7 @@ class VisualRecovery(unittest.TestCase):
         self.assertIn("const maxGroups=this.roofsOnly?7:4",lod)
         self.assertIn("this.trimLoaded(x,z)",lod)
         self.assertIn("ground.position.y=-.5",entry)
-        self.assertIn("mat.emissiveColor=new Color3(.06,.06,.06)",entry)
+        self.assertIn("mat.emissiveColor=new Color3(.81,.81,.80)",entry)
         self.assertNotIn("loadMetropolitanOutlines(scene)",entry)
 
     def test_mobile_has_independent_fallback_switches(self):
@@ -64,7 +64,7 @@ class VisualRecovery(unittest.TestCase):
         self.assertIn('id="roof-lod-toggle"',html)
         self.assertIn("water.setVisible(waterToggle.checked)",entry)
         self.assertIn("overview.setRoofLodEnabled(lodToggle.checked)",entry)
-        self.assertIn("PROTOTYPE 0.22",html)
+        self.assertIn("PROTOTYPE 0.23",html)
 
 if __name__=="__main__":
     unittest.main()

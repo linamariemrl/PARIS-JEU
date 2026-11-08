@@ -23,17 +23,17 @@ interface InfrastructureData {
 type Kind = 'water' | 'bank' | 'sidewalk' | 'road' | 'foot' | 'square';
 // Palette pierre de Paris : contrastes neutres, jamais de photographie.
 export const NEUTRAL_PALETTE = {
-  ground: .94, buildings: .965, roofs: .82,
-  river: .74, bank: .81, road: .655, sidewalk: .91,
-  foot: .85, square: .89, border: .47
+  ground: .81, buildings: .92, roofs: .76,
+  river: .74, bank: .83, road: .71, sidewalk: .84,
+  foot: .78, square: .79, border: .54
 } as const;
 const COLORS: Record<Kind, [number, number, number]> = {
-  water: [.73,.75,.76],
-  bank: [.78,.76,.71],
-  sidewalk: [.82,.81,.78],
-  road: [.73,.73,.72],
-  foot: [.78,.77,.72],
-  square: [.77,.76,.72],
+  water: [.73,.74,.75],
+  bank: [.83,.83,.82],
+  sidewalk: [.84,.84,.84],
+  road: [.70,.71,.71],
+  foot: [.78,.78,.78],
+  square: [.79,.79,.79],
 };
 const HEIGHTS: Record<Kind, number> = {
   water: 0.05, bank: 0.085, sidewalk: 0.10, road: 0.14,
@@ -85,7 +85,8 @@ function layerMesh(scene: Scene, kind: Kind, polygons: Layer): Mesh | null {
   // Une eau sombre ne doit pas devenir noire en lumière rasante ;
   // les tons cartographiques sont stables quel que soit le 360°.
   material.disableLighting=true;
-  material.emissiveColor=new Color3(.025,.025,.025);
+  // Sans lumière dynamique, la couleur visible provient de l'émission.
+  material.emissiveColor=new Color3(r,g,b);
   material.backFaceCulling = false;
   mesh.material = material;
   mesh.isPickable = false;
