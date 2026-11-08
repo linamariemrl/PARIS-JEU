@@ -117,3 +117,23 @@ traitées. Le test `scripts/audit_heritage_releases.py` bloque toute
 révision dépourvue d'ajout réel ou qui régresse sur les notices POP.
 Le rattachement à une emprise IGN ne se déduit jamais d'une simple proximité.
 Les interactions de gestion sur bâtiments sont expressément reportées.
+
+## Changement de priorité : stabilisation puis mécanismes de jeu
+
+La cible photogrammétrique n'est plus une obligation de production.
+Sur le moteur actuel, privilégier un rendu propre, continu et fluide ;
+les améliorations architecturales sont bornées par les sources mesurées.
+La suite du projet doit se concentrer sur la profondeur du jeu :
+gestion municipale, décisions, événements, calendrier, arbitrages et
+progression, sans exiger au préalable un rendu Google Earth.
+
+Contrôles ajoutés pendant cette phase :
+- publication web et compilation Android vérifiées par CI ;
+- chargement de la nomenclature des rues par API paginée, la grosse
+  exportation dépassant 80 Mo et aboutissant à un atlas manquant ;
+- indexation des rues par paquets entre frames pour préserver les gestes ;
+- conservation des chaussées proches durant les déplacements, puis
+  libération des morceaux inutiles lorsque la caméra s'immobilise.
+
+Le chiffre des FPS et le rendu Android doivent toujours être validés
+sur un appareil réel ; aucune promesse de performances non mesurées.

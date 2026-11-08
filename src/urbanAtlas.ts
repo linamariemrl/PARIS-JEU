@@ -47,7 +47,12 @@ export class UrbanAtlas{
    const doc=await response.json() as IndexDoc;
    if(doc.schema!==1||!Array.isArray(doc.streets)||
       !Array.isArray(doc.quarters)||doc.quarters.length<75)return;
+   let indexed=0;
    for(const street of doc.streets){
+    // Construire l'index spatial en tranches pour conserver l'interactivité
+    // Android pendant le premier chargement de l'atlas historique.
+    if(++indexed%80===0)
+      await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
     if(!street.name||!Array.isArray(street.polygons))continue;
     const bounds=bbox(street.polygons);
     if(!bounds)continue;

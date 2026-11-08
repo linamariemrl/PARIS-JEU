@@ -71,6 +71,7 @@ export class MetroRoads{
  private lastZ=Infinity;
  private radius=Infinity;
  private quality:'low'|'medium'|'high'='medium';
+ private wasMoving=false;
  private baseMaterial:StandardMaterial;
  private nearMaterial:StandardMaterial;
  constructor(private scene:Scene,private onStatus:(label:string)=>void){
@@ -131,10 +132,14 @@ export class MetroRoads{
  update(x:number,z:number,radius:number,moving:boolean):void{
   if(!this.ready||!this.overview)return;
   const now=performance.now();
-  if(now-this.lastUpdate<450)return;
+  const gestureEnded=this.wasMoving&&!moving;
+  this.wasMoving=moving;
+  // Éviter les suppressions/reconstructions sur le fil GPU pendant un
+  // geste. À la fin du geste, appliquer sans attendre l'ancien throttle.
+  if(now-this.lastUpdate<450&&!gestureEnded)return;
   const moved=Math.hypot(x-this.lastX,z-this.lastZ)>110||
    Math.abs(radius-this.radius)>160;
-  if(!moved&&now-this.lastUpdate<1800)return;
+  if(!moved&&!gestureEnded&&now-this.lastUpdate<1800)return;
   this.lastUpdate=now;this.lastX=x;this.lastZ=z;this.radius=radius;
   const budget=this.quality==='low'?2:this.quality==='high'?5:3;
   // La couverture simplifiée reste visible à distance ; les morceaux
@@ -146,7 +151,9 @@ export class MetroRoads{
       return distance(a)-distance(b);
      }).slice(0,budget):[];
   this.wanted=new Set(nearby.map(t=>t.id));
-  for(const [id,mesh] of this.near){
+  // Garder les chaussées déjà en mémoire tant que l'utilisateur fait
+  // tourner ou défiler la carte. Le socle distant demeure visible.
+  if(!moving)for(const [id,mesh] of this.near){
    if(this.wanted.has(id))continue;
    mesh.dispose();
    this.near.delete(id);

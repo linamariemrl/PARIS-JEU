@@ -47,3 +47,29 @@ Chaque objet doit pouvoir être sélectionné depuis toute sa surface 3D ou depu
 ## 5. Avancement et réserves
 
 La version 0.26.x est une **maquette interactive documentée**, pas encore le rendu des images de référence. Ce cahier des charges ne vaut pas validation de photoréalisme, de synchronisation des sauvegardes, ni d'exhaustivité des objets. Le passage à une fidélité supérieure doit être réalisé par étapes, avec contrôle de performance à chaque livraison.
+
+## 6. Arbitrage de production — fluidité d'abord (8 novembre 2026)
+
+Accord explicite de l'utilisateur : **ne pas poursuivre le photoréalisme à
+tout prix**. Le projet vise le meilleur rendu 3D vectoriel et documenté
+possible dans le moteur actuel, mais **n'a pas à reproduire la photogrammétrie
+de Google Earth**. Cet objectif n'est pas garanti avec les ressources
+disponibles et n'est pas un critère bloquant pour le jeu.
+
+Priorités désormais ordonnées :
+1. Stabilité et continuité : éliminer les trous, les ruptures LOD, les
+   disparitions momentanées, et les charges GPU lors des gestes.
+2. Fluidité tactile Android : déplacements, zooms, rotations à 360°,
+   affichage de la ville et des arbres sans pauses répétées.
+3. Fidélité mesurée des monuments majeurs, rendue avec les données et
+   géométries existantes (IGN, LiDAR, référentiels officiels).
+4. Fiches courtes sourcées, rues, adresses, places, squares, parcs et
+   autres lieux sélectionnables ; aucune fausse précision.
+5. **Contenu du jeu**, sans attendre une hypothétique finition
+   photoréaliste : institutions, interactions municipales, décisions,
+   événements, progression, finance et sauvegardes.
+
+Avant chaque évolution graphique coûteuse, mesurer son impact sur la
+navigation mobile. Si elle détériore la fluidité, choisir la version
+simplifiée. Ne pas modifier la palette ou ajouter des textures photo
+pour masquer une géométrie ou un niveau de détail manquant.
