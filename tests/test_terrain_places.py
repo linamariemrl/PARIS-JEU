@@ -24,14 +24,15 @@ class TerrainAndPlaces(unittest.TestCase):
         assert sum(x!=-32768 for x in values)==m["validSamples"]
         assert max(values)>min(x for x in values if x!=-32768)
 
-    def test_all_geometry_references_single_terrain_sampler(self):
-        for name in ["buildings.ts","metroOverview.ts","trees.ts","metroTrees.ts",
-                     "surfaceTiles.ts","infrastructure.ts","bridges.ts"]:
+    def test_stable_geometry_no_longer_uses_experimental_draping(self):
+        for name in ["buildings.ts","metroOverview.ts",
+                     "infrastructure.ts","bridges.ts"]:
             with self.subTest(name=name):
-                self.assertIn("terrainHeight",
+                self.assertNotIn("terrainHeight",
                   (ROOT/"src"/name).read_text(encoding="utf8"))
         main=(ROOT/"src/main.ts").read_text(encoding="utf8")
-        self.assertIn("await terrain.init(ground)",main)
+        self.assertIn("const STABLE_RENDER=true",main)
+        self.assertIn("if(!STABLE_RENDER)await terrain.init(ground)",main)
         self.assertIn("new PlaceInspector",main)
         self.assertIn("metro.buildingAt",main)
 
@@ -54,7 +55,7 @@ class TerrainAndPlaces(unittest.TestCase):
         client=(ROOT/"src/surfaceTiles.ts").read_text(encoding="utf8")
         self.assertIn("overview.json",source)
         self.assertIn("loadOverview()",client)
-        self.assertIn("setRoofMode", (ROOT/"src/metroOverview.ts").read_text(encoding="utf8"))
+        self.assertNotIn("setRoofMode", (ROOT/"src/metroOverview.ts").read_text(encoding="utf8"))
         self.assertIn("identify(x:number,z:number)",client)
 
 if __name__=="__main__":
