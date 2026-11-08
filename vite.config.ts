@@ -10,7 +10,7 @@ export default defineConfig({
       name: 'PARIS SKYLINES - Le jeu de la ville',
       short_name: 'PARIS',
       lang: 'fr',
-      description: 'Paris SKYLINES, relief IGN réel, surfaces SIG et fiches de lieux sourcées',
+      description: 'PARIS SKYLINES, rendu stable, gestion municipale et atlas des lieux',
       start_url: '.', scope: '.', display: 'standalone',
       background_color: '#e3e0d9', theme_color: '#273543',
       icons: [
@@ -25,7 +25,10 @@ export default defineConfig({
         '**/data/4e/aerial/**',
         '**/data/metropole/buildings/tiles/**',
         '**/data/metropole/overview/**',
-        '**/data/metropole/surfaces/tiles/**'
+        '**/data/metropole/surfaces/**',
+        '**/data/metropole/terrain/**',
+        '**/data/metropole/trees/**',
+        '**/data/metropole/places/**'
       ],
       runtimeCaching: [{
         urlPattern: new RegExp('data/metropole/buildings/tiles/.*[.]json'),
