@@ -46,7 +46,7 @@ try{
   },true);
   const scene=new Scene(engine);
   scene.fogMode=Scene.FOGMODE_NONE;
-  scene.clearColor=new Color4(.89,.89,.89,1);
+  scene.clearColor=new Color4(.82,.83,.82,1);
   const ambient=new HemisphericLight('éclairage-fixe',new Vector3(0,1,0),scene);
   ambient.intensity=.69;
   ambient.groundColor=new Color3(.62,.62,.62);
@@ -64,7 +64,10 @@ try{
   const ground=MeshBuilder.CreateGround('sol-neutre',
     {width:40000,height:40000},scene);
   const mat=new StandardMaterial('sol-gris-clair',scene);
-  mat.diffuseColor=new Color3(.90,.90,.90);
+  // Fond minéral mat, pour séparer les espaces ouverts des façades.
+  // Aucun éclairage temporel ni texture ajoutée.
+  mat.diffuseColor=new Color3(.78,.79,.78);
+  mat.disableLighting=true;
   mat.specularColor=Color3.Black();
   mat.freeze();
   ground.material=mat;ground.isPickable=true;
