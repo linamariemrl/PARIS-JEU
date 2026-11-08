@@ -1,3 +1,24 @@
+## Version de stabilité 0.25.1 — ne pas passer à 0.26
+
+Le rendu 0.25 constitue la base validée sur captures Android : 48 à 58
+FPS, avec un réseau PVP visible. Une réserve de fichiers bruts IGN de
+~3,5 Mo est désormais préchargée progressivement lorsque l'utilisateur
+ne manipule pas la maquette (sauf mode économie de données). Cela réduit
+les délais réseau lors d'un saut ultérieur dans un autre secteur, sans
+dessiner les 287 075 bâtiments simultanément et sans saturer le GPU.
+
+Le dernier groupe déjà présent reste affiché pendant l'arrivée des
+silhouettes de la nouvelle zone. Les lourdes tuiles de précision ne sont
+plus assemblées pendant la manipulation ; les petits lots de matrices
+cèdent périodiquement une image au navigateur pour limiter les gels.
+Le cache brut est indépendant du budget strict de groupes GPU.
+
+Le passage en version 0.26 reste bloqué : essai Android de déplacements
+dans plusieurs arrondissements nécessaire, puis intégration par étapes de
+l'eau et de la végétation officielles, avec régressions vérifiées à chaque
+étape. Aucune garantie impossible d'affichage instantané sur connexion
+défaillante ou téléphone saturé n'est formulée.
+
 ## Prototype 0.25 — chaussées PVP dans Paris entier, performance Android
 
 Les emprises réelles du Plan de voirie de Paris sont affichées dans toute

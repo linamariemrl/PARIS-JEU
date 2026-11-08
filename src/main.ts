@@ -343,7 +343,8 @@ try{
     manager.update(camera.camera.target.x,camera.camera.target.z);
     overview.update(camera.camera.target.x,camera.camera.target.z,
       camera.camera.radius,camera.isMoving);
-    metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
+    metro.update(camera.camera.target.x,camera.camera.target.z,
+      camera.camera.radius,camera.isMoving);
     roads.update(camera.camera.target.x,camera.camera.target.z,
       camera.camera.radius,camera.isMoving);
     if(!STABLE_RENDER){

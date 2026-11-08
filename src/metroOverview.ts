@@ -20,17 +20,21 @@ interface VisibleGroup {
 }
 const retryAfterMs=15_000;
 
-/** Toutes les enveloppes de bâtiments disponibles restent visibles à
- * chaque échelle : instances simplifiées éloignées, emprises exactes
- * pour les tuiles proches. Les enveloppes ne sont pas des toits LiDAR.
- *
- * Les groupes téléchargés restent en mémoire; jamais de suppression
- * pendant le zoom, le panoramique ou une rotation à 360 degrés.
+/** Silhouettes IGN en cache brut (environ 3,5 Mo pour tous les groupes).
+ * Un budget GPU indépendant limite les instances affichées simultanément.
+ * Les téléchargements anticipés hors déplacement permettent de visiter
+ * d'autres secteurs sans attendre une nouvelle réponse réseau, dès que
+ * leur réserve est constituée.
  */
 export class MetroOverview {
  private manifest:Manifest|null=null;
  private byTile=new Map<string,Group>();
  private loaded=new Map<string,VisibleGroup>();
+ private rawCache=new Map<string,ArrayBuffer>();
+ private rawInFlight=new Map<string,Promise<ArrayBuffer>>();
+ private prefetchActive=false;
+ private cameraMoving=false;
+ private lastReported='';
  private visible=new Set<string>();
  private inFlight=new Set<string>();
  private failures=new Map<string,number>();
@@ -88,10 +92,56 @@ export class MetroOverview {
    }
    this.manifest=m;
    this.report();
+   // Les 33 petits fichiers sont préchargés en réserve CPU uniquement,
+   // jamais en GPU : téléchargement doux, interrompu pendant les gestes.
+   window.setTimeout(()=>void this.prefetchRaw(),1500);
   }catch(error){
    console.warn('Aperçu distant non disponible, géométrie détaillée conservée',error);
    this.onStatus('Silhouettes distantes indisponibles ; bâtiments proches conservés',0);
   }
+ }
+
+ /** Requête unique par groupe, mutualisée entre préchargement et navigation.
+  * Le cache brut complet reste petit ; aucune instance GPU ne naît ici.
+  */
+ private rawOf(group:Group):Promise<ArrayBuffer>{
+  const available=this.rawCache.get(group.id);
+  if(available)return Promise.resolve(available);
+  const pending=this.rawInFlight.get(group.id);
+  if(pending)return pending;
+  const version=this.manifest?.sourceHash??String(this.manifest?.totalBuildings);
+  const promise=fetch(PREFIX+group.id+'.bin?v='+version)
+   .then(async response=>{
+    if(!response.ok)throw Error('Groupe absent : '+group.id);
+    const bytes=await response.arrayBuffer();
+    if(bytes.byteLength!==group.bytes)
+     throw Error('Groupe incomplet : '+group.id);
+    this.rawCache.set(group.id,bytes);
+    return bytes;
+   }).finally(()=>this.rawInFlight.delete(group.id));
+  this.rawInFlight.set(group.id,promise);
+  return promise;
+ }
+ private async prefetchRaw():Promise<void>{
+  if(this.prefetchActive||!this.manifest)return;
+  // Respect du mode économie de données des téléphones compatibles.
+  const connection=(navigator as Navigator&{
+   connection?:{saveData?:boolean};
+  }).connection;
+  if(connection?.saveData)return;
+  this.prefetchActive=true;
+  try{
+   // Favoriser le point visible. Le reste est préparé à bas débit.
+   for(const group of this.manifest.groups){
+    if(this.rawCache.has(group.id))continue;
+    while(document.hidden||this.cameraMoving||this.inFlight.size>0)
+     await new Promise<void>(resolve=>window.setTimeout(resolve,650));
+    try{await this.rawOf(group);}
+    catch(error){console.warn('Réserve IGN',group.id,error);}
+    this.report();
+    await new Promise<void>(resolve=>window.setTimeout(resolve,100));
+   }
+  }finally{this.prefetchActive=false;}
  }
 
  /** Désactivation immédiate sans retirer une seule tuile IGN.
@@ -130,6 +180,7 @@ export class MetroOverview {
  }
 
  update(x:number,z:number,radius:number,isMoving=false):void{
+  this.cameraMoving=isMoving;
   const m=this.manifest;
   if(!m)return;
   const now=performance.now();
@@ -167,7 +218,18 @@ export class MetroOverview {
    near.push(group);
    count+=group.count;
   }
-  this.visible=new Set(near.map(g=>g.id));
+  const next=new Set(near.map(g=>g.id));
+  // Ne pas effacer la dernière silhouette pendant la mise à disposition
+  // du premier groupe de la nouvelle région. Aucun chargement forcé.
+  if(!near.some(g=>this.loaded.has(g.id))&&this.loaded.size){
+   const closest=[...this.loaded.values()].sort((a,b)=>{
+    const distance=(g:Group)=>Math.hypot(
+     (g.gx+.5)*cellSize-x,(g.gz+.5)*cellSize-z);
+    return distance(a.group)-distance(b.group);
+   })[0];
+   if(closest)next.add(closest.group.id);
+  }
+  this.visible=next;
   for(const [id,state] of this.loaded){
    state.mesh.setEnabled(this.visible.has(id)&&!this.roofsOnly);
    state.roof.setEnabled(this.visible.has(id)&&this.roofsOnly);
@@ -278,20 +340,22 @@ export class MetroOverview {
  private async load(group:Group):Promise<void>{
   this.inFlight.add(group.id);
   try{
-   const version=this.manifest?.sourceHash??String(this.manifest?.totalBuildings);
-   const response=await fetch(PREFIX+group.id+'.bin?v='+version);
-   if(!response.ok)throw Error('Groupe absent : '+group.id);
-   const bytes=await response.arrayBuffer();
-   if(bytes.byteLength!==group.bytes)throw Error('Groupe incomplet : '+group.id);
+   const bytes=await this.rawOf(group);
    if(!this.visible.has(group.id))return;
    const source=new DataView(bytes);
    const matrices=new Float32Array(group.count*16);
    const rooftops=new Float32Array(group.count*16);
    // D'abord toutes les silhouettes, pour construire des bornes de
    // culling qui restent valables même lorsqu'une tuile est masquée.
+   let batchStart=performance.now();
    for(const tile of group.tiles){
     this.writeTile(matrices,source,tile,false);
     this.writeRoofTile(rooftops,source,tile,false);
+    if(performance.now()-batchStart>7){
+     await new Promise<void>(resolve=>requestAnimationFrame(()=>resolve()));
+     if(!this.visible.has(group.id))return;
+     batchStart=performance.now();
+    }
    }
    const c=(r:number,g:number,b:number)=>new Color4(r,g,b,1);
    const wall=c(.90,.90,.90),roofTint=c(.76,.76,.76);
@@ -337,8 +401,10 @@ export class MetroOverview {
   }finally{
    this.inFlight.delete(group.id);
    this.lastUpdate=0;
+   const lastX=this.lastX,lastZ=this.lastZ;
+   if(Number.isFinite(lastX)&&Number.isFinite(lastZ))
+    this.trimLoaded(lastX,lastZ);
    this.lastX=Infinity;
-   this.trimLoaded(this.lastX===Infinity?0:this.lastX,this.lastZ===Infinity?0:this.lastZ);
    this.report();
   }
  }
@@ -351,10 +417,12 @@ export class MetroOverview {
    state.group.tiles.reduce((subtotal,tile)=>subtotal+
     (this.detailed.has(tile.id)?0:tile.count),0),0);
   this.currentCount=shown;
-  this.onStatus(
-   shown.toLocaleString('fr-FR')+' volumes IGN visibles (réserve '+
-   total.toLocaleString('fr-FR')+' bâtiments)'+
-   (this.failures.size?' · '+this.failures.size+' groupes à réessayer':''),
-   this.currentCount);
+  const message=shown.toLocaleString('fr-FR')+' volumes IGN visibles (réserve '+
+   total.toLocaleString('fr-FR')+' bâtiments) · secteurs en cache '+
+   this.rawCache.size+'/'+(this.manifest?.groups.length??0)+
+   (this.failures.size?' · '+this.failures.size+' groupes à réessayer':'');
+  if(message===this.lastReported)return;
+  this.lastReported=message;
+  this.onStatus(message,this.currentCount);
  }
 }

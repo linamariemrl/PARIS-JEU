@@ -65,7 +65,7 @@ export class MetroTileManager{
     this.lastPointX=Infinity;
   }
 
-  update(x:number,z:number,radius:number):void{
+  update(x:number,z:number,radius:number,isMoving=false):void{
     if(!this.ready)return;
     const now=performance.now();
     if(now-this.lastUpdate<230)return;
@@ -111,6 +111,9 @@ export class MetroTileManager{
     // L'éviction a lieu uniquement quand de nouvelles tuiles doivent
     // être chargées ET que le budget mémoire est atteint.
     for(const tile of candidates){
+      // Les tuiles IGN exactes ne s'assemblent qu'une fois le geste achevé.
+      // Pendant la rotation, conserver le niveau de détail léger déjà présent.
+      if(isMoving)break;
       if(this.inFlight.size>=2)break;
       if(this.active.has(tile.id)||this.inFlight.has(tile.id))continue;
       if(now-(this.failures.get(tile.id)??-Infinity)<12000)continue;
