@@ -2,6 +2,7 @@ import {
   Color3, Mesh, Scene, StandardMaterial, VertexData
 } from '@babylonjs/core';
 import earcut from 'earcut';
+import {terrainHeight} from './terrain';
 
 /** Tablier et parapets 3D très simplifiés à partir des emprises IGN des
  * tronçons surélevés. L'élévation est illustrative : elle ne restitue
@@ -39,6 +40,11 @@ function openRing(ring: Point[]): Point[] {
 }
 function geometry(scene: Scene, name: string, batch: Batch, color: Color3): Mesh | null {
   if (!batch.indices.length) return null;
+  // Géométrie des ponts indexée sur un relief commun, sans inventer
+  // le profil altimétrique réel des tabliers.
+  for(let i=0;i<batch.positions.length;i+=3){
+    batch.positions[i+1]+=terrainHeight(batch.positions[i],batch.positions[i+2]);
+  }
   const mesh = new Mesh(name, scene);
   const data = new VertexData();
   data.positions = batch.positions;
