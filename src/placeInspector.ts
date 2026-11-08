@@ -9,9 +9,6 @@ interface Monument {
  materials?:string;roof?:string;description?:string;sourceUrl:string;
 }
 interface MonumentDocument{schema:number;count:number;records:Monument[];}
-interface Address {
- label:string;distance:number;properties:Record<string,unknown>;
-}
 type SurfaceInfo=ReturnType<SurfaceTileManager['identify']>;
 
 const X_SCALE=111320*Math.cos(CENTER[1]*Math.PI/180);
