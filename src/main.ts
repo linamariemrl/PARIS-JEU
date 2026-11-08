@@ -276,6 +276,7 @@ try{
     overview.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     metroTrees.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
+    trees.update(camera.camera.radius);
     surfaces.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius,camera.isMoving);
     scene.render();
     resolution.update(now,engine.getFps(),camera.isMoving);
