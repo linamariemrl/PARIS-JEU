@@ -61,6 +61,10 @@ def tourism():
   way["building"]["name"~"Louvre",i](48.858,2.329,48.864,2.344);
   way["historic"~"^(monument|castle|memorial|fort|archaeological_site)$"]["name"](48.75,2.15,48.97,2.58);
   way["leisure"~"^(park|garden)$"]["name"](48.75,2.15,48.97,2.58);
+  way["man_made"="tower"]["name"](48.75,2.15,48.97,2.58);
+  node["historic"~"^(monument|memorial|wayside_cross|wayside_shrine)$"]["name"](48.75,2.15,48.97,2.58);
+  node["tourism"~"^(artwork|attraction)$"]["name"](48.75,2.15,48.97,2.58);
+  node["amenity"="fountain"]["name"](48.75,2.15,48.97,2.58);
  );out geom;"""
  elements=[]
  for endpoint in ("https://overpass-api.de/api/interpreter",
@@ -78,10 +82,26 @@ def tourism():
    print("Serveur OSM tourisme temporairement indisponible :",str(exc)[:160],flush=True)
  if not elements:
   print("Inventaire touristique supplémentaire absent, notices POP conservées",flush=True)
-  return []
+  return [],[]
  result=[]
+ points=[]
  seen=set()
  for entry in elements:
+  if entry.get("type")=="node":
+   tags=entry.get("tags") or {}
+   name=str(tags.get("name") or "").strip()
+   osm_id=entry.get("id")
+   if not name or len(name)>145 or not isinstance(osm_id,int) or osm_id in seen:continue
+   lon=entry.get("lon");lat=entry.get("lat")
+   if not isinstance(lon,(float,int)) or not isinstance(lat,(float,int)):continue
+   if not (2.12<lon<2.62 and 48.72<lat<49):continue
+   seen.add(osm_id)
+   x,z=projected(lon,lat)
+   category=str(tags.get("historic") or tags.get("tourism") or
+    tags.get("amenity") or "monument")
+   points.append([str(osm_id),name,x,z,category])
+   if len(points)>6000:break
+   continue
   tags=entry.get("tags") or {}
   name=str(tags.get("name") or "").strip()
   geom=entry.get("geometry") or []
@@ -110,12 +130,14 @@ def tourism():
    "provenance":"Géométrie vectorielle OSM (ODbL) ; limites non nécessairement cadastrales.",
    "polygons":[[ring]]}
   result.append(feature)
-  if len(result)>=2200:break
- print("Objets touristiques OSM vectorisés :",len(result),flush=True)
- return result
+  if len(result)>=5000:break
+ print("Objets touristiques OSM vectorisés :",len(result),
+  "; points documentés :",len(points),flush=True)
+ return result,points
 
 def main():
  areas=[]
+ points=[]
  for site in SITES:
   try:
    areas.append(way(site))
@@ -123,7 +145,8 @@ def main():
   except Exception as e:
    print("Contour absent, pas de polygone fictif :",site["id"],str(e),flush=True)
  # Ajouter le recensement cartographique plus large sans écraser les domaines officiels.
- areas.extend(tourism())
+ extra,points=tourism()
+ areas.extend(extra)
  # Ne pas écraser une extraction précédente valide par un fichier vide.
  if not areas and DEST.exists():
   print("Conservation des contours précédents",flush=True)
@@ -132,6 +155,7 @@ def main():
  DEST.write_text(json.dumps({"schema":1,
   "note":"Ces contours de domaines ne remplacent ni les surfaces végétales ni les bâtiments IGN.",
   "sources":"Sénat, musée du Louvre, OpenStreetMap contributors (ODbL)",
-  "areas":areas},ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf8")
- print("Domaines géométriques sourcés :",len(areas),flush=True)
+  "areas":areas,"points":points},ensure_ascii=False,separators=(",",":"))+"\n",encoding="utf8")
+ print("Domaines géométriques sourcés :",len(areas),
+  "; statues, mémoriaux, fontaines et autres objets :",len(points),flush=True)
 if __name__=="__main__":main()
