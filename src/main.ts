@@ -34,6 +34,11 @@ const state=el<HTMLElement>('state');
 const counter=el<HTMLElement>('count');
 const fps=el<HTMLElement>('fps');
 const urban=el<HTMLElement>('urban');
+/** Mode de récupération 0.20 : moteur éprouvé 0.17.
+ * Les extensions SIG/LiDAR colorées restent dans le dépôt mais ne
+ * dessinent plus de doubles surfaces/arbres/relief pendant le jeu.
+ */
+const STABLE_RENDER=true;
 
 try{
   const engine=new Engine(canvas,true,{
@@ -41,7 +46,7 @@ try{
   },true);
   const scene=new Scene(engine);
   scene.fogMode=Scene.FOGMODE_NONE;
-  scene.clearColor=new Color4(.88,.875,.855,1);
+  scene.clearColor=new Color4(.89,.89,.89,1);
   const ambient=new HemisphericLight('éclairage-fixe',new Vector3(0,1,0),scene);
   ambient.intensity=.69;
   ambient.groundColor=new Color3(.62,.62,.62);
@@ -59,7 +64,7 @@ try{
   const ground=MeshBuilder.CreateGround('sol-neutre',
     {width:40000,height:40000},scene);
   const mat=new StandardMaterial('sol-gris-clair',scene);
-  mat.diffuseColor=new Color3(.89,.88,.86);
+  mat.diffuseColor=new Color3(.90,.90,.90);
   mat.specularColor=Color3.Black();
   mat.freeze();
   ground.material=mat;ground.isPickable=true;
@@ -113,7 +118,7 @@ try{
     el('height').textContent=b.height.toLocaleString('fr-FR')+' m'+
       (b.estimatedHeight?' (estimée)':' (IGN)');
     el('usage').textContent=b.usage||'Non renseigné';
-    el('skin').textContent='Pierre claire stylisée, sans texture photographique';
+    el('skin').textContent='Maquette neutre restaurée, parements non documentés';
     el('wall-real').textContent=describeMaterial(b.wallCode,false);
     el('roof-real').textContent=describeMaterial(b.roofCode,true);
     el('floors-real').textContent=b.floors?
@@ -231,10 +236,18 @@ try{
     const level=quality.value as 'low'|'medium'|'high';
     manager.setQuality(level);
     metro.setQuality(level);
-    trees.setQuality(level);
-    metroTrees.setQuality(level);
-    surfaces.setQuality(level);
-    resolution.configure(level);
+    if(STABLE_RENDER){
+      // Échelle GPU constante au cours des mouvements : comportement 0.17.
+      engine.setHardwareScalingLevel(
+        level==='low'?1.7:level==='medium'?1.3:1
+      );
+      engine.resize();
+    }else{
+      trees.setQuality(level);
+      metroTrees.setQuality(level);
+      surfaces.setQuality(level);
+      resolution.configure(level);
+    }
   });
   quality.dispatchEvent(new Event('change'));
 
@@ -275,24 +288,28 @@ try{
     manager.update(camera.camera.target.x,camera.camera.target.z);
     overview.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
     metro.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
-    metroTrees.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
-    trees.update(camera.camera.radius);
-    surfaces.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius,camera.isMoving);
+    if(!STABLE_RENDER){
+      metroTrees.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius);
+      trees.update(camera.camera.radius);
+      surfaces.update(camera.camera.target.x,camera.camera.target.z,camera.camera.radius,camera.isMoving);
+    }
     scene.render();
-    resolution.update(now,engine.getFps(),camera.isMoving);
+    if(!STABLE_RENDER)
+      resolution.update(now,engine.getFps(),camera.isMoving);
     if(now-lastFps>=1000){
       fps.textContent=Math.round(engine.getFps())+' FPS';
       lastFps=now;
     }
   });
 
-  // La source IGN est chargée en premier pour que toutes les couches
-  // utilisent un seul repère vertical. Si l'IGN n'est pas publié,
-  // les géométries restent dans leur mode plan initial, sans crash.
+  // Restauration des seules couches éprouvées. Relief, arbres et
+  // surfaces du prototype 0.19 restent disponibles comme modules
+  // expérimentaux, mais ne sont pas rendus en mode récupération.
   void (async()=>{
-    await terrain.init(ground);
+    if(!STABLE_RENDER)await terrain.init(ground);
     await Promise.allSettled([
-      surfaces.init(),metroTrees.init(),trees.init(),inspector.init(),
+      inspector.init(),
+      ...(!STABLE_RENDER?[surfaces.init(),metroTrees.init(),trees.init()]:[]),
       overview.init(),metro.init(),manager.init().catch((err:unknown)=>{
         console.warn('Bâtiments du 4e indisponibles',err);
         state.textContent='Bâtiments du 4e : source indisponible';
@@ -302,11 +319,22 @@ try{
       loadMetropolitanOutlines(scene).catch(()=>
         addAdministrativeOutline(scene)),
       loadInfrastructure(scene).then(message=>{
-        urban.textContent=message+' (surfaces réelles, teintes schématiques)';
+        urban.textContent=message+
+          (STABLE_RENDER?' (moteur géométrique stable 0.17)':
+            ' (surfaces réelles, teintes schématiques)');
       })
     ]);
-    el('water-status').textContent='Surfaces d’eau IGN : emprises sectorisées';
-    el('roads-status').textContent='Chaussées PVP : emprises sectorisées';
+    if(STABLE_RENDER){
+      el('terrain-status').textContent='Relief IGN archivé · rendu expérimental désactivé';
+      el('surface-status').textContent='Parcs : données conservées · rendu expérimental désactivé';
+      el('water-status').textContent='Eau : retour au maillage stable du 4e';
+      el('roads-status').textContent='Chaussées : retour à la géométrie stable du 4e';
+      el('trees-status').textContent='Arbres 3D en pause pour stabilité graphique';
+      el('metro-trees-status').textContent='Inventaire arboré conservé hors rendu';
+    }else{
+      el('water-status').textContent='Surfaces d’eau IGN : emprises sectorisées';
+      el('roads-status').textContent='Chaussées PVP : emprises sectorisées';
+    }
     el('places-status').textContent=inspector.monumentCount?
       inspector.monumentCount.toLocaleString('fr-FR')+
       ' notices Mérimée géolocalisées + adresses et POI IGN disponibles au clic':
