@@ -16,7 +16,7 @@ try:
  from rasterio.transform import from_origin
  from shapely.geometry import Polygon
  from prepare_lidar_roofs_4e import (
-    split_wms_tile_url,mosaic_tiles,verified_roof_sample)
+    split_wms_tile_url,mosaic_tiles,verified_roof_sample,sample)
 except ModuleNotFoundError as error:
  missing_geospatial_dependency=error.name
 
@@ -88,6 +88,33 @@ class LidarMosaic026(unittest.TestCase):
     self.assertEqual(value,20.0)
     self.assertIsNone(verified_roof_sample(poly,ds,ds.read(1),
       5,5,25.2,poly.representative_point()))
+ def test_mnh_campanile_uses_published_height_not_average_ign(self):
+  # Un pixel MNH à 45 m est réel, au-dessus des 25,2 m de la hauteur IGN
+  # globale mais au-dessous des 50 m du campanile annoncés par la Ville.
+  with tempfile.TemporaryDirectory() as directory:
+   path=Path(directory)/"campanile.tif"
+   data=np.array([[45.0]],dtype="float32")
+   with rasterio.open(path,"w",driver="GTiff",width=1,height=1,
+       count=1,dtype="float32",crs="EPSG:2154",
+       transform=from_origin(0,1,.5,.5),nodata=-9999) as ds:
+    ds.write(data,1)
+   with rasterio.open(path) as ds:
+    arr=ds.read(1)
+    self.assertIsNone(sample(ds,arr,.25,.75,25.2))
+    self.assertEqual(sample(ds,arr,.25,.75,25.2,
+      measured_max_height=50.0),45.0)
+    self.assertIsNone(sample(ds,arr,.25,.75,25.2,
+      measured_max_height=40.0))
+  records=json.loads((ROOT/"public/data/metropole/architecture/dossiers.json").read_text())["dossiers"]
+  hotel=next(d for d in records if d["ref"]=="PA00086319")
+  proof=next(m for m in hotel["measurements"]
+      if m["sourceId"]=="ville-paris-campanile-hauteur")
+  self.assertEqual(proof["value"],50)
+  self.assertTrue(any(s["id"]==proof["sourceId"] and
+    s["url"]=="https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659"
+    for s in hotel["documents"]))
+  self.assertFalse(hotel["publicationAllowed"])
+
  def test_mosaic_is_not_presented_as_certified_facade(self):
   s=(ROOT/"scripts/prepare_lidar_roofs_4e.py").read_text()
   self.assertIn('require_coverage=.95',s)
