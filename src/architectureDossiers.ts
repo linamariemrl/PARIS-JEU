@@ -16,7 +16,10 @@ export interface ArchitectureDossier{
  geometry:string;publicationAllowed:boolean;
  /** R02-D4 : parties certifiées une à une ; ne lève PAS le verrou global
   * publicationAllowed du monument entier. Facultatif, absent par défaut. */
- certifiedParts?:{partId:string;sourceIds:string[];status:string}[];
+ certifiedParts?:{partId:string;sourceIds:string[];status:string;
+  /** Rapport exact Shapely/GEOS (scripts/validate_model_geometry.py --out),
+   * vérifié par la CI : sans lui, aucune partie n'est publiable. */
+  geometryReport?:string}[];
 }
 interface ArchitecturePayload{
  schema:1;dossiers:ArchitectureDossier[];
@@ -114,7 +117,8 @@ export class ArchitectureDossiers{
  canPublishPart(ref:string,partId:string,sourceIds:readonly string[]):boolean{
   const d=this.forReference(ref);
   const part=d?.certifiedParts?.find(p=>p.partId===partId);
-  if(!d||!part||part.status!=='measured-and-approved'||!sourceIds.length)return false;
+  if(!d||!part||part.status!=='measured-and-approved'||!sourceIds.length||
+     typeof part.geometryReport!=='string'||!part.geometryReport)return false;
   const known=new Set(d.documents.map(s=>s.id));
   return sourceIds.every(id=>known.has(id)&&part.sourceIds.includes(id));
  }

@@ -164,6 +164,7 @@ class ArchitectureDossiers026(unittest.TestCase):
   model=read("src/architectureModels.ts")
   self.assertIn("'epsg2154-relative'",model)
   self.assertIn("masterToScene(part.positions,obj.originL93!,f)",model)
+  self.assertIn("if(Math.abs(minY-g)>GROUND_TOLERANCE_M){",model)
   self.assertIn("node --experimental-strip-types scripts/check_registration.mjs",read("package.json"))
  def test_sheet_registers_never_derive_from_paper(self):
   import json

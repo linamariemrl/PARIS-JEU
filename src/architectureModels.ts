@@ -10,7 +10,7 @@ import {chooseTier} from './lodHysteresis';
 import {masterToScene} from './registration';
 import type {SceneFrame} from './registration';
 import {CENTER} from './geo';
-import {displayReferenceAltitude} from './terrain';
+import {displayReferenceAltitude,terrainHeight,isTerrainReady} from './terrain';
 
 /** Bascule unique partagée avec la construction des tuiles (R02-D1/D2/D7).
  * Les extrusions des emprises listées dans `heritage-footprints.json` sont
@@ -40,6 +40,11 @@ interface ModelFile{schema:1;ref:string;units:'m';
  coordinates:'paris-local-xyz'|'epsg2154-relative';
  originL93?:[number,number,number];tier:ModelLod['tier'];partId?:string;
  sourceIds:string[];parts:ModelPart[];}
+/** Écart vertical admis entre le pied d'un master géoréférencé et le MNT.
+ * Le MNT du jeu est une grille RGE ALTI de 200 m interpolée : 3 m couvrent
+ * son approximation entre nœuds ; ce n'est pas une précision de relevé. */
+export const GROUND_TOLERANCE_M=3;
+const groundAt=(x:number,z:number):number|null=>isTerrainReady()?terrainHeight(x,z):null;
 const sceneFrame=():SceneFrame|null=>{
  const ref=displayReferenceAltitude();
  return ref===null?null:{center:[CENTER[0],CENTER[1]],displayReferenceAltitudeM:ref};
@@ -71,7 +76,8 @@ export class ArchitecturalModelLibrary{
  private overlay=new Map<StandardMaterial,StandardMaterial>();
  constructor(private scene:Scene,private docs:ArchitectureDossiers,
   private materials:BuildingMaterials,
-  private frame:()=>SceneFrame|null=sceneFrame){
+  private frame:()=>SceneFrame|null=sceneFrame,
+  private ground:(x:number,z:number)=>number|null=groundAt){
   rejectModel=ref=>this.reject(ref);
  }
  /** Une tuile chargée après la maquette révèle une emprise non couverte :
@@ -211,6 +217,18 @@ export class ArchitecturalModelLibrary{
     const f=this.frame();
     if(!f){this.retryAfter.set(key,performance.now()+5000);return;}
     for(const part of obj.parts)part.positions=masterToScene(part.positions,obj.originL93!,f);
+    // Un master importé ne flotte pas et ne s'enfonce pas : son point le
+    // plus bas doit rejoindre le MNT au centre de son emprise.
+    let minY=Infinity,cx=0,cz=0,n=0;
+    for(const part of obj.parts)for(let i=0;i+2<part.positions.length;i+=3){
+     minY=Math.min(minY,part.positions[i+1]);cx+=part.positions[i];cz+=part.positions[i+2];n++;
+    }
+    const g=this.ground(cx/n,cz/n);
+    if(g===null){this.retryAfter.set(key,performance.now()+5000);return;}
+    if(Math.abs(minY-g)>GROUND_TOLERANCE_M){
+     this.rejected.add(key+'@'+lod.tier);
+     throw Error('Master géoréférencé hors du sol ('+(minY-g).toFixed(1)+' m)');
+    }
    }
    // D7, étape 2 : valider l'emprise AVANT de créer le moindre maillage.
    // Projection horizontale réelle des triangles (pas seulement la boîte).

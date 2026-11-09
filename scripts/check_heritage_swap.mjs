@@ -168,7 +168,9 @@ assert.ok(!partFits(courtPart,[court],[[19,0,20,21,0,20,21,9,20]]).partInsideIgn
 const docs=new ArchitectureDossiers();
 docs.byRef.set('PA00000001',{ref:'PA00000001',publicationAllowed:false,
  documents:[{id:'plan-a'},{id:'plan-b'}],measurements:[],uncertainty:[],
- certifiedParts:[{partId:'travee-1',sourceIds:['plan-a'],status:'measured-and-approved'},
+ certifiedParts:[{partId:'travee-1',sourceIds:['plan-a'],status:'measured-and-approved',
+   geometryReport:'reports/travee-1.json'},
+  {partId:'travee-sans-rapport',sourceIds:['plan-a'],status:'measured-and-approved'},
   {partId:'travee-2',sourceIds:['plan-a'],status:'draft'}]});
 assert.equal(docs.canPublish('PA00000001',['plan-a']),false,'monument entier toujours verrouillé');
 assert.ok(docs.canPublishPart('PA00000001','travee-1',['plan-a']),'partie certifiée publiable');
@@ -176,6 +178,8 @@ assert.ok(!docs.canPublishPart('PA00000001','travee-1',['plan-b']),'source non c
 assert.ok(!docs.canPublishPart('PA00000001','travee-2',['plan-a']),'partie en brouillon refusée');
 assert.ok(!docs.canPublishPart('PA00000001','travee-3',['plan-a']),'partie inconnue refusée');
 assert.ok(!docs.canPublishPart('PA00000001','travee-1',[]),'sans source : refus');
+assert.ok(!docs.canPublishPart('PA00000001','travee-sans-rapport',['plan-a']),
+ 'partie sans rapport de validation exacte : refus');
 
 // --- Table publiée ----------------------------------------------------------
 const doc=JSON.parse(readFileSync(new URL(

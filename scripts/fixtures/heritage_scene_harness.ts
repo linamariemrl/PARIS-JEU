@@ -154,7 +154,8 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  let lib=new ArchitecturalModelLibrary(scene,docs,materials);
  let frame:SceneFrame|null={center:[CENTER[0],CENTER[1]],displayReferenceAltitudeM:35};
  const fresh=async(served:Record<string,Served>)=>{
-  files=served;lib=new ArchitecturalModelLibrary(scene,docs,materials,()=>frame);await lib.init();
+  // Sol du banc : y=0 (pas de MNT chargé dans NullEngine).
+  files=served;lib=new ArchitecturalModelLibrary(scene,docs,materials,()=>frame,()=>0);await lib.init();
  };
  const step=async(x:number,z:number,radius:number)=>{
   clock+=500;lib.update(x,z,radius,false);await tick();
@@ -409,7 +410,8 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  check(experts().length===0&&visible3(),'B1 : restitution complète');
 
  // --- D5 : master EPSG:2154 relatif à une origine, converti au chargement.
- const roof=footprintRoof(0,40);
+ // Dalle posée au sol (y=0) : un master géoréférencé ne doit pas flotter.
+ const roof=footprintRoof(0,0);
  const f0=frame!;
  const o=sceneToL93(roof.positions[0],roof.positions[1],roof.positions[2],f0);
  const origin:[number,number,number]=[Math.round(o.e),Math.round(o.n),Math.round(o.altitudeNGF)];
@@ -431,8 +433,15 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  check(d5&&d5.coverage>=.99&&d5.spill<=.01,'D5 : couverture '+(d5?(100*d5.coverage).toFixed(1):'?')+
   ' %, débordement '+(d5?(100*d5.spill).toFixed(1):'?')+' % après conversion');
  const ys=experts()[0]?.getVerticesData('position');
- check(ys&&Math.abs(ys[1]-40)<1e-3,'D5 : altitude NGF - 35 m de référence = y de scène');
+ check(ys&&Math.abs(ys[1]-0)<1e-3,'D5 : altitude NGF - 35 m de référence = y de scène');
  await away();
+ // Altitude d'origine faussée : master qui flotte (+12 m) ou s'enfonce (-12 m).
+ for(const dz of [12,-12]){
+  await fresh({...good,[input.ref+'-high.json']:{...l93File('high'),originL93:[origin[0],origin[1],origin[2]+dz]}});
+  await near(300);
+  check(experts().length===0&&visible3(),'D5 : master '+(dz>0?'flottant de 12 m':'enfoncé de 12 m')+' : rejeté');
+  await away();
+ }
  const badOrigin=(tier:string)=>({...l93File(tier),originL93:[origin[0]+8,origin[1],origin[2]]});
  await fresh({...good,[input.ref+'-medium.json']:badOrigin('medium')});
  await near(900);

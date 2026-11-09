@@ -137,5 +137,53 @@ class ExactGeometry(unittest.TestCase):
         self.assertAlmostEqual(y, 75 - 35.0, places=6)
 
 
+class CertificationProcedure(unittest.TestCase):
+    """Le rapport exact est EXIGÉ : lié au fichier publié et à l'emprise."""
+    def test_report_binds_file_footprint_and_tolerance(self):
+        import json, tempfile
+        fp = V.footprint_from_building(V.load_building('BATIMENT0000000245157267'))
+        model = model_from(fp)
+        raw = json.dumps(model).encode()
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'm.json'
+            out = Path(d) / 'r.json'
+            path.write_bytes(raw)
+            code = V.main(['--model', str(path), '--ign-id', 'BATIMENT0000000245157267',
+                           '--tolerance', '1', '--tolerance-source', SRC, '--out', str(out)])
+            self.assertEqual(code, 0)
+            rep = json.loads(out.read_text())
+        ids = {'BATIMENT0000000245157267'}
+        self.assertEqual(V.check_certification_report(rep, raw, ids), [])
+        self.assertTrue(V.check_certification_report(rep, raw + b' ', ids),
+                        'fichier modifié après validation')
+        self.assertTrue(V.check_certification_report({**rep, 'ok': False}, raw, ids))
+        self.assertTrue(V.check_certification_report({**rep, 'toleranceSource': ''}, raw, ids))
+        self.assertTrue(V.check_certification_report(rep, raw, {'BATIMENT0000000000000001'}))
+
+    def test_every_certification_in_repository_has_a_valid_report(self):
+        """Aucune partie certifiée ni publication sans rapport exact valide ;
+        aucun modèle de test dans l'index public."""
+        import json
+        arch = ROOT / 'public/data/metropole/architecture'
+        table = json.loads((arch / 'heritage-footprints.json').read_text())
+        ign = {e['ref']: set(e['ignIds']) for e in table['entries']}
+        dossiers = json.loads((arch / 'dossiers.json').read_text())['dossiers']
+        index = json.loads((arch / 'models/index.json').read_text())
+        for d in dossiers:
+            parts = d.get('certifiedParts', [])
+            if d.get('publicationAllowed'):
+                parts = parts + [d.get('certification') or {}]
+            for part in parts:
+                report = part.get('geometryReport')
+                self.assertTrue(report, d['ref'] + ' : rapport exact manquant')
+                rep = json.loads((ROOT / report).read_text())
+                raw = (ROOT / rep['model']).read_bytes()
+                self.assertEqual(V.check_certification_report(rep, raw, ign.get(d['ref'], set())), [])
+        for m in index['models']:
+            self.assertNotIn('test-fixture', json.dumps(m))
+            if m.get('replacement') == 'partial':
+                d = next(x for x in dossiers if x['ref'] == m['ref'])
+                self.assertIn(m['partId'], [p['partId'] for p in d.get('certifiedParts', [])])
+
 if __name__ == '__main__':
     unittest.main()

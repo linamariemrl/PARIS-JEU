@@ -128,6 +128,33 @@ def validate(model_geom, footprint, tolerance, tolerance_source):
     return report
 
 
+def certification_fields(raw, model_path, ign_id):
+    """Champs qui lient un rapport à UN fichier de maquette et UNE emprise."""
+    import hashlib
+    return {'schema': 1, 'tool': 'scripts/validate_model_geometry.py',
+            'model': str(model_path), 'modelSha256': hashlib.sha256(raw).hexdigest(),
+            'ignId': ign_id}
+
+
+def check_certification_report(report, model_bytes, ign_ids):
+    """Erreurs empêchant d'utiliser ce rapport pour certifier une maquette."""
+    import hashlib
+    errors = []
+    if report.get('tool') != 'scripts/validate_model_geometry.py':
+        errors.append('rapport non produit par le validateur exact')
+    if report.get('ok') is not True:
+        errors.append('validation exacte non réussie')
+    if report.get('errors'):
+        errors.append('rapport avec erreurs géométriques')
+    if not report.get('toleranceSource'):
+        errors.append('tolérance sans justification de source')
+    if report.get('ignId') not in ign_ids:
+        errors.append('emprise IGN du rapport hors de la table patrimoniale')
+    if report.get('modelSha256') != hashlib.sha256(model_bytes).hexdigest():
+        errors.append('rapport ne correspondant pas au fichier publié')
+    return errors
+
+
 def load_building(ign_id):
     for path in sorted((ROOT / 'public/data/4e/tiles').glob('*.json')) + \
             sorted((ROOT / 'public/data/metropole/buildings/tiles').glob('*.json')):
@@ -146,11 +173,17 @@ def main(argv=None):
     ap.add_argument('--ign-id', required=True)
     ap.add_argument('--tolerance', type=float, required=True)
     ap.add_argument('--tolerance-source', required=True)
+    ap.add_argument('--out', help='rapport JSON exigé par la certification')
     a = ap.parse_args(argv)
-    model = json.loads(Path(a.model).read_text(encoding='utf-8'))
+    raw = Path(a.model).read_bytes()
+    model = json.loads(raw.decode('utf-8'))
     fp = footprint_from_building(load_building(a.ign_id))
     rep = validate(projection(model), fp, a.tolerance, a.tolerance_source)
+    rep.update(certification_fields(raw, a.model, a.ign_id))
     print(json.dumps(rep, ensure_ascii=False, indent=1))
+    if a.out:
+        Path(a.out).write_text(json.dumps(rep, ensure_ascii=False, indent=1) + '\n',
+                               encoding='utf-8')
     return 0 if rep['ok'] else 1
 
 
