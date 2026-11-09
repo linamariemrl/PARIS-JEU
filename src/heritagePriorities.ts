@@ -35,6 +35,7 @@ const classes:Record<HeritageRole,readonly string[]>={
     "PA00088739"
   ],
   "cultural": [
+    "PA00085784",
     "PA00085992",
     "PA00088877",
     "PA00088878",
