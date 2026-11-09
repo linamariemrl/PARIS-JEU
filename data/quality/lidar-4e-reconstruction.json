@@ -1,17 +1,22 @@
 {
   "schema": 1,
   "testedTiles": 6,
-  "downloadFailures": [
-    {
-      "tile": "metadata.11924",
-      "error": "HTTP Error 504: Gateway Time-out"
-    }
-  ],
-  "coveredBuildings": 2016,
-  "validatedBuildings": 1048,
-  "rejectedBuildings": 968,
+  "downloadFailures": [],
+  "coveredBuildings": 2696,
+  "validatedBuildings": 1387,
+  "rejectedBuildings": 1309,
   "totalBuildings": 2696,
   "hotelDeVilleTarget": "BATIMENT0000000245157267",
+  "hotelDeVilleDiagnostic": {
+    "reason": "missing-boundary-lidar",
+    "tile": "metadata.57713",
+    "polygonAreaM2": 10275.3,
+    "boundaryVertexCount": 362,
+    "gridMeters": 2.5,
+    "missingBoundarySamples": 181,
+    "sampledBoundaryVertices": 362,
+    "ringCount": 4
+  },
   "hotelDeVilleRoofAccepted": false,
   "hotelDeVilleRoofTriangleCoverage": 0,
   "note": "Toit mesuré seulement par échantillonnage MNH et triangulation 2,5 m ; les sculptures et façades n'en sont PAS déduites."
