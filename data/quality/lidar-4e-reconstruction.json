@@ -3,12 +3,12 @@
   "testedTiles": 6,
   "downloadFailures": [],
   "coveredBuildings": 2696,
-  "validatedBuildings": 1387,
-  "rejectedBuildings": 1309,
+  "validatedBuildings": 1747,
+  "rejectedBuildings": 949,
   "totalBuildings": 2696,
   "hotelDeVilleTarget": "BATIMENT0000000245157267",
   "hotelDeVilleDiagnostic": {
-    "reason": "missing-boundary-lidar",
+    "reason": "p90-height-inconsistent",
     "sourceTiles": [
       "metadata.11924",
       "metadata.57713"
@@ -22,9 +22,13 @@
     "polygonAreaM2": 10275.3,
     "boundaryVertexCount": 362,
     "gridMeters": 2.5,
-    "missingBoundarySamples": 1,
-    "sampledBoundaryVertices": 362,
-    "ringCount": 4
+    "candidatePoints": 2048,
+    "acceptedTriangles": 3436,
+    "acceptedVertexSamples": 2035,
+    "triangulatedCoverage": 0.96616,
+    "heightMedianM": 26.76,
+    "heightP90M": 34.98,
+    "ignBuildingHeightM": 25.2
   },
   "hotelDeVilleRoofAccepted": false,
   "hotelDeVilleRoofTriangleCoverage": 0,
