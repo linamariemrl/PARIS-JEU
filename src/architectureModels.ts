@@ -1,47 +1,17 @@
 import {Mesh,Scene,VertexData} from '@babylonjs/core';
-import type {Building} from './types';
 import type {BuildingMaterials} from './buildings';
 import {priorityHeritageRole} from './heritagePriorities';
 import {ArchitectureDossiers} from './architectureDossiers';
+import {HeritageSwap,heritageFootprints,boxOfPositions,unionBox} from './heritageFootprints';
+import type {Box2} from './heritageFootprints';
 
-interface BatchMetadata{buildings:Building[];faceToBuilding:number[];}
-interface Snapshot{indices:number[];faces:number[];}
-const originalBatches=new WeakMap<Mesh,Snapshot>();
-const activeRefs=new Set<string>();
-/** La ville est déjà fusionnée en grands maillages par tuile.
- * Ne masquer que les triangles des bâtiments REMPLACÉS par un modèle
- * mesuré effectivement chargé. Les voisins, sélection et trous demeurent.
- * Ne jamais supprimer un bâtiment si son maillage expert est absent.
- */
-export function applyArchitecturalMask(mesh:Mesh):void{
- const meta=mesh.metadata as BatchMetadata|undefined;
- if(!meta||!Array.isArray(meta.buildings)||
-   !Array.isArray(meta.faceToBuilding))return;
- let original=originalBatches.get(mesh);
- if(!original){
-   if(!activeRefs.size||!meta.faceToBuilding.some(id=>
-     activeRefs.has(meta.buildings[id]?.heritageRef??'')))return;
-   const indices=mesh.getIndices();
-   if(!indices||indices.length!==meta.faceToBuilding.length*3)return;
-   original={indices:Array.from(indices),faces:meta.faceToBuilding.slice()};
-   originalBatches.set(mesh,original);
- }
- const keep:number[]=[],faces:number[]=[];
- for(let i=0;i<original.faces.length;i++){
-  const building=meta.buildings[original.faces[i]];
-  if(activeRefs.has(building?.heritageRef??''))continue;
-  keep.push(original.indices[3*i],original.indices[3*i+1],
-    original.indices[3*i+2]);
-  faces.push(original.faces[i]);
- }
- if(keep.length===original.indices.length&&
-    mesh.getIndices()?.length===keep.length)return;
- mesh.setIndices(keep);
- meta.faceToBuilding=faces;
-}
-function maskAll(scene:Scene):void{
- for(const mesh of scene.meshes)if(mesh instanceof Mesh)applyArchitecturalMask(mesh);
-}
+/** Bascule unique partagée avec la construction des tuiles (R02-D1/D2/D7).
+ * Les extrusions des emprises listées dans `heritage-footprints.json` sont
+ * des maillages séparés ; remplacer = `isVisible=false`, jamais
+ * `setIndices()`. Le maillage reste activé et sélectionnable. */
+let rejectModel:(ref:string)=>void=()=>{};
+export const extrusionSwap=new HeritageSwap<Mesh>(heritageFootprints,
+  ref=>rejectModel(ref));
 interface ModelLod{tier:'high'|'medium'|'low';maxRadiusMeters:number;file:string;}
 interface ModelDescriptor{ref:string;x:number;z:number;sourceIds:string[];
  lods:ModelLod[];fullReplacement:boolean;review:'measured-and-approved';}
@@ -51,7 +21,7 @@ interface ModelPart{name:string;kind:'wall'|'roof'|'detail';
 interface ModelFile{schema:1;ref:string;units:'m';
  coordinates:'paris-local-xyz';tier:ModelLod['tier'];
  sourceIds:string[];parts:ModelPart[];}
-interface Rendered{tier:ModelLod['tier'];meshes:Mesh[];}
+interface Rendered{tier:ModelLod['tier'];meshes:Mesh[];box:Box2;}
 const prefix='data/metropole/architecture/models/';
 /** Modèles mesurés, non schématiques. L'index est vide tant qu'aucun
  * relevé coté + contrôle géométrique n'a été effectivement réalisé.
@@ -63,8 +33,24 @@ export class ArchitecturalModelLibrary{
  private loading=new Set<string>();
  private wanted=new Map<string,ModelLod['tier']>();
  private last=0;
+ /** Fichiers rejetés (emprise non couverte) : ne pas les recharger. */
+ private rejected=new Set<string>();
+ /** Emprise IGN pas encore chargée : réessayer plus tard, pas à 450 ms. */
+ private retryAfter=new Map<string,number>();
  constructor(private scene:Scene,private docs:ArchitectureDossiers,
-  private materials:BuildingMaterials){}
+  private materials:BuildingMaterials){
+  rejectModel=ref=>this.reject(ref);
+ }
+ /** Une tuile chargée après la maquette révèle une emprise non couverte :
+  * l'extrusion est déjà restituée par la bascule, retirer la maquette. */
+ private reject(ref:string):void{
+  const rendered=this.loaded.get(ref);
+  if(!rendered)return;
+  console.warn('Maquette retirée : emprise IGN non couverte',ref);
+  this.rejected.add(ref+'@'+rendered.tier);
+  rendered.meshes.forEach(m=>m.dispose());
+  this.loaded.delete(ref);
+ }
  async init():Promise<void>{
   try{
    const response=await fetch(import.meta.env.BASE_URL+prefix+'index.json');
@@ -127,6 +113,19 @@ export class ArchitecturalModelLibrary{
    if(!this.valid(model.ref,lod,model.sourceIds,obj))
     throw Error('Maillage sans provenance ou hors limites techniques');
    if(this.wanted.get(model.ref)!==lod.tier)return;
+   // D7, étape 2 : valider l'emprise AVANT de créer le moindre maillage.
+   let box:Box2|null=null;
+   for(const part of obj.parts)box=unionBox(box,boxOfPositions(part.positions));
+   if(!box)throw Error('Sommets non finis');
+   if(!extrusionSwap.footprintBox(model.ref)){
+    // Rien à comparer ni à masquer : l'extrusion n'est pas chargée.
+    this.retryAfter.set(model.ref,performance.now()+5000);
+    return;
+   }
+   if(!extrusionSwap.accepts(model.ref,box)){
+    this.rejected.add(model.ref+'@'+lod.tier);
+    throw Error('Maquette hors de l\'emprise IGN attendue');
+   }
    for(const part of obj.parts){
     const mesh=new Mesh('monument-mesure-'+model.ref+'-'+part.name,this.scene);
     const vd=new VertexData();
@@ -142,10 +141,14 @@ export class ArchitecturalModelLibrary{
     meshes.push(mesh);
    }
    if(this.wanted.get(model.ref)!==lod.tier)return;
+   // D7, étape 3 : la maquette est affichée (créée activée) ; étape 4 :
+   // seulement alors masquer l'extrusion. En cas d'échec, l'extrusion
+   // reste visible et la maquette est détruite par le bloc finally.
    const previous=this.loaded.get(model.ref);
-   this.loaded.set(model.ref,{tier:lod.tier,meshes});
-   activeRefs.add(model.ref);
-   maskAll(this.scene);
+   if(!extrusionSwap.activate(model.ref,box))
+    throw Error('Emprise IGN refusée au moment de la bascule');
+   this.loaded.set(model.ref,{tier:lod.tier,meshes,box});
+   this.retryAfter.delete(model.ref);
    previous?.meshes.forEach(m=>m.dispose());
    meshes=[];
   }catch(error){console.warn('Maquette architecturale non validée',model.ref,error);}
@@ -170,13 +173,15 @@ export class ArchitecturalModelLibrary{
    if(!lod||radius>lod.maxRadiusMeters)continue;
    this.wanted.set(model.ref,lod.tier);
    if(this.loaded.get(model.ref)?.tier===lod.tier||
-      this.loading.has(model.ref))continue;
+      this.loading.has(model.ref)||
+      this.rejected.has(model.ref+'@'+lod.tier)||
+      (this.retryAfter.get(model.ref)??0)>now)continue;
    void this.load(model,lod);
   }
   for(const [ref,previous] of this.loaded){
    if(this.wanted.has(ref))continue;
    // Restituer les volumes IGN AVANT de retirer le maillage expert.
-   activeRefs.delete(ref);maskAll(this.scene);
+   extrusionSwap.deactivate(ref);
    previous.meshes.forEach(m=>m.dispose());
    this.loaded.delete(ref);
   }

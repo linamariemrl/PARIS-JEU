@@ -25,6 +25,7 @@ import {HeritageAtlas} from './heritageAtlas';
 import {LandmarkBrowser} from './landmarkBrowser';
 import {ArchitectureDossiers} from './architectureDossiers';
 import {ArchitecturalModelLibrary} from './architectureModels';
+import {loadHeritageFootprints,isBuildingPickProxy} from './heritageFootprints';
 import {UrbanAtlas,type QuarterRecord} from './urbanAtlas';
 import {QuarterOverlay,quarterAreaKm2} from './quarterSelection';
 import {neighborhoodHistory,administrativeParis} from './neighborhoodHistory';
@@ -392,7 +393,7 @@ try{
   camera.onTap=(x,y)=>{
     const requestId=++tapSequence;
     if(quarterMode){
-      const hit=scene.pick(x,y,mesh=>mesh.isPickable&&(
+      const hit=scene.pick(x,y,mesh=>mesh.isPickable&&mesh.isEnabled()&&(
         mesh===ground||mesh.name==='terrain-RGE-ALTI-IGN'||
         Boolean(mesh.metadata)||mesh.name==='infrastructure-road'||
         mesh.name.startsWith('routes-metropole-proches-')));
@@ -411,7 +412,10 @@ try{
       else quarterHint.textContent='Aucun quartier administratif à cet endroit.';
       return;
     }
-    const hit=scene.pick(x,y,mesh=>mesh.isPickable&&Boolean(mesh.metadata));
+    // R02-D2 : prédicat dédié, qui ne teste PAS isVisible. Une extrusion
+    // remplacée par une maquette reste invisible mais sélectionnable ;
+    // les maquettes expertes, elles, ne sont jamais sélectionnables.
+    const hit=scene.pick(x,y,isBuildingPickProxy);
     const selected=hit?.pickedMesh&&hit.faceId>=0?
       getPickedBuilding(hit.pickedMesh as Mesh,hit.faceId):null;
     if(selected){select(selected);return;}
@@ -610,7 +614,11 @@ try{
         [surfaces.init(),metroTrees.init(),trees.init()]),
       overview.init(),coverage.init().then(()=>showCounts()),
       // Classification patrimoniale avant création des volumes proches.
-      heritage.init().then(()=>{
+      // La table des emprises patrimoniales (R02-D3) doit précéder la
+      // construction des tuiles : elle décide des maillages séparés.
+      Promise.all([heritage.init(),loadHeritageFootprints(
+        import.meta.env.BASE_URL+
+        'data/metropole/architecture/heritage-footprints.json')]).then(()=>{
         landmarkBrowser.refresh();
         return Promise.all([metro.init(),manager.init()]);
       }).catch((err:unknown)=>{
