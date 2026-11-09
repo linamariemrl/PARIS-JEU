@@ -246,3 +246,23 @@ Cela valide la **lecture** du dessin, **pas l'état actuel** : la feuille n'est 
 **Première géométrie partielle :** `public/data/metropole/architecture/reference/PA00086319/cc64-pl34-assise14-rythme.json`, dérivée par `scripts/derive_cc64_rhythm.py` du seul registre. C'est le rythme à une dimension de la façade (32 intervalles, 62,82 m), au statut `partial-non-certified` : pas de profondeurs, pas de hauteur, pas de calage, et **aucun code du moteur ne le lit** (vérifié par test). Ce n'est pas une façade.
 
 **Restant à faire pour l'Hôtel de Ville :** lire CC16_pl39 (tourelle, baies), CC76_PL04 (profils), la planche 5 Carnavalet et le plan Deslandes ; établir les profondeurs (0,535 et 0,47 lues, repères à fixer) et la hauteur des assises ; caler la feuille en EPSG:2154 sur plusieurs points avec résidus ; confronter au LiDAR. Le toit MNH accepté (98,26 %, 3 490 triangles) est conservé tel quel.
+
+## Bilan de l'étape R02–R06 : Hôtel de Ville
+
+Sources réellement lues sur leur image haute définition : BHdV CC64_PL34, CC64_PL33, CC64_PL01, CC64_PL20, CC64_PL38, CC16_PL39, CC76_PL04. Le recueil CC64 est inventorié (39 planches). **Les planches Carnavalet n'ont pas été lues.** Registres : `public/data/metropole/architecture/measurements/` (un fichier par feuille, plus la table des hauteurs d'assises et l'inventaire).
+
+| Cotes attestées (lisibles, inscrites) | Interprétations (sous hypothèse) | Données manquantes |
+| --- | --- | --- |
+| 14e assise : 15 segments à gauche totalisant 29,45, 15 à droite totalisant 26,05 ; travée courante 3,86 ; trumeau 0,46 ; base de tourelle 3,66 (CC64_PL34) | Les deux chaînes se joignent par 3,63 + 0,23 = 3,86 ; la façade est symétrique ; 55,50 m entre tourelles, 62,82 m tourelles comprises si leurs 3,66 sont pris sur la même ligne | Contre-validation par une feuille indépendante de la même assise |
+| Hauteurs de pierres d'assise : socle 1 = 0,62 (PL01) ; 8e = 0,49 (PL20) ; 13e = 0,36 (CC16) ; 14e = 0,42 (PL34) ; 16e = 0,42, acrotère au-dessus de la corniche de l'entresol (PL38) | La 14e assise se situe sous l'entresol | Hauteurs des assises 2–7, 9–12 et 15 ; correspondance des trois numérotations ; origine verticale ; aucune cote NGF |
+| Sept cotes de l'arc de la baie du milieu (CC64_PL33) | Aucune : leur portée n'est pas établie | Ce que mesure chaque cote |
+| CC76_PL04 : profils sans cote | Aucune | Échelle et cotes de contrôle |
+| Toit LiDAR MNH accepté (98,26 %, 3 490 triangles) | Relief de couverture, non façade | Comparaison aux élévations |
+
+**Calage** : `registration/PA00086319.json` reste **`unregistered`** : aucun point d'appui ni point de contrôle n'est acquis. L'infrastructure EPSG:2154 est prête et testée. **Aucune maquette n'est publiée** (`models/index.json` vide). La reconstruction de l'Hôtel de Ville n'est pas terminée.
+
+**Prochain geste documentaire** :
+1. lire les hauteurs des assises manquantes sur PL02–03, PL05, PL09–10, PL15–16, PL21 et PL37 ;
+2. trouver une coupe cotée donnant une origine verticale (trottoir ou NGF) ;
+3. lire les planches Carnavalet (IIIF 320291169, 320064500) ;
+4. relever deux points d'appui et un point de contrôle sur un relevé actuel métrique (LiDAR HD en nuage de points).
