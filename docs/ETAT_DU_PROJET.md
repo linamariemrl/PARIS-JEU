@@ -1,6 +1,6 @@
 # PARIS — état de référence et ordre des travaux
 
-**Version en développement : 0.26.0.** Nom visible : **Prototype 0.26**.
+**Version publiée : 0.26.4.** Nom visible : **Prototype 0.26** ; reconstruction monumentale détaillée 0.27 non validée.
 **Statut : 0.26 engagée après accord explicite le 8 novembre 2026 ; recette Android encore ouverte.**
 Les critères graphiques, patrimoniaux et de performances restent à contrôler.
 
@@ -28,7 +28,7 @@ Les critères graphiques, patrimoniaux et de performances restent à contrôler.
 - **Code et historique :** dépôt `meyameya677-sketch/Paris-le-jeu`, branche `main`.
 - **Jeu web et PWA :** https://meyameya677-sketch.github.io/Paris-le-jeu/
 - **APK Android de test :** workflow `.github/workflows/android-apk.yml`,
-  artefact `PARIS-Android-0_25-debug-<numéro du build>` associé au commit.
+  artefact `PARIS-Android-0_26_4-debug-<numéro du build>` associé au commit.
 - **Parties :** base IndexedDB locale, schéma 1 compatible, sauvegarde
   automatique et archives JSON. La PWA et l'APK **ne partagent pas**
   automatiquement leurs données. Exporter/importer pour migrer.
