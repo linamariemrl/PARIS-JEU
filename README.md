@@ -19,6 +19,13 @@
 
 # PARIS — prototype de jeu urbain 3D
 
+## Reconstruction monumentale à partir de plans cotés (préparation 0.27)
+
+Le jeu contient un [registre architectural de 195 monuments et édifices](public/data/metropole/architecture/dossiers.json) et un [protocole de reconstruction contrôlée](docs/ARCHITECTURE_FIDELITE.md). Il exploite les catalogues Archives de Paris, MPP, Gallica, Cité de l'architecture, LiDAR HD IGN et Paris Data. Des dessins d'exécution de la Bibliothèque de l'Hôtel de Ville ont été identifiés (notamment **CC64_PL34**, **CC16_pl39**, **CC76_PL04**). Les fiches de monuments consultables dans le jeu indiquent les documents repérés, quelques dimensions publiées et les mesures encore inconnues.
+
+Le moteur dispose d'une interface de **maillages métriques sourcés avec LOD**, qui remplacera les volumes IGN uniquement lorsqu'un modèle est réellement mesuré et validé. **À cette étape aucun modèle détaillé n'est encore certifié** : la représentation 3D des monuments reste une volumétrie documentaire et non une reproduction parfaite. Les six sources et le protocole de conformité sont précisés dans le document ci-dessus. La version reste **0.26.3**, sans modification des contrôles de navigation ni de l'interface.
+
+
 ## Inventaire des édifices incontournables (0.26.3)
 
 - [Recensement des lieux majeurs par rôle et sources](docs/INVENTAIRE_MONUMENTS.md).
