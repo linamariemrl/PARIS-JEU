@@ -55,6 +55,7 @@ def survey():
   "public/data/metropole/places/monuments.json")["records"]}
  volumes=read("public/data/4e/city-volumes.json")["byId"]
  lidar=read("public/data/4e/roof-lidar.json")["byId"]
+ report=read("data/quality/lidar-4e-reconstruction.json")
  results=[]
  for ref,building_id,tile_id in SITES:
   point=pop[ref]
@@ -94,6 +95,34 @@ def survey():
    maxDeclaredFloors=v["maxFloors"],internalHeightsMeasured=False,
    renderableAsExact3D=False) if v else None)
   roof=lidar.get(b["id"])
+  # Le rapport MNH est la preuve technique : hauteur, couverture,
+  # densité et dalles ne sont affichées que s'il correspond au toit
+  # réellement accepté et présent dans le jeu.
+  evidence=None
+  if ref=="PA00086319" and roof and (
+     report.get("hotelDeVilleTarget")==b["id"] and
+     report.get("hotelDeVilleRoofAccepted") is True):
+   trace=report.get("hotelDeVilleDiagnostic",{})
+   if (trace.get("reason")=="accepted-mosaic" and
+       trace.get("sourceTiles") and
+       0.95<=float(report["hotelDeVilleRoofTriangleCoverage"])<=1 and
+       float(trace.get("pixelSizeMeters",0))==0.5):
+    evidence={
+     "source":"IGN LiDAR HD — MNH, altitudes relatives au terrain",
+     "mosaicTiles":trace["sourceTiles"],
+     "sourcePixelMeters":trace["pixelSizeMeters"],
+     "meshGridMeters":trace["gridMeters"],
+     "coverageFraction":report["hotelDeVilleRoofTriangleCoverage"],
+     "triangles":trace["acceptedTriangles"],
+     "measuredVertices":trace["acceptedVertexSamples"],
+     "medianMnhHeightM":trace["heightMedianM"],
+     "p90MnhHeightM":trace["heightP90M"],
+     "maximumMnhHeightM":trace["maximumMnhSampleM"],
+     "campanilePublishedHeightM":trace["publishedCampanileHeightM"],
+     "publishedHeightSource":trace["publishedHeightSource"],
+     "architecturalFacadesCertified":False,
+     "ornamentsCertified":False
+    }
   results.append({
    "ref":ref,"name":point["name"],"officialPointLocal":[point["x"],point["z"]],
    "sourceNotice":point["sourceUrl"],"ignBuildingId":b["id"],
@@ -101,6 +130,7 @@ def survey():
    "footprint":footprint,
    "cityVolumes":municipal,
    "lidarRoofMeasured":bool(roof),
+   "roofEvidence":evidence,
    "architecturalFacadeMeasured":False,
    "exactMonumentModelCertified":False,
    "missing":["Plans cotés géoréférencés",
