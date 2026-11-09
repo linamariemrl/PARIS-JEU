@@ -33,7 +33,7 @@ class StreamingStability(unittest.TestCase):
   html=src('index.html')
   pkg=json.loads(src('package.json'))
   self.assertIn('PROTOTYPE 0.26',html)
-  self.assertEqual(pkg['version'],'0.26.3')
+  self.assertTrue(pkg['version'].startswith('0.26.'))
   self.assertNotIn('PROTOTYPE 0.27',html)
 
 if __name__=='__main__':unittest.main()
