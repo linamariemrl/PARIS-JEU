@@ -3,8 +3,11 @@ import json
 import re
 import unittest
 from pathlib import Path
+import sys
 
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/"tests"))
+from heritage_swap_contract import function_body
 def read(path):
     return (ROOT/path).read_text(encoding="utf8")
 
@@ -50,8 +53,29 @@ class LandmarkInventory026(unittest.TestCase):
         for x in ["monuments-beige-pierre","institutions-orange-pierre",
                   "culture-violet-clair","finances-bleu-pierre"]:
             self.assertIn(x,b)
-        self.assertEqual(b.count("['wall',violetWalls,materials.culturalWall]"),2)
-        self.assertEqual(b.count("b.heritageRole==='cultural'"),2)
+        # Les deux chaînes de construction (4e synchrone, métropole
+        # progressive) passent par la même palette et les mêmes lots.
+        for name in ("createTile","createTileProgressive"):
+            body=function_body(b,name)
+            self.assertIn("tileBatches(materials)",body,name)
+            self.assertIn("build(scene,tile)",body,name)
+            self.assertIn("choose(b)",body,name)
+        palette=function_body(b,"tileBatches")
+        for pair in ["['wall',s.walls,materials.wall]","['roof',s.roofs,materials.roof]",
+                     "['wall',s.beigeWalls,materials.heritageWall]",
+                     "['roof',s.beigeRoofs,materials.heritageRoof]",
+                     "['wall',s.orangeWalls,materials.politicalWall]",
+                     "['roof',s.orangeRoofs,materials.politicalRoof]",
+                     "['wall',s.violetWalls,materials.culturalWall]",
+                     "['roof',s.violetRoofs,materials.culturalRoof]",
+                     "['wall',s.blueWalls,materials.financialWall]",
+                     "['roof',s.blueRoofs,materials.financialRoof]"]:
+            self.assertEqual(palette.count(pair),1,pair)
+        # Lots fusionnés ET maillages séparés des monuments : même rôle,
+        # même couleur (aucun monument ne change de teinte en étant isolé).
+        self.assertEqual(palette.count("b.heritageRole==='cultural'"),2)
+        self.assertIn("[materials.culturalWall,materials.culturalRoof]",palette)
+        self.assertIn("[s.violetWalls,s.violetRoofs]",palette)
         categories=read("src/heritageCategories.ts")
         self.assertIn("priorityHeritageRole(ref)",categories)
         self.assertIn("return 'touristic'",categories)

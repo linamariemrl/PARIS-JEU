@@ -2,7 +2,10 @@
 from pathlib import Path
 import json
 import unittest
+import sys
 ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT/"tests"))
+from heritage_swap_contract import function_body,run_behaviour_test
 def read(p):return (ROOT/p).read_text(encoding="utf8")
 class Heritage026(unittest.TestCase):
  def test_release_and_monochrome(self):
@@ -14,7 +17,20 @@ class Heritage026(unittest.TestCase):
   heritage=read("src/heritageAtlas.ts")
   for v in ["ringContains(", "footprintContains(", "tagHeritageBuilding(", "appendDetails(", "drawBoundaries(", "monuments.json","heritage-areas.json"]:
    self.assertIn(v,heritage)
-  self.assertIn("b.heritageRef?[beigeWalls,beigeRoofs]",read("src/buildings.ts"))
+  buildings=read("src/buildings.ts")
+  palette=function_body(buildings,"tileBatches")
+  # Un monument reste beige qu'il soit dans un lot fusionné ou isolé.
+  self.assertIn("b.heritageRef?[s.beigeWalls,s.beigeRoofs]",palette)
+  self.assertIn("b.heritageRef?[materials.heritageWall,materials.heritageRoof]",palette)
+  # La sélection lit faceToBuilding, indépendamment de la géométrie et de
+  # la visibilité : prédicat dédié qui exige isEnabled() mais pas isVisible.
+  pick=function_body(read("src/heritageFootprints.ts"),"isBuildingPickProxy")
+  self.assertIn("mesh.isEnabled()",pick)
+  self.assertIn("faceToBuilding",pick)
+  self.assertNotIn("isVisible",pick)
+  self.assertIn("scene.pick(x,y,isBuildingPickProxy)",read("src/main.ts"))
+  code,output=run_behaviour_test()
+  self.assertEqual(code,0,output)
   self.assertIn("politicalWall",read("src/buildings.ts"))
   self.assertIn("financialWall",read("src/buildings.ts"))
   self.assertIn("tagHeritageBuilding(building)",read("src/metroTiles.ts"))

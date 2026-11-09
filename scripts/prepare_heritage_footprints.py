@@ -11,8 +11,13 @@ Le statut documente la provenance, il ne certifie rien :
 - ``single-footprint-pop-point`` : un seul contour contient le point POP ;
 - ``multiple-footprints-pop-point`` : plusieurs contours (couches 4e et
   métropole superposées, ou emprises IGN empilées) contiennent le point ;
+- ``pop-point-in-enclosed-courtyard`` : le point tombe dans une cour
+  FERMÉE (trou du polygone) ; le seul bâtiment qui entoure cette cour est
+  retenu. Une cour d'honneur ouverte n'est jamais rattachée ainsi ;
 - ``no-footprint-found`` : aucun contour ne contient le point, ou la notice
   n'a pas de point ; aucune extrusion ne sera jamais masquée pour elle.
+  ``nearestFootprintMeters`` aide la complétion manuelle, sans rien
+  rattacher automatiquement.
 
 Les ensembles et parties (plusieurs références pour une emprise, ou
 plusieurs emprises pour une référence) se complètent à la main dans
@@ -56,6 +61,24 @@ def contains(polygons, x, z):
     return False
 
 
+def in_courtyard(polygons, x, z):
+    """Vrai si le point est dans un trou (cour fermée) du polygone."""
+    return any(poly and ring_contains(poly[0], x, z) and any(
+        ring_contains(r, x, z) for r in poly[1:]) for poly in polygons)
+
+
+def segment_distance(x, z, a, b):
+    dx, dz = b[0] - a[0], b[1] - a[1]
+    t = 0.0 if dx == dz == 0 else max(0.0, min(1.0, (
+        (x - a[0]) * dx + (z - a[1]) * dz) / (dx * dx + dz * dz)))
+    return math.hypot(x - a[0] - t * dx, z - a[1] - t * dz)
+
+
+def ring_distance(polygons, x, z):
+    return min(segment_distance(x, z, r[i - 1], r[i])
+               for poly in polygons for r in poly[:1] for i in range(len(r)))
+
+
 def tiles():
     for folder, local in ((DATA / '4e' / 'tiles', False),
                           (DATA / 'metropole' / 'buildings' / 'tiles', True)):
@@ -84,26 +107,45 @@ def main():
     # maquette publiable : ils n'entrent pas dans la table.
     refs = [d['ref'] for d in dossiers['dossiers'] if d.get('ref')]
     found = {ref: set() for ref in refs}
+    courtyard = {ref: set() for ref in refs}
+    nearest = {ref: math.inf for ref in refs}
     for ign_id, polys, (x0, z0, x1, z1) in tiles():
         for ref in refs:
             pt = points.get(ref)
-            if not pt or not (x0 <= pt[0] <= x1 and z0 <= pt[1] <= z1):
+            if not pt or not (x0 - 60 <= pt[0] <= x1 + 60 and
+                              z0 - 60 <= pt[1] <= z1 + 60):
+                continue
+            nearest[ref] = min(nearest[ref], ring_distance(polys, *pt))
+            if not (x0 <= pt[0] <= x1 and z0 <= pt[1] <= z1):
                 continue
             if contains(polys, pt[0], pt[1]):
                 found[ref].add(ign_id)
+            elif in_courtyard(polys, pt[0], pt[1]):
+                courtyard[ref].add(ign_id)
     entries = []
     for ref in refs:
         ids = sorted(found[ref])
-        status = ('no-footprint-found' if not ids else
-                  'single-footprint-pop-point' if len(ids) == 1 else
-                  'multiple-footprints-pop-point')
-        entries.append({'ref': ref, 'ignIds': ids, 'parts': [],
-                        'status': status})
+        if ids:
+            status = ('single-footprint-pop-point' if len(ids) == 1 else
+                      'multiple-footprints-pop-point')
+        elif len(courtyard[ref]) == 1:
+            ids = sorted(courtyard[ref])
+            status = 'pop-point-in-enclosed-courtyard'
+        else:
+            status = 'no-footprint-found'
+        entry = {'ref': ref, 'ignIds': ids, 'parts': [], 'status': status}
+        if not ids:
+            entry['nearestFootprintMeters'] = (
+                None if ref not in points or math.isinf(nearest[ref])
+                else round(nearest[ref], 1))
+        entries.append(entry)
     doc = {
         'schema': 1,
         'rule': ('Point POP/Mérimée à l\'intérieur du contour extérieur '
-                 'IGN BD TOPO, hors cours. Provenance, non certification '
-                 'juridique ou architecturale de chaque aile.'),
+                 'IGN BD TOPO, ou dans une cour fermée de ce contour. '
+                 'Provenance, non certification juridique ou architecturale '
+                 'de chaque aile. Les autres rattachements (ensembles, '
+                 'cours d\'honneur ouvertes, ailes) se complètent à la main.'),
         'generatedBy': 'scripts/prepare_heritage_footprints.py',
         'entries': entries,
     }

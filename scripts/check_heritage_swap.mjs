@@ -106,6 +106,19 @@ const hdv=published.entries.find(e=>e.ref==='PA00086319');
 assert.deepEqual(hdv.ignIds,['BATIMENT0000000245157267']);
 for(const e of published.entries)
  assert.equal(e.parts.length,0,'aucune partie certifiée à ce jour');
+const statuses=new Set(['single-footprint-pop-point','multiple-footprints-pop-point',
+ 'pop-point-in-enclosed-courtyard','no-footprint-found']);
+for(const e of doc.entries){
+ assert.ok(statuses.has(e.status),'statut inconnu '+e.status);
+ assert.equal(e.status==='no-footprint-found',e.ignIds.length===0,e.ref);
+ if(!e.ignIds.length)assert.ok('nearestFootprintMeters' in e,
+  'référence non rattachée sans distance documentée : '+e.ref);
+ if(e.status==='pop-point-in-enclosed-courtyard')
+  assert.equal(e.ignIds.length,1,'une cour fermée désigne un seul bâtiment');
+}
+// Cour fermée : les Invalides sont rattachés au bâtiment qui entoure la cour.
+assert.deepEqual(published.entries.find(e=>e.ref==='PA00088714').ignIds,
+ ['BATIMENT0000002007005295']);
 const ids=new Set();
 for(const dir of ['../public/data/4e/tiles/','../public/data/metropole/buildings/tiles/']){
  const url=new URL(dir,import.meta.url);

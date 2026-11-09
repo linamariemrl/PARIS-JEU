@@ -92,6 +92,34 @@ Source d'exploitant : [Chiffres clés](https://www.toureiffel.paris/fr/le-monume
 
 `src/architectureDossiers.ts` ajoute, dans les **fiches existantes**, le détail des plans retrouvés, mesures attestées, valeurs arrondies et lacunes. Cela ne rajoute aucun bouton ou écran permanent.
 
-`src/architectureModels.ts` est un lecteur Babylon.js **sans texture ni satellite**. Les fichiers LOD futurs sont des fichiers JSON métriques géoréférencés contenant sommets, triangles et références d'archives. Une maquette experte est chargée sur demande près de la caméra ; **uniquement après succès**, les triangles du ou des bâtiments IGN remplacés sont masqués dans la tuile, sans effacer leurs voisins. Si le chargement échoue, les volumes d'origine restent visibles. En quittant le lieu, la géométrie IGN est rétablie.
+`src/architectureModels.ts` est un lecteur Babylon.js **sans texture ni satellite**. Les fichiers LOD futurs sont des fichiers JSON métriques géoréférencés contenant sommets, triangles et références d'archives. Une maquette experte est chargée sur demande près de la caméra.
+
+### Substitution extrusion IGN ↔ maquette (navette R02 : D1, D2, D3, D7)
+
+- **Table de correspondance (D3)** : `public/data/metropole/architecture/heritage-footprints.json`, générée par `scripts/prepare_heritage_footprints.py`. C'est la **seule** source qui dit quelles emprises IGN une maquette remplace : le moteur ne fait plus d'inférence géographique pour le masquage. Règle : le point POP/Mérimée tombe dans le contour IGN (115 références), ou dans une **cour fermée** de ce contour, ce qui désigne sans ambiguïté le bâtiment qui l'entoure (2 références : Garde-Meuble, Invalides). Les 23 autres références (cours d'honneur ouvertes, grands ensembles, point hors emprise) ne sont **pas** rattachées ; la distance à l'emprise la plus proche est notée pour une complétion manuelle. Les 55 dossiers « candidats » sans référence POP n'y figurent pas. Une emprise peut porter plusieurs références et une référence plusieurs emprises.
+- **Maillages séparés (D1)** : à la construction de la tuile, chaque emprise listée reçoit son propre maillage mur et toit, de même couleur que dans les lots. Remplacer revient à `isVisible=false` : aucune réécriture d'indices, aucune allocation, réversible immédiatement.
+- **Proxy de sélection (D2)** : l'extrusion masquée reste activée et sélectionnable. Le prédicat `isBuildingPickProxy` exige `isEnabled()` mais ne teste pas `isVisible` (avec un prédicat, Babylon 8 n'applique plus ses propres tests). Les maquettes ne sont jamais sélectionnables.
+- **Ordre sûr (D7)** : charger, valider (sommets finis, chaque emprise chargée couverte à 80 % au moins avec 2 m de tolérance, diagonale ≤ 600 m), afficher, puis seulement masquer. En cas d'échec, l'extrusion reste. En quittant le lieu, l'extrusion est restituée avant la destruction de la maquette. Une tuile chargée plus tard est masquée dès sa création si la maquette la couvre, sinon la maquette est retirée.
+
+**Ce qui est vérifié, et comment :**
+
+| Comportement | Test unitaire (Node) | Scène Babylon réelle (NullEngine, `npm run test:heritage-scene`) | Navigateur | Android |
+| --- | --- | --- | --- | --- |
+| Index plusieurs-à-plusieurs, lecture stricte | oui | — | — | non |
+| Mêmes triangles et mêmes bâtiments après séparation (tuile de l'Hôtel de Ville) | — | oui | — | non |
+| Masquage sans toucher les voisins | oui | oui | non (aucune maquette publiée) | non |
+| `scene.pickWithRay` sélectionne le monument via l'extrusion invisible ; sans prédicat Babylon l'ignore | — | oui | non | non |
+| Extrusion masquée absente des maillages rendus, maquette rendue | — | oui | non | non |
+| Changement de LOD sans double affichage | oui | oui | non | non |
+| 25 allers-retours : aucun maillage ni géométrie orphelins | — | oui | non | non |
+| Tuile déchargée puis rechargée pendant que la maquette est active | oui | oui | non | non |
+| Maquette absente ou décalée : extrusion conservée, pas de rechargement en boucle | oui | oui | non | non |
+| Application sans erreur console, monuments affichés sans trou | — | — | oui (Chromium headless, SwiftShader) | non |
+
+La maquette des essais est un **faux** marqué `test-fixture`, défini dans les scripts d'essai et jamais publié. L'index des modèles reste vide : la substitution n'a donc **jamais** tourné en jeu avec une vraie maquette.
+
+### Registre des cotes transcrites
+
+`public/data/metropole/architecture/measurements/PA00086319.json` consigne les cotes **lues** sur la planche BHdV CC64_PL34 (plan de la 14e assise du corps central, façade sur la place, 1878), avec la zone exacte de l'image, le lecteur et le statut. Exemples : hauteur d'assise 0,42 m, demi-façades 29,45 m et 26,05 m, travée 3,86 m, trumeaux 0,46 m. **Ce ne sont pas des cotes vérifiées du bâtiment actuel** : la feuille n'est ni étalonnée ni géoréférencée, et la chaîne de cotes de la demi-façade gauche ne se referme pas encore sur sa cote générale (environ 24,8 m lus contre 29,45 m inscrits). Le garde-fou du dossier (aucune planche BHdV dans `measurements` de `dossiers.json`) est conservé. Aucune géométrie du moteur n'est dérivée de ces lectures.
 
 **Limite de la présente livraison :** aucun modèle certifié n'est encore disponible. La lecture des vrais cahiers de calepinage est une première étape documentaire, pas l'achèvement de l'Hôtel de Ville ou une promesse d'exactitude au millimètre.
