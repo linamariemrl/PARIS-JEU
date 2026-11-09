@@ -18,6 +18,20 @@ export interface ArchitectureDossier{
 interface ArchitecturePayload{
  schema:1;dossiers:ArchitectureDossier[];
 }
+interface MeasuredFootprint{
+ areaM2:number;bboxWidthM:number;bboxDepthM:number;
+ ringCount:number;pointCount:number;
+ heightIgnMeters:number;heightIgnEstimated:boolean;
+}
+interface SurveySite{
+ ref:string;ignBuildingId:string;tileId:string;
+ footprint:MeasuredFootprint;
+ cityVolumes:null|{coverageFraction:number;planarParts:number;
+  maxDeclaredFloors:number;internalHeightsMeasured:boolean};
+ lidarRoofMeasured:boolean;architecturalFacadeMeasured:boolean;
+ exactMonumentModelCertified:boolean;
+}
+interface SurveyPayload{schema:1;sites:SurveySite[];}
 const officialHosts=[
  'pop.culture.gouv.fr','bibliotheques-specialisees.paris.fr',
  'parismuseescollections.paris.fr','www.parismuseescollections.paris.fr',
@@ -36,6 +50,7 @@ function approved(url:string):string|null{
 }
 export class ArchitectureDossiers{
  private byRef=new Map<string,ArchitectureDossier>();
+ private surveyByRef=new Map<string,SurveySite>();
  async init():Promise<void>{
   try{
    const response=await fetch(import.meta.env.BASE_URL+
@@ -51,6 +66,24 @@ export class ArchitectureDossiers{
     this.byRef.set(d.ref,d);
    }
   }catch(err){console.warn('Bibliothèque architecturale indisponible',err);}
+  try{
+   const response=await fetch(import.meta.env.BASE_URL+
+     'data/metropole/architecture/survey-4e.json');
+   if(!response.ok)throw Error('Relevé du 4e non disponible');
+   const body=await response.json() as SurveyPayload;
+   if(body.schema!==1||!Array.isArray(body.sites)||body.sites.length<3)
+    throw Error('Relevé géométrique incomplet');
+   for(const site of body.sites){
+    if(!/^PA\d{8}$/.test(site.ref)||!this.byRef.has(site.ref)||
+       !/^BATIMENT[\d]+$/.test(site.ignBuildingId)||
+       !Number.isFinite(site.footprint.areaM2)||
+       site.footprint.areaM2<=0||
+       !Number.isFinite(site.footprint.bboxWidthM)||
+       !Number.isFinite(site.footprint.bboxDepthM)||
+       site.exactMonumentModelCertified!==false)continue;
+    this.surveyByRef.set(site.ref,site);
+   }
+  }catch(err){console.warn('Relevés IGN vérifiés facultatifs',err);}
  }
  forReference(ref:string|undefined):ArchitectureDossier|null{
   return ref?this.byRef.get(ref)??null:null;
@@ -78,6 +111,40 @@ export class ArchitectureDossiers{
    'Le volume IGN actuel ne restitue pas les façades, sculptures et '+
    'ornements à l’échelle exacte.';
   section.append(status);
+  const survey=this.surveyByRef.get(ref);
+  if(survey){
+   const subtitle=document.createElement('h4');
+   subtitle.textContent='Relevé des volumes existants';
+   section.append(subtitle);
+   const box=document.createElement('p');
+   const fmt=(v:number)=>v.toLocaleString('fr-FR',
+      {minimumFractionDigits:1,maximumFractionDigits:2});
+   const f=survey.footprint;
+   box.textContent='Emprise polygonale IGN calculée : '+fmt(f.areaM2)+
+    ' m² (projection locale) ; rectangle enveloppe : '+
+    fmt(f.bboxWidthM)+' × '+fmt(f.bboxDepthM)+
+    ' m ; '+f.pointCount+' sommets ; hauteur bâtiment IGN : '+
+    fmt(f.heightIgnMeters)+' m'+
+    (f.heightIgnEstimated?' (estimation IGN)':' (attribut IGN)')+
+    '. Ces valeurs NE décrivent PAS les cotes des façades ni les pinacles.';
+   section.append(box);
+   if(survey.cityVolumes){
+    const p=document.createElement('p');
+    p.textContent='Ville de Paris : '+survey.cityVolumes.planarParts+
+     ' subdivisions d’emprise ('+
+     fmt(survey.cityVolumes.coverageFraction*100)+
+     ' % de couverture). Leurs hauteurs ne sont pas mesurées et '+
+     'ne peuvent pas être présentées comme une maquette exacte.';
+    section.append(p);
+   }
+   const lidar=document.createElement('p');
+   lidar.textContent=survey.lidarRoofMeasured?
+     'Relief des toitures : une mesure MNH LiDAR est associée au bâtiment, '+
+     'sans attestation des ornements ou des façades.':
+     'Relief des toitures : aucune reconstruction MNH LiDAR validée '+
+     'pour cet édifice dans le corpus local.';
+   section.append(lidar);
+  }
   if(d.measurements.length){
    const measures=document.createElement('ul');
    for(const m of d.measurements.slice(0,16)){
