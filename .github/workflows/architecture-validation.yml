@@ -11,6 +11,9 @@ on:
       - 'public/data/metropole/architecture/**'
       - 'scripts/audit_architectural_models.py'
       - 'tests/test_architecture_dossiers_026.py'
+      - 'tests/test_architecture_survey_026.py'
+      - 'scripts/prepare_architecture_survey_4e.py'
+      - 'scripts/prepare_lidar_roofs_4e.py'
       - '.github/workflows/architecture-validation.yml'
   workflow_dispatch:
 
@@ -30,6 +33,10 @@ jobs:
           node-version: '22'
       - name: Contrôler les références et interdire les dimensions inventées
         run: python scripts/audit_architectural_models.py
+      - name: Vérifier le calcul reproductible des emprises 4e
+        run: |
+          python -m py_compile scripts/prepare_architecture_survey_4e.py scripts/prepare_lidar_roofs_4e.py
+          python -m unittest discover -s tests -p 'test_architecture_survey_026.py' -v
       - name: Vérifier les dossiers et le remplacement mesuré LOD
         run: python -m unittest discover -s tests -p 'test_architecture_dossiers_026.py' -v
       - name: Installer les dépendances du moteur
