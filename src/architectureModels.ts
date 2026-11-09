@@ -40,7 +40,7 @@ export function applyArchitecturalMask(mesh:Mesh):void{
  meta.faceToBuilding=faces;
 }
 function maskAll(scene:Scene):void{
- for(const mesh of scene.meshes)applyArchitecturalMask(mesh);
+ for(const mesh of scene.meshes)if(mesh instanceof Mesh)applyArchitecturalMask(mesh);
 }
 interface ModelLod{tier:'high'|'medium'|'low';maxRadiusMeters:number;file:string;}
 interface ModelDescriptor{ref:string;x:number;z:number;sourceIds:string[];
