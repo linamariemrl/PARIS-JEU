@@ -36,6 +36,10 @@ MIN_MATCH=100
 # Le grand Hôtel de Ville compte 592 sommets IGN, donc dépassait la limite
 # générale de 500 points AVANT même l'échantillonnage de la toiture.
 HOTEL_DE_VILLE_ID='BATIMENT0000000245157267'
+# Source municipale : le campanile est annoncé à 50 m. La valeur est
+# arrondie et ne constitue PAS une cote d'exécution des façades.
+# https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659
+HOTEL_DE_VILLE_CAMPANILE_M=50.0
 
 def local(x,y):
     lon,lat=TO_LL(x,y)
@@ -179,17 +183,20 @@ def polygon_meters(piece):
         return transform(TO_M,poly)
     except (ValueError,TypeError,IndexError):return None
 
-def sample(raster,arr,x,y,ign_height):
+def sample(raster,arr,x,y,ign_height,measured_max_height=None):
     try:
         row,col=raster.index(x,y)
         if row<0 or col<0 or row>=arr.shape[0] or col>=arr.shape[1]:return None
         h=float(arr[row,col])
     except (ValueError,IndexError,OverflowError):return None
     if not math.isfinite(h) or h<=1 or h>220 or h==raster.nodata:return None
-    if h<max(1.3,ign_height*.40) or h>max(10,ign_height*1.55):return None
+    roof_ceiling=(measured_max_height if measured_max_height is not None
+                  else max(10,ign_height*1.55))
+    if h<max(1.3,ign_height*.40) or h>roof_ceiling:return None
     return round(h,2)
 
-def verified_roof_sample(poly,raster,arr,x,y,height,center):
+def verified_roof_sample(poly,raster,arr,x,y,height,center,
+                         measured_max_height=None):
     """Échantillonner un vrai pixel MNH à l'intérieur du toit.
     Un bord IGN tombe fréquemment sur un pixel mêlé chaussée/toiture.
     Aucun point 3D fictif n'est ajouté ; XY reste le sommet IGN.
@@ -202,7 +209,7 @@ def verified_roof_sample(poly,raster,arr,x,y,height,center):
             xx,yy=x+vx*length,y+vy*length
             if length>0 and not poly.covers(Point(xx,yy)):
                 continue
-            value=sample(raster,arr,xx,yy,height)
+            value=sample(raster,arr,xx,yy,height,measured_max_height)
             if value is not None:return value
     # Un coin extérieur ou une cour peut avoir une direction vers le
     # centroïde située HORS du toit. Essayer les 16 directions proches,
@@ -215,13 +222,13 @@ def verified_roof_sample(poly,raster,arr,x,y,height,center):
             yy=y+distance*math.sin(angle)
             if not poly.covers(Point(xx,yy)):
                 continue
-            value=sample(raster,arr,xx,yy,height)
+            value=sample(raster,arr,xx,yy,height,measured_max_height)
             if value is not None:
                 return value
     return None
 
 def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None,
-                 trace=None):
+                 trace=None,measured_max_height=None):
     def reject(reason,**details):
         if trace is not None:
             trace.update({"reason":reason,**details})
@@ -243,7 +250,8 @@ def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None,
             # À la limite d'un toit, le pixel LiDAR peut recouvrir la chaussée.
             # Déplacer le point échantillonné vers l'intérieur, sans bouger sa
             # position XY dans la maquette.
-            h=verified_roof_sample(poly,raster,arr,x,y,height,center)
+            h=verified_roof_sample(poly,raster,arr,x,y,height,center,
+                measured_max_height)
             heights.append(h)
         missing=sum(h is None for h in heights)
         if missing:
@@ -277,7 +285,8 @@ def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None,
         for x,y in list(triangle.exterior.coords)[:3]:
             key=(round(x,2),round(y,2))
             if key not in unique:
-                h=verified_roof_sample(poly,raster,arr,x,y,height,center)
+                h=verified_roof_sample(poly,raster,arr,x,y,height,center,
+                measured_max_height)
                 if h is None:
                     # Les toits LiDAR incohérents sont exclus, jamais complétés
                     # par une hauteur imaginée.
@@ -308,8 +317,18 @@ def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None,
         trace["ignBuildingHeightM"]=height
     if statistics.median(values)<height*.65:
         return reject("median-height-inconsistent")
-    if abs(np.percentile(values,90)-height)>max(5,height*.30):
-        return reject("p90-height-inconsistent")
+    if measured_max_height is None:
+        if abs(np.percentile(values,90)-height)>max(5,height*.30):
+            return reject("p90-height-inconsistent")
+    else:
+        # Une tour haute attestée par la Ville de Paris peut dépasser le
+        # niveau de l'attribut IGN moyen. Les pixels MNH restent obligatoires.
+        if measured_max_height<=height or max(values)>measured_max_height:
+            return reject("published-monument-height-exceeded")
+        if trace is not None:
+            trace["publishedCampanileHeightM"]=measured_max_height
+            trace["publishedHeightSource"]="https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659"
+            trace["maximumMnhSampleM"]=round(float(max(values)),2)
     # Réutiliser les mêmes hauteurs effectivement échantillonnées aux bords.
     # Une mesure manquante a déjà interrompu la reconstruction ci-dessus.
     if trace is not None:trace["reason"]="accepted"
@@ -368,7 +387,8 @@ def reconstruct_hotel_from_adjacent_tiles(index,building,trace):
             for poly in polygons:
                 part=produce_part(poly,(raster,arr,height),
                     grid=2.5,max_points=3600,require_coverage=.95,
-                    trace=trace)
+                    trace=trace,
+                    measured_max_height=HOTEL_DE_VILLE_CAMPANILE_M)
                 if part is None:return None
                 parts.append(part)
             if not parts:

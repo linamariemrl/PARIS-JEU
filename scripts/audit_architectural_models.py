@@ -59,7 +59,20 @@ def validate():
     hotel=indexed["PA00086319"]
     assert hotel["phase"]=="plans-d-execution-localises"
     assert len(hotel["documents"])>=6
-    assert len(hotel["measurements"])==0, "Les feuilles du dessin ne sont pas des cotes bâties"
+    # Une hauteur institutionnelle du campanile est connue ; les dimensions
+    # du papier des planches restent explicitement exclues des mesures.
+    height=next((m for m in hotel["measurements"] if
+        m["sourceId"]=="ville-paris-campanile-hauteur"),None)
+    assert height is not None and height["value"]==50 and height["unit"]=="m"
+    assert "arrondie" in height["precision"]
+    proof=next((source for source in hotel["documents"] if
+        source["id"]=="ville-paris-campanile-hauteur"),None)
+    assert proof is not None and proof["url"]==(
+        "https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659")
+    assert all(m["sourceId"] not in {
+        "bhdv-cc64-pl34","bhdv-cc16-pl39","bhdv-cc76-pl04",
+        "carnavalet-wuhrer-facade"} for m in hotel["measurements"]), (
+        "Une dimension de support papier ne vaut jamais cote bâtie")
     assert {"bhdv-cc64-pl34","bhdv-cc16-pl39","bhdv-cc76-pl04"}.issubset(
         {s["id"] for s in hotel["documents"]})
     eiffel=indexed["PA00088801"]

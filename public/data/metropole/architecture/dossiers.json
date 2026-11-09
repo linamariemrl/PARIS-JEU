@@ -118,9 +118,25 @@
           "url": "https://www.parismuseescollections.paris.fr/fr/musee-carnavalet/oeuvres/hotel-de-ville-de-paris-plan-actuel-de-l-hotel-de-ville-reconstruit-par",
           "portalId": "paris-musees",
           "notes": "Manifeste IIIF https://apicollections.parismusees.paris.fr/iiif/320064500/manifest"
+        },
+        {
+          "id": "ville-paris-campanile-hauteur",
+          "type": "mesure-institutionnelle",
+          "title": "Ville de Paris — Dans les coulisses de l’Hôtel de Ville, campanile (50 m)",
+          "url": "https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659",
+          "portalId": "ville-paris",
+          "notes": "La Ville de Paris indique un campanile à 50 mètres de hauteur. Cote publiée arrondie ; ni cote d’exécution au centimètre ni validation de chaque pavillon."
         }
       ],
-      "measurements": [],
+      "measurements": [
+        {
+          "element": "Hauteur du campanile (Ville de Paris)",
+          "value": 50,
+          "unit": "m",
+          "sourceId": "ville-paris-campanile-hauteur",
+          "precision": "valeur descriptive publiée, arrondie ; ne représente pas la hauteur de l’ensemble du corps principal"
+        }
+      ],
       "uncertainty": [
         "Échelles et cotes lues sur chaque planche numérique",
         "Relevé des façades et des travées à partir des dessins d'exécution",
