@@ -1122,6 +1122,14 @@
       "sourceUrl": "https://pop.culture.gouv.fr/notice/merimee/PA75180004",
       "match": "point-dans-emprise-IGN",
       "priority": "majeur"
+    },
+    {
+      "ref": "PA00085784",
+      "name": "Bourse de commerce",
+      "role": "cultural",
+      "sourceUrl": "https://pop.culture.gouv.fr/notice/merimee/PA00085784",
+      "match": "point-dans-emprise-IGN",
+      "priority": "majeur"
     }
   ],
   "pending": [
@@ -1345,7 +1353,7 @@
     {
       "name": "Station F — Halle Freyssinet",
       "role": "financial",
-      "sourceUrl": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710",
+      "sourceUrl": "https://cdn.paris.fr/paris/2021/12/21/f0d203cc64ff00fded7373eaffc3067d.pdf",
       "match": "emprise-a-confirmer",
       "priority": "majeur"
     },
@@ -1402,6 +1410,111 @@
       "name": "Pyramide du Louvre",
       "role": "touristic",
       "sourceUrl": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie de Paris Centre",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/lieux/mairie-de-paris-centre-3716",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 5e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 6e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 9e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 10e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 11e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 12e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 13e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 14e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 15e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 16e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 17e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 18e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 19e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "match": "emprise-a-confirmer",
+      "priority": "majeur"
+    },
+    {
+      "name": "Mairie du 20e arrondissement de Paris",
+      "role": "political",
+      "sourceUrl": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
       "match": "emprise-a-confirmer",
       "priority": "majeur"
     }
