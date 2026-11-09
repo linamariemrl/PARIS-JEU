@@ -47,6 +47,11 @@ export function terrainAltitude(x:number,z:number):number|null{
  return v===null?null:v+g.meta.displayReferenceAltitudeM;
 }
 export function isTerrainReady(){return current!==null;}
+/** Altitude NGF correspondant à y=0 dans la scène, ou null tant que le MNT
+ * n'est pas chargé (aucune maquette géoréférencée n'est alors placée). */
+export function displayReferenceAltitude():number|null{
+ return current?.meta.displayReferenceAltitudeM??null;
+}
 
 function meshFromGrid(scene:Scene,g:TerrainGrid):Mesh|null{
  const {extent,gridSpacingMeters:step}=g.meta;

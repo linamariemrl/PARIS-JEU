@@ -147,6 +147,24 @@ class ArchitectureDossiers026(unittest.TestCase):
   # Aucun code du moteur ne lit ce dossier de référence.
   for f in (ROOT/"src").rglob("*.ts"):
    self.assertNotIn("reference/PA00086319",f.read_text(encoding="utf-8"))
+ def test_registration_is_honest_until_tie_points_exist(self):
+  import json
+  r=json.loads(read("public/data/metropole/architecture/registration/PA00086319.json"))
+  dossiers=json.loads(read("public/data/metropole/architecture/dossiers.json"))["dossiers"]
+  hotel=next(d for d in dossiers if d["ref"]=="PA00086319")
+  self.assertIn(r["sourceId"],{d["id"] for d in hotel["documents"]})
+  # Aucun calage tant que des points d'appui et de contrôle n'existent pas.
+  self.assertEqual(r["status"],"unregistered")
+  self.assertEqual(r["tiePoints"],[]);self.assertEqual(r["controlPoints"],[])
+  for k in ("originL93","transform","rmsControlMeters"):self.assertIsNone(r[k])
+  self.assertIsNone(r["vertical"]["courseAltitudeNGF"])
+  self.assertTrue(all(c["l93"] is None for c in r["candidateTiePoints"]))
+  self.assertTrue(r["whyUnregistered"])
+  # Le chargeur convertit explicitement EPSG:2154 + NGF vers la scène.
+  model=read("src/architectureModels.ts")
+  self.assertIn("'epsg2154-relative'",model)
+  self.assertIn("masterToScene(part.positions,obj.originL93!,f)",model)
+  self.assertIn("node --experimental-strip-types scripts/check_registration.mjs",read("package.json"))
  def test_existing_interface_unchanged(self):
   main=read("src/main.ts")
   index=read("index.html")

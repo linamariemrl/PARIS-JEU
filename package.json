@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --host 0.0.0.0",
-    "build": "python scripts/generate_icons.py && tsc --noEmit && npm run test:astronomy && npm run test:street-labels && npm run test:material-catalog && npm run test:roof-geometry && npm run test:camera && npm run test:city-volumes && npm run test:architecture && npm run test:heritage-swap && npm run test:heritage-scene && npm run test:monochrome && npm run test:dossiers && npm run test:city && npm run test:relief-foundations && npm run test:relief-surfaces && vite build && python scripts/strip_aerial_dist.py dist && python scripts/check_site_size.py dist",
+    "build": "python scripts/generate_icons.py && tsc --noEmit && npm run test:astronomy && npm run test:street-labels && npm run test:material-catalog && npm run test:roof-geometry && npm run test:camera && npm run test:city-volumes && npm run test:architecture && npm run test:heritage-swap && npm run test:heritage-scene && npm run test:registration && npm run test:monochrome && npm run test:dossiers && npm run test:city && npm run test:relief-foundations && npm run test:relief-surfaces && vite build && python scripts/strip_aerial_dist.py dist && python scripts/check_site_size.py dist",
     "preview": "vite preview --host 0.0.0.0",
     "test:astronomy": "node --experimental-strip-types scripts/check_astronomy.mjs",
     "test:street-labels": "node --experimental-strip-types scripts/check_street_labels.mjs",
@@ -16,6 +16,7 @@
     "test:architecture": "node --experimental-strip-types scripts/check_architectural_detail.mjs",
     "test:heritage-swap": "node --experimental-strip-types scripts/check_heritage_swap.mjs",
     "test:heritage-scene": "node scripts/check_heritage_scene.mjs",
+    "test:registration": "node --experimental-strip-types scripts/check_registration.mjs",
     "test:monochrome": "node --experimental-strip-types scripts/check_monochrome_camera.mjs",
     "test:dossiers": "node --experimental-strip-types scripts/check_dossiers.mjs",
     "test:city": "node --experimental-strip-types scripts/check_city_simulation.mjs",

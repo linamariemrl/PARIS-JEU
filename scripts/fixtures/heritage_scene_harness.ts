@@ -14,7 +14,9 @@ import {FootprintIndex,parseFootprintTable,setHeritageFootprints,
  isBuildingPickProxy} from '../../src/heritageFootprints';
 import type {Box2} from '../../src/heritageFootprints';
 import earcut from 'earcut';
-import {project} from '../../src/geo';
+import {project,CENTER} from '../../src/geo';
+import {sceneToL93} from '../../src/registration';
+import type {SceneFrame} from '../../src/registration';
 import type {TileFile} from '../../src/types';
 import type {ArchitectureDossiers} from '../../src/architectureDossiers';
 
@@ -150,8 +152,9 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  const docs={canPublish:()=>true,
   canPublishPart:(_r:string,partId:string)=>partId==='facade-test'} as unknown as ArchitectureDossiers;
  let lib=new ArchitecturalModelLibrary(scene,docs,materials);
+ let frame:SceneFrame|null={center:[CENTER[0],CENTER[1]],displayReferenceAltitudeM:35};
  const fresh=async(served:Record<string,Served>)=>{
-  files=served;lib=new ArchitecturalModelLibrary(scene,docs,materials);await lib.init();
+  files=served;lib=new ArchitecturalModelLibrary(scene,docs,materials,()=>frame);await lib.init();
  };
  const step=async(x:number,z:number,radius:number)=>{
   clock+=500;lib.update(x,z,radius,false);await tick();
@@ -404,6 +407,37 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  check(bPart()[0]?.name.endsWith('high'),'B1 : partie de B passée au LOD haut');
  await away();
  check(experts().length===0&&visible3(),'B1 : restitution complète');
+
+ // --- D5 : master EPSG:2154 relatif à une origine, converti au chargement.
+ const roof=footprintRoof(0,40);
+ const f0=frame!;
+ const o=sceneToL93(roof.positions[0],roof.positions[1],roof.positions[2],f0);
+ const origin:[number,number,number]=[Math.round(o.e),Math.round(o.n),Math.round(o.altitudeNGF)];
+ const rel:number[]=[];
+ for(let i=0;i<roof.positions.length;i+=3){
+  const q=sceneToL93(roof.positions[i],roof.positions[i+1],roof.positions[i+2],f0);
+  rel.push(q.e-origin[0],q.n-origin[1],q.altitudeNGF-origin[2]);
+ }
+ const l93File=(tier:string)=>({...asFile(input.ref,tier,{positions:rel,indices:roof.indices}),
+  coordinates:'epsg2154-relative',originL93:origin});
+ frame=null;
+ await fresh({...good,[input.ref+'-high.json']:l93File('high')});
+ await near(300);
+ check(experts().length===0&&visible3(),'D5 : sans référence verticale (MNT absent) : différé, rien masqué');
+ frame=f0;
+ for(let i=0;i<11;i++)await near(300);
+ const d5=extrusionSwap.reports.get(input.ref);
+ check(experts().length===1&&!visible3(),'D5 : master EPSG:2154 converti et accepté sur l\'emprise réelle');
+ check(d5&&d5.coverage>=.99&&d5.spill<=.01,'D5 : couverture '+(d5?(100*d5.coverage).toFixed(1):'?')+
+  ' %, débordement '+(d5?(100*d5.spill).toFixed(1):'?')+' % après conversion');
+ const ys=experts()[0]?.getVerticesData('position');
+ check(ys&&Math.abs(ys[1]-40)<1e-3,'D5 : altitude NGF - 35 m de référence = y de scène');
+ await away();
+ const badOrigin=(tier:string)=>({...l93File(tier),originL93:[origin[0]+8,origin[1],origin[2]]});
+ await fresh({...good,[input.ref+'-medium.json']:badOrigin('medium')});
+ await near(900);
+ check(experts().length===0&&visible3(),'D5 : origine faussée de 8 m : rejet par le contrôle des polygones');
+ await away();
 
  // --- D6 : hystérésis, pas d'allers-retours près d'un seuil.
  await fresh({...good});

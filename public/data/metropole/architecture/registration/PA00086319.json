@@ -1,0 +1,36 @@
+{
+  "schema": 1,
+  "ref": "PA00086319",
+  "sourceId": "bhdv-cc64-pl34",
+  "sheet": "CC64_PL34 — Bâtiment central Boccador, façade sur la place, plan de la 14e assise",
+  "ark": "ark:/73873/pf0000712758/0034",
+  "dateRepresented": "1878",
+  "planType": "plan d'assise (horizontal), sans élévation",
+  "units": "m (cotes du dessin)",
+  "drawingFrame": {
+    "origin": "bord gauche de la base de la tourelle gauche, sur la ligne des chaînes de cotes",
+    "u": "le long de la façade, de gauche à droite sur la feuille",
+    "v": "perpendiculaire, vers l'intérieur du bâtiment (sens non encore vérifié sur la feuille)",
+    "derivedGeometry": "public/data/metropole/architecture/reference/PA00086319/cc64-pl34-assise14-rythme.json"
+  },
+  "status": "unregistered",
+  "originL93": null,
+  "tiePoints": [],
+  "controlPoints": [],
+  "transform": null,
+  "rmsControlMeters": null,
+  "vertical": {
+    "datum": "NGF-IGN69",
+    "courseAltitudeNGF": null,
+    "note": "La position verticale de la 14e assise n'est pas connue : aucune altitude n'est déduite de l'épaisseur 0,42 m."
+  },
+  "whyUnregistered": [
+    "Le contour IGN BD TOPO est généralisé (de l'ordre du mètre) : ses sommets ne sont pas des points d'appui métriques pour des cotes de 1878 lues au centimètre.",
+    "Aucun point du dessin n'a encore été identifié sans ambiguïté sur un relevé actuel métrique (LiDAR HD, orthophotographie ou relevé de façade) ; les angles des bases de tourelles sont des candidats, non vérifiés.",
+    "Au moins deux points d'appui ET au moins un point de contrôle indépendant sont exigés ; aucun n'est acquis."
+  ],
+  "candidateTiePoints": [
+    {"id": "tourelle-gauche-angle-exterieur", "drawing": [0.0, 0.0], "l93": null, "status": "à identifier sur un relevé actuel"},
+    {"id": "tourelle-droite-angle-exterieur", "drawing": [62.82, 0.0], "l93": null, "status": "à identifier ; dépend de l'hypothèse 3,66 + 55,50 + 3,66"}
+  ]
+}

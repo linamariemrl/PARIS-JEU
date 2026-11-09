@@ -7,6 +7,10 @@ import {HeritageSwap,heritageFootprints,modelShapeFromParts,footprintShape}
  from './heritageFootprints';
 import type {ModelShape,FootprintShape} from './heritageFootprints';
 import {chooseTier} from './lodHysteresis';
+import {masterToScene} from './registration';
+import type {SceneFrame} from './registration';
+import {CENTER} from './geo';
+import {displayReferenceAltitude} from './terrain';
 
 /** Bascule unique partagée avec la construction des tuiles (R02-D1/D2/D7).
  * Les extrusions des emprises listées dans `heritage-footprints.json` sont
@@ -28,9 +32,18 @@ interface ModelDescriptor{ref:string;x:number;z:number;sourceIds:string[];
 interface ModelIndex{schema:1;models:ModelDescriptor[];}
 interface ModelPart{name:string;kind:'wall'|'roof'|'detail';
  positions:number[];indices:number[];sourceIds:string[];}
+/** Deux repères admis :
+ * - 'paris-local-xyz' : sommets déjà en coordonnées de scène (historique) ;
+ * - 'epsg2154-relative' (R02-D5) : sommets [dE, dN, dAltitude NGF] relatifs à
+ *   `originL93` [E, N, altitude NGF], convertis explicitement au chargement. */
 interface ModelFile{schema:1;ref:string;units:'m';
- coordinates:'paris-local-xyz';tier:ModelLod['tier'];partId?:string;
+ coordinates:'paris-local-xyz'|'epsg2154-relative';
+ originL93?:[number,number,number];tier:ModelLod['tier'];partId?:string;
  sourceIds:string[];parts:ModelPart[];}
+const sceneFrame=():SceneFrame|null=>{
+ const ref=displayReferenceAltitude();
+ return ref===null?null:{center:[CENTER[0],CENTER[1]],displayReferenceAltitudeM:ref};
+};
 interface Rendered{tier:ModelLod['tier'];meshes:Mesh[];shape:ModelShape|null;
  partial:boolean;ref:string;}
 const prefix='data/metropole/architecture/models/';
@@ -57,7 +70,8 @@ export class ArchitecturalModelLibrary{
  private retryAfter=new Map<string,number>();
  private overlay=new Map<StandardMaterial,StandardMaterial>();
  constructor(private scene:Scene,private docs:ArchitectureDossiers,
-  private materials:BuildingMaterials){
+  private materials:BuildingMaterials,
+  private frame:()=>SceneFrame|null=sceneFrame){
   rejectModel=ref=>this.reject(ref);
  }
  /** Une tuile chargée après la maquette révèle une emprise non couverte :
@@ -127,8 +141,12 @@ export class ArchitecturalModelLibrary{
   const allowed=isPartial(model)?
    obj.partId===model.partId&&this.docs.canPublishPart(ref,model.partId!,obj.sourceIds):
    obj.partId===undefined&&this.docs.canPublish(ref,obj.sourceIds);
+  const l93=obj.coordinates==='epsg2154-relative';
+  if(l93&&!(Array.isArray(obj.originL93)&&obj.originL93.length===3&&
+     obj.originL93.every(Number.isFinite)&&obj.originL93[0]>0&&obj.originL93[0]<1.3e6&&
+     obj.originL93[1]>6e6&&obj.originL93[1]<7.2e6))return false;
   if(obj.schema!==1||obj.ref!==ref||obj.units!=='m'||
-     obj.coordinates!=='paris-local-xyz'||obj.tier!==lod.tier||
+     (obj.coordinates!=='paris-local-xyz'&&!l93)||obj.tier!==lod.tier||
      !Array.isArray(obj.parts)||!obj.parts.length||
      obj.parts.length>400||!Array.isArray(obj.sourceIds)||
      !obj.sourceIds.length||
@@ -187,6 +205,13 @@ export class ArchitecturalModelLibrary{
    if(!this.valid(model,lod,obj))
     throw Error('Maillage sans provenance ou hors limites techniques');
    if(this.wanted.get(key)!==lod.tier)return;
+   if(obj.coordinates==='epsg2154-relative'){
+    // D5 : conversion explicite EPSG:2154 + NGF -> scène, avant tout
+    // contrôle d'emprise ; sans MNT, pas de référence verticale : différer.
+    const f=this.frame();
+    if(!f){this.retryAfter.set(key,performance.now()+5000);return;}
+    for(const part of obj.parts)part.positions=masterToScene(part.positions,obj.originL93!,f);
+   }
    // D7, étape 2 : valider l'emprise AVANT de créer le moindre maillage.
    // Projection horizontale réelle des triangles (pas seulement la boîte).
    const shape=isPartial(model)?null:modelShapeFromParts(obj.parts);
