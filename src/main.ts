@@ -23,6 +23,8 @@ import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import {HeritageAtlas} from './heritageAtlas';
 import {LandmarkBrowser} from './landmarkBrowser';
+import {ArchitectureDossiers} from './architectureDossiers';
+import {ArchitecturalModelLibrary} from './architectureModels';
 import {UrbanAtlas,type QuarterRecord} from './urbanAtlas';
 import {QuarterOverlay,quarterAreaKm2} from './quarterSelection';
 import {neighborhoodHistory,administrativeParis} from './neighborhoodHistory';
@@ -152,6 +154,9 @@ try{
   const selection:Mesh[]=[];
   const inspector=new PlaceInspector(el('place-extra'));
   const heritage=new HeritageAtlas(scene);
+  const architecturalDossiers=new ArchitectureDossiers();
+  const architecturalModels=new ArchitecturalModelLibrary(scene,architecturalDossiers,materials);
+  heritage.setArchitectureDossiers(architecturalDossiers);
   const urbanAtlas=new UrbanAtlas();
   const quarterOverlay=new QuarterOverlay(scene);
   const quarterButton=el<HTMLButtonElement>('quarter-mode');
@@ -555,6 +560,8 @@ try{
       camera.camera.radius,camera.isMoving);
     metro.update(camera.camera.target.x,camera.camera.target.z,
       camera.camera.radius,camera.isMoving);
+    architecturalModels.update(camera.camera.target.x,camera.camera.target.z,
+      camera.camera.radius,camera.isMoving);
     // Les décorations légères ne nécessitent pas de mise à jour à 60 Hz :
     // libérer des cycles CPU pendant le panoramique/zoom sur Android.
     if(!camera.isMoving||now-lastAux>=210){
@@ -589,6 +596,7 @@ try{
       terrainHeight(camera.camera.target.x,camera.camera.target.z);
     await Promise.allSettled([
       inspector.init(),heritageGardens.init(),
+      architecturalDossiers.init().then(()=>architecturalModels.init()),
       urbanAtlas.init().then(()=>{
          management?.setNeighborhoods(urbanAtlas.quarterAnchors());
          populateQuarters();
