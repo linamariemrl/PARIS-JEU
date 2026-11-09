@@ -44,3 +44,24 @@
 **État actuel : aucune case n'est présumée validée sur Android.**
 Les tests CI vérifient la structure et la construction, non l'absence
 de défauts en situation réelle.
+
+## Protocole de mesure de navigation (R04, à exécuter sur appareil réel)
+
+Aucune mesure Android n'a été réalisée par Claude : il ne dispose d'aucun téléphone. Ce protocole permet au propriétaire de produire des chiffres comparables à ceux du banc `scripts/browser/paris_route_benchmark.mjs`, qui tourne dans Chromium avec un WebGL logiciel et **ne donne pas de FPS Android**.
+
+1. **Noter l'environnement** : modèle exact, version d'Android, navigateur et version, résolution, niveau de qualité du jeu, date, batterie au-dessus de 50 %, appareil non en charge, mode économie d'énergie désactivé.
+2. **Brancher le téléphone** et ouvrir le jeu dans Chrome, puis sur l'ordinateur `chrome://inspect` → *inspect* → onglet **Performance**, avec l'option *Screenshots* cochée.
+3. **Enregistrer le parcours**, une session par étape, chacune d'environ 60 s :
+   1. premier chargement, depuis le cache vidé ;
+   2. Hôtel de Ville : rotation 360° d'un doigt, puis pincements jusqu'au dézoom complet et retour ;
+   3. bouton **P** → Notre-Dame, puis Opéra Garnier, Tour Eiffel, Arc de Triomphe, Sacré-Cœur : à chaque fois, attendre la fin du vol, puis faire une rotation 360° ;
+   4. mode **Rue** aller-retour ;
+   5. sauvegarde, rechargement de la page, reprise ;
+   6. mise en arrière-plan de 30 s, puis retour.
+4. **Relever dans chaque trace** :
+   - les FPS moyens ;
+   - le temps d'image médian, p95 et p99, depuis les *Frames* ;
+   - les tâches longues de plus de 50 ms : nombre, durée maximale, et ce qui les a provoquées (*Bottom-Up*) ;
+   - le tas JS et la mémoire GPU si elle est disponible.
+5. **Noter visuellement** chaque trou, bâtiment qui disparaît, clignotement, couture de tuile ou saut de caméra, avec l'heure dans la trace.
+6. **Cible à éprouver**, et non un résultat acquis : au moins 30 FPS en navigation, et 60 FPS si le matériel le permet.
