@@ -116,10 +116,19 @@ def verified_roof_sample(poly,raster,arr,x,y,height,center):
             if value is not None:return value
     return None
 
-def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None):
+def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None,
+                 trace=None):
+    def reject(reason,**details):
+        if trace is not None:
+            trace.update({"reason":reason,**details})
+        return None
     raster,arr,height=source
     xmin,ymin,xmax,ymax=poly.bounds
-    if poly.area>13000:return None  # monuments complexes traités séparément
+    if trace is not None:
+        trace.update({"polygonAreaM2":round(float(poly.area),1),
+            "boundaryVertexCount":len(list(poly.exterior.coords))-1,
+            "gridMeters":grid})
+    if poly.area>13000:return reject("polygon-exceeds-13000sqm")
     center=poly.representative_point()
     raw=[]
     rings=[list(poly.exterior.coords)[:-1],*[list(r.coords)[:-1] for r in poly.interiors]]
@@ -132,7 +141,13 @@ def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None):
             # position XY dans la maquette.
             h=verified_roof_sample(poly,raster,arr,x,y,height,center)
             heights.append(h)
-        if not heights or any(x is None for x in heights):return None
+        missing=sum(h is None for h in heights)
+        if missing:
+            return reject("missing-boundary-lidar",
+                          missingBoundarySamples=missing,
+                          sampledBoundaryVertices=len(heights),
+                          ringCount=len(rings))
+        if not heights:return reject("empty-boundary")
         perimeter.append(heights)
         raw.extend(ring)
     for i in np.arange(xmin+grid/2,xmax,grid):
@@ -140,7 +155,9 @@ def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None):
             p=Point(float(i),float(j))
             if p.within(poly) and p.distance(poly.boundary)>1.5:
                 raw.append((p.x,p.y))
-    if len(raw)<3 or len(raw)>max_points:return None
+    if trace is not None:trace["candidatePoints"]=len(raw)
+    if len(raw)<3 or len(raw)>max_points:
+        return reject("point-budget",maximum=max_points,actual=len(raw))
     # Contraintes : les triangles ne doivent pas traverser les cours intérieures.
     candidates=triangulate(MultiPoint(raw))
     unique={}
@@ -170,18 +187,28 @@ def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None):
         if valid and len(set(ids))==3:
             indices.extend(ids)
             surface_mesuree+=triangle.area
-    if not indices or len(verts)<3:return None
+    if trace is not None:
+        trace["acceptedTriangles"]=len(indices)//3
+        trace["acceptedVertexSamples"]=len(values)
+    if not indices or len(verts)<3:return reject("no-triangles")
     coverage=min(1.0,surface_mesuree/max(poly.area,1.0))
     # Pour les grandes maquettes patrimoniales, refuser un toit partiel :
     # sinon le rendu efface le toit IGN et laisse des trous béants.
+    if trace is not None:trace["triangulatedCoverage"]=round(coverage,5)
     if require_coverage is not None and coverage<require_coverage:
-        return None
+        return reject("triangle-coverage-too-low",
+                      requiredCoverage=require_coverage)
+    if trace is not None:
+        trace["heightMedianM"]=round(float(statistics.median(values)),2)
+        trace["heightP90M"]=round(float(np.percentile(values,90)),2)
+        trace["ignBuildingHeightM"]=height
     if statistics.median(values)<height*.65:
-        return None
+        return reject("median-height-inconsistent")
     if abs(np.percentile(values,90)-height)>max(5,height*.30):
-        return None
+        return reject("p90-height-inconsistent")
     # Réutiliser les mêmes hauteurs effectivement échantillonnées aux bords.
     # Une mesure manquante a déjà interrompu la reconstruction ci-dessus.
+    if trace is not None:trace["reason"]="accepted"
     return {"vertices":verts,"indices":indices,
             "ringsHeights":perimeter,"sampleCount":len(values),
             "triangleCoverage":round(coverage,4)}
@@ -194,6 +221,7 @@ def run():
     roofs={}
     examined=set()
     failed=[]
+    hotel_diag={"reason":"not-encountered-in-downloadable-tiles"}
     # Une dalle peut traverser plusieurs bâtiments, mais un bâtiment n'est
     # retenu qu'avec un raster unique couvrant son centroïde.
     for order,(_,tile,footprint) in enumerate(available,1):
@@ -228,6 +256,8 @@ def run():
                         lon,lat=TO_LL(center.x,center.y)
                         if not footprint.covers(Point(lon,lat)):continue
                         examined.add(ident)
+                        if ident==HOTEL_DE_VILLE_ID:
+                            hotel_diag={"reason":"examined","tile":tile["id"]}
                         height=float(b["height"])
                         parts=[]
                         for poly in polys:
@@ -238,10 +268,12 @@ def run():
                             # On conserve les 592 sommets officiels ; le toit
                             # n'est publié que si >=95 % de la surface est mesurée.
                             priority=(ident==HOTEL_DE_VILLE_ID)
+                            trace=hotel_diag if priority else None
                             part=produce_part(poly,(raster,arr,height),
                                 grid=2.5 if priority else 6.0,
                                 max_points=3600 if priority else 500,
-                                require_coverage=.95 if priority else None)
+                                require_coverage=.95 if priority else None,
+                                trace=trace)
                             if part is None:break
                             parts.append(part)
                         if len(parts)==len(polys) and parts:
@@ -261,6 +293,7 @@ def run():
       "rejectedBuildings":len(examined)-len(roofs),
       "totalBuildings":len(buildings),
       "hotelDeVilleTarget":HOTEL_DE_VILLE_ID,
+      "hotelDeVilleDiagnostic":hotel_diag,
       "hotelDeVilleRoofAccepted":HOTEL_DE_VILLE_ID in roofs,
       "hotelDeVilleRoofTriangleCoverage":round(min(
           [p.get("triangleCoverage",0) for p in
