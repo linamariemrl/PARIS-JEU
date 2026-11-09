@@ -86,7 +86,7 @@ jobs:
       - name: Publier l'APK comme artefact GitHub
         uses: actions/upload-artifact@v4
         with:
-          name: PARIS-Android-0_26-debug-${{ github.run_number }}
+          name: PARIS-Android-0_26_4-debug-${{ github.run_number }}
           path: android/app/build/outputs/apk/debug/app-debug.apk
           retention-days: 30
           if-no-files-found: error

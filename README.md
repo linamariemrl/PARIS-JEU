@@ -19,11 +19,19 @@
 
 # PARIS — prototype de jeu urbain 3D
 
+## Mise à jour 0.26.4 — 9 novembre 2026
+
+L'Hôtel de Ville dispose désormais d'un **relevé de toiture LiDAR HD IGN accepté** dans `public/data/4e/roof-lidar.json` : deux dalles MNH mosaïquées à résolution native de 50 cm, maillage de 3 490 triangles à partir d'échantillons mesurés sur grille de reconstruction de 2,5 m, couverture contrôlée de 98,26 %. Le campanile est documenté séparément par la Ville de Paris ; le MNS/MNH mesure les surfaces visibles, pas les façades sculptées. Les toitures validées sont au nombre de **1 748** sur le secteur pilote du 4e ; les bâtiments non validés conservent leur forme précédente, sans interpolation déclarée exacte.
+
+La mise à jour fournit également les **relevés de géométrie IGN** pour l'Hôtel de Ville, Notre-Dame et Saint-Gervais, leurs précautions méthodologiques et une nouvelle fiche patrimoniale sourcée pour Saint-Gervais. L'inventaire compte toujours 195 sites, sans publication de fausses façades. La version **0.27** attend toujours au moins une reconstruction architecturale détaillée certifiée.
+
+**PWA :** utiliser le bouton « Actualiser PARIS » dans les détails ou recharger l'onglet pour obtenir les ressources à jour. **APK :** installer la nouvelle compilation `PARIS-Android-0_26_4-debug-…`, les précédents APK ne se mettent pas à jour seuls.
+
 ## Reconstruction monumentale à partir de plans cotés (préparation 0.27)
 
 Le jeu contient un [registre architectural de 195 monuments et édifices](public/data/metropole/architecture/dossiers.json) et un [protocole de reconstruction contrôlée](docs/ARCHITECTURE_FIDELITE.md). Il exploite les catalogues Archives de Paris, MPP, Gallica, Cité de l'architecture, LiDAR HD IGN et Paris Data. Des dessins d'exécution de la Bibliothèque de l'Hôtel de Ville ont été identifiés (notamment **CC64_PL34**, **CC16_pl39**, **CC76_PL04**). Les fiches de monuments consultables dans le jeu indiquent les documents repérés, quelques dimensions publiées et les mesures encore inconnues.
 
-Le moteur dispose d'une interface de **maillages métriques sourcés avec LOD**, qui remplacera les volumes IGN uniquement lorsqu'un modèle est réellement mesuré et validé. **À cette étape aucun modèle détaillé n'est encore certifié** : la représentation 3D des monuments reste une volumétrie documentaire et non une reproduction parfaite. Les six sources et le protocole de conformité sont précisés dans le document ci-dessus. La version reste **0.26.3**, sans modification des contrôles de navigation ni de l'interface.
+Le moteur dispose d'une interface de **maillages métriques sourcés avec LOD**, qui remplacera les volumes IGN uniquement lorsqu'un modèle est réellement mesuré et validé. **À cette étape aucun modèle détaillé n'est encore certifié** : la représentation 3D des monuments reste une volumétrie documentaire et non une reproduction parfaite. Les six sources et le protocole de conformité sont précisés dans le document ci-dessus. La version publiée est **0.26.4**, correctif fondé sur des toitures IGN LiDAR HD réellement mesurées. Les commandes de navigation et de gestion restent inchangées ; aucun modèle de façade totalement certifié n'est encore publié.
 
 
 ## Inventaire des édifices incontournables (0.26.3)
@@ -34,7 +42,7 @@ Le moteur dispose d'une interface de **maillages métriques sourcés avec LOD**,
 - La classification n'est appliquée aux bâtiments que lorsque le point POP appartient à une emprise IGN. L'absence de contours ou de plans cotés n'autorise pas une reconstruction architecturale arbitraire. **La version 0.27 n'est pas encore validée.**
 
 
-**Version en cours : 0.26.0 (Prototype 0.26).** La validation réelle Android reste ouverte. La 0.26 était auparavant bloquée
+**Version publiée : 0.26.4 (Prototype 0.26).** La validation réelle sur appareil Android reste ouverte. La 0.26 était auparavant bloquée
 jusqu'à la validation complète du rendu et des sauvegardes sur Android.
 
 **Commencer ici :**

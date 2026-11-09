@@ -182,7 +182,17 @@ const civicStories:Record<string,MonumentStory>={
   sourceUrl:'https://www.paris.fr/lieux/eglise-saint-eustache-19451'
  }
 };
+/* Révision 0.26.4 : une fiche sourcée supplémentaire liée aux
+ * relevés IGN de l'Hôtel de Ville et du patrimoine de Paris Centre. */
+const measuredRoofReleaseStories:Record<string,MonumentStory>={
+ 'PA00086257':{
+  type:'Église historique · patrimoine de Paris Centre',
+  period:'Édifice actuel commencé en 1494 ; façade engagée en 1616',
+  history:'L’église Saint-Gervais-Saint-Protais est bâtie à partir de 1494. Sa façade, commencée en 1616, introduit un vocabulaire classique dans cet édifice de tradition gothique. Un bombardement frappe sa voûte en mars 1918. Son clocher et sa façade ont fait l’objet de restaurations récentes.',
+  sourceUrl:'https://www.paris.fr/pages/1-lieu-3-histoires-l-eglise-saint-gervais-saint-protais-35355'
+ }
+};
 export function storyForReference(ref?:string):MonumentStory|null{
- return ref?(referenceStories[ref]??institutionalStories[ref]??civicStories[ref]??null):null;
+ return ref?(referenceStories[ref]??institutionalStories[ref]??civicStories[ref]??measuredRoofReleaseStories[ref]??null):null;
 }
 export const NEW_REFERENCE_STORIES=Object.keys(referenceStories).length;
