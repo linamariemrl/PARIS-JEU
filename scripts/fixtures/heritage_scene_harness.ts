@@ -374,6 +374,37 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  await away();
  check(experts().length===0&&visible3(),'D4 : restitution complète');
 
+ // --- R03-B1 : partie de B déjà affichée, puis maquette complète de A sur
+ // la même emprise IGN (références distinctes) : la partie de B doit
+ // être retirée, puis revenir quand A sort du champ.
+ const partEntryFor=(ref:string,partId:string,footprint:[number,number][],max=2500)=>({
+  ...partEntry(partId,footprint,max),ref,
+  lods:['high','medium','low'].map(t=>({tier:t,maxRadiusMeters:max,file:ref+'-'+partId+'-'+t+'.json'}))});
+ const partFilesFor=(ref:string,partId:string,g:()=>{positions:number[];indices:number[]})=>
+  Object.fromEntries(['high','medium','low'].map(t=>[ref+'-'+partId+'-'+t+'.json',
+   {...asFile(ref,t,g()),partId}]));
+ const bPart=()=>experts().filter(m=>m.name.includes(second+'-facade-test'));
+ await fresh({...good,...partFilesFor(second,'facade-test',()=>wall()),
+  'index.json':{schema:1,models:[...indexOf([{ref:input.ref,max:600}]).models,
+   partEntryFor(second,'facade-test',strip())]}});
+ await near(900);
+ check(bPart().length===1&&visible3(),'B1 : partie de B affichée, extrusion visible');
+ await near(300);await near(300);
+ check(experts().filter(m=>m.name.includes(input.ref+'-test-fixture')).length===1&&!visible3(),
+  'B1 : maquette complète de A active sur l\'emprise partagée');
+ check(bPart().length===0,'B1 : partie de B retirée (règle déduite de l\'index IGN, pas de la référence)');
+ for(let i=0;i<6;i++)await near(900);
+ check(bPart().length===1&&experts().length===1&&visible3(),
+  'B1 : A sortie du champ, partie de B revenue, extrusion restituée');
+ // Réseau coupé pour A pendant que la partie de B est affichée (LOD haut).
+ files[input.ref+'-high.json']={network:true};
+ await near(300);await near(300);
+ check(bPart().length===1&&visible3()&&!experts().some(m=>m.name.includes(input.ref+'-test-fixture')),
+  'B1 : A indisponible (réseau) : partie de B conservée, extrusion visible');
+ check(bPart()[0]?.name.endsWith('high'),'B1 : partie de B passée au LOD haut');
+ await away();
+ check(experts().length===0&&visible3(),'B1 : restitution complète');
+
  // --- D6 : hystérésis, pas d'allers-retours près d'un seuil.
  await fresh({...good});
  await near(300);

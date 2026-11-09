@@ -162,11 +162,14 @@ export class ArchitecturalModelLibrary{
    lod.file===model.ref+'-'+model.partId+'-'+lod.tier+'.json':
    /^PA\d{8}-(?:high|medium|low)[.]json$/.test(lod.file);
  }
- /** Retirer les parties superposées d'une référence (une maquette complète
-  * vient de la remplacer) : jamais de double silhouette. */
- private dropPartials(ref:string):void{
+ /** Retirer toute partie superposée dont une emprise IGN est désormais
+  * remplacée par une maquette complète, QUELLE QUE SOIT sa référence :
+  * la règle de coexistence se déduit de l'index IGN (plusieurs-à-
+  * plusieurs), pas de l'égalité des références. Jamais de double
+  * silhouette ; la partie reviendra quand l'emprise sera restituée. */
+ private dropPartials():void{
   for(const [key,r] of this.loaded){
-   if(!r.partial||r.ref!==ref)continue;
+   if(!r.partial||!extrusionSwap.replacedFor(r.ref))continue;
    r.meshes.forEach(m=>m.dispose());
    this.loaded.delete(key);
   }
@@ -243,7 +246,7 @@ export class ArchitecturalModelLibrary{
    if(!isPartial(model)){
     if(!extrusionSwap.activate(model.ref,shape!))
      throw Error('Emprise IGN refusée au moment de la bascule');
-    this.dropPartials(model.ref);
+    this.dropPartials();
    }
    this.loaded.set(key,{tier:lod.tier,meshes,shape,partial:isPartial(model),ref:model.ref});
    this.retryAfter.delete(key);
@@ -279,6 +282,8 @@ export class ArchitecturalModelLibrary{
       (this.retryAfter.get(key)??0)>now)continue;
    void this.load(model,lod);
   }
+  // Filet de sécurité à chaque cycle, quel que soit l'ordre d'arrivée.
+  this.dropPartials();
   for(const [ref,previous] of this.loaded){
    if(this.wanted.has(ref))continue;
    // Restituer les volumes IGN AVANT de retirer le maillage expert.

@@ -65,7 +65,8 @@ class ArchitectureDossiers026(unittest.TestCase):
   # D4 : une partie certifiée ne masque jamais l'extrusion ; seule une
   # maquette complète appelle activate(), et elle retire les parties.
   self.assertIn("if(!isPartial(model)){\n    if(!extrusionSwap.activate(model.ref,shape!))",model)
-  self.assertIn("this.dropPartials(model.ref)",model)
+  self.assertIn("this.dropPartials()",model)
+  self.assertIn("if(!r.partial||!extrusionSwap.replacedFor(r.ref))continue;",model)
   self.assertIn("this.docs.canPublishPart(m.ref,m.partId,m.sourceIds)",model)
   self.assertIn("extrusionSwap.replacedFor(model.ref)",model)
   # D6 : choix du niveau avec hystérésis.
