@@ -7,16 +7,20 @@ Aucune photographie, texture ou point brut n'est distribué à Android.
 Les toits dont les mesures ne concordent pas avec IGN BD TOPO sont exclus.
 """
 from __future__ import annotations
-import json,math,os,tempfile,statistics
+import json,math,os,tempfile,statistics,time
 from pathlib import Path
 from urllib.request import Request,urlopen
-from urllib.parse import urlparse
+from urllib.parse import urlparse,urlsplit,urlunsplit,parse_qsl,urlencode
+from urllib.error import HTTPError,URLError
+from contextlib import ExitStack
 from datetime import datetime,timezone
 import rasterio
 import numpy as np
 from shapely.geometry import shape,Polygon,Point,MultiPoint
 from shapely.ops import transform,triangulate
 from pyproj import Transformer
+from rasterio.merge import merge
+from rasterio.io import MemoryFile
 
 ROOT=Path(__file__).resolve().parents[1]
 BASE=ROOT/"public/data/4e"
@@ -44,7 +48,7 @@ def load_buildings():
             out[b["id"]]=b
     return out
 
-def download(url,folder):
+def download_direct(url,folder):
     u=urlparse(url)
     if u.scheme!="https" or u.hostname not in ("data.geopf.fr","wxs.ign.fr"):
         raise RuntimeError("URL LiDAR non approuvée: "+u.hostname)
@@ -64,6 +68,92 @@ def download(url,folder):
             if total>MAX_BYTES:raise RuntimeError("Dalle MNH trop lourde")
             dest.write(chunk)
     return filename
+
+def split_wms_tile_url(url):
+    """Fractionner une dalle WMS 2000² en quatre sous-dalles 1000².
+    Conserver la résolution physique de 50 cm et le même EPSG : aucune
+    interpolation ni hauteur reconstituée par calcul.
+    """
+    parsed=urlsplit(url)
+    if parsed.scheme!="https" or parsed.hostname not in ("data.geopf.fr","wxs.ign.fr"):
+        return []
+    pairs=dict(parse_qsl(parsed.query,keep_blank_values=True))
+    fields={key.upper():key for key in pairs}
+    if not all(key in fields for key in ("BBOX","WIDTH","HEIGHT","CRS")):
+        return []
+    try:
+        xmin,ymin,xmax,ymax=map(float,pairs[fields["BBOX"]].split(","))
+        width=int(pairs[fields["WIDTH"]])
+        height=int(pairs[fields["HEIGHT"]])
+    except (ValueError,TypeError):
+        return []
+    if (pairs[fields["CRS"]].upper()!="EPSG:2154" or
+        width<1000 or height<1000 or width%2 or height%2 or
+        xmax<=xmin or ymax<=ymin or
+        abs((xmax-xmin)/width-.5)>.001 or
+        abs((ymax-ymin)/height-.5)>.001):
+        return []
+    xm=(xmin+xmax)/2
+    ym=(ymin+ymax)/2
+    urls=[]
+    for xlo,xhi in ((xmin,xm),(xm,xmax)):
+        for ylo,yhi in ((ymin,ym),(ym,ymax)):
+            p=pairs.copy()
+            p[fields["BBOX"]]=",".join(
+                f"{n:.2f}" for n in (xlo,ylo,xhi,yhi))
+            p[fields["WIDTH"]]=str(width//2)
+            p[fields["HEIGHT"]]=str(height//2)
+            urls.append(urlunsplit((parsed.scheme,parsed.netloc,
+                parsed.path,urlencode(p),"")))
+    return urls
+
+def mosaic_tiles(paths,folder):
+    """Assembler les pixels MNH originaux sans rééchantillonnage.
+    Les dalles doivent être sur la même grille Lambert-93 au pas 0,5 m.
+    """
+    with ExitStack() as stack:
+        rasters=[stack.enter_context(rasterio.open(p)) for p in paths]
+        first=rasters[0]
+        for r in rasters:
+            if r.count!=1 or r.crs!=first.crs:
+                raise ValueError("Systèmes des dalles MNH incompatibles")
+            if (abs(abs(r.res[0])-.5)>.01 or
+                abs(abs(r.res[1])-.5)>.01):
+                raise ValueError("Résolution MNH inattendue")
+            if (abs((r.bounds.left-first.bounds.left)/.5-
+                    round((r.bounds.left-first.bounds.left)/.5))>.01 or
+                abs((r.bounds.top-first.bounds.top)/.5-
+                    round((r.bounds.top-first.bounds.top)/.5))>.01):
+                raise ValueError("Grilles MNH non alignées")
+        arr,transform=merge(rasters,res=(.5,.5),
+            nodata=first.nodata,method="first")
+        if arr.ndim!=3 or arr.shape[0]!=1 or arr.size>20_000_000:
+            raise ValueError("Mosaïque MNH trop grande")
+        profile=first.profile.copy()
+        profile.update(width=arr.shape[2],height=arr.shape[1],
+            transform=transform,compress="deflate")
+    output=folder/"lidar.tif"
+    with rasterio.open(output,"w",**profile) as dataset:
+        dataset.write(arr)
+    return output
+
+def download(url,folder,split_depth=0):
+    folder.mkdir(parents=True,exist_ok=True)
+    errors=[]
+    for attempt in range(2):
+        try:return download_direct(url,folder)
+        except (HTTPError,URLError,TimeoutError) as exc:
+            if isinstance(exc,HTTPError) and exc.code not in (502,503,504):
+                raise
+            errors.append(str(exc)[:150])
+            if attempt==0:time.sleep(1)
+    fragments=split_wms_tile_url(url) if split_depth<2 else []
+    if not fragments:
+        raise RuntimeError("Dalle MNH inaccessible : "+" ; ".join(errors))
+    children=[]
+    for i,part_url in enumerate(fragments):
+        children.append(download(part_url,folder/str(i),split_depth+1))
+    return mosaic_tiles(children,folder)
 
 def intersecting_tiles(index,limit):
     boundary=shape(json.loads((BASE/"boundary.geojson").read_text())["geometry"])
