@@ -98,6 +98,12 @@ export class HeritageAtlas{
    }
   }catch(e){console.warn('Domaines patrimoniaux facultatifs',e);}
  }
+ /** Localisation exacte du point de notice POP, jamais extrapolée. */
+ priorityNotice(ref:string):{name:string;x:number;z:number;sourceUrl:string}|null{
+  const found=this.byRef.get(ref);
+  return found?{name:found.name,x:found.x,z:found.z,
+    sourceUrl:found.sourceUrl}:null;
+ }
  private near(x:number,z:number):Notice[]{
   const result:Notice[]=[];
   const ix=Math.floor(x/TILE),iz=Math.floor(z/TILE);
