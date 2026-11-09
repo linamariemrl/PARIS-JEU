@@ -22,7 +22,7 @@ class ArchitecturalSurvey026(unittest.TestCase):
    self.assertGreater(x["footprint"]["pointCount"],15)
    self.assertGreater(x["footprint"]["areaM2"],1000)
    self.assertGreater(x["footprint"]["heightIgnMeters"],10)
- def test_hotel_complexity_and_missing_roof_are_reported(self):
+ def test_hotel_complexity_and_mnh_roof_evidence_are_reported(self):
   h=next(x for x in survey()["sites"] if x["ref"]=="PA00086319")
   self.assertEqual(h["ignBuildingId"],"BATIMENT0000000245157267")
   self.assertEqual(h["footprint"]["pointCount"],592)
@@ -34,7 +34,18 @@ class ArchitecturalSurvey026(unittest.TestCase):
   self.assertAlmostEqual(h["cityVolumes"]["coverageFraction"],.831)
   # L'association POP/IGN ne constitue pas une mesure des sculptures.
   self.assertFalse(h["cityVolumes"]["internalHeightsMeasured"])
-  self.assertFalse(h["lidarRoofMeasured"])
+  self.assertTrue(h["lidarRoofMeasured"])
+  roof=h["roofEvidence"]
+  self.assertIsNotNone(roof)
+  self.assertEqual(roof["mosaicTiles"],["metadata.11924","metadata.57713"])
+  self.assertEqual(roof["sourcePixelMeters"],.5)
+  self.assertEqual(roof["meshGridMeters"],2.5)
+  self.assertGreater(roof["coverageFraction"],.98)
+  self.assertEqual(roof["triangles"],3490)
+  self.assertEqual(roof["measuredVertices"],2047)
+  self.assertEqual(roof["maximumMnhHeightM"],48.21)
+  self.assertFalse(roof["architecturalFacadesCertified"])
+  self.assertFalse(roof["ornamentsCertified"])
  def test_gothic_monuments_have_no_fabricated_pinnacle_height(self):
   n=next(x for x in survey()["sites"] if x["ref"]=="PA00086250")
   self.assertEqual(n["footprint"]["heightIgnMeters"],34.9)
@@ -43,7 +54,8 @@ class ArchitecturalSurvey026(unittest.TestCase):
  def test_source_provenance_is_visible_in_existing_fiches(self):
   code=src("src/architectureDossiers.ts")
   for key in ["survey-4e.json","Emprise polygonale IGN calculée",
-    "NE décrivent PAS les cotes des façades","lidarRoofMeasured"]:
+    "NE décrivent PAS les cotes des façades","lidarRoofMeasured",
+    "roofEvidence","Toiture mesurée IGN MNH"]:
    self.assertIn(key,code)
   self.assertIn("architecture-provenance",code)
   self.assertIn("publicationAllowed",code)
