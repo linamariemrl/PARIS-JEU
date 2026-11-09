@@ -257,19 +257,25 @@ export function polygonCoverage(model:ModelShape,footprints:FootprintShape[],
  const z0={minX:zone.minX-tol,minZ:zone.minZ-tol,maxX:zone.maxX+tol,maxZ:zone.maxZ+tol};
  const w=z0.maxX-z0.minX,h=z0.maxZ-z0.minZ;
  const step=Math.max(.25,Math.sqrt(w*h/maxSamples));
- let inside=0,interior=0,covered=0,spill=0,samples=0;
+ // Mêmes définitions que la validation exacte hors ligne
+ // (scripts/validate_model_geometry.py) :
+ //  manque      = emprise - (maquette élargie de la tolérance)
+ //  débordement = maquette - (emprise élargie de la tolérance)
+ // L'élargissement de la maquette est approché par 8 directions + centre.
+ // Une aile étroite entièrement comprise dans la bande de tolérance n'est
+ // donc PLUS ignorée (défaut corrigé, R03-B2).
+ const dirs=[[1,0],[-1,0],[0,1],[0,-1],[.7071,.7071],[-.7071,.7071],[.7071,-.7071],[-.7071,-.7071]];
+ const coveredNear=(x:number,z:number)=>model.covers(x,z)||
+  dirs.some(([dx,dz])=>model.covers(x+dx*tol,z+dz*tol));
+ let inside=0,missing=0,spill=0,samples=0;
  for(let x=z0.minX+step/2;x<z0.maxX;x+=step)for(let z=z0.minZ+step/2;z<z0.maxZ;z+=step){
   samples++;
   const inFp=inPolygons(polygons,x,z);
-  const m=model.covers(x,z);
-  if(inFp)inside++;
-  if(!m&&!inFp)continue;
-  if(nearBoundary(x,z))continue;
-  if(inFp){interior++;if(m)covered++;}
-  else spill++;
+  if(inFp){inside++;if(!coveredNear(x,z))missing++;continue;}
+  if(model.covers(x,z)&&!nearBoundary(x,z))spill++;
  }
- if(!inside||!interior)return {coverage:0,spill:0,samples,ok:false};
- const coverage=covered/interior,spillRatio=spill/inside;
+ if(!inside)return {coverage:0,spill:0,samples,ok:false};
+ const coverage=1-missing/inside,spillRatio=spill/inside;
  return {coverage,spill:spillRatio,samples,
   ok:coverage>=POLYGON_MIN_COVERAGE&&spillRatio<=POLYGON_MAX_SPILL};
 }

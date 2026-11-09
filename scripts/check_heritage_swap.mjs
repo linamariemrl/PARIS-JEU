@@ -66,6 +66,12 @@ assert.ok(modelCoversFootprint(mirror.box,L.box));
 const lr=polygonCoverage(mirror,[L]);
 assert.ok(!lr.ok&&lr.coverage<.5,'forme fausse de même boîte rejetée');
 assert.ok(polygonCoverage(flat([0,0,40,10],[0,10,10,40]),[L]).ok,'L exact accepté');
+// Aile étroite (1,5 m x 30 m, 5,3 % de l'aire) absente : rejet, comme la
+// validation exacte Shapely (cas identique dans test_model_geometry_shapely).
+const winged=footprintShape([[ring([[0,0],[40,0],[40,20],[20.75,20],[20.75,50],[19.25,50],[19.25,20],[0,20]])]]);
+const wr=polygonCoverage(flat([0,0,40,20]),[winged]);
+assert.ok(!wr.ok&&wr.coverage<.95,'aile étroite manquante rejetée ('+wr.coverage.toFixed(3)+')');
+assert.ok(polygonCoverage(flat([0,0,40,20],[19.25,20,20.75,50]),[winged]).ok,'aile présente acceptée');
 // Murs seuls (aucune projection horizontale) : rejet.
 const walls=modelShapeFromParts([{positions:[0,0,0,40,0,0,40,20,0,0,20,0],indices:[0,1,2,0,2,3]}]);
 assert.ok(!polygonCoverage(walls,[rect(0,0,40,20)]).ok,'murs seuls rejetés');
