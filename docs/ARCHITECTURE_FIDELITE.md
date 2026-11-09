@@ -39,6 +39,14 @@ Le premier contrôle croise **la notice Mérimée** avec **un sommet de l'empris
 
 Le niveau de précision actuel est donc **emprise documentée**, non « maquette parfaite » ni « façade certifiée ». La version reste 0.26.3.
 
+### Relevé MNH multi-hauteurs — contrôle du campanile
+
+La [Ville de Paris indique officiellement un campanile à 50 mètres de hauteur](https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659). Cette valeur est **descriptive et arrondie** ; elle ne constitue ni une élévation d'architecte cotée au centimètre, ni une hauteur universelle des façades. Le **corps de bâtiment IGN** possède un attribut distinct de **25,2 m**. Les 2 mesures ne sont donc **pas interchangeables**.
+
+Dans la mosaïque MNH du 9 novembre 2026, **3 436 triangles**, **2 035 points de hauteur** et **96,616 % de la toiture** ont été obtenus à partir des pixels IGN, mais le résultat était refusé parce que le 90e percentile (**34,98 m**) dépassait la tolérance relative à la hauteur IGN globale (**25,2 m**). Cela ne démontre pas une erreur du relevé : les pavillons et le campanile doivent être étudiés séparément.
+
+La procédure autorise désormais **uniquement pour cet édifice** les valeurs de hauteur MNH effectivement mesurées jusqu'au plafond de **50,0 m** confirmé par la Ville de Paris. La limite ordinaire des autres bâtiments reste inchangée ; les exigences de **95 % minimum de surface triangulée**, de pixels géoréférencés **au pas 0,5 m**, de triangulation sans traverser les cours et de cohérence des médianes restent maintenues. Le campanile réel peut avoir des particularités non captées par cette limite arrondie. La reconstruction correspond à un **relief LiDAR de couverture**, et non à une maquette complète du monument : les fenêtres, lucarnes, sculptures, corniches et façades doivent encore être reconstruits à partir des dessins d'exécution. Le statut `publicationAllowed=false` reste conservé pour la maquette architecturale intégrale.
+
 ## Premier dossier : Hôtel de Ville de Paris
 
 Référence POP : **PA00086319** ; façade reconstruction de Théodore Ballu et Édouard Deperthes. La [notice du ministère](https://pop.culture.gouv.fr/notice/merimee/PA00086319) identifie le monument et sa protection, mais **ne fournit pas les cotes des ornements**. Un dossier complet peut nécessiter consultation de la MPP.
