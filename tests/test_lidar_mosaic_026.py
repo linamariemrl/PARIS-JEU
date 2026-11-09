@@ -8,7 +8,8 @@ from rasterio.transform import from_origin
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from prepare_lidar_roofs_4e import split_wms_tile_url,mosaic_tiles
+from prepare_lidar_roofs_4e import split_wms_tile_url,mosaic_tiles,verified_roof_sample
+from shapely.geometry import Polygon
 
 class LidarMosaic026(unittest.TestCase):
  def test_server_tile_is_split_into_quarters_without_resampling(self):
@@ -57,6 +58,24 @@ class LidarMosaic026(unittest.TestCase):
     self.assertEqual(ds.crs.to_epsg(),2154)
     self.assertEqual(ds.read(1).tolist(),
      [[10.0,11.0,20.0,21.0],[12.0,13.0,22.0,23.0]])
+ def test_corner_samples_only_a_real_nearby_roof_pixel(self):
+  # Un angle IGN touche la chaussée. Un vrai pixel de toiture est
+  # disponible en oblique à moins d'un mètre ; jamais interpoler.
+  with tempfile.TemporaryDirectory() as directory:
+   path=Path(directory)/"corner.tif"
+   measured=np.full((10,10),-9999,dtype="float32")
+   measured[9,1]=20.0
+   with rasterio.open(path,"w",driver="GTiff",width=10,height=10,
+       count=1,dtype="float32",crs="EPSG:2154",
+       transform=from_origin(0,5,.5,.5),nodata=-9999) as ds:
+    ds.write(measured,1)
+   poly=Polygon([(0,0),(5,0),(5,5),(0,5)])
+   with rasterio.open(path) as ds:
+    value=verified_roof_sample(poly,ds,ds.read(1),
+      0,0,25.2,poly.representative_point())
+    self.assertEqual(value,20.0)
+    self.assertIsNone(verified_roof_sample(poly,ds,ds.read(1),
+      5,5,25.2,poly.representative_point()))
  def test_mosaic_is_not_presented_as_certified_facade(self):
   s=(ROOT/"scripts/prepare_lidar_roofs_4e.py").read_text()
   self.assertIn('require_coverage=.95',s)
