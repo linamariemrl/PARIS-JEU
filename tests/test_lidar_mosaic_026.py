@@ -2,15 +2,27 @@
 import json, sys, tempfile, unittest
 from pathlib import Path
 from urllib.parse import urlsplit,parse_qs
-import numpy as np
-import rasterio
-from rasterio.transform import from_origin
-
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from prepare_lidar_roofs_4e import split_wms_tile_url,mosaic_tiles,verified_roof_sample
-from shapely.geometry import Polygon
 
+# Le jeu Web/Android n'exige pas les gros paquets de traitement des
+# GeoTIFF. Les tests de mosaïque sont obligatoires dans le workflow dédié
+# (qui installe rasterio/NumPy/Shapely/PyProj), mais ne doivent pas empêcher
+# la livraison du moteur dans les workflows généralistes.
+missing_geospatial_dependency=None
+try:
+ import numpy as np
+ import rasterio
+ from rasterio.transform import from_origin
+ from shapely.geometry import Polygon
+ from prepare_lidar_roofs_4e import (
+    split_wms_tile_url,mosaic_tiles,verified_roof_sample)
+except ModuleNotFoundError as error:
+ missing_geospatial_dependency=error.name
+
+@unittest.skipIf(missing_geospatial_dependency is not None,
+    "Dépendance géospatiale absente (contrôlée dans le workflow LiDAR dédié) : "
+    +str(missing_geospatial_dependency))
 class LidarMosaic026(unittest.TestCase):
  def test_server_tile_is_split_into_quarters_without_resampling(self):
   records=json.loads((ROOT/"data/quality/lidar-4e-availability.json").read_text())["tiles"]
