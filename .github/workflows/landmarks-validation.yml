@@ -1,0 +1,32 @@
+name: Contrôler l'inventaire des monuments
+
+on:
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'index.html'
+      - 'public/data/metropole/places/landmark-catalog.json'
+      - 'tests/test_landmark_inventory_026.py'
+      - '.github/workflows/landmarks-validation.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  monuments-and-typescript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Vérifier l'inventaire géographique et les couleurs
+        run: python -m unittest discover -s tests -p 'test_landmark_inventory_026.py' -v
+      - name: Installer les dépendances du moteur
+        run: npm install --no-audit --no-fund
+      - name: Valider TypeScript
+        run: npx tsc --noEmit

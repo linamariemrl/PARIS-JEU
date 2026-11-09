@@ -20,7 +20,7 @@
     
   </div>
 </aside>
-<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt déplace la maquette. Le bouton 360° transforme le glissement en rotation libre. Deux doigts tournent, inclinent ou zooment. Rue : un doigt regarde partout, flèches pour marcher. Un appui bref sélectionne un immeuble, une chaussée ou un lieu. Le bouton Q active la sélection des 80 quartiers et leur coloration discrète. Les options de jeu sur les bâtiments seront intégrées ultérieurement.</p>
+<details class="help"><summary aria-label="Afficher les commandes">?</summary><p>Carte : un doigt déplace la maquette. Le bouton 360° transforme le glissement en rotation libre. Deux doigts tournent, inclinent ou zooment. Rue : un doigt regarde partout, flèches pour marcher. Un appui bref sélectionne un immeuble, une chaussée ou un lieu. Le bouton Q active les 80 quartiers ; P ouvre l’inventaire des monuments prioritaires et leurs sources. Les options de jeu sur les bâtiments seront intégrées ultérieurement.</p>
 <label class="precision-switch"><input type="checkbox" id="precision-mode"/> Mode précision, gestes plus lents (35 %)</label>
 <div class="app-install-controls">
   <button id="install-app" type="button">Installer PARIS</button>
@@ -40,11 +40,30 @@
 <button id="minus" aria-label="Dézoomer">−</button>
 <button id="north" aria-label="Nord">N</button>
 <button id="orbit-view" aria-label="Activer le déplacement orbital à 360 degrés" aria-pressed="false">360°</button>
+<button id="landmark-open" title="Inventaire des monuments importants" aria-label="Explorer les monuments" type="button">P</button>
 <button id="quarter-mode" aria-label="Sélectionner un quartier administratif" aria-pressed="false" title="Mode quartiers" disabled>Q</button>
 <button id="finance-open" aria-label="Ouvrir l’Hôtel de Ville et la gestion" title="Hôtel de Ville et Conseil de Paris">M</button>
 <button id="street-view" aria-label="Basculer entre carte et vue proche de la rue" aria-pressed="false">Rue</button>
 <label>Qualité <select id="quality" aria-label="Qualité graphique"><option value="low">Basse</option><option value="medium" selected>Moyenne</option><option value="high">Haute</option></select></label>
 </nav>
+<section id="landmark-panel" class="hidden" aria-label="Inventaire des grands édifices de Paris">
+  <div class="landmark-head">
+    <strong>MONUMENTS DE PARIS</strong>
+    <button id="landmark-close" type="button" aria-label="Fermer l’inventaire">×</button>
+  </div>
+  <p>Rôles des édifices prioritaires · localisations documentées uniquement</p>
+  <input id="landmark-search" type="search" placeholder="Rechercher un édifice…" aria-label="Rechercher un monument"/>
+  <select id="landmark-category" aria-label="Filtrer par catégorie">
+    <option value="">Toutes les catégories</option>
+    <option value="political">Politique · orange clair</option>
+    <option value="touristic">Touristique · beige</option>
+    <option value="cultural">Culturel · violet clair</option>
+    <option value="financial">Économique · bleu clair</option>
+  </select>
+  <small id="landmark-status" role="status">Inventaire documentaire…</small>
+  <div id="landmark-list" aria-label="Bâtiments et monuments importants"></div>
+  <button id="landmark-more" type="button" class="hidden">Afficher davantage</button>
+</section>
 <section id="quarter-tools" class="hidden" aria-label="Sélection des quartiers">
   <label for="quarter-pick">Quartiers de Paris</label>
   <select id="quarter-pick" aria-label="Choisir un quartier administratif">
@@ -210,7 +229,12 @@
         <span><i style="background:#babdc0"></i> Eau IGN (géométrie officielle, gris clair)</span>
         <span><i style="background:#d4d4d1"></i> Trottoirs et berges (4e détaillé)</span>
         <span><i style="background:#a3b8a3"></i> Parcs, jardins et plantations (Paris Data)</span>
-        <span><i style="background:#dccbb0"></i> Bâtiments touristiques géolocalisés (beige discret)</span>
+        <strong>Grandes institutions et monuments · fonctions prioritaires</strong>
+        <span><i style="background:#eac49f"></i> Politique : orange clair</span>
+        <span><i style="background:#ded0b9"></i> Touristique : beige clair</span>
+        <span><i style="background:#c8b9df"></i> Culturel : violet clair</span>
+        <span><i style="background:#b3cce3"></i> Économique : bleu clair</span>
+        <small>Coloration limitée aux bâtiments IGN effectivement identifiés ; plusieurs fonctions peuvent coexister.</small>
         <span><i style="background:#b8c9ad"></i> Pelouses et massifs historiques cartographiés (OSM, si disponibles)</span>
         <span><i style="background:#78977e"></i> Arbres municipaux géolocalisés, visibles de près</span>
         <span><i style="background:#c6c9c4"></i> Terrain mesuré IGN, relief interpolé tous les 200 m</span>

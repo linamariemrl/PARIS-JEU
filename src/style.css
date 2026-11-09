@@ -281,3 +281,33 @@ button.city-project-choice.is-selected{border-color:#dfceac;background:#2c4351}
 .quarter-game-card details p{margin:8px 0;font-size:12px}
 .quarter-game-card a{display:inline-block;margin:4px 0;color:#cfe0eb;
  font-size:11px;overflow-wrap:anywhere}
+
+/* Atlas des grands édifices : panneau sur demande, pas de calcul en boucle 3D. */
+#landmark-panel{
+ position:fixed;left:10px;top:calc(env(safe-area-inset-top) + 69px);bottom:auto;
+ z-index:11;display:flex;flex-direction:column;gap:7px;
+ width:min(328px,calc(100vw - 85px));max-height:min(67dvh,560px);
+ overflow:hidden;padding:10px;background:#102334f5;border:1px solid #ffffff55;
+ border-radius:13px;box-shadow:0 6px 24px #0008;
+}
+.landmark-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.landmark-head strong{font-size:13px;letter-spacing:.7px}
+#landmark-close{width:30px;height:30px;font-size:20px;flex:none}
+#landmark-panel p{margin:0;font-size:11px;color:#d9e4e9;line-height:1.35}
+#landmark-panel input,#landmark-panel select{font-size:13px;min-height:37px;
+ width:100%;border:1px solid #ffffff55;border-radius:8px;padding:7px 9px;
+ background:#1b3448;color:white}
+#landmark-status{font-size:10px;line-height:1.3;color:#b9d0df}
+#landmark-list{overflow-y:auto;overscroll-behavior:contain;display:flex;
+ flex-direction:column;gap:4px;min-height:40px}
+.landmark-entry{display:flex;align-items:flex-start;gap:8px;
+ border-bottom:1px solid #ffffff17;padding:6px 2px}
+.landmark-dot{width:10px;height:10px;border-radius:3px;margin-top:4px;flex:none}
+.landmark-text{flex:1;min-width:0}
+.landmark-text strong{display:block;font-size:12px;line-height:1.3}
+.landmark-text small{font-size:10px;line-height:1.3;color:#b4c3d2;display:block;margin-top:2px}
+.landmark-entry button{width:auto;height:auto;min-height:31px;font-size:11px;
+ padding:5px 9px;flex:none}
+.landmark-text a{display:inline-block;font-size:10px;color:#c7dbea;margin-top:3px}
+#landmark-more{width:100%;height:auto;min-height:35px;font-size:12px}
+#landmark-open{font-size:19px}

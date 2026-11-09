@@ -19,6 +19,14 @@
 
 # PARIS — prototype de jeu urbain 3D
 
+## Inventaire des édifices incontournables (0.26.3)
+
+- [Recensement des lieux majeurs par rôle et sources](docs/INVENTAIRE_MONUMENTS.md).
+- [Registre JSON consultable dans le jeu](public/data/metropole/places/landmark-catalog.json) : 140 notices POP vérifiées et 55 lieux restant à apparier à leur emprise IGN.
+- Bouton **P** dans le jeu : recherche par nom et rôle (politique orange clair, touristique beige, culturel violet clair, économique bleu clair). L'ouverture des fiches et l'accès à la carte n'ont pas de coût dans le rendu 3D.
+- La classification n'est appliquée aux bâtiments que lorsque le point POP appartient à une emprise IGN. L'absence de contours ou de plans cotés n'autorise pas une reconstruction architecturale arbitraire. **La version 0.27 n'est pas encore validée.**
+
+
 **Version en cours : 0.26.0 (Prototype 0.26).** La validation réelle Android reste ouverte. La 0.26 était auparavant bloquée
 jusqu'à la validation complète du rendu et des sauvegardes sur Android.
 
