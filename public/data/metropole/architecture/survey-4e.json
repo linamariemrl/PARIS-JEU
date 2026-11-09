@@ -67,7 +67,7 @@
         "areaMethod": "Aire horizontale calculée (anneaux extérieurs moins trous), non surface cadastrale",
         "areaM2": 2148.13,
         "bboxWidthM": 106.96,
-        "bboxDepthM": 63,
+        "bboxDepthM": 63.0,
         "ringCount": 1,
         "pointCount": 35,
         "heightIgnMeters": 34.9,
