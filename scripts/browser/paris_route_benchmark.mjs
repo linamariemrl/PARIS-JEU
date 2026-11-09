@@ -26,6 +26,13 @@ const {chromium}=require('playwright');
 const dist=resolve(process.argv[2]??'dist'),label=process.argv[3]??'run',port=+(process.argv[4]??5301);
 const types={'.js':'text/javascript','.html':'text/html','.json':'application/json',
  '.css':'text/css','.png':'image/png','.webmanifest':'application/manifest+json'};
+// Les LOD et l'atlas sont générés au déploiement, pas versionnés : sans eux,
+// la ville hors tuiles exactes est vide et la mesure ne représente pas le site.
+for(const f of ['data/metropole/overview/manifest.json','data/metropole/coverage/manifest.json']){
+ try{await readFile(join(dist,f));}catch{
+  console.error('dist incomplet : '+f+' absent. Exécuter scripts/prepare_metropole_overview.py '+
+   'et scripts/prepare_city_coverage.py avant la construction.');process.exit(2);}
+}
 const server=createServer(async(q,res)=>{
  let p=decodeURIComponent(q.url.split('?')[0]);if(p.endsWith('/'))p+='index.html';
  try{const b=await readFile(join(dist,p));
