@@ -22,6 +22,7 @@ import { TerrainModule } from './terrain';
 import { StableWaterLayer } from './stableWater';
 import { PlaceInspector,centerOfBuilding } from './placeInspector';
 import {HeritageAtlas} from './heritageAtlas';
+import {LandmarkBrowser} from './landmarkBrowser';
 import {UrbanAtlas,type QuarterRecord} from './urbanAtlas';
 import {QuarterOverlay,quarterAreaKm2} from './quarterSelection';
 import {neighborhoodHistory,administrativeParis} from './neighborhoodHistory';
@@ -176,6 +177,24 @@ try{
     el('selection').classList.remove('heritage-selection');
     selection.splice(0).forEach(m=>m.dispose());
   };
+  const landmarkBrowser=new LandmarkBrowser(heritage,(ref,x,z)=>{
+    const notice=heritage.priorityNotice(ref);
+    if(!notice)return;
+    clear();
+    camera.flyTo(x,z,630);
+    el('building-fields').classList.add('hidden');
+    el('selection').classList.add('heritage-selection');
+    el('selection').classList.remove('hidden');
+    el('selection-title').textContent=notice.name;
+    heritage.appendDetails(el('place-extra'),null,ref);
+    const info=document.createElement('small');
+    info.textContent='Point du registre POP : la géométrie architecturale '+
+      'exacte de toutes les parties du monument reste à contrôler.';
+    el('place-extra').append(info);
+    management?.setSelection({id:'patrimoine:'+ref,label:notice.name,
+      kind:'lieu',x,z});
+    el('selection').scrollTop=0;
+  });
   const select=(b:Building)=>{
     clear();
     const coords=centerOfBuilding(b)??{
@@ -580,7 +599,10 @@ try{
         [surfaces.init(),metroTrees.init(),trees.init()]),
       overview.init(),coverage.init().then(()=>showCounts()),
       // Classification patrimoniale avant création des volumes proches.
-      heritage.init().then(()=>Promise.all([metro.init(),manager.init()])).catch((err:unknown)=>{
+      heritage.init().then(()=>{
+        landmarkBrowser.refresh();
+        return Promise.all([metro.init(),manager.init()]);
+      }).catch((err:unknown)=>{
         console.warn('Bâtiments du 4e indisponibles',err);
         state.textContent='Bâtiments du 4e : source indisponible';
         error.textContent=err instanceof Error?err.message:'Source IGN indisponible';
