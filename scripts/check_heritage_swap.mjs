@@ -7,8 +7,10 @@ import {readFileSync,readdirSync} from 'node:fs';
 import {
  parseFootprintTable,FootprintIndex,HeritageSwap,modelCoversFootprint,
  boxOfPositions,isBuildingPickProxy,footprintShape,modelShapeFromParts,
- polygonCoverage
+ polygonCoverage,partFits
 } from '../src/heritageFootprints.ts';
+import {chooseTier} from '../src/lodHysteresis.ts';
+import {ArchitectureDossiers} from '../src/architectureDossiers.ts';
 
 // --- D3 : lecture stricte et index plusieurs-à-plusieurs -----------------
 const A='BATIMENT0000000000000001',B='BATIMENT0000000000000002',
@@ -129,6 +131,45 @@ swap.register(B,mB2,rect(300,0,340,20));
 assert.deepEqual(rejected,[[fixture.ref,B]]);
 assert.ok(!swap.isActive(fixture.ref));
 assert.ok(mA2.isVisible&&mB.isVisible&&mB2.isVisible);
+
+// --- D6 : hystérésis des niveaux de détail ---------------------------------
+assert.equal(chooseTier(640),'high');assert.equal(chooseTier(660),'medium');
+assert.equal(chooseTier(690,'high'),'high','pas de bascule entre 650 et 700 m');
+assert.equal(chooseTier(710,'high'),'medium');
+assert.equal(chooseTier(640,'medium'),'medium','pas de retour avant 600 m');
+assert.equal(chooseTier(590,'medium'),'high');
+assert.equal(chooseTier(1550,'medium'),'medium');assert.equal(chooseTier(1650,'medium'),'low');
+assert.equal(chooseTier(1450,'low'),'low');assert.equal(chooseTier(1350,'low'),'medium');
+assert.equal(chooseTier(2000,'high'),'low','grand saut : directement au bon niveau');
+
+// --- D4 : partie certifiée, appartenance des sommets ----------------------
+const building=rect(0,0,40,20);
+const facadeStrip=footprintShape([[ring([[0,-.5],[40,-.5],[40,1],[0,1]])]]);
+const facadeWall=[[0,0,0,40,0,0,40,18,0,0,18,0]];
+const fit=partFits(facadeStrip,[building],facadeWall);
+assert.ok(fit.ok&&fit.maxVertexOutsidePartM===0,'façade posée sur le bord accepté');
+assert.ok(!partFits(facadeStrip,[building],[[0,0,3,40,0,3,40,18,3]]).ok,
+ 'sommets à 3 m de la bande déclarée : rejet');
+assert.ok(partFits(facadeStrip,[building],[[0,0,3,40,0,3,40,18,3]]).maxVertexOutsidePartM>1.9);
+const offBuilding=footprintShape([[ring([[0,-6],[40,-6],[40,-4],[0,-4]])]]);
+assert.ok(!partFits(offBuilding,[building],[[0,0,-5,40,0,-5,40,18,-5]]).partInsideIgn,
+ 'bande déclarée hors de l\'emprise IGN : rejet');
+const courtPart=footprintShape([[ring([[18,18],[22,18],[22,22],[18,22]])]]);
+assert.ok(!partFits(courtPart,[court],[[19,0,20,21,0,20,21,9,20]]).partInsideIgn,
+ 'partie déclarée dans une cour fermée : rejet');
+
+// --- D4 : autorisation par partie, sans lever le verrou du monument ------
+const docs=new ArchitectureDossiers();
+docs.byRef.set('PA00000001',{ref:'PA00000001',publicationAllowed:false,
+ documents:[{id:'plan-a'},{id:'plan-b'}],measurements:[],uncertainty:[],
+ certifiedParts:[{partId:'travee-1',sourceIds:['plan-a'],status:'measured-and-approved'},
+  {partId:'travee-2',sourceIds:['plan-a'],status:'draft'}]});
+assert.equal(docs.canPublish('PA00000001',['plan-a']),false,'monument entier toujours verrouillé');
+assert.ok(docs.canPublishPart('PA00000001','travee-1',['plan-a']),'partie certifiée publiable');
+assert.ok(!docs.canPublishPart('PA00000001','travee-1',['plan-b']),'source non certifiée pour la partie');
+assert.ok(!docs.canPublishPart('PA00000001','travee-2',['plan-a']),'partie en brouillon refusée');
+assert.ok(!docs.canPublishPart('PA00000001','travee-3',['plan-a']),'partie inconnue refusée');
+assert.ok(!docs.canPublishPart('PA00000001','travee-1',[]),'sans source : refus');
 
 // --- Table publiée ----------------------------------------------------------
 const doc=JSON.parse(readFileSync(new URL(

@@ -1,9 +1,12 @@
 import {Mesh,Scene,VertexData} from '@babylonjs/core';
+import type {StandardMaterial} from '@babylonjs/core';
 import type {BuildingMaterials} from './buildings';
 import {priorityHeritageRole} from './heritagePriorities';
 import {ArchitectureDossiers} from './architectureDossiers';
-import {HeritageSwap,heritageFootprints,modelShapeFromParts} from './heritageFootprints';
-import type {ModelShape} from './heritageFootprints';
+import {HeritageSwap,heritageFootprints,modelShapeFromParts,footprintShape}
+ from './heritageFootprints';
+import type {ModelShape,FootprintShape} from './heritageFootprints';
+import {chooseTier} from './lodHysteresis';
 
 /** Bascule unique partagée avec la construction des tuiles (R02-D1/D2/D7).
  * Les extrusions des emprises listées dans `heritage-footprints.json` sont
@@ -13,22 +16,37 @@ let rejectModel:(ref:string)=>void=()=>{};
 export const extrusionSwap=new HeritageSwap<Mesh>(heritageFootprints,
   ref=>rejectModel(ref));
 interface ModelLod{tier:'high'|'medium'|'low';maxRadiusMeters:number;file:string;}
+/** Entrée de `models/index.json`.
+ * - Maquette complète (comportement historique, inchangé) :
+ *   `fullReplacement:true`, verrou `publicationAllowed` du dossier.
+ * - Partie certifiée (R02-D4, additif) : `replacement:'partial'`, `partId`,
+ *   `partFootprint` (polygone 2D en coordonnées de scène), autorisée par
+ *   `certifiedParts` du dossier. Une partie ne masque jamais l'extrusion. */
 interface ModelDescriptor{ref:string;x:number;z:number;sourceIds:string[];
- lods:ModelLod[];fullReplacement:boolean;review:'measured-and-approved';}
+ lods:ModelLod[];fullReplacement?:boolean;review:'measured-and-approved';
+ replacement?:'full'|'partial';partId?:string;partFootprint?:[number,number][];}
 interface ModelIndex{schema:1;models:ModelDescriptor[];}
 interface ModelPart{name:string;kind:'wall'|'roof'|'detail';
  positions:number[];indices:number[];sourceIds:string[];}
 interface ModelFile{schema:1;ref:string;units:'m';
- coordinates:'paris-local-xyz';tier:ModelLod['tier'];
+ coordinates:'paris-local-xyz';tier:ModelLod['tier'];partId?:string;
  sourceIds:string[];parts:ModelPart[];}
-interface Rendered{tier:ModelLod['tier'];meshes:Mesh[];shape:ModelShape;}
+interface Rendered{tier:ModelLod['tier'];meshes:Mesh[];shape:ModelShape|null;
+ partial:boolean;ref:string;}
 const prefix='data/metropole/architecture/models/';
+const PART_ID=/^[a-z0-9][a-z0-9-]{0,47}$/;
+const isPartial=(m:ModelDescriptor)=>m.replacement==='partial';
+/** Clé d'une maquette : la référence pour une maquette complète, la
+ * référence et la partie pour une partie certifiée. */
+const keyOf=(m:ModelDescriptor)=>isPartial(m)?m.ref+'#'+m.partId:m.ref;
+
 /** Modèles mesurés, non schématiques. L'index est vide tant qu'aucun
  * relevé coté + contrôle géométrique n'a été effectivement réalisé.
  * Aucun cube, toit ou colonne n'est inventé en cas de fichier absent.
  */
 export class ArchitecturalModelLibrary{
  private models:ModelDescriptor[]=[];
+ private parts=new Map<string,FootprintShape>();
  private loaded=new Map<string,Rendered>();
  private loading=new Set<string>();
  private wanted=new Map<string,ModelLod['tier']>();
@@ -37,6 +55,7 @@ export class ArchitecturalModelLibrary{
  private rejected=new Set<string>();
  /** Emprise IGN pas encore chargée : réessayer plus tard, pas à 450 ms. */
  private retryAfter=new Map<string,number>();
+ private overlay=new Map<StandardMaterial,StandardMaterial>();
  constructor(private scene:Scene,private docs:ArchitectureDossiers,
   private materials:BuildingMaterials){
   rejectModel=ref=>this.reject(ref);
@@ -59,12 +78,28 @@ export class ArchitecturalModelLibrary{
    if(doc.schema!==1||!Array.isArray(doc.models))throw Error('Index invalide');
    // Un modèle ne devient actif qu'après validation explicite des
    // mesures citées dans son dossier, jamais à cause de son nom.
-   this.models=doc.models.filter(m=>
+   const common=(m:ModelDescriptor)=>
       /^PA\d{8}$/.test(m.ref)&&Number.isFinite(m.x)&&Number.isFinite(m.z)&&
-      m.fullReplacement===true&&m.review==='measured-and-approved'&&
-      this.docs.canPublish(m.ref,m.sourceIds)&&
-      Array.isArray(m.lods)&&m.lods.length>0);
+      m.review==='measured-and-approved'&&Array.isArray(m.sourceIds)&&
+      Array.isArray(m.lods)&&m.lods.length>0;
+   const full=(m:ModelDescriptor)=>!isPartial(m)&&
+      m.fullReplacement===true&&this.docs.canPublish(m.ref,m.sourceIds);
+   const partial=(m:ModelDescriptor)=>isPartial(m)&&
+      typeof m.partId==='string'&&PART_ID.test(m.partId)&&
+      this.docs.canPublishPart(m.ref,m.partId,m.sourceIds)&&
+      this.partShape(m)!==null;
+   this.models=doc.models.filter(m=>common(m)&&(full(m)||partial(m)));
   }catch(error){console.warn('Maquettes métriques non publiées',error);}
+ }
+ private partShape(m:ModelDescriptor):FootprintShape|null{
+  const key=keyOf(m);
+  if(this.parts.has(key))return this.parts.get(key)!;
+  const pts=m.partFootprint;
+  if(!Array.isArray(pts)||pts.length<3||pts.length>2000||
+     !pts.every(p=>Array.isArray(p)&&p.length===2&&p.every(Number.isFinite)))return null;
+  const shape=footprintShape([[pts.map(([x,z])=>({x,z}))]]);
+  if(shape)this.parts.set(key,shape);
+  return shape;
  }
  private material(ref:string,kind:ModelPart['kind']){
   const roof=kind==='roof';
@@ -75,15 +110,29 @@ export class ArchitecturalModelLibrary{
    default:return roof?this.materials.heritageRoof:this.materials.heritageWall;
   }
  }
- private valid(ref:string,lod:ModelLod,sourceIds:string[],
-   obj:ModelFile):boolean{
+ /** Partie superposée à l'extrusion : même teinte, léger décalage de
+  * profondeur seulement (aucune géométrie déplacée), pour éviter le
+  * scintillement des faces coplanaires. */
+ private overlayMaterial(base:StandardMaterial):StandardMaterial{
+  let m=this.overlay.get(base);
+  if(!m){
+   m=base.clone(base.name+'-partie-certifiee');
+   m.zOffset=-2;m.freeze();
+   this.overlay.set(base,m);
+  }
+  return m;
+ }
+ private valid(model:ModelDescriptor,lod:ModelLod,obj:ModelFile):boolean{
+  const ref=model.ref,sourceIds=model.sourceIds;
+  const allowed=isPartial(model)?
+   obj.partId===model.partId&&this.docs.canPublishPart(ref,model.partId!,obj.sourceIds):
+   obj.partId===undefined&&this.docs.canPublish(ref,obj.sourceIds);
   if(obj.schema!==1||obj.ref!==ref||obj.units!=='m'||
      obj.coordinates!=='paris-local-xyz'||obj.tier!==lod.tier||
      !Array.isArray(obj.parts)||!obj.parts.length||
      obj.parts.length>400||!Array.isArray(obj.sourceIds)||
      !obj.sourceIds.length||
-     !obj.sourceIds.every(id=>sourceIds.includes(id))||
-     !this.docs.canPublish(ref,obj.sourceIds))return false;
+     !obj.sourceIds.every(id=>sourceIds.includes(id))||!allowed)return false;
   let vertices=0,triangles=0;
   for(const part of obj.parts){
    if(!['wall','roof','detail'].includes(part.kind)||
@@ -103,43 +152,75 @@ export class ArchitecturalModelLibrary{
    vertices+=part.positions.length/3;
    triangles+=part.indices.length/3;
   }
-  return vertices<=180000&&triangles<=300000&&triangles>=40;
+  // Une partie (une travée, une assise) peut être petite ; une maquette
+  // complète doit avoir un minimum de substance.
+  const minTriangles=isPartial(model)?2:40;
+  return vertices<=180000&&triangles<=300000&&triangles>=minTriangles;
+ }
+ private fileAllowed(model:ModelDescriptor,lod:ModelLod):boolean{
+  return isPartial(model)?
+   lod.file===model.ref+'-'+model.partId+'-'+lod.tier+'.json':
+   /^PA\d{8}-(?:high|medium|low)[.]json$/.test(lod.file);
+ }
+ /** Retirer les parties superposées d'une référence (une maquette complète
+  * vient de la remplacer) : jamais de double silhouette. */
+ private dropPartials(ref:string):void{
+  for(const [key,r] of this.loaded){
+   if(!r.partial||r.ref!==ref)continue;
+   r.meshes.forEach(m=>m.dispose());
+   this.loaded.delete(key);
+  }
  }
  private async load(model:ModelDescriptor,lod:ModelLod):Promise<void>{
-  if(this.loading.has(model.ref))return;
-  this.loading.add(model.ref);
+  const key=keyOf(model);
+  if(this.loading.has(key))return;
+  this.loading.add(key);
   let meshes:Mesh[]=[];
   try{
-   if(!/^PA\d{8}-(?:high|medium|low)[.]json$/.test(lod.file))
-    throw Error('Nom de modèle non autorisé');
+   if(!this.fileAllowed(model,lod))throw Error('Nom de modèle non autorisé');
    const response=await fetch(import.meta.env.BASE_URL+prefix+lod.file);
    if(!response.ok)throw Error('Maillage coté manquant');
    const obj=await response.json() as ModelFile;
-   if(!this.valid(model.ref,lod,model.sourceIds,obj))
+   if(!this.valid(model,lod,obj))
     throw Error('Maillage sans provenance ou hors limites techniques');
-   if(this.wanted.get(model.ref)!==lod.tier)return;
+   if(this.wanted.get(key)!==lod.tier)return;
    // D7, étape 2 : valider l'emprise AVANT de créer le moindre maillage.
    // Projection horizontale réelle des triangles (pas seulement la boîte).
-   const shape=modelShapeFromParts(obj.parts);
-   if(!shape)throw Error('Sommets non finis');
+   const shape=isPartial(model)?null:modelShapeFromParts(obj.parts);
+   if(!isPartial(model)&&!shape)throw Error('Sommets non finis');
    if(!extrusionSwap.allLoaded(model.ref)){
     // Rien à comparer ni à masquer tant que toutes les extrusions de la
     // référence ne sont pas chargées : réessayer, ne pas rejeter.
-    this.retryAfter.set(model.ref,performance.now()+5000);
+    this.retryAfter.set(key,performance.now()+5000);
     return;
    }
-   if(extrusionSwap.conflicts(model.ref)){
-    // Une autre maquette (ensemble ou partie) occupe déjà l'emprise :
-    // pas de double silhouette ; réessayer quand elle sera retirée.
-    this.retryAfter.set(model.ref,performance.now()+2000);
-    return;
-   }
-   if(!extrusionSwap.accepts(model.ref,shape)){
-    this.rejected.add(model.ref+'@'+lod.tier);
-    throw Error('Maquette hors de l\'emprise IGN attendue');
+   if(isPartial(model)){
+    // D4 : une partie n'est jamais posée sur une maquette complète active.
+    if(extrusionSwap.replacedFor(model.ref)){
+     this.retryAfter.set(key,performance.now()+2000);
+     return;
+    }
+    const fit=extrusionSwap.acceptsPart(model.ref,this.partShape(model)!,
+      obj.parts.map(p=>p.positions));
+    if(!fit?.ok){
+     this.rejected.add(key+'@'+lod.tier);
+     throw Error('Partie hors de son emprise déclarée ou de l\'emprise IGN');
+    }
+   }else{
+    if(extrusionSwap.conflicts(model.ref)){
+     // Une autre maquette (ensemble ou partie) occupe déjà l'emprise :
+     // pas de double silhouette ; réessayer quand elle sera retirée.
+     this.retryAfter.set(key,performance.now()+2000);
+     return;
+    }
+    if(!extrusionSwap.accepts(model.ref,shape!)){
+     this.rejected.add(key+'@'+lod.tier);
+     throw Error('Maquette hors de l\'emprise IGN attendue');
+    }
    }
    for(const part of obj.parts){
-    const mesh=new Mesh('monument-mesure-'+model.ref+'-'+part.name,this.scene);
+    const mesh=new Mesh('monument-mesure-'+model.ref+
+      (isPartial(model)?'-'+model.partId:'')+'-'+part.name,this.scene);
     const vd=new VertexData();
     vd.positions=part.positions;
     vd.indices=part.indices;
@@ -147,26 +228,31 @@ export class ArchitecturalModelLibrary{
     VertexData.ComputeNormals(part.positions,part.indices,normals);
     vd.normals=normals;
     vd.applyToMesh(mesh);
-    mesh.material=this.material(model.ref,part.kind);
+    const base=this.material(model.ref,part.kind);
+    mesh.material=isPartial(model)?this.overlayMaterial(base):base;
     mesh.isPickable=false;
     mesh.freezeWorldMatrix();
     meshes.push(mesh);
    }
-   if(this.wanted.get(model.ref)!==lod.tier)return;
+   if(this.wanted.get(key)!==lod.tier)return;
    // D7, étape 3 : la maquette est affichée (créée activée) ; étape 4 :
-   // seulement alors masquer l'extrusion. En cas d'échec, l'extrusion
-   // reste visible et la maquette est détruite par le bloc finally.
-   const previous=this.loaded.get(model.ref);
-   if(!extrusionSwap.activate(model.ref,shape))
-    throw Error('Emprise IGN refusée au moment de la bascule');
-   this.loaded.set(model.ref,{tier:lod.tier,meshes,shape});
-   this.retryAfter.delete(model.ref);
+   // seulement alors masquer l'extrusion (maquette complète uniquement).
+   // En cas d'échec, l'extrusion reste visible et la maquette est
+   // détruite par le bloc finally.
+   const previous=this.loaded.get(key);
+   if(!isPartial(model)){
+    if(!extrusionSwap.activate(model.ref,shape!))
+     throw Error('Emprise IGN refusée au moment de la bascule');
+    this.dropPartials(model.ref);
+   }
+   this.loaded.set(key,{tier:lod.tier,meshes,shape,partial:isPartial(model),ref:model.ref});
+   this.retryAfter.delete(key);
    previous?.meshes.forEach(m=>m.dispose());
    meshes=[];
-  }catch(error){console.warn('Maquette architecturale non validée',model.ref,error);}
+  }catch(error){console.warn('Maquette architecturale non validée',key,error);}
   finally{
    meshes.forEach(m=>m.dispose());
-   this.loading.delete(model.ref);
+   this.loading.delete(key);
   }
  }
  update(x:number,z:number,radius:number,isMoving:boolean):void{
@@ -177,25 +263,32 @@ export class ArchitecturalModelLibrary{
   const candidates=this.models.filter(m=>
     Math.hypot(m.x-x,m.z-z)<Math.min(2500,Math.max(450,radius*1.5)))
    .sort((a,b)=>Math.hypot(a.x-x,a.z-z)-Math.hypot(b.x-x,b.z-z))
-   .slice(0,3);
+   .slice(0,6);
+  const previousWanted=new Map(this.wanted);
   this.wanted.clear();
   for(const model of candidates){
-   const tier=radius<650?'high':radius<1500?'medium':'low';
+   const key=keyOf(model);
+   // D6 : hystérésis sur le niveau affiché (ou demandé) pour cette clé.
+   const tier=chooseTier(radius,this.loaded.get(key)?.tier??previousWanted.get(key));
    const lod=model.lods.find(l=>l.tier===tier)??model.lods.find(l=>l.tier==='low');
    if(!lod||radius>lod.maxRadiusMeters)continue;
-   this.wanted.set(model.ref,lod.tier);
-   if(this.loaded.get(model.ref)?.tier===lod.tier||
-      this.loading.has(model.ref)||
-      this.rejected.has(model.ref+'@'+lod.tier)||
-      (this.retryAfter.get(model.ref)??0)>now)continue;
+   this.wanted.set(key,lod.tier);
+   if(this.loaded.get(key)?.tier===lod.tier||
+      this.loading.has(key)||
+      this.rejected.has(key+'@'+lod.tier)||
+      (this.retryAfter.get(key)??0)>now)continue;
    void this.load(model,lod);
   }
   for(const [ref,previous] of this.loaded){
    if(this.wanted.has(ref))continue;
    // Restituer les volumes IGN AVANT de retirer le maillage expert.
-   extrusionSwap.deactivate(ref);
+   if(!previous.partial)extrusionSwap.deactivate(ref);
    previous.meshes.forEach(m=>m.dispose());
    this.loaded.delete(ref);
   }
+ }
+ /** Diagnostic de test : clés affichées et leur niveau. */
+ displayed():[string,ModelLod['tier']][]{
+  return [...this.loaded].map(([k,r])=>[k,r.tier]);
  }
 }

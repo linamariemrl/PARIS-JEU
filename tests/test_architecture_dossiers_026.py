@@ -62,6 +62,14 @@ class ArchitectureDossiers026(unittest.TestCase):
   self.assertIn("polygonCoverage(model,shapes)",accept)
   self.assertIn("modelShapeFromParts(obj.parts)",model)
   self.assertIn("extrusionSwap.conflicts(model.ref)",model)
+  # D4 : une partie certifiée ne masque jamais l'extrusion ; seule une
+  # maquette complète appelle activate(), et elle retire les parties.
+  self.assertIn("if(!isPartial(model)){\n    if(!extrusionSwap.activate(model.ref,shape!))",model)
+  self.assertIn("this.dropPartials(model.ref)",model)
+  self.assertIn("this.docs.canPublishPart(m.ref,m.partId,m.sourceIds)",model)
+  self.assertIn("extrusionSwap.replacedFor(model.ref)",model)
+  # D6 : choix du niveau avec hystérésis.
+  self.assertIn("chooseTier(radius,",model)
   self.assertIn("extrusionSwap.unregister(heritageIgnId,mesh)",building)
   self.assertIn("mesh.onDisposeObservable.addOnce(",building)
   self.assertIn("faceToBuilding:batch.faceToBuilding",building)
@@ -108,6 +116,13 @@ class ArchitectureDossiers026(unittest.TestCase):
   # mesures publiées par le dossier (taille du papier != cote bâtie).
   self.assertFalse(any(m["sourceId"].startswith("bhdv-") for m in hotel["measurements"]))
   self.assertFalse(hotel["publicationAllowed"])
+  # Aucune partie n'est certifiée à ce jour ; toute partie future doit
+  # citer des documents du dossier.
+  for d in dossiers:
+   for part in d.get("certifiedParts",[]):
+    known={x["id"] for x in d["documents"]}
+    self.assertTrue(part["sourceIds"] and set(part["sourceIds"])<=known,d["ref"])
+  self.assertFalse(any(d.get("certifiedParts") for d in dossiers))
   self.assertEqual(json.loads(read("public/data/metropole/architecture/models/index.json"))["models"],[])
  def test_partial_rhythm_is_derived_and_not_used_by_engine(self):
   import json,importlib.util

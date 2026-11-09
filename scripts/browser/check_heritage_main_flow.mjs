@@ -85,6 +85,9 @@ async function run(withModel){
  await page.click('#landmark-close').catch(()=>{});
  await page.waitForTimeout(20000); // vol de caméra, tuiles, maquette
  const draws=await page.evaluate(()=>{const f=__perf.frames.slice(-5);return f.length?Math.round(f.reduce((a,b)=>a+b,0)/f.length):0;});
+ // Tas JS (Chromium seulement, valeur arrondie par le navigateur).
+ const heapMB=await page.evaluate(()=>performance.memory?
+  Math.round(performance.memory.usedJSHeapSize/1048576):null);
  await page.screenshot({path:`/tmp/claude-0/perf/mainflow-${withModel?'model':'base'}.png`});
  const canvas=await page.$('canvas');const box=await canvas.boundingBox();
  const cx=box.x+box.width/2,cy=box.y+box.height/2;
@@ -106,7 +109,7 @@ async function run(withModel){
  }
  const extra=await page.textContent('#place-extra');
  await browser.close();
- return {withModel,draws,title,selectionShown:shown,quarterHint:hint,quarterCard:(extra||'').slice(0,120),
+ return {withModel,draws,heapMB,title,selectionShown:shown,quarterHint:hint,quarterCard:(extra||'').slice(0,120),
   modelLogs:logs.slice(0,5),errors:errors.slice(0,5)};
 }
 const base=await run(false);

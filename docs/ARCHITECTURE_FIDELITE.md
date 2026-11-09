@@ -123,13 +123,42 @@ Source d'exploitant : [Chiffres clés](https://www.toureiffel.paris/fr/le-monume
 
 Les maquettes des essais sont des **faux** marqués `test-fixture` : un pavé ou une toiture plate triangulée sur le polygone IGN. Dans le flux navigateur (`scripts/browser/check_heritage_main_flow.mjs`, hors CI), ils sont injectés par **interception réseau** ; le dossier de l'Hôtel de Ville y est aussi passé à `publicationAllowed=true` dans la seule réponse interceptée. Le dépôt n'est pas modifié, l'index des modèles reste vide, et **aucun modèle d'archive réel n'a traversé cette chaîne**. Résultat du flux réel : 65 → 64 draw calls (−2 extrusion, +1 maquette), sélection identique. Captures : [avec la maquette factice](preuves/r02-flux-main-maquette-factice.png), [sans maquette](preuves/r02-flux-main-sans-maquette.png).
 
-### Corrections R02 restantes : D4, D5, D6
+### Corrections R02 : D4 et D6 implémentés, D5 restant
 
-Définitions reprises de la navette R02 (section R02-D) ; **aucune n'est implémentée** dans cette PR.
+Définitions reprises de la navette R02 (section R02-D).
 
-- **D4, remplacement partiel par sous-ensemble.** Remplacer le booléen `fullReplacement` par une liste de parties certifiées (`partId`, emprise 2D, `sourceIds`, statut) ; ne masquer que la portion d'extrusion couverte par une partie chargée. Tant que la découpe n'est pas fiable, ne rien masquer et superposer la pièce experte avec un léger décalage contrôlé, plutôt que de créer des trous. Fichiers : `src/architectureModels.ts`, `src/heritageFootprints.ts`, `src/buildings.ts`, schéma de `models/index.json`. Manque : découpe géométrique des extrusions par partie, et une première partie réellement certifiée. Réussite : une seule façade certifiée affichée sans masquer le reste, cours et LOD compris, deux monuments sur une emprise sans double silhouette ni double sélection.
-- **D5, repère des modèles.** Master en EPSG:2154 avec une origine propre (`originL93`) et sommets relatifs ; le chargeur applique la transformation vers la scène depuis `registration/PA########.json`. Manque : un calage réel (points d'appui et résidus). Réussite : changer `CENTER` dans `src/geo.ts` ne déplace pas une maquette par rapport à son emprise.
-- **D6, LOD avec hystérésis.** Seuils montants et descendants distincts (exemple à calibrer : 700 m / 600 m) et chargement du niveau suivant seulement quand le précédent est prêt. Réussite : aucun aller-retour de chargement pendant une orbite à rayon constant proche d'un seuil.
+- **D4, remplacement partiel par partie certifiée : implémenté (extension additive).**
+  - Une entrée de `models/index.json` peut déclarer `replacement:"partial"`, un `partId` et une `partFootprint` (polygone 2D en coordonnées de scène), avec des fichiers `PA########-<partId>-<niveau>.json`.
+  - Elle n'est autorisée que si le dossier liste cette partie dans `certifiedParts` (statut `measured-and-approved`, sources du dossier). Le verrou global `publicationAllowed` du monument **n'est pas levé**. Aucune partie n'est certifiée aujourd'hui (vérifié par test).
+  - Contrôle : l'emprise déclarée doit être posée sur l'emprise IGN (tolérance 1 m, une cour est refusée), et **chaque sommet** de la maquette doit tomber dans cette emprise déclarée. Une façade est presque verticale : sa projection horizontale ne couvre rien, donc on contrôle l'appartenance des sommets plutôt qu'une couverture.
+  - Comme le prévoit R02-D4, tant que la découpe de l'extrusion par partie n'est pas fiable, **une partie ne masque rien** : elle est superposée à l'extrusion avec un simple décalage de profondeur (`zOffset`, aucune géométrie déplacée). L'extrusion reste la seule cible de sélection, donc jamais de double clic.
+  - Une partie n'est jamais posée sur une maquette complète active ; si une maquette complète arrive, les parties de la référence sont retirées. Les maquettes complètes gardent leur comportement et leur verrou.
+  - Reste à faire : masquer seulement la portion d'extrusion couverte par une partie, ce qui demande une découpe géométrique fiable des extrusions.
+- **D6, LOD avec hystérésis : implémenté** (`src/lodHysteresis.ts`). On passe au niveau moyen au-delà de 700 m et on revient au haut sous 600 m ; on passe au bas au-delà de 1 600 m et on revient au moyen sous 1 400 m. Le niveau précédent reste affiché jusqu'à ce que le suivant soit prêt. Ces seuils restent **à calibrer sur appareil**.
+- **D5, repère des modèles : non implémenté.** Objectif : master en EPSG:2154 avec une origine propre (`originL93`) et des sommets relatifs, transformation vers la scène lue dans `registration/PA########.json`. Fichiers : `src/architectureModels.ts`, nouveau `registration/`. Données manquantes : un calage réel (points d'appui et résidus) ; aucune feuille n'est encore calée. Ordre : après le calage de CC64_PL34, avant le premier modèle réel. Réussite : changer `CENTER` dans `src/geo.ts` ne déplace pas une maquette par rapport à son emprise.
+
+Tests D4/D6 en scène Babylon, sur l'emprise réelle de l'Hôtel de Ville :
+- une façade factice certifiée, posée sur l'arête la plus longue, est superposée sur 3 niveaux de détail, tandis que l'extrusion reste visible et seule sélectionnable ;
+- une partie non certifiée n'est jamais téléchargée ;
+- une partie déclarée dans une cour est rejetée, de même qu'une maquette débordant de 3 m ;
+- maquette complète contre partie : jamais les deux, et la partie revient quand la maquette complète sort du champ ;
+- en orbite entre 610 et 695 m, aucun rechargement.
+
+Total : **59 contrôles**.
+
+### Coûts structurels et comparaison avec `main`
+
+- **Maillages par tuile** : 49 des 421 tuiles contiennent une emprise suivie, en moyenne 2,4 par tuile concernée et au plus 9 (tuile métropole `-4_0`). Le surcoût est donc d'au plus 18 maillages et draw calls dans le pire cas, s'ils sont tous visibles.
+- **Matériaux** : aucun nouveau matériau pour les maquettes complètes ; une copie avec décalage de profondeur par matériau de rôle, créée seulement si une partie certifiée est affichée (aucune aujourd'hui).
+- **Réactivation** : 25 allers-retours, puis déchargement et rechargement de tuile, sans maillage ni géométrie orphelins (scène Babylon).
+- **Flux réel `main.ts`, même scénario (vol vers l'Hôtel de Ville, tap au centre)** :
+
+| Version | Draw calls (sans / avec maquette factice) | Tas JS (sans / avec) | Sélection après chargement de la maquette |
+| --- | --- | --- | --- |
+| `main` (masquage par `setIndices`) | 72 / 73 | 133 / 125 Mo | **perdue : « Lieu de Paris »** |
+| branche | 65 / 64 | 133 / 125 Mo | **« Hôtel de ville »** |
+
+Le tas varie de quelques Mo d'un essai à l'autre (ramasse-miettes) : il ne montre ni fuite ni gain mesurable. L'écart de draw calls entre `main` et la branche dépend de l'état du chargement des tuiles au moment de la mesure : il n'est pas interprétable seul. Le point net est la **perte de sélection sur `main`**, le risque n° 2 de R01, corrigée par la branche.
 
 ### Coût mesuré des maillages séparés
 

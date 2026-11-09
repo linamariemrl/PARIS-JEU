@@ -274,6 +274,52 @@ export function polygonCoverage(model:ModelShape,footprints:FootprintShape[],
   ok:coverage>=POLYGON_MIN_COVERAGE&&spillRatio<=POLYGON_MAX_SPILL};
 }
 
+/* ---------------------------------------------------------------------
+ * R02-D4 : parties certifiées (remplacement partiel).
+ * Une partie ne masque JAMAIS l'extrusion : la découpe de l'extrusion par
+ * partie n'est pas encore fiable. Elle est superposée, et doit :
+ *  - déclarer une emprise 2D posée sur l'emprise IGN de la référence ;
+ *  - n'avoir aucun sommet hors de cette emprise déclarée.
+ * Une façade étant presque verticale, sa projection horizontale est quasi
+ * nulle : on contrôle donc l'appartenance des sommets, pas une couverture.
+ * ------------------------------------------------------------------- */
+export interface PartFitReport{partInsideIgn:boolean;maxVertexOutsidePartM:number;
+ verticesChecked:number;ok:boolean;}
+function insideOrNear(polygons:FootprintPolygon[],tol:number){
+ const near=edgeIndex(polygons,tol);
+ return (x:number,z:number)=>inPolygons(polygons,x,z)||near(x,z);
+}
+/** Distance au polygone (0 dedans), approchée par paliers de 0,25 m
+ * jusqu'à 5 m : suffit pour rapporter un écart, pas pour certifier. */
+function outsideDistance(polygons:FootprintPolygon[],x:number,z:number):number{
+ if(inPolygons(polygons,x,z))return 0;
+ let best=Infinity;
+ for(const p of polygons)for(const r of p)
+  for(let i=0,j=r.length-1;i<r.length;j=i++)best=Math.min(best,segDist2(x,z,r[j],r[i]));
+ return Math.sqrt(best);
+}
+export function partFits(part:FootprintShape,ign:FootprintShape[],
+  vertices:ArrayLike<number>[],tol=POLYGON_EDGE_TOLERANCE_M):PartFitReport{
+ const ignPolys=ign.flatMap(f=>f.polygons);
+ const onIgn=insideOrNear(ignPolys,tol);
+ // Sommets et milieux d'arêtes de l'emprise déclarée sur l'emprise IGN.
+ let partInsideIgn=ignPolys.length>0;
+ for(const poly of part.polygons)for(const r of poly)
+  for(let i=0,j=r.length-1;i<r.length&&partInsideIgn;j=i++){
+   const a=r[j],b=r[i];
+   if(!onIgn(b.x,b.z)||!onIgn((a.x+b.x)/2,(a.z+b.z)/2))partInsideIgn=false;
+  }
+ const inPart=insideOrNear(part.polygons,tol);
+ let worst=0,checked=0;
+ for(const P of vertices)for(let k=0;k+2<P.length;k+=3){
+  checked++;
+  if(!inPart(P[k],P[k+2]))
+   worst=Math.max(worst,outsideDistance(part.polygons,P[k],P[k+2]));
+ }
+ return {partInsideIgn,maxVertexOutsidePartM:worst,verticesChecked:checked,
+  ok:partInsideIgn&&worst===0&&checked>0};
+}
+
 /** Ce que la bascule exige d'un maillage d'extrusion. */
 export interface ProxyMesh{isVisible:boolean;isPickable:boolean;}
 interface Registered<M>{ignId:string;shape:FootprintShape;mesh:M;}
@@ -387,6 +433,18 @@ export class HeritageSwap<M extends ProxyMesh>{
    .some(other=>other!==ref&&this.active.has(other)));
  }
  isActive(ref:string):boolean{return this.active.has(ref);}
+ /** Une maquette complète remplace-t-elle déjà une emprise de la référence ?
+  * Alors aucune partie n'est superposée (pas de double silhouette). */
+ replacedFor(ref:string):boolean{
+  return this.index().ignIdsOf(ref).some(id=>this.isReplaced(id));
+ }
+ /** Contrôle D4 d'une partie : emprise déclarée posée sur l'IGN chargé,
+  * sommets contenus. Ne masque rien. */
+ acceptsPart(ref:string,part:FootprintShape,vertices:ArrayLike<number>[]):PartFitReport|null{
+  if(!this.allLoaded(ref))return null;
+  const r=partFits(part,this.shapesOf(ref),vertices);
+  return r;
+ }
  isReplaced(ignId:string):boolean{
   return this.index().refsOf(ignId).some(ref=>this.active.has(ref));
  }

@@ -14,6 +14,9 @@ export interface ArchitectureDossier{
  phase:string;sourceNotice:string;documents:ArchitectureSource[];
  measurements:ArchitectureMeasure[];uncertainty:string[];
  geometry:string;publicationAllowed:boolean;
+ /** R02-D4 : parties certifiées une à une ; ne lève PAS le verrou global
+  * publicationAllowed du monument entier. Facultatif, absent par défaut. */
+ certifiedParts?:{partId:string;sourceIds:string[];status:string}[];
 }
 interface ArchitecturePayload{
  schema:1;dossiers:ArchitectureDossier[];
@@ -104,6 +107,16 @@ export class ArchitectureDossiers{
   if(!d||d.publicationAllowed!==true||!sourceIds.length)return false;
   const known=new Set(d.documents.map(s=>s.id));
   return sourceIds.every(id=>known.has(id));
+ }
+ /** Publication d'une PARTIE : certification explicite de cette partie,
+  * indépendante de publicationAllowed (qui reste réservé au monument
+  * entier). Mêmes exigences de provenance. */
+ canPublishPart(ref:string,partId:string,sourceIds:readonly string[]):boolean{
+  const d=this.forReference(ref);
+  const part=d?.certifiedParts?.find(p=>p.partId===partId);
+  if(!d||!part||part.status!=='measured-and-approved'||!sourceIds.length)return false;
+  const known=new Set(d.documents.map(s=>s.id));
+  return sourceIds.every(id=>known.has(id)&&part.sourceIds.includes(id));
  }
  appendTo(target:HTMLElement,ref:string|undefined):void{
   if(!ref)return;

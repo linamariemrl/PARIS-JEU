@@ -132,9 +132,11 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  type Served=unknown|{network:true}|{truncated:true}|{gate:Promise<void>;body:unknown};
  let files:Record<string,Served>={};
  let fetches=0;
+ const fetched:string[]=[];
  (globalThis as any).fetch=async(url:string)=>{
   fetches++;
   const name=String(url).split('/').pop()!;
+  fetched.push(name);
   let body=files[name] as any;
   if(body?.network)throw new TypeError('Failed to fetch (réseau simulé indisponible)');
   if(body?.gate){await body.gate;body=body.body;}
@@ -144,7 +146,9 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  };
  let clock=0;
  (globalThis as any).performance={now:()=>clock};
- const docs={canPublish:()=>true} as unknown as ArchitectureDossiers;
+ // Seule la partie « facade-test » est certifiée dans ce banc d'essai.
+ const docs={canPublish:()=>true,
+  canPublishPart:(_r:string,partId:string)=>partId==='facade-test'} as unknown as ArchitectureDossiers;
  let lib=new ArchitecturalModelLibrary(scene,docs,materials);
  const fresh=async(served:Record<string,Served>)=>{
   files=served;lib=new ArchitecturalModelLibrary(scene,docs,materials);await lib.init();
@@ -287,6 +291,103 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  await away();
  check(experts().length===0&&visible3(),'Plusieurs-à-plusieurs : restitution complète');
  notes.push('Plusieurs-à-plusieurs : première maquette affichée = '+first+'.');
+ // --- D4 : parties certifiées superposées, jamais masquantes.
+ // Bande posée sur l'arête extérieure la plus longue de l'emprise réelle.
+ const outer=rings[0][0];
+ let ea=outer[0],eb=outer[1],best=0;
+ for(let i=0;i<outer.length;i++){const a=outer[i],b=outer[(i+1)%outer.length];
+  const l=Math.hypot(b.x-a.x,b.z-a.z);if(l>best){best=l;ea=a;eb=b;}}
+ const ux=(eb.x-ea.x)/best,uz=(eb.z-ea.z)/best;
+ // Normale vers l'intérieur : celle dont un point proche est dans l'emprise.
+ const probe=(s:number)=>({x:(ea.x+eb.x)/2-uz*s,z:(ea.z+eb.z)/2+ux*s});
+ const inside=(p:{x:number;z:number})=>{let c=false;for(let i=0,j=outer.length-1;i<outer.length;j=i++){
+  const a=outer[i],b=outer[j];if((a.z>p.z)!==(b.z>p.z)&&p.x<(b.x-a.x)*(p.z-a.z)/(b.z-a.z)+a.x)c=!c;}return c;};
+ const sgn=inside(probe(2))?1:-1;
+ const nx=-uz*sgn,nz=ux*sgn;
+ const strip=(shift=0,inward=1,outward=.5):[number,number][]=>{
+  const a={x:ea.x+nx*shift,z:ea.z+nz*shift},b={x:eb.x+nx*shift,z:eb.z+nz*shift};
+  return [[a.x-nx*outward,a.z-nz*outward],[b.x-nx*outward,b.z-nz*outward],
+   [b.x+nx*inward,b.z+nz*inward],[a.x+nx*inward,a.z+nz*inward]];};
+ /** Mur vertical sur l'arête (+ décalage), subdivisé : façade factice. */
+ const wall=(shift=0,n=4)=>{const positions:number[]=[],indices:number[]=[];
+  const a={x:ea.x+nx*shift,z:ea.z+nz*shift};
+  for(let i=0;i<=n;i++)for(let j=0;j<=1;j++)
+   positions.push(a.x+ux*best*i/n,j*18,a.z+uz*best*i/n);
+  for(let i=0;i<n;i++){const k=2*i;indices.push(k,k+2,k+1,k+1,k+2,k+3);}
+  return {positions,indices};};
+ const partFile=(partId:string,tier:string,g:{positions:number[];indices:number[]})=>({
+  ...asFile(input.ref,tier,g),partId});
+ const partEntry=(partId:string,footprint:[number,number][],max=2500)=>({
+  ref:input.ref,x:input.pop.x,z:input.pop.z,sourceIds:['test-fixture'],
+  review:'measured-and-approved',replacement:'partial',partId,partFootprint:footprint,
+  lods:['high','medium','low'].map(t=>({tier:t,maxRadiusMeters:max,
+   file:input.ref+'-'+partId+'-'+t+'.json'}))});
+ const partFiles=(partId:string,g:()=>{positions:number[];indices:number[]})=>
+  Object.fromEntries(['high','medium','low'].map(t=>[input.ref+'-'+partId+'-'+t+'.json',partFile(partId,t,g())]));
+ const partMeshes=(id:string)=>experts().filter(m=>m.name.includes('-'+id+'-'));
+ await fresh({'index.json':{schema:1,models:[partEntry('facade-test',strip()),
+   partEntry('facade-inconnue',strip())]},
+  ...partFiles('facade-test',()=>wall()),...partFiles('facade-inconnue',()=>wall())});
+ fetched.length=0;
+ await near(300);
+ check(partMeshes('facade-test').length===1&&visible3(),
+  'D4 : partie certifiée superposée, extrusion conservée visible');
+ check(partMeshes('facade-test').every(m=>!m.isPickable&&
+  (m.material as any)?.zOffset===-2),'D4 : partie non sélectionnable, décalage de profondeur seul');
+ check(pickAt(input.pop.x,input.pop.z)?.id===input.ignId,'D4 : sélection inchangée (une seule cible)');
+ check(!fetched.some(f=>f.includes('facade-inconnue'))&&partMeshes('facade-inconnue').length===0,
+  'D4 : partie non certifiée jamais téléchargée ni affichée');
+ await near(900);
+ check(partMeshes('facade-test').length===1&&partMeshes('facade-test')[0].name.endsWith('medium'),
+  'D4 : partie, LOD moyen sans double affichage');
+ await near(2000);
+ check(partMeshes('facade-test').length===1&&partMeshes('facade-test')[0].name.endsWith('low'),
+  'D4 : partie, LOD bas');
+ await away();
+ check(experts().length===0&&visible3(),'D4 : partie retirée, rien à restituer');
+ // Partie déclarée dans une cour (hors emprise IGN) : rejetée.
+ const hole=rings[0][1];
+ const hx=hole.reduce((a,p)=>a+p.x,0)/hole.length,hz=hole.reduce((a,p)=>a+p.z,0)/hole.length;
+ const inCourt:[number,number][]=[[hx-2,hz-2],[hx+2,hz-2],[hx+2,hz+2],[hx-2,hz+2]];
+ const courtWall=()=>({positions:[hx-1.5,0,hz,hx+1.5,0,hz,hx+1.5,10,hz,hx-1.5,10,hz],indices:[0,1,2,0,2,3]});
+ await fresh({'index.json':{schema:1,models:[partEntry('facade-test',inCourt)]},
+  ...partFiles('facade-test',courtWall)});
+ await near(300);
+ check(partMeshes('facade-test').length===0&&visible3(),'D4 : partie déclarée dans une cour : rejetée');
+ await away();
+ // Maquette de partie débordant de son emprise déclarée (3 m) : rejetée.
+ await fresh({'index.json':{schema:1,models:[partEntry('facade-test',strip())]},
+  ...partFiles('facade-test',()=>wall(3))});
+ await near(300);
+ check(partMeshes('facade-test').length===0&&visible3(),'D4 : sommets hors emprise déclarée : rejetée');
+ await away();
+ // Maquette complète et partie sur la même emprise : jamais les deux.
+ await fresh({...good,...partFiles('facade-test',()=>wall()),
+  'index.json':{schema:1,models:[...indexOf([{ref:input.ref,max:600}]).models,
+   partEntry('facade-test',strip())]}});
+ await near(300);await near(300);
+ check(experts().length===1&&!partMeshes('facade-test').length&&!visible3(),
+  'D4 : maquette complète active, partie non superposée');
+ for(let i=0;i<6;i++)await near(900);
+ check(partMeshes('facade-test').length===1&&experts().length===1&&visible3(),
+  'D4 : maquette complète sortie du champ, partie superposée à l\'extrusion restituée');
+ await away();
+ check(experts().length===0&&visible3(),'D4 : restitution complète');
+
+ // --- D6 : hystérésis, pas d'allers-retours près d'un seuil.
+ await fresh({...good});
+ await near(300);
+ const loads0=fetches;
+ for(const r of [660,690,640,695,610,680])await near(r);
+ check(experts().length===1&&experts()[0].name.endsWith('high')&&fetches===loads0,
+  'D6 : orbite entre 610 et 695 m : niveau haut conservé, aucun rechargement');
+ await near(720);
+ check(experts()[0]?.name.endsWith('medium'),'D6 : au-delà de 700 m : passage au niveau moyen');
+ await near(650);
+ check(experts()[0]?.name.endsWith('medium'),'D6 : retour à 650 m : niveau moyen conservé');
+ await near(590);
+ check(experts()[0]?.name.endsWith('high'),'D6 : sous 600 m : retour au niveau haut');
+ await away();
  check(scene.meshes.filter(m=>m.name.startsWith('monument-mesure-')).length===0,
   'Fin : aucun maillage expert résiduel');
  engine.dispose();
