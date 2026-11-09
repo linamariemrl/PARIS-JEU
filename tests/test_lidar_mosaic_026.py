@@ -2,15 +2,29 @@
 import json, sys, tempfile, unittest
 from pathlib import Path
 from urllib.parse import urlsplit,parse_qs
-import numpy as np
-import rasterio
-from rasterio.transform import from_origin
+from importlib.util import find_spec
 
 ROOT=Path(__file__).resolve().parents[1]
 sys.path.insert(0,str(ROOT/"scripts"))
-from prepare_lidar_roofs_4e import split_wms_tile_url,mosaic_tiles,verified_roof_sample
-from shapely.geometry import Polygon
+# Les tests de mosaïquage s'exécutent dans la chaîne LiDAR dédiée (avec
+# rasterio, NumPy, Shapely et pyproj). Les chaînes Web/Android n'installent
+# volontairement pas cette pile géospatiale lourde : elles peuvent alors
+# découvrir ce fichier sans échouer à l'import.
+RASTER_LIBRARIES_AVAILABLE=all(
+    find_spec(name) is not None
+    for name in ("numpy","rasterio","shapely","pyproj")
+)
+if RASTER_LIBRARIES_AVAILABLE:
+    import numpy as np
+    import rasterio
+    from rasterio.transform import from_origin
+    from prepare_lidar_roofs_4e import (
+        split_wms_tile_url,mosaic_tiles,verified_roof_sample
+    )
+    from shapely.geometry import Polygon
 
+@unittest.skipUnless(RASTER_LIBRARIES_AVAILABLE,
+                     "Test géospatial réservé à la chaîne LiDAR (rasterio requis)")
 class LidarMosaic026(unittest.TestCase):
  def test_server_tile_is_split_into_quarters_without_resampling(self):
   records=json.loads((ROOT/"data/quality/lidar-4e-availability.json").read_text())["tiles"]
