@@ -29,6 +29,9 @@ LON,LAT=2.3537,48.8545
 MX=111320*math.cos(math.radians(LAT)),111132
 MAX_BYTES=58*1024*1024
 MIN_MATCH=100
+# Le grand Hôtel de Ville compte 592 sommets IGN, donc dépassait la limite
+# générale de 500 points AVANT même l'échantillonnage de la toiture.
+HOTEL_DE_VILLE_ID='BATIMENT0000000245157267'
 
 def local(x,y):
     lon,lat=TO_LL(x,y)
@@ -96,7 +99,24 @@ def sample(raster,arr,x,y,ign_height):
     if h<max(1.3,ign_height*.40) or h>max(10,ign_height*1.55):return None
     return round(h,2)
 
-def produce_part(poly,source,grid=6.0):
+def verified_roof_sample(poly,raster,arr,x,y,height,center):
+    """Échantillonner un vrai pixel MNH à l'intérieur du toit.
+    Un bord IGN tombe fréquemment sur un pixel mêlé chaussée/toiture.
+    Aucun point 3D fictif n'est ajouté ; XY reste le sommet IGN.
+    """
+    dx,dy=center.x-x,center.y-y
+    d=max(1e-6,math.hypot(dx,dy))
+    directions=[(dx/d,dy/d)]
+    for length in (0.0,0.35,0.75,1.2,2.0):
+        for vx,vy in directions:
+            xx,yy=x+vx*length,y+vy*length
+            if length>0 and not poly.covers(Point(xx,yy)):
+                continue
+            value=sample(raster,arr,xx,yy,height)
+            if value is not None:return value
+    return None
+
+def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None):
     raster,arr,height=source
     xmin,ymin,xmax,ymax=poly.bounds
     if poly.area>13000:return None  # monuments complexes traités séparément
@@ -110,9 +130,7 @@ def produce_part(poly,source,grid=6.0):
             # À la limite d'un toit, le pixel LiDAR peut recouvrir la chaussée.
             # Déplacer le point échantillonné vers l'intérieur, sans bouger sa
             # position XY dans la maquette.
-            dx,dy=center.x-x,center.y-y
-            length=max(1e-6,math.hypot(dx,dy))
-            h=sample(raster,arr,x+dx/length*1.2,y+dy/length*1.2,height)
+            h=verified_roof_sample(poly,raster,arr,x,y,height,center)
             heights.append(h)
         if not heights or any(x is None for x in heights):return None
         perimeter.append(heights)
@@ -122,13 +140,14 @@ def produce_part(poly,source,grid=6.0):
             p=Point(float(i),float(j))
             if p.within(poly) and p.distance(poly.boundary)>1.5:
                 raw.append((p.x,p.y))
-    if len(raw)<3 or len(raw)>500:return None
+    if len(raw)<3 or len(raw)>max_points:return None
     # Contraintes : les triangles ne doivent pas traverser les cours intérieures.
     candidates=triangulate(MultiPoint(raw))
     unique={}
     verts=[]
     indices=[]
     values=[]
+    surface_mesuree=0.0
     for triangle in candidates:
         if not triangle.representative_point().within(poly):continue
         if triangle.intersection(poly).area/max(triangle.area,.0001)<.995:continue
@@ -137,7 +156,7 @@ def produce_part(poly,source,grid=6.0):
         for x,y in list(triangle.exterior.coords)[:3]:
             key=(round(x,2),round(y,2))
             if key not in unique:
-                h=sample(raster,arr,x,y,height)
+                h=verified_roof_sample(poly,raster,arr,x,y,height,center)
                 if h is None:
                     # Les toits LiDAR incohérents sont exclus, jamais complétés
                     # par une hauteur imaginée.
@@ -148,23 +167,24 @@ def produce_part(poly,source,grid=6.0):
                 verts.append([xy[0],xy[1],h])
                 values.append(h)
             ids.append(unique[key])
-        if valid and len(set(ids))==3:indices.extend(ids)
+        if valid and len(set(ids))==3:
+            indices.extend(ids)
+            surface_mesuree+=triangle.area
     if not indices or len(verts)<3:return None
+    coverage=min(1.0,surface_mesuree/max(poly.area,1.0))
+    # Pour les grandes maquettes patrimoniales, refuser un toit partiel :
+    # sinon le rendu efface le toit IGN et laisse des trous béants.
+    if require_coverage is not None and coverage<require_coverage:
+        return None
     if statistics.median(values)<height*.65:
         return None
     if abs(np.percentile(values,90)-height)>max(5,height*.30):
         return None
-    # Les faces aux bords peuvent être retirées lorsque la mesure manque,
-    # mais jamais interpolées en se faisant passer pour des observations.
-    original=[poly.exterior,*poly.interiors]
-    packed=[]
-    for ring in original:
-        packed.append([round(float(v),2) for v in (
-          sample(raster,arr,x+(center.x-x)/max(1e-6,math.hypot(center.x-x,center.y-y))*1.2,
-            y+(center.y-y)/max(1e-6,math.hypot(center.x-x,center.y-y))*1.2,height)
-          or 0 for x,y in list(ring.coords)[:-1])])
+    # Réutiliser les mêmes hauteurs effectivement échantillonnées aux bords.
+    # Une mesure manquante a déjà interrompu la reconstruction ci-dessus.
     return {"vertices":verts,"indices":indices,
-            "ringsHeights":packed,"sampleCount":len(values)}
+            "ringsHeights":perimeter,"sampleCount":len(values),
+            "triangleCoverage":round(coverage,4)}
 
 def run():
     index=json.loads(INDEX.read_text())
@@ -213,7 +233,15 @@ def run():
                         for poly in polys:
                             if not footprint.covers(Point(TO_LL(poly.representative_point().x,
                                           poly.representative_point().y))):break
-                            part=produce_part(poly,(raster,arr,height))
+                            # L'Hôtel de Ville est traité hors de la limite
+                            # simplificatrice générale, avec une grille 2,5 m.
+                            # On conserve les 592 sommets officiels ; le toit
+                            # n'est publié que si >=95 % de la surface est mesurée.
+                            priority=(ident==HOTEL_DE_VILLE_ID)
+                            part=produce_part(poly,(raster,arr,height),
+                                grid=2.5 if priority else 6.0,
+                                max_points=3600 if priority else 500,
+                                require_coverage=.95 if priority else None)
                             if part is None:break
                             parts.append(part)
                         if len(parts)==len(polys) and parts:
@@ -232,7 +260,12 @@ def run():
       "validatedBuildings":len(roofs),
       "rejectedBuildings":len(examined)-len(roofs),
       "totalBuildings":len(buildings),
-      "note":"Reconstruction partielle basée sur mesures MNH; autres toitures restent dans leur état IGN/OSM"}
+      "hotelDeVilleTarget":HOTEL_DE_VILLE_ID,
+      "hotelDeVilleRoofAccepted":HOTEL_DE_VILLE_ID in roofs,
+      "hotelDeVilleRoofTriangleCoverage":round(min(
+          [p.get("triangleCoverage",0) for p in
+           roofs.get(HOTEL_DE_VILLE_ID,{}).get("parts",[])],default=0),4),
+      "note":"Toit mesuré seulement par échantillonnage MNH et triangulation 2,5 m ; les sculptures et façades n'en sont PAS déduites."}
     REPORT.parent.mkdir(parents=True,exist_ok=True)
     REPORT.write_text(json.dumps(report,ensure_ascii=False,indent=2)+"\n",encoding="utf-8")
     if len(roofs)<MIN_MATCH:
