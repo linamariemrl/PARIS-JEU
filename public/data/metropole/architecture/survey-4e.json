@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "source": "IGN BD TOPO + notices POP/Mérimée + volumes Ville de Paris + MNH IGN",
+  "measurementStatus": "mesures d'emprise calculées, pas de maquettes de façades certifiées",
+  "projection": {
+    "originLon": 2.3537,
+    "originLat": 48.8545,
+    "metersPerDegreeLongitude": 73245.60577147,
+    "metersPerDegreeLatitude": 111132
+  },
+  "sites": [
+    {
+      "ref": "PA00086319",
+      "name": "Hôtel de ville",
+      "officialPointLocal": [
+        -85.9,
+        214.2
+      ],
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086319",
+      "ignBuildingId": "BATIMENT0000000245157267",
+      "tileId": "-1_0",
+      "association": "Point POP à l'intérieur de l'emprise IGN, non identification de chaque aile classée",
+      "footprint": {
+        "source": "IGN BD TOPO, polygone officiel WGS84",
+        "projection": "Conversion métrique locale du moteur ; pas un relevé topographique Lambert-93",
+        "areaMethod": "Aire horizontale calculée (anneaux extérieurs moins trous), non surface cadastrale",
+        "areaM2": 10251.55,
+        "bboxWidthM": 125.82,
+        "bboxDepthM": 163.09,
+        "ringCount": 4,
+        "pointCount": 592,
+        "heightIgnMeters": 25.2,
+        "heightIgnEstimated": false,
+        "heightNotice": "Hauteur attributaire IGN, non altitude du clocher ou mesure des ornements"
+      },
+      "cityVolumes": {
+        "source": "Ville de Paris — Volumes bâtis, emprises seules",
+        "coverageFraction": 0.831,
+        "planarParts": 11,
+        "maxDeclaredFloors": 6,
+        "internalHeightsMeasured": false,
+        "renderableAsExact3D": false
+      },
+      "lidarRoofMeasured": false,
+      "architecturalFacadeMeasured": false,
+      "exactMonumentModelCertified": false,
+      "missing": [
+        "Plans cotés géoréférencés",
+        "Élévations détaillées et ouvertures mesurées",
+        "Toiture/pinacles/ornements contrôlés par des relevés actuels"
+      ]
+    },
+    {
+      "ref": "PA00086250",
+      "name": "Cathédrale Notre-Dame",
+      "officialPointLocal": [
+        -267.2,
+        -173.7
+      ],
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086250",
+      "ignBuildingId": "BATIMENT0000000305564422",
+      "tileId": "-1_-1",
+      "association": "Point POP à l'intérieur de l'emprise IGN, non identification de chaque aile classée",
+      "footprint": {
+        "source": "IGN BD TOPO, polygone officiel WGS84",
+        "projection": "Conversion métrique locale du moteur ; pas un relevé topographique Lambert-93",
+        "areaMethod": "Aire horizontale calculée (anneaux extérieurs moins trous), non surface cadastrale",
+        "areaM2": 2148.13,
+        "bboxWidthM": 106.96,
+        "bboxDepthM": 63,
+        "ringCount": 1,
+        "pointCount": 35,
+        "heightIgnMeters": 34.9,
+        "heightIgnEstimated": false,
+        "heightNotice": "Hauteur attributaire IGN, non altitude du clocher ou mesure des ornements"
+      },
+      "cityVolumes": null,
+      "lidarRoofMeasured": false,
+      "architecturalFacadeMeasured": false,
+      "exactMonumentModelCertified": false,
+      "missing": [
+        "Plans cotés géoréférencés",
+        "Élévations détaillées et ouvertures mesurées",
+        "Toiture/pinacles/ornements contrôlés par des relevés actuels"
+      ]
+    },
+    {
+      "ref": "PA00086257",
+      "name": "Église Saint-Gervais-Saint-Protais",
+      "officialPointLocal": [
+        72.9,
+        112.3
+      ],
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086257",
+      "ignBuildingId": "BATIMENT0000000253243449",
+      "tileId": "0_0",
+      "association": "Point POP à l'intérieur de l'emprise IGN, non identification de chaque aile classée",
+      "footprint": {
+        "source": "IGN BD TOPO, polygone officiel WGS84",
+        "projection": "Conversion métrique locale du moteur ; pas un relevé topographique Lambert-93",
+        "areaMethod": "Aire horizontale calculée (anneaux extérieurs moins trous), non surface cadastrale",
+        "areaM2": 2776.07,
+        "bboxWidthM": 81.6,
+        "bboxDepthM": 60.79,
+        "ringCount": 1,
+        "pointCount": 95,
+        "heightIgnMeters": 17.8,
+        "heightIgnEstimated": false,
+        "heightNotice": "Hauteur attributaire IGN, non altitude du clocher ou mesure des ornements"
+      },
+      "cityVolumes": null,
+      "lidarRoofMeasured": false,
+      "architecturalFacadeMeasured": false,
+      "exactMonumentModelCertified": false,
+      "missing": [
+        "Plans cotés géoréférencés",
+        "Élévations détaillées et ouvertures mesurées",
+        "Toiture/pinacles/ornements contrôlés par des relevés actuels"
+      ]
+    }
+  ]
+}
