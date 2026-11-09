@@ -178,6 +178,25 @@ class ArchitectureDossiers026(unittest.TestCase):
     self.assertTrue(m["inscription"] and m["imageCrop"] and m["readBy"])
   cc76=json.loads(read("public/data/metropole/architecture/measurements/PA00086319-cc76-pl04.json"))
   self.assertEqual(cc76["measurements"],[],"profils sans cote ni échelle : aucune mesure")
+ def test_cc64_inventory_and_pl33_are_reading_plans_not_measurements(self):
+  import json
+  inv=json.loads(read("public/data/metropole/architecture/measurements/PA00086319-sources-cc64.json"))
+  self.assertGreaterEqual(len(inv["plates"]),30)
+  self.assertEqual([p["plate"] for p in inv["plates"] if p["transcribed"]],[34])
+  for p in inv["plates"]:
+   self.assertTrue(p["ark"].startswith("ark:/73873/pf0000712758/"))
+   self.assertTrue(p["deepZoom"].startswith("https://bibliotheques-specialisees.paris.fr/in/dz/"))
+   self.assertNotIn("measurements",p)
+  pl33=json.loads(read("public/data/metropole/architecture/measurements/PA00086319-cc64-pl33.json"))
+  for m in pl33["measurements"]:
+   self.assertIs(m["extentEstablished"],False)
+   self.assertIs(m["currentStateVerified"],False)
+  # Pas encore dans les sources du dossier : aucune géométrie n'en dérive.
+  dossiers=json.loads(read("public/data/metropole/architecture/dossiers.json"))["dossiers"]
+  hotel=next(d for d in dossiers if d["ref"]=="PA00086319")
+  self.assertNotIn("bhdv-cc64-pl33",{d["id"] for d in hotel["documents"]})
+  for f in (ROOT/"public/data/metropole/architecture/reference").rglob("*.json"):
+   self.assertNotIn("bhdv-cc64-pl33",f.read_text(encoding="utf-8"))
  def test_existing_interface_unchanged(self):
   main=read("src/main.ts")
   index=read("index.html")

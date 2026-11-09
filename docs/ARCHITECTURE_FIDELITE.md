@@ -182,7 +182,23 @@ Pour produire une première section 3D non spéculative, il faut au minimum :
 2. les repères des profondeurs 0,535 et 0,47 ;
 3. deux points d'appui et un point de contrôle identifiés sur un relevé actuel métrique.
 
-Sources à consulter ensuite : les autres attachements de maçonnerie de la série CC (assises 1 à 13 du corps central), les planches Carnavalet (façade principale IIIF 320291169, plan Deslandes IIIF 320064500), le LiDAR HD en nuage de points (et non le seul MNH) pour le calage.
+**Plan de lecture établi** (`scripts/inventory_bhdv_cc64.py` → `measurements/PA00086319-sources-cc64.json`). Le recueil CC64 compte 39 planches, avec pour chacune son ARK, son titre de catalogue et son image Deep Zoom. Dix concernent nommément la façade sur la place :
+- socle, assises 1 à 3 : PL01–03 ;
+- 7e et 8e assises : PL20–21 ;
+- 10e à 13e : PL33 ;
+- 14e : PL34 (transcrite) ;
+- 11e : PL37 ;
+- 16e : PL38 ;
+- les arcs du passage : PL32.
+
+Les planches PL05, PL09, PL10, PL15 et PL16 couvrent les assises 1 à 6 au droit des échauguettes. Ces titres de catalogue ne sont pas vérifiés sur les images. Deux numérotations coexistent (assises de socle et assises au-dessus de l'assise en Corgoloin) : elles ne sont pas additionnées tant que leur correspondance n'est pas établie. **Aucune planche ne cite la 9e assise de la façade** : la pile verticale ne peut pas être complétée à partir des seuls titres.
+
+**CC64_PL33** (10e à 13e assises, élévation de l'arc de la baie du milieu) : sept cotes lisibles sont consignées (`measurements/PA00086319-cc64-pl33.json`), mais leur portée (corde, demi-ouverture, rayon, flèche) n'est pas établie. Le plan de la 10e assise ne porte aucune hauteur. Cette feuille n'est pas encore une source du dossier : aucune géométrie n'en dérive.
+
+Sources à consulter ensuite :
+- les hauteurs portées sur PL01–03, PL20–21, PL37–38 ;
+- les planches Carnavalet (façade principale IIIF 320291169, plan Deslandes IIIF 320064500) ;
+- le LiDAR HD en nuage de points, et non le seul MNH, pour le calage.
 
 ### Coûts structurels et comparaison avec `main`
 
