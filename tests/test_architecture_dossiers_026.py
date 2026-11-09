@@ -165,6 +165,19 @@ class ArchitectureDossiers026(unittest.TestCase):
   self.assertIn("'epsg2154-relative'",model)
   self.assertIn("masterToScene(part.positions,obj.originL93!,f)",model)
   self.assertIn("node --experimental-strip-types scripts/check_registration.mjs",read("package.json"))
+ def test_sheet_registers_never_derive_from_paper(self):
+  import json
+  dossiers=json.loads(read("public/data/metropole/architecture/dossiers.json"))["dossiers"]
+  docs={d["id"] for d in next(x for x in dossiers if x["ref"]=="PA00086319")["documents"]}
+  for name in ("PA00086319-cc16-pl39.json","PA00086319-cc76-pl04.json"):
+   r=json.loads(read("public/data/metropole/architecture/measurements/"+name))
+   self.assertIn(r["sourceId"],docs)
+   for m in r["measurements"]:
+    self.assertEqual(m["sourceId"],r["sourceId"])
+    self.assertIs(m["currentStateVerified"],False)
+    self.assertTrue(m["inscription"] and m["imageCrop"] and m["readBy"])
+  cc76=json.loads(read("public/data/metropole/architecture/measurements/PA00086319-cc76-pl04.json"))
+  self.assertEqual(cc76["measurements"],[],"profils sans cote ni échelle : aucune mesure")
  def test_existing_interface_unchanged(self):
   main=read("src/main.ts")
   index=read("index.html")

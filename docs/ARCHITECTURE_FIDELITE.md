@@ -123,7 +123,7 @@ Source d'exploitant : [Chiffres clés](https://www.toureiffel.paris/fr/le-monume
 
 Les maquettes des essais sont des **faux** marqués `test-fixture` : un pavé ou une toiture plate triangulée sur le polygone IGN. Dans le flux navigateur (`scripts/browser/check_heritage_main_flow.mjs`, hors CI), ils sont injectés par **interception réseau** ; le dossier de l'Hôtel de Ville y est aussi passé à `publicationAllowed=true` dans la seule réponse interceptée. Le dépôt n'est pas modifié, l'index des modèles reste vide, et **aucun modèle d'archive réel n'a traversé cette chaîne**. Résultat du flux réel : 65 → 64 draw calls (−2 extrusion, +1 maquette), sélection identique. Captures : [avec la maquette factice](preuves/r02-flux-main-maquette-factice.png), [sans maquette](preuves/r02-flux-main-sans-maquette.png).
 
-### Corrections R02 : D4 et D6 implémentés, D5 restant
+### Corrections R02 : D4, D5 (infrastructure) et D6 implémentés
 
 Définitions reprises de la navette R02 (section R02-D).
 
@@ -135,7 +135,11 @@ Définitions reprises de la navette R02 (section R02-D).
   - Une partie n'est jamais posée sur une maquette complète active ; si une maquette complète arrive, les parties de la référence sont retirées. Les maquettes complètes gardent leur comportement et leur verrou.
   - Reste à faire : masquer seulement la portion d'extrusion couverte par une partie, ce qui demande une découpe géométrique fiable des extrusions.
 - **D6, LOD avec hystérésis : implémenté** (`src/lodHysteresis.ts`). On passe au niveau moyen au-delà de 700 m et on revient au haut sous 600 m ; on passe au bas au-delà de 1 600 m et on revient au moyen sous 1 400 m. Le niveau précédent reste affiché jusqu'à ce que le suivant soit prêt. Ces seuils restent **à calibrer sur appareil**.
-- **D5, repère des modèles : non implémenté.** Objectif : master en EPSG:2154 avec une origine propre (`originL93`) et des sommets relatifs, transformation vers la scène lue dans `registration/PA########.json`. Fichiers : `src/architectureModels.ts`, nouveau `registration/`. Données manquantes : un calage réel (points d'appui et résidus) ; aucune feuille n'est encore calée. Ordre : après le calage de CC64_PL34, avant le premier modèle réel. Réussite : changer `CENTER` dans `src/geo.ts` ne déplace pas une maquette par rapport à son emprise.
+- **D5, repère des modèles : infrastructure implémentée, aucune feuille calée.**
+  - `src/registration.ts` : Lambert-93 direct et inverse (GRS80), conforme à PROJ 9.8.1 à moins de 1 mm sur 5 points ; projection de scène identique à `geo.project` ; conversion explicite EPSG:2154 + altitude NGF-IGN69 vers la scène (y = altitude − `displayReferenceAltitudeM` du MNT, 35 m) ; similitude de calage par moindres carrés avec résidus sur points de contrôle **indépendants** ; contrôle qu'une fiche « calée » est recalculable.
+  - Le chargeur accepte `coordinates:"epsg2154-relative"` (sommets relatifs à `originL93`) et les convertit au chargement. Sans MNT, donc sans référence verticale, il diffère au lieu de placer.
+  - Le test vérifie que déplacer `CENTER` ne change pas l'alignement maquette ↔ IGN (écart inférieur à 1 mm). En scène, un master EPSG:2154 de l'emprise réelle est accepté à 100 %, et le même avec une origine faussée de 8 m est rejeté.
+  - `registration/PA00086319.json` : CC64_PL34 **`unregistered`**. Il n'y a ni origine, ni transformation, ni résidu, ni altitude d'assise ; les points d'appui candidats (angles des bases de tourelles) n'ont pas de coordonnées. Raison : le contour IGN, généralisé au mètre, ne fournit pas de points d'appui métriques pour des cotes de 1878, et aucun relevé actuel n'a encore permis d'identifier un point du dessin.
 
 Tests D4/D6 en scène Babylon, sur l'emprise réelle de l'Hôtel de Ville :
 - une façade factice certifiée, posée sur l'arête la plus longue, est superposée sur 3 niveaux de détail, tandis que l'extrusion reste visible et seule sélectionnable ;
@@ -145,6 +149,40 @@ Tests D4/D6 en scène Babylon, sur l'emprise réelle de l'Hôtel de Ville :
 - en orbite entre 610 et 695 m, aucun rechargement.
 
 Total : **59 contrôles**.
+
+### Compléments R03 (commentaire du 9 novembre 2026, après `a113be5`)
+
+- **B1, partie de B puis maquette complète de A sur une emprise partagée.** Le défaut a été reproduit par un test écrit avant la correction : la partie de B restait superposée. La règle de coexistence se déduit désormais de l'index IGN (`replacedFor`) et non de l'égalité des références ; elle s'applique à l'activation et à chaque cycle. Testé en scène : retour de B quand A sort du champ, A indisponible (réseau) avec B conservée, et changement de LOD.
+- **B2, validation exacte hors ligne.** `scripts/validate_model_geometry.py` (Shapely/GEOS) calcule :
+  - le **manque** = emprise − maquette élargie de la tolérance ;
+  - le **débordement** = maquette − emprise élargie de la tolérance ;
+  - la différence symétrique, en m² et en %.
+  
+  Une géométrie invalide est rejetée. La tolérance est obligatoire et accompagnée de sa justification de source, et le repère EPSG:2154 est converti par PROJ, indépendamment du code TypeScript. Les 11 cas couvrent : cour, polygone concave, aile étroite manquante, bâtiments accolés, murs seuls, toit à trou réel, changement d'origine, géométrie invalide, emprise réelle et équivalence scène/EPSG:2154. Ces chiffres qualifient l'outil, pas une restitution.
+  
+  **Défaut trouvé et corrigé dans le garde-fou d'exécution** : une aile plus étroite que la bande de tolérance (1,5 m de large) était entièrement ignorée, et la maquette sans l'aile était acceptée à 100 %. `polygonCoverage` adopte désormais les définitions exactes et la rejette (93,7 %). La grille reste un garde-fou d'exécution ; seule la validation exacte qualifie une certification.
+
+### Dossier d'obstacles : pas encore de pièce 3D de l'Hôtel de Ville
+
+| Étape | État |
+| --- | --- |
+| Source lue | CC64_PL34 (plan de la 14e assise), CC16_pl39 (titre et hauteur de la 13e assise), CC76_PL04 (vue d'ensemble) |
+| Cotes fermées | CC64_PL34 : deux chaînes fermées exactement (29,45 et 26,05) ; symétrie dérivée |
+| Contre-validation par une autre feuille | **Non obtenue** : CC16_pl39 décrit un autre mur (cotes 3,99 / 4,76 / 3,38), sans travée de 3,86 ; il indique seulement que l'attachement « est à répéter pour la tourelle côté des Bureaux » |
+| Hauteurs | 13e assise 0,36 m (CC16), 14e assise 0,42 m (CC64). Les assises 1 à 12 sont inconnues, donc **la position verticale de la 14e assise reste inconnue** ; aucune hauteur de niveau, baie, corniche ou toiture n'est lue |
+| Profondeurs | Saillies 0,535 et niches 0,47 lues, repères de départ non établis |
+| Profils | CC76_PL04 : profils sans cote ni échelle inscrite, inutilisables métriquement |
+| Calage EPSG:2154 | **Non calé** (fiche `unregistered`) |
+| Géométrie partielle | Rythme 1D seulement (`partial-non-certified`, lu par aucun code) |
+| Modèle publié | **Aucun** (`models/index.json` vide, aucune `certifiedParts`) |
+| Recette Android | **Non faite** |
+
+Pour produire une première section 3D non spéculative, il faut au minimum :
+1. les hauteurs des assises sous la 14e, ou une élévation cotée du rez-de-chaussée du corps central ;
+2. les repères des profondeurs 0,535 et 0,47 ;
+3. deux points d'appui et un point de contrôle identifiés sur un relevé actuel métrique.
+
+Sources à consulter ensuite : les autres attachements de maçonnerie de la série CC (assises 1 à 13 du corps central), les planches Carnavalet (façade principale IIIF 320291169, plan Deslandes IIIF 320064500), le LiDAR HD en nuage de points (et non le seul MNH) pour le calage.
 
 ### Coûts structurels et comparaison avec `main`
 
