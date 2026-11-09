@@ -204,6 +204,20 @@ def verified_roof_sample(poly,raster,arr,x,y,height,center):
                 continue
             value=sample(raster,arr,xx,yy,height)
             if value is not None:return value
+    # Un coin extérieur ou une cour peut avoir une direction vers le
+    # centroïde située HORS du toit. Essayer les 16 directions proches,
+    # en conservant exclusivement des pixels MESURÉS dans le polygone.
+    # Rayon limité à 2 m : aucun comblement ni hauteur calculée.
+    for distance in (.5,1.0,1.5,2.0):
+        for octant in range(16):
+            angle=math.tau*octant/16
+            xx=x+distance*math.cos(angle)
+            yy=y+distance*math.sin(angle)
+            if not poly.covers(Point(xx,yy)):
+                continue
+            value=sample(raster,arr,xx,yy,height)
+            if value is not None:
+                return value
     return None
 
 def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None,
