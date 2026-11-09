@@ -199,7 +199,7 @@ try{
     management?.setSelection({id:'patrimoine:'+ref,label:notice.name,
       kind:'lieu',x,z});
     el('selection').scrollTop=0;
-  });
+  },architecturalDossiers);
   const select=(b:Building)=>{
     clear();
     const coords=centerOfBuilding(b)??{
@@ -596,7 +596,10 @@ try{
       terrainHeight(camera.camera.target.x,camera.camera.target.z);
     await Promise.allSettled([
       inspector.init(),heritageGardens.init(),
-      architecturalDossiers.init().then(()=>architecturalModels.init()),
+      architecturalDossiers.init().then(()=>{
+        landmarkBrowser.refresh();
+        return architecturalModels.init();
+      }),
       urbanAtlas.init().then(()=>{
          management?.setNeighborhoods(urbanAtlas.quarterAnchors());
          populateQuarters();
