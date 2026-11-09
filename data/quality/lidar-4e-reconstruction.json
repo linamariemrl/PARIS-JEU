@@ -3,12 +3,12 @@
   "testedTiles": 6,
   "downloadFailures": [],
   "coveredBuildings": 2696,
-  "validatedBuildings": 1747,
-  "rejectedBuildings": 949,
+  "validatedBuildings": 1748,
+  "rejectedBuildings": 948,
   "totalBuildings": 2696,
   "hotelDeVilleTarget": "BATIMENT0000000245157267",
   "hotelDeVilleDiagnostic": {
-    "reason": "p90-height-inconsistent",
+    "reason": "accepted-mosaic",
     "sourceTiles": [
       "metadata.11924",
       "metadata.57713"
@@ -23,14 +23,17 @@
     "boundaryVertexCount": 362,
     "gridMeters": 2.5,
     "candidatePoints": 2048,
-    "acceptedTriangles": 3436,
-    "acceptedVertexSamples": 2035,
-    "triangulatedCoverage": 0.96616,
-    "heightMedianM": 26.76,
-    "heightP90M": 34.98,
-    "ignBuildingHeightM": 25.2
+    "acceptedTriangles": 3490,
+    "acceptedVertexSamples": 2047,
+    "triangulatedCoverage": 0.98258,
+    "heightMedianM": 26.84,
+    "heightP90M": 35.65,
+    "ignBuildingHeightM": 25.2,
+    "publishedCampanileHeightM": 50.0,
+    "publishedHeightSource": "https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659",
+    "maximumMnhSampleM": 48.21
   },
-  "hotelDeVilleRoofAccepted": false,
-  "hotelDeVilleRoofTriangleCoverage": 0,
+  "hotelDeVilleRoofAccepted": true,
+  "hotelDeVilleRoofTriangleCoverage": 0.9826,
   "note": "Toit mesuré seulement par échantillonnage MNH et triangulation 2,5 m ; les sculptures et façades n'en sont PAS déduites."
 }

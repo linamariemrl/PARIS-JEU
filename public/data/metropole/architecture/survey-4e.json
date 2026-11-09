@@ -41,7 +41,7 @@
         "internalHeightsMeasured": false,
         "renderableAsExact3D": false
       },
-      "lidarRoofMeasured": false,
+      "lidarRoofMeasured": true,
       "architecturalFacadeMeasured": false,
       "exactMonumentModelCertified": false,
       "missing": [
