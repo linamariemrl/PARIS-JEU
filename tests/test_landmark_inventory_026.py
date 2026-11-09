@@ -56,7 +56,7 @@ class LandmarkInventory026(unittest.TestCase):
         self.assertIn("priorityHeritageRole(ref)",categories)
         self.assertIn("return 'touristic'",categories)
         refs=read("src/heritagePriorities.ts")
-        actual=set(re.findall(r"PA\\d{8}",refs))
+        actual=set(re.findall(r"PA\d{8}",refs))
         self.assertEqual(actual,{x["ref"] for x in self.catalog["linked"]})
         # La Bourse de Commerce, lieu d'exposition, n'est plus présentée
         # comme une place boursière en activité.
