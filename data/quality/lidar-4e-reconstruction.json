@@ -9,11 +9,20 @@
   "hotelDeVilleTarget": "BATIMENT0000000245157267",
   "hotelDeVilleDiagnostic": {
     "reason": "missing-boundary-lidar",
-    "tile": "metadata.57713",
+    "sourceTiles": [
+      "metadata.11924",
+      "metadata.57713"
+    ],
+    "downloadingTile": "metadata.57713",
+    "mosaicDimensions": [
+      2000,
+      4000
+    ],
+    "pixelSizeMeters": 0.5,
     "polygonAreaM2": 10275.3,
     "boundaryVertexCount": 362,
     "gridMeters": 2.5,
-    "missingBoundarySamples": 181,
+    "missingBoundarySamples": 1,
     "sampledBoundaryVertices": 362,
     "ringCount": 4
   },
