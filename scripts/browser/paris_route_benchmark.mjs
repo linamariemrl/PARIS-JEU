@@ -99,11 +99,6 @@ const results=[];
 await writeFile(out+'.jsonl','');await writeFile(out+'.progress.log','');
 const record=async seg=>{const r=summarise(seg);results.push(r);
  await appendFile(out+'.jsonl',JSON.stringify(r)+'\n');await progress('fin '+r.name+' ('+results.length+'/26)');};
-let stopped=null;
-try{
-await record(await segment(page,'démarrage',()=>settle(90000)));
-const box=await (await page.$('canvas')).boundingBox();
-const cx=box.x+box.width/2,cy=box.y+box.height/2;
 /** Attendre un état stable (aucune tuile exacte en vol, nombre stable)
  * borné à `limit` ms ; renvoie le temps mis et si l'état s'est stabilisé. */
 const settle=async(limit)=>{
@@ -117,6 +112,11 @@ const settle=async(limit)=>{
  }
  return {settleMs:Date.now()-t0,settled:false};
 };
+let stopped=null;
+try{
+await record(await segment(page,'démarrage',()=>settle(90000)));
+const box=await (await page.$('canvas')).boundingBox();
+const cx=box.x+box.width/2,cy=box.y+box.height/2;
 const go=async name=>{
  await page.click('#landmark-open');await page.fill('#landmark-search',name);
  await page.waitForTimeout(600);
