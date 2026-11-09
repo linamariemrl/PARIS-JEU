@@ -17,6 +17,15 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / 'scripts'))
 import validate_model_geometry as V  # noqa: E402
 
+# Même convention que test_lidar_mosaic_026 : PROJ (pyproj) est installé par
+# release-validation et architecture-validation, où ce contrôle s'exécute ;
+# les workflows qui n'installent que shapely ne le sautent que lui.
+try:
+    import pyproj  # noqa: F401
+    missing_pyproj = None
+except ModuleNotFoundError as error:
+    missing_pyproj = error.name
+
 TOL, SRC = 1.0, 'cas d\'essai : tolérance fixée par le test, sans source réelle'
 
 
@@ -114,6 +123,7 @@ class ExactGeometry(unittest.TestCase):
         self.assertFalse(solid['ok'])
         self.assertGreater(solid['spillPct'], 50)
 
+    @unittest.skipIf(missing_pyproj is not None, 'dépendance géodésique absente : pyproj')
     def test_epsg2154_model_matches_scene_model(self):
         """Le même toit exprimé en EPSG:2154 relatif (converti par PROJ) donne
         le même rapport que sa version en coordonnées de scène."""
