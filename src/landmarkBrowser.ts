@@ -1,5 +1,6 @@
 import type {HeritageAtlas} from './heritageAtlas';
 import type {HeritageRole} from './heritageCategories';
+import type {ArchitectureDossiers} from './architectureDossiers';
 
 interface CatalogEntry{
  name:string;role:HeritageRole;sourceUrl:string;
@@ -39,7 +40,8 @@ export class LandmarkBrowser{
  private role='';
  private openState=false;
  constructor(private readonly atlas:HeritageAtlas,
-   private readonly goTo:(ref:string,x:number,z:number)=>void){
+   private readonly goTo:(ref:string,x:number,z:number)=>void,
+   private readonly architecture?:ArchitectureDossiers){
   $('landmark-open').addEventListener('click',()=>void this.open());
   $('landmark-close').addEventListener('click',()=>this.close());
   $('landmark-search').addEventListener('input',event=>{
@@ -102,6 +104,9 @@ export class LandmarkBrowser{
    const kind=document.createElement('small');
    kind.textContent=roleName[item.role]+(item.ref?' · POP '+item.ref:
      ' · emprise à confirmer');
+   const dossier=this.architecture?.forReference(item.ref);
+   if(dossier?.documents.length)
+    kind.textContent+=' · '+dossier.documents.length+' documents architecturaux';
    content.append(name,kind);
    const url=trusted(item.sourceUrl);
    if(url){

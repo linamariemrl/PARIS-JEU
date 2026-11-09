@@ -1,0 +1,3727 @@
+{
+  "schema": 1,
+  "version": "projet-patrimoine-0.26.3",
+  "coordinateSystem": "EPSG:2154 pour les mesures source, conversion métrique locale pour moteur",
+  "mission": "Références architecturales réelles ; aucun modèle approximatif déclaré exact",
+  "sourcePortals": [
+    {
+      "id": "archives-paris",
+      "name": "Archives de Paris",
+      "url": "https://archives.paris.fr",
+      "purpose": "Dossiers de construction, autorisations, plans cotés, coupes, élévations",
+      "geometryReliability": "Selon la pièce consultée"
+    },
+    {
+      "id": "mpp",
+      "name": "Médiathèque du patrimoine et de la photographie",
+      "url": "https://mediatheque-patrimoine.culture.gouv.fr",
+      "purpose": "Relevés techniques, inventaires de travaux, plans d'exécution",
+      "geometryReliability": "Selon la cote et les documents, parfois consultables uniquement sur place"
+    },
+    {
+      "id": "gallica",
+      "name": "Gallica — Bibliothèque nationale de France",
+      "url": "https://gallica.bnf.fr",
+      "purpose": "Traités anciens, publications d'architectes, atlas de plans cotés",
+      "geometryReliability": "Selon la pièce et son échelle originale"
+    },
+    {
+      "id": "capa",
+      "name": "Cité de l'architecture et du patrimoine",
+      "url": "https://www.citedelarchitecture.fr",
+      "purpose": "Fonds d'architectes, maquettes et plans",
+      "geometryReliability": "Selon pièce conservée et période documentée"
+    },
+    {
+      "id": "ign-lidar",
+      "name": "IGN LiDAR HD",
+      "url": "https://geoservices.ign.fr/lidarhd",
+      "purpose": "Topographie, nuages 3D, couverture, hauteurs et écarts avec les plans historiques",
+      "geometryReliability": "Précision par lot et méthode de calcul, pas mesure garantie des ornements"
+    },
+    {
+      "id": "paris-data",
+      "name": "Paris Open Data",
+      "url": "https://opendata.paris.fr",
+      "purpose": "Emprises, volumes bâtis et niveaux géographiques officiels",
+      "geometryReliability": "Géométrie générale, pas détail d'élévation des façades"
+    }
+  ],
+  "supplementarySources": [
+    {
+      "id": "bhdv",
+      "name": "Bibliothèque de l'Hôtel de Ville — Fonds Hôtel de Ville",
+      "url": "https://bibliotheques-specialisees.paris.fr",
+      "purpose": "Cahiers de calepinage, plans d'assises et détails d'exécution"
+    },
+    {
+      "id": "paris-musees",
+      "name": "Paris Musées — Musée Carnavalet",
+      "url": "https://www.parismuseescollections.paris.fr",
+      "purpose": "Séries de planches, plans, élévations et manifestes IIIF"
+    }
+  ],
+  "dossiers": [
+    {
+      "id": "PA00086319",
+      "ref": "PA00086319",
+      "name": "Hôtel de ville",
+      "role": "political",
+      "priority": 1,
+      "phase": "plans-d-execution-localises",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086319",
+      "documents": [
+        {
+          "id": "bhdv-cc64-pl34",
+          "type": "plan-coupe-execution",
+          "title": "Façade place de l'Hôtel de Ville, XIVe assise, coupe (1878, CC64_PL34)",
+          "url": "https://bibliotheques-specialisees.paris.fr/in/imageReader.xhtml?ark=73873%2Fpf0000712758%2F0034%2Fv0001.simple.selectedTab%3Drecord.hidesidebar&id=ark%3A%2F73873%2Fpf0000712758%2F0034&selectedTab=record&updateUrl=updateUrl",
+          "portalId": "bhdv",
+          "notes": "Cahier de calepinage ; métré en septembre 1878. La dimension de la feuille n'est PAS la dimension du bâtiment."
+        },
+        {
+          "id": "bhdv-cc16-pl39",
+          "type": "plan-coupe-elevation",
+          "title": "Tourelle côté Préfet, XIIIe assise, plans/coupes/élévations, baies (1878, CC16_pl39)",
+          "url": "https://bibliotheques-specialisees.paris.fr/in/imageReader.xhtml?ark=73873%2Fpf0000570031%2F0039%2Fv0001&id=ark%3A%2F73873%2Fpf0000570031%2F0039&updateUrl=updateUrl",
+          "portalId": "bhdv",
+          "notes": "Métré en octobre 1878 ; échelle et cotes à relever dans le document numérisé."
+        },
+        {
+          "id": "bhdv-cc76-pl04",
+          "type": "detail-execution",
+          "title": "Façade Boccador, second étage : détails et profils (1881, CC76_PL04)",
+          "url": "https://bibliotheques-specialisees.paris.fr/in/imageReader.xhtml?ark=73873%2Fpf0000570575%2F0004%2Fv0001&id=ark%3A%2F73873%2Fpf0000570575%2F0004&updateUrl=updateUrl",
+          "portalId": "bhdv",
+          "notes": "Bon pour exécution le 4 février 1881. Conforme à une pièce technique, dimensions non encore transcrites."
+        },
+        {
+          "id": "carnavalet-wuhrer-serie",
+          "type": "plan-elevation",
+          "title": "Ensemble de douze planches du nouvel Hôtel de Ville",
+          "url": "https://parismuseescollections.paris.fr/fr/musee-carnavalet/oeuvres/serie-de-12-planches-presentant-les-plans-et-elevations-du-nouvel-hotel-de",
+          "portalId": "paris-musees",
+          "notes": "Série de plans et élévations ; vérifier l'échelle de chaque planche."
+        },
+        {
+          "id": "carnavalet-wuhrer-facade",
+          "type": "elevation",
+          "title": "Élévation de la façade principale — planche 5",
+          "url": "https://www.parismuseescollections.paris.fr/fr/musee-carnavalet/oeuvres/hotel-de-ville-de-paris-facade-principale",
+          "portalId": "paris-musees",
+          "notes": "Manifeste IIIF https://apicollections.parismusees.paris.fr/iiif/320291169/manifest"
+        },
+        {
+          "id": "carnavalet-deslandes-plan",
+          "type": "plan",
+          "title": "Plan de l'Hôtel de Ville reconstruit, dessin Deslandes (1908–1914)",
+          "url": "https://www.parismuseescollections.paris.fr/fr/musee-carnavalet/oeuvres/hotel-de-ville-de-paris-plan-actuel-de-l-hotel-de-ville-reconstruit-par",
+          "portalId": "paris-musees",
+          "notes": "Manifeste IIIF https://apicollections.parismusees.paris.fr/iiif/320064500/manifest"
+        }
+      ],
+      "measurements": [],
+      "uncertainty": [
+        "Échelles et cotes lues sur chaque planche numérique",
+        "Relevé des façades et des travées à partir des dessins d'exécution",
+        "Mesure actuelle des toits et tourelles LiDAR HD",
+        "Vérification des modifications depuis 1881",
+        "Modèle géométrique documenté et contrôlé avant publication"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088876",
+      "ref": "PA00088876",
+      "name": "Palais de l'Elysée",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088876",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088722",
+      "ref": "PA00088722",
+      "name": "Ancien hôtel Matignon",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088722",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088653",
+      "ref": "PA00088653",
+      "name": "Palais du Luxembourg, actuellement Sénat",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088653",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085993",
+      "ref": "PA00085993",
+      "name": "Domaine du Palais-Royal (ancien Palais Cardinal), comprenant Conseil d'Etat, Conseil Constitutionnel, Ministère de la Culture, théâtre de la Comédie F",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085993",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085814",
+      "ref": "PA00085814",
+      "name": "Ancien hôtel de Bourvallais, actuellement ministère de la Justice",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085814",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085791",
+      "ref": "PA00085791",
+      "name": "Cour des Comptes",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085791",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085991",
+      "ref": "PA00085991",
+      "name": "Palais de Justice ou Conciergerie",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085991",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088873",
+      "ref": "PA00088873",
+      "name": "Hôtel du Ministère de l'Intérieur",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088873",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088723",
+      "ref": "PA00088723",
+      "name": "Hôtel du Ministère des Affaires Etrangères",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088723",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088699",
+      "ref": "PA00088699",
+      "name": "Anciens hôtels de Brienne et de Broglie, actuellement ministère de la défense",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088699",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088710",
+      "ref": "PA00088710",
+      "name": "Ancien hôtel de Courteilles ou de Rochechouart, actuellement ministère de l'éducation nationale",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088710",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088747",
+      "ref": "PA00088747",
+      "name": "Ancien hôtel de Villeroy, actuellement ministère de l'Agriculture et de la Pêche",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088747",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088733",
+      "ref": "PA00088733",
+      "name": "Hôtel de Roquelaure, actuellement ministère des travaux publics",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088733",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086707",
+      "ref": "PA00086707",
+      "name": "Palais d'Iéna, ancien Musée des Travaux Publics, actuel Conseil économique et social",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086707",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086277",
+      "ref": "PA00086277",
+      "name": "Hôtel de Beauvais, actuellement Cour Administrative d'Appel de Paris",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086277",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088788",
+      "ref": "PA00088788",
+      "name": "Mairie du 7e arrondissement",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088788",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088820",
+      "ref": "PA00088820",
+      "name": "Ancien hôtel Cail, actuellement mairie du 8e arrondissement",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088820",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088727",
+      "ref": "PA00088727",
+      "name": "Hôtel de Noirmoutier ou de Sens, actuellement résidence du préfet de région",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088727",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088703",
+      "ref": "PA00088703",
+      "name": "Hôtel de Castries ou ancien hôtel de Broglie, actuellement ministère chargé des relations avec le parlement",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088703",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088708",
+      "ref": "PA00088708",
+      "name": "Hôtel de Clermont, actuellement Ministère des relations avec le Parlement",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088708",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088707",
+      "ref": "PA00088707",
+      "name": "Hôtel du Châtelet (ancien) ou ancien archevêché de Paris, actuellement ministère du travail",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088707",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088793",
+      "ref": "PA00088793",
+      "name": "Ancien hôtel de Salm, actuel Palais de la Légion d'Honneur",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088793",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088738",
+      "ref": "PA00088738",
+      "name": "Hôtel de Seignelay",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088738",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088721",
+      "ref": "PA00088721",
+      "name": "Hôtel de Martignac (ancien) , actuellement annexe du ministère de l'éducation nationale",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088721",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088712",
+      "ref": "PA00088712",
+      "name": "Hôtel Gouffier de Thoix, actuellement annexe des services du premier ministre",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088712",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088671",
+      "ref": "PA00088671",
+      "name": "Ancienne abbaye de Penthemont, actuellement ministère des anciens combattants",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088671",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088739",
+      "ref": "PA00088739",
+      "name": "Hôtel de Sénecterre (ancien) , dit aussi de la Ferté Saint-Nectaire, actuellement école et ministère de l'artisanat et du commerce",
+      "role": "political",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088739",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085992",
+      "ref": "PA00085992",
+      "name": "Palais du Louvre et jardin des Tuileries",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085992",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088877",
+      "ref": "PA00088877",
+      "name": "Grand Palais",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088877",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088878",
+      "ref": "PA00088878",
+      "name": "Petit Palais, actuellement musée des Beaux-Arts de la Ville de Paris",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088878",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088689",
+      "ref": "PA00088689",
+      "name": "Ancienne gare d'Orsay, actuellement musée d'Orsay",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088689",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00089004",
+      "ref": "PA00089004",
+      "name": "Théâtre national de l'Opéra, dit opéra Garnier",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00089004",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086706",
+      "ref": "PA00086706",
+      "name": "Palais de Chaillot",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086706",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086705",
+      "ref": "PA00086705",
+      "name": "Musée Guimet",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086705",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086583",
+      "ref": "PA00086583",
+      "name": "Ancien Musée national des Arts africains et océaniens, devenu Palais de la Porte Dorée",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086583",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086157",
+      "ref": "PA00086157",
+      "name": "Ancien hôtel Aubert de Fontenay ou Salé, actuellement musée national Picasso",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086157",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086156",
+      "ref": "PA00086156",
+      "name": "Ancien hôtel de Saint-Aignan (ou hôtel d'Avaux, de Rochechouart, d'Asnières), actuellement musée d'art et d'histoire du Judaïsme",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086156",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086100",
+      "ref": "PA00086100",
+      "name": "Ancienne abbaye Saint-Martin-des-Champs, actuellement Conservatoire National des Arts et Métiers et Musée National des Techniques",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086100",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088431",
+      "ref": "PA00088431",
+      "name": "Ancien hôtel de Cluny et Palais des Thermes, actuellement Musée National du Moyen Âge",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088431",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086125",
+      "ref": "PA00086125",
+      "name": "Hôtel Carnavalet (ancien)",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086125",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086143",
+      "ref": "PA00086143",
+      "name": "Hôtel Le Pelletier de Saint-Fargeau",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086143",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088697",
+      "ref": "PA00088697",
+      "name": "Ancien hôtel de Biron ou ancien hôtel du Maine, actuellement musée Rodin",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088697",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088874",
+      "ref": "PA00088874",
+      "name": "Musée Jacquemart-André",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088874",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088828",
+      "ref": "PA00088828",
+      "name": "Ancien hôtel Moïse de Camondo, actuellement musée Nissim de Camondo",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088828",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086683",
+      "ref": "PA00086683",
+      "name": "Immeuble, actuellement musée Georges Clemenceau",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086683",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086709",
+      "ref": "PA00086709",
+      "name": "Pavillon de Balzac, actuellement musée",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086709",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088936",
+      "ref": "PA00088936",
+      "name": "Hôtel Renan-Scheffer, actuellement musée de la vie romantique",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088936",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088817",
+      "ref": "PA00088817",
+      "name": "Ancien Garde-Meuble, actuellement ministère de la Marine ou Hôtel de la Marine",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088817",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088652",
+      "ref": "PA00088652",
+      "name": "Palais de l'Institut (ancien collège des Quatre-Nations)",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088652",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088485",
+      "ref": "PA00088485",
+      "name": "Sorbonne (La)",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088485",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086093",
+      "ref": "PA00086093",
+      "name": "Théâtre de l'Opéra-Comique, dit salle Favart",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086093",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086237",
+      "ref": "PA00086237",
+      "name": "Théâtre de la Gaité Lyrique",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086237",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086003",
+      "ref": "PA00086003",
+      "name": "Théâtre du Châtelet",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086003",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086480",
+      "ref": "PA00086480",
+      "name": "Théâtre de la Ville",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086480",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088664",
+      "ref": "PA00088664",
+      "name": "Théâtre de l'Odéon",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088664",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088883",
+      "ref": "PA00088883",
+      "name": "Théâtre des Champs-Elysées",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088883",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088886",
+      "ref": "PA00088886",
+      "name": "Théâtre Marigny",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088886",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00089006",
+      "ref": "PA00089006",
+      "name": "Théâtre des Folies-Bergère",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00089006",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086517",
+      "ref": "PA00086517",
+      "name": "Théâtre de la Porte-Saint-Martin",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086517",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086637",
+      "ref": "PA00086637",
+      "name": "Théâtre Montparnasse ; Théâtre Montparnasse-Gaston Baty (ancien)",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086637",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086758",
+      "ref": "PA00086758",
+      "name": "Théâtre Montmartre (ancien) , puis Théâtre de l'Atelier (ou Charles-Dullin)",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086758",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086757",
+      "ref": "PA00086757",
+      "name": "Théâtre de l'Elysée-Montmartre, ancien dancing",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086757",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086619",
+      "ref": "PA00086619",
+      "name": "Hôtel de Massa, actuellement siège de la Société des Gens de Lettres",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086619",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086239",
+      "ref": "PA00086239",
+      "name": "Pavillon de l'Arsenal, actuellement bibliothèque de l'Arsenal",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086239",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086155",
+      "ref": "PA00086155",
+      "name": "Anciens hôtels de Rohan et Soubise, actuellement Archives Nationales",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086155",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086129",
+      "ref": "PA00086129",
+      "name": "Hôtel Donon",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086129",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086272",
+      "ref": "PA00086272",
+      "name": "Hôtel Arnaud ou de Rohan-Guéménée (ancien)",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086272",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088668",
+      "ref": "PA00088668",
+      "name": "Immeuble et musée Delacroix",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088668",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086023",
+      "ref": "PA00086023",
+      "name": "Galerie Colbert",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086023",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086098",
+      "ref": "PA00086098",
+      "name": "Théâtre Daunou",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086098",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088665",
+      "ref": "PA00088665",
+      "name": "Théâtre du Vieux-Colombier",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088665",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086238",
+      "ref": "PA00086238",
+      "name": "Théâtre Dejazet",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086238",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086094",
+      "ref": "PA00086094",
+      "name": "Théâtre des Variétés",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086094",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00089005",
+      "ref": "PA00089005",
+      "name": "Théâtre de Paris",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00089005",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086759",
+      "ref": "PA00086759",
+      "name": "Ancien théâtre Victor Hugo, cinéma Trianon",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086759",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086604",
+      "ref": "PA00086604",
+      "name": "Théâtre des Gobelins (ancien) , actuellement cinéma Fauvette",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086604",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086009",
+      "ref": "PA00086009",
+      "name": "Bibliothèque Nationale de France",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086009",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086598",
+      "ref": "PA00086598",
+      "name": "Manufacture nationale des Gobelins",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086598",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA75160011",
+      "ref": "PA75160011",
+      "name": "Maison de la Radio",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA75160011",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086010",
+      "ref": "PA00086010",
+      "name": "Bourse",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086010",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085841",
+      "ref": "PA00085841",
+      "name": "Ancien hôtel de Toulouse",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085841",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086062",
+      "ref": "PA00086062",
+      "name": "Immeuble du Crédit Lyonnais (siège)",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086062",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086068",
+      "ref": "PA00086068",
+      "name": "Immeuble du Crédit Lyonnais (annexe)",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086068",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086005",
+      "ref": "PA00086005",
+      "name": "Grands magasins de la Samaritaine",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086005",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085822",
+      "ref": "PA00085822",
+      "name": "Anciens hôtels d'Evreux et de Fontpertuis, actuellement hôtel du Crédit Foncier de France",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085822",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086030",
+      "ref": "PA00086030",
+      "name": "Ancien hôtel de Mondragon",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086030",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086058",
+      "ref": "PA00086058",
+      "name": "Immeubles, actuellement immeuble administratif du Crédit Lyonnais",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086058",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086024",
+      "ref": "PA00086024",
+      "name": "Galerie Vivienne, anciennement appelée galerie Marchoux",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086024",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086089",
+      "ref": "PA00086089",
+      "name": "Passage du Grand-Cerf (n° 1 à 59 et n° 2 à 58)",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086089",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086090",
+      "ref": "PA00086090",
+      "name": "Passage des Panoramas et ses galeries annexes (galeries Feydeau, Montmartre, Saint-Marc, galerie des Variétés, ancienne boutique du graveur Stern)",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086090",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086088",
+      "ref": "PA00086088",
+      "name": "Passage Choiseul et passage Sainte-Anne",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086088",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085995",
+      "ref": "PA00085995",
+      "name": "Passage Véro-Dodat",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085995",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086091",
+      "ref": "PA00086091",
+      "name": "Passage des Princes (n° 7 à 17, 23, 25)",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086091",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086097",
+      "ref": "PA00086097",
+      "name": "Passage du Bourg-l'Abbé",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088815",
+      "ref": "PA00088815",
+      "name": "Galerie de la Madeleine (1 à 7)",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088815",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086334",
+      "ref": "PA00086334",
+      "name": "Immeuble du Crédit Municipal",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086334",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088666",
+      "ref": "PA00088666",
+      "name": "Hôtel des Monnaies (voir aussi : enceinte de Philippe-Auguste)",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088666",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088892",
+      "ref": "PA00088892",
+      "name": "Immeuble, actuellement immeuble du Crédit Commercial de France",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088892",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086082",
+      "ref": "PA00086082",
+      "name": "Anciens magasins de la Samaritaine de Luxe",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086082",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086228",
+      "ref": "PA00086228",
+      "name": "Marché du Temple",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086228",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086227",
+      "ref": "PA00086227",
+      "name": "Marché des Enfants Rouges",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086227",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086575",
+      "ref": "PA00086575",
+      "name": "Marché Beauvau",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086575",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086570",
+      "ref": "PA00086570",
+      "name": "Gare de Lyon",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086570",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086492",
+      "ref": "PA00086492",
+      "name": "Gare du Nord",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086492",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086491",
+      "ref": "PA00086491",
+      "name": "Gare de l'Est",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086491",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088816",
+      "ref": "PA00088816",
+      "name": "Gare Saint-Lazare",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088816",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA75130001",
+      "ref": "PA75130001",
+      "name": "Gare d'Austerlitz",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA75130001",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA75170003",
+      "ref": "PA75170003",
+      "name": "Ancien hôtel Gaillard, actuellement succursale de la Banque de France",
+      "role": "financial",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA75170003",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088801",
+      "ref": "PA00088801",
+      "name": "Tour Eiffel",
+      "role": "touristic",
+      "priority": 2,
+      "phase": "mesures-globales-publiees",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088801",
+      "documents": [
+        {
+          "id": "eiffel-mesures-officielles",
+          "type": "dimensions-institutionnelles",
+          "title": "Tour Eiffel : chiffres clés, hauteur actuelle, base, étages",
+          "url": "https://www.toureiffel.paris/fr/le-monument/chiffres-cle",
+          "portalId": "institution",
+          "notes": "Chiffres publiés en mètres entiers ; ne pas interpréter comme précision au centimètre."
+        },
+        {
+          "id": "eiffel-planches-originales",
+          "type": "publication-technique",
+          "title": "La Tour de 300 mètres (planches originales publiées)",
+          "url": "https://www.toureiffel.paris/fr/le-monument/histoire",
+          "portalId": "institution",
+          "notes": "Reproduction des planches de l'ouvrage technique de Gustave Eiffel ; cotation fine à contrôler avant modélisation."
+        },
+        {
+          "id": "eiffel-gallica",
+          "type": "publication-technique",
+          "title": "Gallica : dossier original La tour de trois cent mètres, Gustave Eiffel",
+          "url": "https://gallica.bnf.fr/accueil/fr/html/gallica-aux-couleurs-de-la-tour-eiffel",
+          "portalId": "gallica",
+          "notes": "Portail donnant accès aux ouvrages de Gustave Eiffel et autres publications contemporaines."
+        }
+      ],
+      "measurements": [
+        {
+          "element": "Hauteur totale actuelle",
+          "value": 330,
+          "unit": "m",
+          "sourceId": "eiffel-mesures-officielles",
+          "precision": "valeur institutionnelle arrondie, précision non publiée"
+        },
+        {
+          "element": "Largeur totale au sol",
+          "value": 125,
+          "unit": "m",
+          "sourceId": "eiffel-mesures-officielles",
+          "precision": "valeur institutionnelle arrondie, précision non publiée"
+        },
+        {
+          "element": "Largeur d'un pied au sol",
+          "value": 25,
+          "unit": "m",
+          "sourceId": "eiffel-mesures-officielles",
+          "precision": "valeur institutionnelle arrondie, précision non publiée"
+        },
+        {
+          "element": "Altitude du premier étage par rapport au sol",
+          "value": 57,
+          "unit": "m",
+          "sourceId": "eiffel-mesures-officielles",
+          "precision": "valeur institutionnelle arrondie, précision non publiée"
+        },
+        {
+          "element": "Altitude du deuxième étage par rapport au sol",
+          "value": 115,
+          "unit": "m",
+          "sourceId": "eiffel-mesures-officielles",
+          "precision": "valeur institutionnelle arrondie, précision non publiée"
+        },
+        {
+          "element": "Altitude du troisième étage par rapport au sol",
+          "value": 276,
+          "unit": "m",
+          "sourceId": "eiffel-mesures-officielles",
+          "precision": "valeur institutionnelle arrondie, précision non publiée"
+        }
+      ],
+      "uncertainty": [
+        "Plans d'atelier cotés de chacune des pièces",
+        "Courbes exactes des piliers à partir des planches",
+        "Tirants, contreventements, assemblages et rivetages",
+        "Relevés 3D actualisés de l'antenne",
+        "Maillage détaillé validé"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086250",
+      "ref": "PA00086250",
+      "name": "Cathédrale Notre-Dame",
+      "role": "touristic",
+      "priority": 3,
+      "phase": "dossier-archives-localise",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086250",
+      "documents": [
+        {
+          "id": "nd-mpp-fonds",
+          "type": "archives-techniques",
+          "title": "MPP : fonds d'architectes et journal des travaux 1844–1865 de Notre-Dame",
+          "url": "https://mediatheque-patrimoine.culture.gouv.fr/recherches-dans-les-archives",
+          "portalId": "mpp",
+          "notes": "Inventaires consultables en ligne ; certains dessins originaux accessibles seulement en salle de lecture."
+        }
+      ],
+      "measurements": [],
+      "uncertainty": [
+        "Relevés cotés des façades et arcs-boutants",
+        "Plans de la charpente et de la flèche restaurées après 2019",
+        "Scan LiDAR post-restauration",
+        "Géométrie des sculptures, baies et verrières",
+        "Maillage validé"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086001",
+      "ref": "PA00086001",
+      "name": "Sainte-Chapelle",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086001",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088804",
+      "ref": "PA00088804",
+      "name": "Arc de Triomphe de l'Etoile",
+      "role": "touristic",
+      "priority": 4,
+      "phase": "dimensions-globales-publiees",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088804",
+      "documents": [
+        {
+          "id": "arc-cmn-hauteur",
+          "type": "dimensions-institutionnelles",
+          "title": "Arc de Triomphe : hauteur indiquée par le Centre des monuments nationaux",
+          "url": "https://www.paris-arc-de-triomphe.fr/visiter/informations-pratiques",
+          "portalId": "institution",
+          "notes": "Hauteur de 50 m publiée, sans précision fine ni répartition détaillée des élévations."
+        }
+      ],
+      "measurements": [
+        {
+          "element": "Hauteur générale",
+          "value": 50,
+          "unit": "m",
+          "sourceId": "arc-cmn-hauteur",
+          "precision": "valeur institutionnelle arrondie, précision non publiée"
+        }
+      ],
+      "uncertainty": [
+        "Plans de sections et plans d'exécution cotés",
+        "Géométrie de l'arche centrale et des passages latéraux",
+        "Bas-reliefs, inscriptions et sculptures",
+        "Validation des contours LiDAR",
+        "Maillage détaillé"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088420",
+      "ref": "PA00088420",
+      "name": "Ancienne église Sainte-Geneviève, devenue Le Panthéon",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088420",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086479",
+      "ref": "PA00086479",
+      "name": "Tour Saint-Jacques",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086479",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086026",
+      "ref": "PA00086026",
+      "name": "Ancien hôtel des ducs de Bourgogne : Tour de Jean Sans Peur",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086026",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088812",
+      "ref": "PA00088812",
+      "name": "Église de la Madeleine",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088812",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088510",
+      "ref": "PA00088510",
+      "name": "Église Saint-Sulpice",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088510",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085795",
+      "ref": "PA00085795",
+      "name": "Église Saint-Eustache",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085795",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088813",
+      "ref": "PA00088813",
+      "name": "Église Saint-Augustin",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088813",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086741",
+      "ref": "PA00086741",
+      "name": "Église Saint-Pierre-de-Montmartre",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086741",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088414",
+      "ref": "PA00088414",
+      "name": "Église Saint-Etienne-du-Mont",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088414",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088419",
+      "ref": "PA00088419",
+      "name": "Église Saint-Séverin",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088419",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086260",
+      "ref": "PA00086260",
+      "name": "Église Saint-Paul-Saint-Louis",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086260",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086512",
+      "ref": "PA00086512",
+      "name": "Porte Saint-Denis",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086512",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086513",
+      "ref": "PA00086513",
+      "name": "Porte Saint-Martin",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086513",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088393",
+      "ref": "PA00088393",
+      "name": "Arènes de Lutèce",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088393",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088489",
+      "ref": "PA00088489",
+      "name": "Abbaye Saint-Germain-des-Prés",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088489",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086017",
+      "ref": "PA00086017",
+      "name": "Église Notre-Dame-des-Victoires",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086017",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088509",
+      "ref": "PA00088509",
+      "name": "Église Saint-Germain-des-Prés",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088509",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085796",
+      "ref": "PA00085796",
+      "name": "Église Saint-Germain-l'Auxerrois",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085796",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086257",
+      "ref": "PA00086257",
+      "name": "Église Saint-Gervais-Saint-Protais",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086257",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088714",
+      "ref": "PA00088714",
+      "name": "Hôtel des Invalides",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088714",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086261",
+      "ref": "PA00086261",
+      "name": "Temple du Marais ou temple Sainte-Marie (ancienne chapelle du couvent des filles de la Visitation dite église de la Visitation)",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086261",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00088807",
+      "ref": "PA00088807",
+      "name": "Cathédrale orthodoxe Saint-Alexandre-Nevsky",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00088807",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086652",
+      "ref": "PA00086652",
+      "name": "Église Saint-Christophe-de-Javel",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086652",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00086740",
+      "ref": "PA00086740",
+      "name": "Église Saint-Jean-de-Montmartre",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00086740",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085798",
+      "ref": "PA00085798",
+      "name": "Église Saint-Roch",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085798",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA75180004",
+      "ref": "PA75180004",
+      "name": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel",
+      "role": "touristic",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA75180004",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "PA00085784",
+      "ref": "PA00085784",
+      "name": "Bourse de commerce",
+      "role": "cultural",
+      "priority": 10,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://pop.culture.gouv.fr/notice/merimee/PA00085784",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:palais-bourbon-assemblee-nationale",
+      "ref": null,
+      "name": "Palais Bourbon — Assemblée nationale",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.assemblee-nationale.fr/dyn/en/visite/info-pratiques",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:hotel-de-lassay-presidence-de-l-assemblee-nationale",
+      "ref": null,
+      "name": "Hôtel de Lassay — présidence de l’Assemblée nationale",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.assemblee-nationale.fr/dyn/en/visite/info-pratiques",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:immeuble-jacques-chaban-delmas-assemblee-nationale",
+      "ref": null,
+      "name": "Immeuble Jacques Chaban-Delmas — Assemblée nationale",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.assemblee-nationale.fr/dyn/en/visite/info-pratiques",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:immeuble-olympe-de-gouges-assemblee-nationale",
+      "ref": null,
+      "name": "Immeuble Olympe de Gouges — Assemblée nationale",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.assemblee-nationale.fr/dyn/en/visite/info-pratiques",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:petit-luxembourg-presidence-du-senat",
+      "ref": null,
+      "name": "Petit Luxembourg — présidence du Sénat",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.senat.fr/connaitre-le-senat/patrimoine/le-petit-luxembourg.html",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:ministere-de-l-economie-et-des-finances-bercy",
+      "ref": null,
+      "name": "Ministère de l’Économie et des Finances, Bercy",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.economie.gouv.fr/saef/decouvrir-les-fonds/les-guides-des-sources/le-batiment-du-grand-bercy",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:ecole-militaire",
+      "ref": null,
+      "name": "École militaire",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/eng/article/institutional-buildings-a126",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:observatoire-de-paris",
+      "ref": null,
+      "name": "Observatoire de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/eng/article/institutional-buildings-a126",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:centre-pompidou",
+      "ref": null,
+      "name": "Centre Pompidou",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:opera-bastille",
+      "ref": null,
+      "name": "Opéra Bastille",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/coulisses-a972",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:institut-du-monde-arabe",
+      "ref": null,
+      "name": "Institut du monde arabe",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:bibliotheque-nationale-de-france-francois-mitterrand",
+      "ref": null,
+      "name": "Bibliothèque nationale de France — François-Mitterrand",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.bnf.fr/fr/le-site-francois-mitterrand",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:philharmonie-de-paris",
+      "ref": null,
+      "name": "Philharmonie de Paris",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:cite-des-sciences-et-de-l-industrie",
+      "ref": null,
+      "name": "Cité des sciences et de l’industrie",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/convention/article/monuments-et-musees-a-visiter-a-paris-a1327",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:fondation-louis-vuitton",
+      "ref": null,
+      "name": "Fondation Louis Vuitton",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:musee-du-quai-branly-jacques-chirac",
+      "ref": null,
+      "name": "Musée du quai Branly — Jacques Chirac",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/les-monuments-parisiens-un-patrimoine-exceptionnel-a024",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:musee-d-art-moderne-de-paris",
+      "ref": null,
+      "name": "Musée d’Art moderne de Paris",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/les-musees-les-plus-visites-a943",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:palais-de-tokyo",
+      "ref": null,
+      "name": "Palais de Tokyo",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/les-monuments-parisiens-un-patrimoine-exceptionnel-a024",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:palais-galliera",
+      "ref": null,
+      "name": "Palais Galliera",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/convention/article/monuments-et-musees-a-visiter-a-paris-a1327",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:musee-cernuschi",
+      "ref": null,
+      "name": "Musée Cernuschi",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/convention/article/monuments-et-musees-a-visiter-a-paris-a1327",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:musee-de-l-orangerie",
+      "ref": null,
+      "name": "Musée de l’Orangerie",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/musees-et-monuments-ouverts-le-1er-janvier-a537",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:musee-grevin",
+      "ref": null,
+      "name": "Musée Grévin",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/les-musees-les-plus-visites-a943",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:le-grand-rex",
+      "ref": null,
+      "name": "Le Grand Rex",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/l-art-deco-celebre-ses-100-ans-decouvrez-des-batiments-parisiens-remarquables-32065",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:cinematheque-francaise",
+      "ref": null,
+      "name": "Cinémathèque française",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:la-bnf-richelieu-salle-ovale",
+      "ref": null,
+      "name": "La BnF Richelieu — Salle Ovale",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.bnf.fr/fr/le-site-richelieu-un-palais-au-coeur-de-paris",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:musee-de-l-homme",
+      "ref": null,
+      "name": "Musée de l’Homme",
+      "role": "cultural",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/convention/article/monuments-et-musees-a-visiter-a-paris-a1327",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:galeries-lafayette-haussmann",
+      "ref": null,
+      "name": "Galeries Lafayette Haussmann",
+      "role": "financial",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/grands-magasins-a-paris-a145",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:printemps-haussmann",
+      "ref": null,
+      "name": "Printemps Haussmann",
+      "role": "financial",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/grands-magasins-a-paris-a145",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:le-bon-marche-rive-gauche",
+      "ref": null,
+      "name": "Le Bon Marché Rive Gauche",
+      "role": "financial",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/grands-magasins-a-paris-a145",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:palais-brongniart-fonction-evenementielle-actuelle",
+      "ref": null,
+      "name": "Palais Brongniart (fonction événementielle actuelle)",
+      "role": "financial",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/1-lieu-3-histoires-le-palais-brongniart-35063",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:tour-montparnasse",
+      "ref": null,
+      "name": "Tour Montparnasse",
+      "role": "financial",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/musees-et-monuments-ouverts-le-1er-janvier-a537",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:station-f-halle-freyssinet",
+      "ref": null,
+      "name": "Station F — Halle Freyssinet",
+      "role": "financial",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://cdn.paris.fr/paris/2021/12/21/f0d203cc64ff00fded7373eaffc3067d.pdf",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:passage-jouffroy",
+      "ref": null,
+      "name": "Passage Jouffroy",
+      "role": "financial",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/paris-insolite-les-passages-couverts-a1801",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:passage-verdeau",
+      "ref": null,
+      "name": "Passage Verdeau",
+      "role": "financial",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/paris-insolite-les-passages-couverts-a1801",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:arc-de-triomphe-du-carrousel",
+      "ref": null,
+      "name": "Arc de Triomphe du Carrousel",
+      "role": "touristic",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/tout-savoir-sur-le-patrimoine-parisien-22969",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:obelisque-de-louxor-place-de-la-concorde",
+      "ref": null,
+      "name": "Obélisque de Louxor — place de la Concorde",
+      "role": "touristic",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/les-monuments-parisiens-un-patrimoine-exceptionnel-a024",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:colonne-vendome",
+      "ref": null,
+      "name": "Colonne Vendôme",
+      "role": "touristic",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/monuments-places-ponts",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:fontaine-des-innocents",
+      "ref": null,
+      "name": "Fontaine des Innocents",
+      "role": "touristic",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/tout-savoir-sur-le-patrimoine-parisien-22969",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:moulin-rouge",
+      "ref": null,
+      "name": "Moulin Rouge",
+      "role": "touristic",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/50-incontournables-parisiens-en-un-week-end-a1012",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:pyramide-du-louvre",
+      "ref": null,
+      "name": "Pyramide du Louvre",
+      "role": "touristic",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-de-paris-centre",
+      "ref": null,
+      "name": "Mairie de Paris Centre",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/lieux/mairie-de-paris-centre-3716",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-5e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 5e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-6e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 6e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-9e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 9e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-10e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 10e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-11e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 11e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-12e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 12e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-13e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 13e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-14e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 14e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-15e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 15e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-16e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 16e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-17e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 17e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-18e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 18e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-19e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 19e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    },
+    {
+      "id": "candidate:mairie-du-20e-arrondissement-de-paris",
+      "ref": null,
+      "name": "Mairie du 20e arrondissement de Paris",
+      "role": "political",
+      "priority": 20,
+      "phase": "recherche-de-plans-a-faire",
+      "sourceNotice": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097",
+      "documents": [],
+      "measurements": [],
+      "uncertainty": [
+        "Aucun plan coté spécifique consulté ou numérisé pour ce site",
+        "Hauteurs et éléments décoratifs non vérifiés",
+        "État actuel à confronter aux archives et à LiDAR HD"
+      ],
+      "geometry": "emprise-et-volumes-ign-seulement",
+      "publicationAllowed": false
+    }
+  ]
+}

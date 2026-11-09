@@ -4,6 +4,7 @@ import {storyForMonument,storyForReference} from './monumentStories';
 import {roleOfHeritage,heritageRoleLabel} from './heritageCategories';
 import {project} from './geo';
 import {terrainHeight} from './terrain';
+import type {ArchitectureDossiers} from './architectureDossiers';
 
 interface Notice{
  ref:string;x:number;z:number;name:string;category?:string;
@@ -59,7 +60,9 @@ export class HeritageAtlas{
  private areaIndex=new Map<string,HeritageArea[]>();
  private pointIndex=new Map<string,HeritagePoint[]>();
  private lines:Mesh[]=[];
+ private architecture:ArchitectureDossiers|null=null;
  constructor(private scene:Scene){singleton=this;}
+ setArchitectureDossiers(dossiers:ArchitectureDossiers):void{this.architecture=dossiers;}
  async init():Promise<void>{
   try{
    const res=await fetch(import.meta.env.BASE_URL+'data/metropole/places/monuments.json');
@@ -274,6 +277,7 @@ export class HeritageAtlas{
     }
    }catch{/* URL non validée, ne pas afficher de lien externe. */}
   }
+  this.architecture?.appendTo(section,ref);
   target.replaceChildren(section);
  }
  private drawBoundaries():void{

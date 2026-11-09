@@ -1,0 +1,7 @@
+{
+  "schema": 1,
+  "coordinateSystem": "paris-local-xyz",
+  "unit": "m",
+  "models": [],
+  "notice": "Aucune maquette cotée détaillée n'est encore certifiée. Les anciens volumes IGN demeurent tant que l'expertise, les mesures des sources et les maillages LOD ne sont pas validés. Les modèles non certifiés ne sont jamais rendus."
+}
