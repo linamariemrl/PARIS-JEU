@@ -453,6 +453,33 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  await near(590);
  check(experts()[0]?.name.endsWith('high'),'D6 : sous 600 m : retour au niveau haut');
  await away();
+ // --- R03-B2 : matrice de cycle de vie complétée.
+ // Tuile déchargée PENDANT une requête en vol : rien n'est masqué ni orphelin.
+ let open=()=>{};
+ const gate2=new Promise<void>(r=>{open=r;});
+ await fresh({...good,[input.ref+'-high.json']:{gate:gate2,body:model('high')}});
+ await near(300);
+ tile.forEach(m=>m.dispose());
+ open();await tick();
+ check(experts().length===0&&extrusionSwap.footprintBox(input.ref)===null,
+  'Cycle : tuile déchargée pendant la requête : réponse différée, aucun maillage créé');
+ tile=createTile(scene,clone(input.tile),materials);
+ const own4=tile.filter(m=>m.metadata.heritageIgnId===input.ignId);
+ for(let i=0;i<12;i++)await near(300);
+ check(experts().length===1&&own4.every(m=>!m.isVisible),
+  'Cycle : tuile rechargée : maquette chargée au passage suivant, extrusion masquée');
+ await away();
+ check(own4.every(m=>m.isVisible)&&experts().length===0,'Cycle : restitution après rechargement');
+ // Parties répétées avec une même bibliothèque : pas d'accumulation de matériaux.
+ await fresh({'index.json':{schema:1,models:[partEntry('facade-test',strip())]},
+  ...partFiles('facade-test',()=>wall())});
+ await near(300);
+ const mats=scene.materials.length;
+ for(let i=0;i<10;i++){await near(i%2?900:300);await away();await near(300);}
+ check(scene.materials.length===mats,'Cycle : 10 allers-retours de partie, aucun matériau ajouté ('+
+  scene.materials.length+' / '+mats+')');
+ await away();
+ check(scene.geometries.every(g=>g.meshes.length>0),'Cycle : aucune géométrie orpheline en fin de banc');
  check(scene.meshes.filter(m=>m.name.startsWith('monument-mesure-')).length===0,
   'Fin : aucun maillage expert résiduel');
  engine.dispose();
