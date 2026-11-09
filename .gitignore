@@ -5,3 +5,5 @@ dist/
 .env
 *.log
 __pycache__/
+public/data/metropole/overview/
+public/data/metropole/coverage/
