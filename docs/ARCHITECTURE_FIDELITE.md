@@ -118,6 +118,22 @@ Source d'exploitant : [Chiffres clés](https://www.toureiffel.paris/fr/le-monume
 
 La maquette des essais est un **faux** marqué `test-fixture`, défini dans les scripts d'essai et jamais publié. L'index des modèles reste vide : la substitution n'a donc **jamais** tourné en jeu avec une vraie maquette.
 
+### Coût mesuré des maillages séparés
+
+Mesuré le 9 novembre 2026 dans Chromium headless (rendu logiciel SwiftShader, fenêtre 412 × 860), en comparant `main` (avant la PR) et la branche, avec comptage instrumenté des appels WebGL. Vue de départ sur l'Hôtel de Ville, puis environ 360° en mode orbital.
+
+| Mesure | Avant (3 essais) | Après (2 essais complets) |
+| --- | --- | --- |
+| Draw calls par image, vue fixe | 115, 115, 115 | 123, 123 |
+| Draw calls par image, orbite | 106 à 107 en moyenne | 103 à 105 en moyenne |
+| Triangles par image, vue fixe | 1 516 459 | 1 515 362 |
+| Mémoire des tampons GPU | 30,7 Mo (32,8 Mo en orbite) | 30,7 Mo (32,8 Mo en orbite) |
+| Chargement jusqu'à stabilisation | 32 à 39 s | 34 à 35 s |
+
+Un troisième essai « après » s'est stabilisé avant la fin du chargement des tuiles (11,6 s, 1,44 M triangles) : il est écarté.
+
+Conclusion limitée : environ **+8 draw calls (+7 %)** en vue fixe sur l'Hôtel de Ville, triangles et mémoire inchangés, pas de surcoût mesurable en orbite. Les **temps de trame et FPS ne sont pas mesurables** dans cet environnement : le rendu logiciel donne 1 à 2 FPS et des écarts de 320 à 850 ms par image d'un essai à l'autre, sans rapport avec la PR. **Aucune mesure n'a été faite sur téléphone Android** : la fluidité mobile et l'objectif de 30 FPS restent à vérifier sur appareil réel.
+
 ### Registre des cotes transcrites
 
 `public/data/metropole/architecture/measurements/PA00086319.json` consigne les cotes **lues** sur la planche BHdV CC64_PL34 (plan de la 14e assise du corps central, façade sur la place, 1878), avec la zone exacte de l'image, le lecteur et le statut. Exemples : hauteur d'assise 0,42 m, demi-façades 29,45 m et 26,05 m, travée 3,86 m, trumeaux 0,46 m. **Ce ne sont pas des cotes vérifiées du bâtiment actuel** : la feuille n'est ni étalonnée ni géoréférencée, et la chaîne de cotes de la demi-façade gauche ne se referme pas encore sur sa cote générale (environ 24,8 m lus contre 29,45 m inscrits). Le garde-fou du dossier (aucune planche BHdV dans `measurements` de `dossiers.json`) est conservé. Aucune géométrie du moteur n'est dérivée de ces lectures.
