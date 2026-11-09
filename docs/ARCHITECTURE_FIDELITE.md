@@ -19,6 +19,14 @@
 
 Le corpus consultable se trouve dans `public/data/metropole/architecture/dossiers.json` : **195 sites et édifices à instruire**, dont 140 références POP/Mérimée géolocalisées et 55 candidats sans appariement certain. Il ne s'agit pas de 195 modèles architecturaux achevés.
 
+## Toiture mesurée de l'Hôtel de Ville — contrôle validé
+
+Le rapport `data/quality/lidar-4e-reconstruction.json` contient désormais un **relevé LiDAR accepté** pour l'Hôtel de Ville de Paris (identifiant IGN `BATIMENT0000000245157267`). Deux dalles IGN MNH contiguës ont été mosaïquées en Lambert-93 au pas **0,5 m sans interpolation des pixels**. Après contrôle de la triangulation à 2,5 m, le résultat contient **3 490 triangles**, **2 047 sommets échantillonnés** et une couverture de **98,26 %** de l'emprise géométrique. Le maximum des valeurs de hauteur MNH retenues est de **48,21 m** ; la médiane est de **26,84 m** et le 90e percentile de **35,65 m**.
+
+La [Ville de Paris indique un campanile à 50 m de hauteur](https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659). Cela fournit une contrainte indépendante de l'attribut de hauteur générale IGN à 25,2 m. La mesure source du campanile est **arrondie**. La géométrie des pixels LiDAR reste une reconstruction de **relief de toiture**, susceptible de différences dues à la végétation, aux éléments masqués ou à la simplification. Elle **ne certifie pas** la fidélité des ornements, des façades, des baies, des sculptures ou du campanile dans leur détail. Une telle certification exige une comparaison aux plans cotés, relevés photogrammétriques et pièces d'exécution.
+
+Le relevé et ses conditions sont accessibles dans la [fiche numérique de l'Hôtel de Ville](../public/data/metropole/architecture/survey-4e.json). Le moteur 3D du 4e utilise le fichier `public/data/4e/roof-lidar.json` lorsqu'il est disponible. **Aucune maquette architecturale monumentale intégrale n'est encore déclarée conforme, et la version reste 0.26.3.**
+
 ## Avancement du relevé métrique — 9 novembre 2026
 
 Le premier contrôle croise **la notice Mérimée** avec **un sommet de l'emprise IGN** seulement si le point officiel tombe **dans le polygone réel**, hors cours intérieures. Les mesures de surface et de dimensions sont ensuite **calculées à partir de l'emprise géographique** dans le repère local du moteur (projection simplifiée de WGS84). Ce ne sont ni des cotes de chantier, ni des garanties cadastrales ou photogrammétriques.

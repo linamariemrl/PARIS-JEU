@@ -48,7 +48,26 @@
         "Plans cotés géoréférencés",
         "Élévations détaillées et ouvertures mesurées",
         "Toiture/pinacles/ornements contrôlés par des relevés actuels"
-      ]
+      ],
+      "roofEvidence": {
+        "source": "IGN LiDAR HD — MNH, altitudes relatives au terrain",
+        "mosaicTiles": [
+          "metadata.11924",
+          "metadata.57713"
+        ],
+        "sourcePixelMeters": 0.5,
+        "meshGridMeters": 2.5,
+        "coverageFraction": 0.9826,
+        "triangles": 3490,
+        "measuredVertices": 2047,
+        "medianMnhHeightM": 26.84,
+        "p90MnhHeightM": 35.65,
+        "maximumMnhHeightM": 48.21,
+        "campanilePublishedHeightM": 50,
+        "publishedHeightSource": "https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659",
+        "architecturalFacadesCertified": false,
+        "ornamentsCertified": false
+      }
     },
     {
       "ref": "PA00086250",
@@ -67,7 +86,7 @@
         "areaMethod": "Aire horizontale calculée (anneaux extérieurs moins trous), non surface cadastrale",
         "areaM2": 2148.13,
         "bboxWidthM": 106.96,
-        "bboxDepthM": 63.0,
+        "bboxDepthM": 63,
         "ringCount": 1,
         "pointCount": 35,
         "heightIgnMeters": 34.9,
@@ -82,7 +101,8 @@
         "Plans cotés géoréférencés",
         "Élévations détaillées et ouvertures mesurées",
         "Toiture/pinacles/ornements contrôlés par des relevés actuels"
-      ]
+      ],
+      "roofEvidence": null
     },
     {
       "ref": "PA00086257",
@@ -116,7 +136,8 @@
         "Plans cotés géoréférencés",
         "Élévations détaillées et ouvertures mesurées",
         "Toiture/pinacles/ornements contrôlés par des relevés actuels"
-      ]
+      ],
+      "roofEvidence": null
     }
   ]
 }

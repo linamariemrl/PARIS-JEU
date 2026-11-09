@@ -23,12 +23,21 @@ interface MeasuredFootprint{
  ringCount:number;pointCount:number;
  heightIgnMeters:number;heightIgnEstimated:boolean;
 }
+interface RoofMnhEvidence{
+ source:string;mosaicTiles:string[];sourcePixelMeters:number;
+ meshGridMeters:number;coverageFraction:number;triangles:number;
+ measuredVertices:number;medianMnhHeightM:number;
+ p90MnhHeightM:number;maximumMnhHeightM:number;
+ campanilePublishedHeightM:number;publishedHeightSource:string;
+ architecturalFacadesCertified:false;ornamentsCertified:false;
+}
 interface SurveySite{
  ref:string;ignBuildingId:string;tileId:string;
  footprint:MeasuredFootprint;
  cityVolumes:null|{coverageFraction:number;planarParts:number;
   maxDeclaredFloors:number;internalHeightsMeasured:boolean};
- lidarRoofMeasured:boolean;architecturalFacadeMeasured:boolean;
+ lidarRoofMeasured:boolean;roofEvidence?:RoofMnhEvidence|null;
+ architecturalFacadeMeasured:boolean;
  exactMonumentModelCertified:boolean;
 }
 interface SurveyPayload{schema:1;sites:SurveySite[];}
@@ -38,6 +47,7 @@ const officialHosts=[
  'mediatheque-patrimoine.culture.gouv.fr','archives.paris.fr',
  'gallica.bnf.fr','citedelarchitecture.fr','www.citedelarchitecture.fr',
  'geoservices.ign.fr','opendata.paris.fr','toureiffel.paris',
+ 'paris.fr','www.paris.fr',
  'www.toureiffel.paris','paris-arc-de-triomphe.fr',
  'www.paris-arc-de-triomphe.fr'
 ];
@@ -144,6 +154,33 @@ export class ArchitectureDossiers{
      'Relief des toitures : aucune reconstruction MNH LiDAR validée '+
      'pour cet édifice dans le corpus local.';
    section.append(lidar);
+   const roof=survey.roofEvidence;
+   if(roof&&survey.lidarRoofMeasured&&
+      Number.isFinite(roof.coverageFraction)&&
+      roof.coverageFraction>=.95&&roof.coverageFraction<=1&&
+      roof.architecturalFacadesCertified===false){
+    const detail=document.createElement('p');
+    detail.textContent='Toiture mesurée IGN MNH : '+
+      fmt(roof.coverageFraction*100)+' % de surface triangulée ; '+
+      roof.triangles.toLocaleString('fr-FR')+' triangles ; '+
+      roof.measuredVertices.toLocaleString('fr-FR')+
+      ' sommets avec hauteurs échantillonnées ; '+
+      fmt(roof.sourcePixelMeters)+' m par pixel source et '+ 
+      fmt(roof.meshGridMeters)+' m de grille 3D. '+ 
+      'Hauteur maximale échantillonnée : '+
+      fmt(roof.maximumMnhHeightM)+' m. '+ 
+      'Ni l’ensemble du toit ni les façades et décors ne sont certifiés au centimètre.';
+    section.append(detail);
+    const href=approved(roof.publishedHeightSource);
+    if(href){
+     const proof=document.createElement('a');
+     proof.href=href;proof.target='_blank';
+     proof.rel='noopener noreferrer';
+     proof.textContent='Référence municipale : campanile à environ '+
+       fmt(roof.campanilePublishedHeightM)+' m';
+     section.append(proof);
+    }
+   }
   }
   if(d.measurements.length){
    const measures=document.createElement('ul');
