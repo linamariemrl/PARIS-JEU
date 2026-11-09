@@ -1,4 +1,5 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
+import {applyArchitecturalMask} from './architectureModels';
 import earcut from 'earcut';
 import { project } from './geo';
 import {terrainHeight} from './terrain';
@@ -203,6 +204,7 @@ function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
   mesh.material=mat;
   mesh.isPickable=true;
   mesh.metadata={buildings:tile.buildings,faceToBuilding:batch.faceToBuilding};
+  applyArchitecturalMask(mesh);
   mesh.freezeWorldMatrix();
   return mesh;
 }
