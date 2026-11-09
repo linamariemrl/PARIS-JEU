@@ -42,13 +42,6 @@
         "renderableAsExact3D": false
       },
       "lidarRoofMeasured": true,
-      "architecturalFacadeMeasured": false,
-      "exactMonumentModelCertified": false,
-      "missing": [
-        "Plans cotés géoréférencés",
-        "Élévations détaillées et ouvertures mesurées",
-        "Toiture/pinacles/ornements contrôlés par des relevés actuels"
-      ],
       "roofEvidence": {
         "source": "IGN LiDAR HD — MNH, altitudes relatives au terrain",
         "mosaicTiles": [
@@ -63,11 +56,18 @@
         "medianMnhHeightM": 26.84,
         "p90MnhHeightM": 35.65,
         "maximumMnhHeightM": 48.21,
-        "campanilePublishedHeightM": 50,
+        "campanilePublishedHeightM": 50.0,
         "publishedHeightSource": "https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659",
         "architecturalFacadesCertified": false,
         "ornamentsCertified": false
-      }
+      },
+      "architecturalFacadeMeasured": false,
+      "exactMonumentModelCertified": false,
+      "missing": [
+        "Plans cotés géoréférencés",
+        "Élévations détaillées et ouvertures mesurées",
+        "Toiture/pinacles/ornements contrôlés par des relevés actuels"
+      ]
     },
     {
       "ref": "PA00086250",
@@ -86,7 +86,7 @@
         "areaMethod": "Aire horizontale calculée (anneaux extérieurs moins trous), non surface cadastrale",
         "areaM2": 2148.13,
         "bboxWidthM": 106.96,
-        "bboxDepthM": 63,
+        "bboxDepthM": 63.0,
         "ringCount": 1,
         "pointCount": 35,
         "heightIgnMeters": 34.9,
@@ -95,14 +95,14 @@
       },
       "cityVolumes": null,
       "lidarRoofMeasured": false,
+      "roofEvidence": null,
       "architecturalFacadeMeasured": false,
       "exactMonumentModelCertified": false,
       "missing": [
         "Plans cotés géoréférencés",
         "Élévations détaillées et ouvertures mesurées",
         "Toiture/pinacles/ornements contrôlés par des relevés actuels"
-      ],
-      "roofEvidence": null
+      ]
     },
     {
       "ref": "PA00086257",
@@ -130,14 +130,14 @@
       },
       "cityVolumes": null,
       "lidarRoofMeasured": false,
+      "roofEvidence": null,
       "architecturalFacadeMeasured": false,
       "exactMonumentModelCertified": false,
       "missing": [
         "Plans cotés géoréférencés",
         "Élévations détaillées et ouvertures mesurées",
         "Toiture/pinacles/ornements contrôlés par des relevés actuels"
-      ],
-      "roofEvidence": null
+      ]
     }
   ]
 }
