@@ -303,6 +303,69 @@ def produce_part(poly,source,grid=6.0,max_points=500,require_coverage=None,
             "ringsHeights":perimeter,"sampleCount":len(values),
             "triangleCoverage":round(coverage,4)}
 
+def reconstruct_hotel_from_adjacent_tiles(index,building,trace):
+    """Relever tout le toit de l'Hôtel de Ville, traversant deux dalles.
+    Aucune valeur de hauteur n'est créée entre dalles ; l'assemblage
+    conserve la grille de pixels MNH d'origine en Lambert-93.
+    """
+    if not building:
+        trace["reason"]="ign-building-missing"
+        return None
+    footprint=Polygon(building["polygons"][0][0],
+                      building["polygons"][0][1:])
+    if not footprint.is_valid:footprint=footprint.buffer(0)
+    if footprint.is_empty:
+        trace["reason"]="invalid-ign-polygon"
+        return None
+    needed=[]
+    for tile in index["tiles"]:
+        if not tile.get("geometry"):continue
+        coverage=shape(tile["geometry"])
+        if coverage.intersects(footprint):
+            needed.append(tile)
+    trace["sourceTiles"]=[t["id"] for t in needed]
+    if len(needed)<2 or len(needed)>4:
+        trace["reason"]="missing-adjacent-mnh-tiles"
+        return None
+    with tempfile.TemporaryDirectory() as root:
+        folder=Path(root)
+        files=[]
+        for i,tile in enumerate(needed):
+            trace["downloadingTile"]=tile["id"]
+            files.append(download(tile["url"],folder/str(i)))
+        combined=folder/"combined"
+        combined.mkdir()
+        combined_file=mosaic_tiles(files,combined)
+        with rasterio.open(combined_file) as raster:
+            if (raster.count!=1 or
+               (raster.crs.to_epsg()!=2154 and
+                "EPSG:2154" not in str(raster.crs))):
+                trace["reason"]="invalid-combined-crs"
+                return None
+            trace["mosaicDimensions"]=[raster.width,raster.height]
+            trace["pixelSizeMeters"]=round(float(abs(raster.res[0])),3)
+            arr=raster.read(1)
+            polygons=[polygon_meters(p) for p in building["polygons"]]
+            if any(p is None for p in polygons):
+                trace["reason"]="invalid-ign-polygon-meters"
+                return None
+            height=float(building["height"])
+            parts=[]
+            for poly in polygons:
+                part=produce_part(poly,(raster,arr,height),
+                    grid=2.5,max_points=3600,require_coverage=.95,
+                    trace=trace)
+                if part is None:return None
+                parts.append(part)
+            if not parts:
+                trace["reason"]="no-usable-lidar-parts"
+                return None
+            trace["reason"]="accepted-mosaic"
+            return {"source":"IGN LiDAR HD MNH 50 cm : dalle(s) "+
+                    ",".join(t["id"] for t in needed)+
+                    " (géométrie 2,5 m, hors ornements)",
+                    "parts":parts}
+
 def run():
     index=json.loads(INDEX.read_text())
     available=intersecting_tiles(index,25)
@@ -372,6 +435,20 @@ def run():
             except Exception as exc:
                 failed.append({"tile":tile["id"],"error":str(exc)[:180]})
                 print("Dalle non exploitable:",str(exc)[:180],flush=True)
+    # Le toit municipal chevauche deux fichiers MNH. Même si la première
+    # passe sur une seule dalle a échoué, tenter l'assemblage scientifique
+    # des deux rasters, sans interpolation artificielle.
+    hotel_trace={"reason":"mosaic-not-started"}
+    try:
+        roof=reconstruct_hotel_from_adjacent_tiles(
+            index,buildings.get(HOTEL_DE_VILLE_ID),hotel_trace)
+        if roof is not None:
+            roofs[HOTEL_DE_VILLE_ID]=roof
+            examined.add(HOTEL_DE_VILLE_ID)
+    except Exception as exc:
+        hotel_trace.update({"reason":"mosaic-error","error":str(exc)[:200]})
+    hotel_diag=hotel_trace
+    print("Résultat mosaïque Hôtel de Ville :",hotel_diag,flush=True)
     data={"schema":1,"source":"IGN LiDAR HD MNH, 50 cm, EPSG:2154",
       "license":"Licence Ouverte 2.0",
       "sourceURL":"https://www.data.gouv.fr/datasets/mnh-lidar-hd",
