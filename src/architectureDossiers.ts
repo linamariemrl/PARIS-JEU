@@ -47,6 +47,7 @@ const officialHosts=[
  'mediatheque-patrimoine.culture.gouv.fr','archives.paris.fr',
  'gallica.bnf.fr','citedelarchitecture.fr','www.citedelarchitecture.fr',
  'geoservices.ign.fr','opendata.paris.fr','toureiffel.paris',
+ 'paris.fr','www.paris.fr',
  'www.toureiffel.paris','paris-arc-de-triomphe.fr',
  'www.paris-arc-de-triomphe.fr'
 ];
