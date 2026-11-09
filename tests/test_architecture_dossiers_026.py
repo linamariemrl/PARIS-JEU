@@ -197,6 +197,19 @@ class ArchitectureDossiers026(unittest.TestCase):
   self.assertNotIn("bhdv-cc64-pl33",{d["id"] for d in hotel["documents"]})
   for f in (ROOT/"public/data/metropole/architecture/reference").rglob("*.json"):
    self.assertNotIn("bhdv-cc64-pl33",f.read_text(encoding="utf-8"))
+ def test_course_heights_are_never_summed_without_correspondence(self):
+  import json
+  t=json.loads(read("public/data/metropole/architecture/measurements/PA00086319-course-heights.json"))
+  self.assertIn("NON ÉTABLIE",t["correspondence"])
+  self.assertIsNone(t["verticalPositionOfCourse14"])
+  self.assertNotIn("cumulative",json.dumps(t))
+  for r in t["rows"]:
+   self.assertIn(r["numbering"],t["numberings"])
+   self.assertIs(r["currentStateVerified"],False)
+   self.assertEqual(r["status"]=="not-found",r["height"] is None)
+  # La fiche de calage reste sans altitude d'assise.
+  reg=json.loads(read("public/data/metropole/architecture/registration/PA00086319.json"))
+  self.assertIsNone(reg["vertical"]["courseAltitudeNGF"])
  def test_existing_interface_unchanged(self):
   main=read("src/main.ts")
   index=read("index.html")

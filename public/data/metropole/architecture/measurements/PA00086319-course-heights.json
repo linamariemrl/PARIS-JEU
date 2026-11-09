@@ -1,0 +1,187 @@
+{
+  "schema": 1,
+  "ref": "PA00086319",
+  "scope": "Rez-de-chaussée du corps central (Boccador), façade sur la place et tourelles",
+  "numberings": {
+    "socle": "Assises de socle (PL01–03), en pierre de Hauteville.",
+    "au-dessus-du-corgoloin": "Assises comptées au-dessus de l'assise en Corgoloin (grand vestibule, PL08, PL14, PL17–29).",
+    "non-precise": "Titres « Plan de la Ne assise » sans précision (PL20–21, PL33–38, CC16_PL39)."
+  },
+  "correspondence": "NON ÉTABLIE : aucune feuille lue ne relie la numérotation de socle aux numérotations « au-dessus du Corgoloin » ou « non précise ». Aucune hauteur cumulée n'est calculée.",
+  "rows": [
+    {
+      "course": 1,
+      "numbering": "socle",
+      "height": 0.62,
+      "unit": "m",
+      "plate": "CC64_PL01",
+      "sourceId": "bhdv-cc64-pl01",
+      "inscription": "Plan général de la 1ère Assise de Socle en Hauteville (Hauteur 0m62c)",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.34,
+          0.655,
+          0.68,
+          0.69
+        ]
+      },
+      "status": "transcribed-legible",
+      "currentStateVerified": false,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": ""
+    },
+    {
+      "course": 7,
+      "numbering": "non-precise",
+      "height": null,
+      "unit": "m",
+      "plate": "CC64_PL20",
+      "sourceId": "bhdv-cc64-pl20",
+      "inscription": "Plan de la 7me Assise",
+      "imageCrop": {
+        "level": 11,
+        "box": [
+          0.15,
+          0.43,
+          0.32,
+          0.46
+        ]
+      },
+      "status": "not-found",
+      "currentStateVerified": false,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Aucune hauteur dans le titre."
+    },
+    {
+      "course": 8,
+      "numbering": "non-precise",
+      "height": 0.49,
+      "unit": "m",
+      "plate": "CC64_PL20",
+      "sourceId": "bhdv-cc64-pl20",
+      "inscription": "Plan de la 8e Assise (Hauteur 0m,49c)",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.63,
+          0.435,
+          0.88,
+          0.465
+        ]
+      },
+      "status": "transcribed-legible",
+      "currentStateVerified": false,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Titre de feuille « Bâtiment du Préfet » surchargé « Central »."
+    },
+    {
+      "course": 10,
+      "numbering": "non-precise",
+      "height": null,
+      "unit": "m",
+      "plate": "CC64_PL33",
+      "sourceId": "bhdv-cc64-pl33",
+      "inscription": "Plan de la 10me Assise",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.3,
+          0.555,
+          0.48,
+          0.59
+        ]
+      },
+      "status": "not-found",
+      "currentStateVerified": false,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Aucune hauteur dans le titre."
+    },
+    {
+      "course": 13,
+      "numbering": "non-precise",
+      "height": 0.36,
+      "unit": "m",
+      "plate": "CC16_PL39",
+      "sourceId": "bhdv-cc16-pl39",
+      "inscription": "Plan de la 13e Assise Hauteur 0m,36",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.42,
+          0.22,
+          0.66,
+          0.25
+        ]
+      },
+      "status": "transcribed-legible",
+      "currentStateVerified": false,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Tourelle côté du Préfet."
+    },
+    {
+      "course": 14,
+      "numbering": "non-precise",
+      "height": 0.42,
+      "unit": "m",
+      "plate": "CC64_PL34",
+      "sourceId": "bhdv-cc64-pl34",
+      "inscription": "Plan de la 14e Assise (Hauteur 0,42)",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.44,
+          0.295,
+          0.68,
+          0.315
+        ]
+      },
+      "status": "transcribed-legible",
+      "currentStateVerified": false,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": ""
+    },
+    {
+      "course": 16,
+      "numbering": "non-precise",
+      "height": 0.42,
+      "unit": "m",
+      "plate": "CC64_PL38",
+      "sourceId": "bhdv-cc64-pl38",
+      "inscription": "Détail de la 16e Assise. Acrotère au-dessus de la Corniche de l'Entresol (Côté Gauche) (Hauteur 0m42)",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.33,
+          0.25,
+          0.68,
+          0.33
+        ]
+      },
+      "status": "transcribed-legible",
+      "currentStateVerified": false,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "La 16e assise est l'acrotère au-dessus de la corniche de l'entresol : la 14e assise se situe donc sous ce niveau, à une distance non établie."
+    }
+  ],
+  "missing": [
+    "Hauteurs des assises 2 à 7, 9 à 12 et 15 de la façade (non trouvées dans les titres lus).",
+    "Correspondance entre numérotations (socle / au-dessus du Corgoloin / non précise).",
+    "Origine verticale (trottoir, soubassement ou cote NGF) : aucune cote altimétrique lue."
+  ],
+  "crossCheck": {
+    "plate": "CC64_PL38",
+    "finding": "Même plan de façade avec ses deux tourelles, à la 16e assise (acrotère). Profil différent de la 14e : la chaîne (0,76 ; 7,82 ; 3,56 …) n'est pas comparable segment à segment ; total inscrit non transcrit à pleine résolution.",
+    "imageCrop": {
+      "level": 12,
+      "box": [
+        0.13,
+        0.47,
+        0.8,
+        0.535
+      ]
+    },
+    "status": "not-a-validation"
+  },
+  "verticalPositionOfCourse14": null
+}
