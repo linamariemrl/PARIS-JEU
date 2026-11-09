@@ -52,7 +52,16 @@ class ArchitectureDossiers026(unittest.TestCase):
   # et désenregistrées à leur destruction.
   for source in (model,building):
    self.assertNotRegex(source,r"\.setIndices\s*\(")
-  self.assertIn("extrusionSwap.register(heritageIgnId,mesh,box)",building)
+  # Enregistrement avec l'emprise IGN réelle (contour et cours), et
+  # acceptation par couverture de polygones, pas par boîtes seules.
+  self.assertIn("extrusionSwap.register(heritageIgnId,mesh,footprint)",building)
+  self.assertIn("footprintShape(own.b.polygons.map(",building)
+  swap=read("src/heritageFootprints.ts")
+  accept=swap[swap.index(" private evaluate("):swap.index(" /** À appeler APRÈS")]
+  self.assertIn("modelCoversFootprint(model.box,s.box)",accept)
+  self.assertIn("polygonCoverage(model,shapes)",accept)
+  self.assertIn("modelShapeFromParts(obj.parts)",model)
+  self.assertIn("extrusionSwap.conflicts(model.ref)",model)
   self.assertIn("extrusionSwap.unregister(heritageIgnId,mesh)",building)
   self.assertIn("mesh.onDisposeObservable.addOnce(",building)
   self.assertIn("faceToBuilding:batch.faceToBuilding",building)
@@ -82,11 +91,46 @@ class ArchitectureDossiers026(unittest.TestCase):
     self.assertGreater(m["value"],0)
    else:
     self.assertIsNone(m["value"],m["elementId"])
+  # Contrôle de fermeture recalculé, jamais recopié : la somme des
+  # segments doit égaler la cote générale inscrite pour être « closed ».
+  for chain in register["chains"]:
+   total=round(sum(seg["value"] for seg in chain["segments"]),2)
+   self.assertEqual(total,chain["sumOfSegments"],chain["chainId"])
+   closed=abs(total-chain["inscribedTotal"])<0.005
+   self.assertEqual(chain["closure"]["status"],"closed" if closed else "conflict")
+   self.assertIn(chain["sourceId"],documents)
+   self.assertTrue(chain["start"] and chain["end"])
+   for seg in chain["segments"]:
+    self.assertEqual(len(seg["imageCrop"]["box"]),4)
+  for derived in register["derived"]:
+   self.assertTrue(derived["status"].startswith("derived-"))
   # Le garde-fou historique reste intact : aucune planche BHdV dans les
   # mesures publiées par le dossier (taille du papier != cote bâtie).
   self.assertFalse(any(m["sourceId"].startswith("bhdv-") for m in hotel["measurements"]))
   self.assertFalse(hotel["publicationAllowed"])
   self.assertEqual(json.loads(read("public/data/metropole/architecture/models/index.json"))["models"],[])
+ def test_partial_rhythm_is_derived_and_not_used_by_engine(self):
+  import json,importlib.util
+  spec=importlib.util.spec_from_file_location("rhythm",ROOT/"scripts/derive_cc64_rhythm.py")
+  mod=importlib.util.module_from_spec(spec);spec.loader.exec_module(mod)
+  published=json.loads(read("public/data/metropole/architecture/reference/PA00086319/cc64-pl34-assise14-rythme.json"))
+  # Le fichier publié est exactement la dérivation du registre.
+  self.assertEqual(published,mod.build())
+  self.assertEqual(published["status"],"partial-non-certified")
+  self.assertIs(published["georeferenced"],False)
+  self.assertIsNone(published["verticalPosition"])
+  self.assertIs(published["usedByEngine"],False)
+  self.assertAlmostEqual(published["length"],62.82,places=2)
+  ivs=published["intervals"]
+  self.assertTrue(all(abs(a["end"]-b["start"])<1e-9 for a,b in zip(ivs,ivs[1:])))
+  # Symétrie de la façade autour de la travée centrale (3,63 + 0,23).
+  lengths=[i["length"] for i in ivs]
+  centre=lengths.index(3.63)
+  self.assertEqual(lengths[centre+1],0.23)
+  self.assertEqual(lengths[:centre],list(reversed(lengths[centre+2:])))
+  # Aucun code du moteur ne lit ce dossier de référence.
+  for f in (ROOT/"src").rglob("*.ts"):
+   self.assertNotIn("reference/PA00086319",f.read_text(encoding="utf-8"))
  def test_existing_interface_unchanged(self):
   main=read("src/main.ts")
   index=read("index.html")

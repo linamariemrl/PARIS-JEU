@@ -6,7 +6,8 @@ import assert from 'node:assert/strict';
 import {readFileSync,readdirSync} from 'node:fs';
 import {
  parseFootprintTable,FootprintIndex,HeritageSwap,modelCoversFootprint,
- boxOfPositions,isBuildingPickProxy
+ boxOfPositions,isBuildingPickProxy,footprintShape,modelShapeFromParts,
+ polygonCoverage
 } from '../src/heritageFootprints.ts';
 
 // --- D3 : lecture stricte et index plusieurs-à-plusieurs -----------------
@@ -41,25 +42,55 @@ assert.ok(!modelCoversFootprint(box(-400,-400,400,400),fp),'maquette démesurée
 assert.equal(boxOfPositions([0,0,0,NaN,0,1]),null,'sommet non fini');
 assert.deepEqual(boxOfPositions([1,5,2,-3,9,4]),box(-3,2,1,4));
 
+// --- Contrôle géométrique réel : polygones, cours, mauvaise forme ---------
+const ring=(pts)=>pts.map(([x,z])=>({x,z}));
+const rect=(x0,z0,x1,z1)=>footprintShape([[ring([[x0,z0],[x1,z0],[x1,z1],[x0,z1]])]]);
+const quad=(x0,z0,x1,z1,y=10)=>({positions:[x0,y,z0,x1,y,z0,x1,y,z1,x0,y,z1],
+ indices:[0,1,2,0,2,3]});
+const flat=(...quads)=>modelShapeFromParts(quads.map(q=>quad(...q)));
+// Cour fermée : emprise 0..40 avec cour 10..30.
+const court=footprintShape([[ring([[0,0],[40,0],[40,40],[0,40]]),
+ ring([[10,10],[30,10],[30,30],[10,30]])]]);
+const filled=flat([0,0,40,40]);
+const ringModel=flat([0,0,40,10],[0,30,40,40],[0,10,10,30],[30,10,40,30]);
+assert.ok(modelCoversFootprint(filled.box,court.box),'la boîte seule accepterait');
+assert.ok(!polygonCoverage(filled,[court]).ok,'cour comblée : débordement rejeté');
+assert.ok(polygonCoverage(ringModel,[court]).ok,'anneau conforme accepté');
+// Même boîte, forme fausse : L contre L miroir.
+const L=footprintShape([[ring([[0,0],[40,0],[40,10],[10,10],[10,40],[0,40]])]]);
+const mirror=flat([0,30,40,40],[30,0,40,30]);
+assert.deepEqual(mirror.box,{minX:0,minZ:0,maxX:40,maxZ:40});
+assert.ok(modelCoversFootprint(mirror.box,L.box));
+const lr=polygonCoverage(mirror,[L]);
+assert.ok(!lr.ok&&lr.coverage<.5,'forme fausse de même boîte rejetée');
+assert.ok(polygonCoverage(flat([0,0,40,10],[0,10,10,40]),[L]).ok,'L exact accepté');
+// Murs seuls (aucune projection horizontale) : rejet.
+const walls=modelShapeFromParts([{positions:[0,0,0,40,0,0,40,20,0,0,20,0],indices:[0,1,2,0,2,3]}]);
+assert.ok(!polygonCoverage(walls,[rect(0,0,40,20)]).ok,'murs seuls rejetés');
+// Léger écart de bord (< 1 m) toléré, décalage de 3 m rejeté.
+assert.ok(polygonCoverage(flat([.6,-.5,40.4,20.5]),[rect(0,0,40,20)]).ok);
+assert.ok(!polygonCoverage(flat([3,0,43,20]),[rect(0,0,40,20)]).ok);
+
 // --- D1/D2/D7 : cycle complet ---------------------------------------------
 const mesh=()=>({isVisible:true,isPickable:false,enabled:true,
  metadata:{faceToBuilding:[0,0]},isEnabled(){return this.enabled;}});
 const rejected=[];
 const swap=new HeritageSwap(()=>index,(ref,id)=>rejected.push([ref,id]));
-const fixture={review:'test-fixture',ref:'PA00000001',box:box(-1,-1,81,21)};
-assert.equal(swap.activate(fixture.ref,fixture.box),false,
+const fixture={review:'test-fixture',ref:'PA00000001',shape:flat([-.5,-.5,80.5,20.5])};
+assert.equal(swap.activate(fixture.ref,fixture.shape),false,
  'aucune extrusion chargée : rien à valider, rien à masquer');
 const mA=mesh(),mB=mesh(),mC=mesh();
-swap.register(A,mA,box(0,0,40,20));
-swap.register(B,mB,box(40,0,80,20));
-swap.register(C,mC,box(500,500,520,520));
+swap.register(A,mA,rect(0,0,40,20));
+swap.register(B,mB,rect(40,0,80,20));
+swap.register(C,mC,rect(500,500,520,520));
 assert.ok(mA.isPickable&&mA.isVisible&&mB.isVisible);
 // Maquette rejetée : l'extrusion reste affichée.
-assert.equal(swap.activate(fixture.ref,box(-1,-1,39,21)),false);
+assert.equal(swap.activate(fixture.ref,flat([-1,-1,39,21])),false,
+ 'maquette couvrant A seule : B non couverte, rejet');
 assert.ok(mA.isVisible&&mB.isVisible&&!swap.isActive(fixture.ref));
 // Maquette validée puis affichée : l'extrusion est masquée, sans
 // désactivation ni réécriture, et reste un proxy de sélection.
-assert.ok(swap.activate(fixture.ref,fixture.box));
+assert.ok(swap.activate(fixture.ref,fixture.shape));
 assert.ok(!mA.isVisible&&!mB.isVisible&&mC.isVisible,'voisin non touché');
 assert.ok(isBuildingPickProxy(mA)&&isBuildingPickProxy(mB),
  'extrusion masquée toujours sélectionnable');
@@ -69,25 +100,32 @@ mA.enabled=false;
 assert.ok(!isBuildingPickProxy(mA),'maillage désactivé jamais sélectionné');
 mA.enabled=true;
 // Changement de LOD : nouvelle maquette activée, extrusion toujours masquée.
-assert.ok(swap.activate(fixture.ref,box(-.5,-.5,80.5,20.5)));
+assert.ok(swap.activate(fixture.ref,flat([-.3,-.3,80.3,20.3])));
 assert.ok(!mA.isVisible);
-// Plusieurs-à-plusieurs : la partie couvre B seule.
-assert.ok(swap.activate('PA00000002',box(40,0,80,20)));
+// Plusieurs-à-plusieurs : la partie couvre B seule. Tant que l'ensemble
+// est actif, la partie est refusée (jamais deux silhouettes sur B).
+assert.ok(swap.conflicts('PA00000002'));
+assert.equal(swap.activate('PA00000002',flat([40,0,80,20])),false,
+ 'partie refusée tant que l\'ensemble occupe B');
 swap.deactivate(fixture.ref);
-assert.ok(mA.isVisible,'A restituée');
-assert.ok(!mB.isVisible,'B reste masquée par la partie active');
+assert.ok(mA.isVisible&&mB.isVisible,'ensemble retiré : A et B restituées');
+assert.ok(swap.activate('PA00000002',flat([40,0,80,20])));
+assert.ok(mA.isVisible,'A non concernée par la partie');
+assert.ok(!mB.isVisible,'B masquée par la partie active');
+assert.equal(swap.activate(fixture.ref,fixture.shape),false,
+ 'ensemble refusé tant que la partie occupe B');
 swap.deactivate('PA00000002');
 assert.ok(mB.isVisible,'retour arrière complet');
 // Tuile rechargée APRÈS la maquette : extrusion masquée à sa création.
-assert.ok(swap.activate(fixture.ref,fixture.box));
+assert.ok(swap.activate(fixture.ref,fixture.shape));
 swap.unregister(A,mA);
 const mA2=mesh();
-swap.register(A,mA2,box(0,0,40,20));
+swap.register(A,mA2,rect(0,0,40,20));
 assert.equal(mA2.isVisible,false);
 // Tuile supplémentaire hors de la maquette : maquette rejetée, extrusions
 // restituées avant le retrait du maillage expert.
 const mB2=mesh();
-swap.register(B,mB2,box(300,0,340,20));
+swap.register(B,mB2,rect(300,0,340,20));
 assert.deepEqual(rejected,[[fixture.ref,B]]);
 assert.ok(!swap.isActive(fixture.ref));
 assert.ok(mA2.isVisible&&mB.isVisible&&mB2.isVisible);

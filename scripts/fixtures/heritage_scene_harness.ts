@@ -2,15 +2,19 @@
 // extrusion IGN <-> maquette experte. Regroupé par esbuild depuis
 // scripts/check_heritage_scene.mjs. Rien ici n'est publié.
 //
-// La « maquette » est un FAUX (`test-fixture`) : un pavé subdivisé calé sur
-// la boîte de l'extrusion IGN, servi par un fetch simulé. Il ne sort jamais
-// de ce banc et ne prétend représenter aucune géométrie réelle.
+// Les « maquettes » sont des FAUX (`test-fixture`) servis par un fetch
+// simulé : une toiture plate triangulée sur le VRAI polygone IGN (cours
+// comprises), et un pavé plein de même boîte englobante qui doit être
+// rejeté. Ils ne sortent jamais de ce banc et ne représentent aucune
+// architecture réelle ; ils éprouvent le mécanisme, pas un monument.
 import {NullEngine,Scene,ArcRotateCamera,Vector3,Ray,Mesh} from '@babylonjs/core';
 import {createMaterials,createTile,getPickedBuilding} from '../../src/buildings';
 import {ArchitecturalModelLibrary,extrusionSwap} from '../../src/architectureModels';
 import {FootprintIndex,parseFootprintTable,setHeritageFootprints,
  isBuildingPickProxy} from '../../src/heritageFootprints';
 import type {Box2} from '../../src/heritageFootprints';
+import earcut from 'earcut';
+import {project} from '../../src/geo';
 import type {TileFile} from '../../src/types';
 import type {ArchitectureDossiers} from '../../src/architectureDossiers';
 
@@ -92,49 +96,80 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
   'D2 : le point POP sélectionne le monument avant remplacement');
 
  // --- D7 + LOD + allers-retours avec la bibliothèque réelle.
- const ownBox=extrusionSwap.footprintBox(input.ref);
- check(ownBox!==null,'D7 : emprise de l\'extrusion enregistrée');
- const box=ownBox!;
- const files:Record<string,unknown>={};
- const model=(tier:string,n:number,offsetX=0)=>{
-  const g=fixtureBox({minX:box.minX-.5,minZ:box.minZ-.5,maxX:box.maxX+.5,maxZ:box.maxZ+.5},
-   40,n,offsetX);
-  return {schema:1,ref:input.ref,units:'m',coordinates:'paris-local-xyz',tier,
-   sourceIds:['test-fixture'],parts:[{name:'test-fixture-'+tier,kind:'wall',
-   positions:g.positions,indices:g.indices,sourceIds:['test-fixture']}]};
+ check(extrusionSwap.footprintBox(input.ref)!==null,'D7 : emprise de l\'extrusion enregistrée');
+ const building=input.tile.buildings[hdvIndex];
+ const rings=building.polygons.map(poly=>poly.map(r=>{
+  const pts=r.map(p=>building.localCoordinates?{x:p[0],z:p[1]}:project(p));
+  const f=pts[0],l=pts[pts.length-1];
+  if(pts.length>2&&Math.hypot(f.x-l.x,f.z-l.z)<.01)pts.pop();
+  return pts;
+ }));
+ /** Toiture plate triangulée sur le polygone IGN réel, cours comprises. */
+ const footprintRoof=(offsetX=0,y=40)=>{
+  const positions:number[]=[],indices:number[]=[];
+  for(const poly of rings){
+   const flat:number[]=[],holes:number[]=[];let n=0;
+   poly.forEach((r,i)=>{if(i>0)holes.push(n);for(const q of r){flat.push(q.x+offsetX,q.z);n++;}});
+   const base=positions.length/3;
+   for(let i=0;i<flat.length;i+=2)positions.push(flat[i],y,flat[i+1]);
+   for(const t of earcut(flat,holes,2))indices.push(base+t);
+  }
+  return {positions,indices};
  };
- files['index.json']={schema:1,models:[{ref:input.ref,x:input.pop.x,z:input.pop.z,
-  sourceIds:['test-fixture'],fullReplacement:true,
+ const asFile=(ref:string,tier:string,g:{positions:number[];indices:number[]})=>({
+  schema:1,ref,units:'m',coordinates:'paris-local-xyz',tier,sourceIds:['test-fixture'],
+  parts:[{name:'test-fixture-'+tier,kind:'roof',positions:g.positions,
+   indices:g.indices,sourceIds:['test-fixture']}]});
+ const model=(tier:string,offsetX=0)=>asFile(input.ref,tier,footprintRoof(offsetX));
+ const lods=(ref:string,max=2500)=>[
+  {tier:'high',maxRadiusMeters:max,file:ref+'-high.json'},
+  {tier:'medium',maxRadiusMeters:max,file:ref+'-medium.json'},
+  {tier:'low',maxRadiusMeters:max,file:ref+'-low.json'}];
+ const indexOf=(entries:{ref:string;max?:number}[])=>({schema:1,models:entries.map(e=>({
+  ref:e.ref,x:input.pop.x,z:input.pop.z,sourceIds:['test-fixture'],fullReplacement:true,
   // Valeur exigée par le moteur ; elle n'existe que dans ce banc d'essai.
-  review:'measured-and-approved',
-  lods:[{tier:'high',maxRadiusMeters:2500,file:input.ref+'-high.json'},
-        {tier:'medium',maxRadiusMeters:2500,file:input.ref+'-medium.json'},
-        {tier:'low',maxRadiusMeters:2500,file:input.ref+'-low.json'}]}]};
- files[input.ref+'-high.json']=model('high',6);
- files[input.ref+'-medium.json']=model('medium',3);
- files[input.ref+'-low.json']=model('low',2);
+  review:'measured-and-approved',lods:lods(e.ref,e.max)}))});
+ type Served=unknown|{network:true}|{truncated:true}|{gate:Promise<void>;body:unknown};
+ let files:Record<string,Served>={};
  let fetches=0;
  (globalThis as any).fetch=async(url:string)=>{
   fetches++;
   const name=String(url).split('/').pop()!;
-  const body=files[name];
-  return {ok:body!==undefined,json:async()=>JSON.parse(JSON.stringify(body))};
+  let body=files[name] as any;
+  if(body?.network)throw new TypeError('Failed to fetch (réseau simulé indisponible)');
+  if(body?.gate){await body.gate;body=body.body;}
+  return {ok:body!==undefined,json:async()=>{
+   if(body?.truncated)throw new SyntaxError('Unexpected end of JSON input');
+   return JSON.parse(JSON.stringify(body));}};
  };
  let clock=0;
  (globalThis as any).performance={now:()=>clock};
  const docs={canPublish:()=>true} as unknown as ArchitectureDossiers;
- const lib=new ArchitecturalModelLibrary(scene,docs,materials);
- await lib.init();
+ let lib=new ArchitecturalModelLibrary(scene,docs,materials);
+ const fresh=async(served:Record<string,Served>)=>{
+  files=served;lib=new ArchitecturalModelLibrary(scene,docs,materials);await lib.init();
+ };
  const step=async(x:number,z:number,radius:number)=>{
   clock+=500;lib.update(x,z,radius,false);await tick();
  };
+ const near=(r:number)=>step(input.pop.x,input.pop.z,r);
+ const away=()=>step(input.pop.x+20000,input.pop.z,300);
  const experts=()=>scene.meshes.filter(m=>m.name.startsWith('monument-mesure-'));
  const ownVisible=()=>own.every(m=>m.isVisible);
  const baselineMeshes=scene.meshes.length,baselineGeometries=scene.geometries.length;
+ const good={'index.json':indexOf([{ref:input.ref}]),
+  [input.ref+'-high.json']:model('high'),[input.ref+'-medium.json']:model('medium'),
+  [input.ref+'-low.json']:model('low')};
+ await fresh({...good});
 
- await step(input.pop.x,input.pop.z,300);
+ await near(300);
  check(experts().length===1&&experts()[0].name.endsWith('high'),'D7 : maquette haute chargée');
  check(!ownVisible(),'D7 : extrusion masquée après affichage de la maquette');
+ const report=extrusionSwap.reports.get(input.ref);
+ check(report&&report.coverage>=.95&&report.spill<=.05,
+  'Polygones : toiture sur le polygone IGN réel acceptée (couverture '+
+  (report?(100*report.coverage).toFixed(1):'?')+' %, débordement '+
+  (report?(100*report.spill).toFixed(1):'?')+' %)');
  check(own.every(m=>m.isEnabled()&&m.isPickable),'D2 : extrusion masquée encore activée');
  check(experts().every(m=>!m.isPickable),'D2 : maquette non sélectionnable');
  check(pickAt(input.pop.x,input.pop.z)?.id===input.ignId,
@@ -148,24 +183,21 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
  check(own.every(m=>!active.has(m)),'Rendu : extrusion masquée absente des maillages rendus');
  check(experts().every(m=>active.has(m)),'Rendu : maquette rendue');
 
- await step(input.pop.x,input.pop.z,900);
+ await near(900);
  check(experts().length===1&&experts()[0].name.endsWith('medium'),
   'LOD : passage haut -> moyen sans double affichage');
  check(!ownVisible(),'LOD : extrusion toujours masquée');
- await step(input.pop.x+20000,input.pop.z,300);
+ await away();
  check(experts().length===0&&ownVisible(),'Caméra éloignée : maquette retirée, extrusion restituée');
 
- for(let i=0;i<25;i++){
-  await step(input.pop.x,input.pop.z,i%2?300:900);
-  await step(input.pop.x+20000,input.pop.z,300);
- }
+ for(let i=0;i<25;i++){await near(i%2?300:900);await away();}
  check(experts().length===0&&ownVisible(),'25 allers-retours : état initial restitué');
  check(scene.meshes.length===baselineMeshes,'25 allers-retours : aucun maillage orphelin ('+
   scene.meshes.length+' / '+baselineMeshes+')');
  check(scene.geometries.length===baselineGeometries,'25 allers-retours : aucune géométrie orpheline');
 
  // Tuile déchargée puis rechargée pendant que la maquette est active.
- await step(input.pop.x,input.pop.z,300);
+ await near(300);
  tile.forEach(m=>m.dispose());
  check(extrusionSwap.footprintBox(input.ref)===null,'Tuile déchargée : emprise désenregistrée');
  tile=createTile(scene,clone(input.tile),materials);
@@ -174,31 +206,89 @@ export async function run(input:Inputs,check:Check):Promise<string[]>{
   'Tuile rechargée tardivement : extrusion masquée dès sa création');
  check(pickAt(input.pop.x,input.pop.z)?.id===input.ignId,
   'Tuile rechargée : sélection toujours possible');
- await step(input.pop.x+20000,input.pop.z,300);
+ await away();
  check(own2.every(m=>m.isVisible)&&experts().length===0,'Tuile rechargée : restitution complète');
+ const visible2=()=>own2.every(m=>m.isVisible);
 
- // Maquette introuvable : l'extrusion reste affichée.
- const savedHigh=files[input.ref+'-high.json'];
- delete files[input.ref+'-high.json'];
- await step(input.pop.x,input.pop.z,300);
- check(experts().length===0&&own2.every(m=>m.isVisible),
-  'Échec de chargement : extrusion conservée, aucune maquette');
- files[input.ref+'-high.json']=savedHigh;
- await step(input.pop.x+20000,input.pop.z,300);
+ // --- Échecs : fichier absent, réseau coupé, JSON tronqué, triangle mal formé.
+ await fresh({...good,[input.ref+'-high.json']:undefined});
+ await near(300);
+ check(experts().length===0&&visible2(),'Fichier absent : extrusion conservée, aucune maquette');
+ await away();
+ await fresh({...good,[input.ref+'-high.json']:{network:true}});
+ await near(300);
+ check(experts().length===0&&visible2(),'Réseau coupé : extrusion conservée, aucune maquette');
+ files[input.ref+'-high.json']=model('high');
+ await near(300);
+ check(experts().length===1&&!visible2(),'Réseau rétabli : maquette chargée au passage suivant');
+ await away();
+ await fresh({...good,[input.ref+'-high.json']:{truncated:true}});
+ await near(300);
+ check(experts().length===0&&visible2(),'JSON tronqué : extrusion conservée, aucune maquette');
+ await away();
+ const broken=footprintRoof();broken.indices[1]=broken.indices[0];
+ await fresh({...good,[input.ref+'-high.json']:asFile(input.ref,'high',broken)});
+ await near(300);
+ check(experts().length===0&&visible2(),'Triangle mal formé : maquette rejetée');
+ await away();
 
- // Maquette décalée de 60 m : rejetée, jamais rechargée.
- files[input.ref+'-medium.json']=model('medium',3,60);
- await step(input.pop.x,input.pop.z,900);
- check(experts().length===0&&own2.every(m=>m.isVisible),
-  'Maquette hors emprise : rejetée, extrusion conservée');
+ // --- Contrôle géométrique sur l'emprise réelle : même boîte, forme fausse.
+ const ownBox=extrusionSwap.footprintBox(input.ref)!;
+ await fresh({...good,[input.ref+'-low.json']:asFile(input.ref,'low',fixtureBox(ownBox,40,4))});
+ await near(2000);
+ const solid=extrusionSwap.reports.get(input.ref);
+ check(experts().length===0&&visible2(),'Pavé plein de même boîte (cours comblées) : rejeté'+
+  (solid?' (débordement '+(100*solid.spill).toFixed(1)+' %)':''));
+ await away();
+ await fresh({...good,[input.ref+'-medium.json']:model('medium',6)});
+ await near(900);
+ check(experts().length===0&&visible2(),'Toiture exacte décalée de 6 m : rejetée');
  const before=fetches;
- await step(input.pop.x,input.pop.z,900);
- await step(input.pop.x,input.pop.z,900);
+ await near(900);await near(900);
  check(fetches===before,'Maquette rejetée : pas de rechargement en boucle');
- const sel=pickAt(input.pop.x,input.pop.z);
- check(sel?.id===input.ignId,'Après rejet : sélection intacte');
+ check(pickAt(input.pop.x,input.pop.z)?.id===input.ignId,'Après rejet : sélection intacte');
+ await away();
+
+ // --- Concurrence : le niveau voulu change pendant que la requête est en vol.
+ let release=()=>{};
+ const gate=new Promise<void>(r=>{release=r;});
+ await fresh({...good,[input.ref+'-high.json']:{gate,body:model('high')}});
+ await near(300);
+ check(experts().length===0&&visible2(),'Requête en vol : rien n\'est encore masqué');
+ await near(900);
+ release();await tick();
+ check(experts().every(m=>!m.name.endsWith('high')),'Réponse périmée (haut) : jetée à l\'arrivée');
+ await near(900);
+ check(experts().length===1&&experts()[0].name.endsWith('medium')&&!visible2(),
+  'Après la course : seul le niveau moyen est affiché');
+ await away();
+ check(experts().length===0&&visible2(),'Course : restitution complète');
+
+ // --- Plusieurs-à-plusieurs dans la scène : deux références, une emprise.
+ const second='PA99999998';
+ const table=parseFootprintTable(input.table);
+ table.entries.push({ref:second,ignIds:[input.ignId],parts:[],status:'test-fixture'});
+ setHeritageFootprints(new FootprintIndex(table));
+ tile.forEach(m=>m.dispose());
+ tile=createTile(scene,clone(input.tile),materials);
+ const own3=tile.filter(m=>m.metadata.heritageIgnId===input.ignId);
+ const visible3=()=>own3.every(m=>m.isVisible);
+ const secondFiles=Object.fromEntries(['high','medium','low'].map(t=>
+  [second+'-'+t+'.json',asFile(second,t,footprintRoof())]));
+ await fresh({...good,...secondFiles,'index.json':indexOf([{ref:input.ref},{ref:second,max:600}])});
+ await near(300);
+ await near(300);
+ check(experts().length===1&&!visible3(),
+  'Deux références sur une emprise : une seule maquette affichée, jamais deux');
+ const first=experts()[0].name;
+ await near(900);
+ await near(900);
+ check(experts().length===1&&!visible3(),'Une référence sort du champ : emprise toujours remplacée');
+ await away();
+ check(experts().length===0&&visible3(),'Plusieurs-à-plusieurs : restitution complète');
+ notes.push('Plusieurs-à-plusieurs : première maquette affichée = '+first+'.');
  check(scene.meshes.filter(m=>m.name.startsWith('monument-mesure-')).length===0,
-  'Après rejet : aucun maillage expert résiduel');
+  'Fin : aucun maillage expert résiduel');
  engine.dispose();
  return notes;
 }

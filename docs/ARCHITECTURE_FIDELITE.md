@@ -1,10 +1,12 @@
-# Reconstruction architecturale documentée — protocole 0.26.3 → 0.27
+# Reconstruction architecturale documentée — protocole 0.26 → 0.27
+
+> **État au 9 novembre 2026 :** version publique **0.26.4**. Le toit LiDAR mesuré de l'Hôtel de Ville est accepté et publié (0.26.4). Aucune maquette architecturale n'est certifiée ; la 0.27 reste verrouillée. Les sections datées ci-dessous conservent la chronologie technique ; les mentions « 0.26.3 » y décrivent l'état d'alors.
 
 ## Principe de véracité
 
 **Une emprise IGN, un volume municipal et un toit dérivé de LiDAR ne sont pas, à eux seuls, une maquette architecturale détaillée.** Ils localisent l'édifice et permettent d'en mesurer certaines surfaces, mais ne donnent pas systématiquement les fenêtres, travées, entablements, balustrades, sculptures, ferronneries, charpentes ou ornements. Toute mesure annoncée « attestée » doit être reliée à un document précis, avec son édition, sa date, ses unités et sa précision publiée. Les mesures inférées d'un dessin non coté sont des estimations, jamais des cotes garanties. Les dimensions du support papier (par ex. 110 × 78,2 cm) ne sont pas celles de la façade représentée.
 
-**Le moteur actuel reste en version 0.26.3.** L'index `public/data/metropole/architecture/models/index.json` est **volontairement vide** : à ce stade aucun maillage monumental intégral n'a passé une revue complète des cotes et des éléments architecturaux. Le jeu conserve donc provisoirement ses bâtiments IGN à l'endroit des monuments ; le panneau des fiches en indique explicitement la limite. Il n'est pas affirmé que la fidélité visuelle est parfaite.
+**Le moteur actuel est en version 0.26.4 (0.26.3 à la rédaction initiale de ce protocole).** L'index `public/data/metropole/architecture/models/index.json` est **volontairement vide** : à ce stade aucun maillage monumental intégral n'a passé une revue complète des cotes et des éléments architecturaux. Le jeu conserve donc provisoirement ses bâtiments IGN à l'endroit des monuments ; le panneau des fiches en indique explicitement la limite. Il n'est pas affirmé que la fidélité visuelle est parfaite.
 
 ## Sources obligatoires et usage géométrique
 
@@ -25,7 +27,7 @@ Le rapport `data/quality/lidar-4e-reconstruction.json` contient désormais un **
 
 La [Ville de Paris indique un campanile à 50 m de hauteur](https://www.paris.fr/pages/l-hotel-de-ville-abrite-cinq-lieux-insolites-7659). Cela fournit une contrainte indépendante de l'attribut de hauteur générale IGN à 25,2 m. La mesure source du campanile est **arrondie**. La géométrie des pixels LiDAR reste une reconstruction de **relief de toiture**, susceptible de différences dues à la végétation, aux éléments masqués ou à la simplification. Elle **ne certifie pas** la fidélité des ornements, des façades, des baies, des sculptures ou du campanile dans leur détail. Une telle certification exige une comparaison aux plans cotés, relevés photogrammétriques et pièces d'exécution.
 
-Le relevé et ses conditions sont accessibles dans la [fiche numérique de l'Hôtel de Ville](../public/data/metropole/architecture/survey-4e.json). Le moteur 3D du 4e utilise le fichier `public/data/4e/roof-lidar.json` lorsqu'il est disponible. **Aucune maquette architecturale monumentale intégrale n'est encore déclarée conforme, et la version reste 0.26.3.**
+Le relevé et ses conditions sont accessibles dans la [fiche numérique de l'Hôtel de Ville](../public/data/metropole/architecture/survey-4e.json). Le moteur 3D du 4e utilise le fichier `public/data/4e/roof-lidar.json` lorsqu'il est disponible. **Aucune maquette architecturale monumentale intégrale n'est encore déclarée conforme.** Ce toit a été publié en 0.26.4.
 
 ## Avancement du relevé métrique — 9 novembre 2026
 
@@ -43,9 +45,9 @@ Le premier contrôle croise **la notice Mérimée** avec **un sommet de l'empris
 
 **Hôtel de Ville :** l'emprise IGN comporte quatre anneaux et 592 sommets. Le registre `public/data/4e/city-volumes.json` atteste **onze polygones de subdivisions**, couvrant **83,1 %** de l'emprise selon son attribut source. Le moteur existant exige 90 % pour remplacer une extrusion intégrale par des subdivisions, notamment parce que leur hauteur intermédiaire n'est pas mesurée. Ces subdivisions sont donc documentées **sans les faire passer pour des masses 3D exactes**.
 
-**Toit LiDAR :** aucune toiture validée ne correspond actuellement à cet édifice dans `public/data/4e/roof-lidar.json`. La génération rejetait mécaniquement les polygones dépassant 500 points alors que l'Hôtel de Ville en comporte 592 avant même l'échantillonnage. La procédure spécialisée `scripts/prepare_lidar_roofs_4e.py` autorise maintenant jusqu'à 3 600 points pour cet identifiant, avec un pas de 2,5 m issu de mesures MNH, et exige au moins 95 % de triangles de toiture effectivement échantillonnés. Les hauteurs demeurent celles de véritables pixels IGN ; si les données manquent ou sont incohérentes, **aucune toiture inventée ne remplace l'IGN existant**. Les façades, baies, sculptures et ornements restent à reconstruire à partir des dessins d'exécution.
+**Toit LiDAR (historique, dépassé) :** au moment de ce relevé, aucune toiture validée ne correspondait à cet édifice dans `public/data/4e/roof-lidar.json` ; elle y figure depuis la 0.26.4 (voir « Toiture mesurée de l'Hôtel de Ville — contrôle validé »). La génération rejetait mécaniquement les polygones dépassant 500 points alors que l'Hôtel de Ville en comporte 592 avant même l'échantillonnage. La procédure spécialisée `scripts/prepare_lidar_roofs_4e.py` autorise maintenant jusqu'à 3 600 points pour cet identifiant, avec un pas de 2,5 m issu de mesures MNH, et exige au moins 95 % de triangles de toiture effectivement échantillonnés. Les hauteurs demeurent celles de véritables pixels IGN ; si les données manquent ou sont incohérentes, **aucune toiture inventée ne remplace l'IGN existant**. Les façades, baies, sculptures et ornements restent à reconstruire à partir des dessins d'exécution.
 
-Le niveau de précision actuel est donc **emprise documentée**, non « maquette parfaite » ni « façade certifiée ». La version reste 0.26.3.
+Le niveau de précision était alors **emprise documentée**, non « maquette parfaite » ni « façade certifiée » ; il est aujourd'hui **emprise et toiture LiDAR mesurées**, façades non reconstruites.
 
 ### Relevé MNH multi-hauteurs — contrôle du campanile
 
@@ -99,24 +101,35 @@ Source d'exploitant : [Chiffres clés](https://www.toureiffel.paris/fr/le-monume
 - **Table de correspondance (D3)** : `public/data/metropole/architecture/heritage-footprints.json`, générée par `scripts/prepare_heritage_footprints.py`. C'est la **seule** source qui dit quelles emprises IGN une maquette remplace : le moteur ne fait plus d'inférence géographique pour le masquage. Règle : le point POP/Mérimée tombe dans le contour IGN (115 références), ou dans une **cour fermée** de ce contour, ce qui désigne sans ambiguïté le bâtiment qui l'entoure (2 références : Garde-Meuble, Invalides). Les 23 autres références (cours d'honneur ouvertes, grands ensembles, point hors emprise) ne sont **pas** rattachées ; la distance à l'emprise la plus proche est notée pour une complétion manuelle. Les 55 dossiers « candidats » sans référence POP n'y figurent pas. Une emprise peut porter plusieurs références et une référence plusieurs emprises.
 - **Maillages séparés (D1)** : à la construction de la tuile, chaque emprise listée reçoit son propre maillage mur et toit, de même couleur que dans les lots. Remplacer revient à `isVisible=false` : aucune réécriture d'indices, aucune allocation, réversible immédiatement.
 - **Proxy de sélection (D2)** : l'extrusion masquée reste activée et sélectionnable. Le prédicat `isBuildingPickProxy` exige `isEnabled()` mais ne teste pas `isVisible` (avec un prédicat, Babylon 8 n'applique plus ses propres tests). Les maquettes ne sont jamais sélectionnables.
-- **Ordre sûr (D7)** : charger, valider (sommets finis, chaque emprise chargée couverte à 80 % au moins avec 2 m de tolérance, diagonale ≤ 600 m), afficher, puis seulement masquer. En cas d'échec, l'extrusion reste. En quittant le lieu, l'extrusion est restituée avant la destruction de la maquette. Une tuile chargée plus tard est masquée dès sa création si la maquette la couvre, sinon la maquette est retirée.
+- **Ordre sûr (D7)** : charger, valider, afficher, puis seulement masquer. En cas d'échec, l'extrusion reste. En quittant le lieu, l'extrusion est restituée avant la destruction de la maquette.
+- **Contrôle géométrique réel** (`polygonCoverage`, `src/heritageFootprints.ts`) : la boîte englobante n'est qu'un précontrôle. L'acceptation compare l'**emprise IGN réelle** (contour extérieur moins les cours fermées) à la **projection horizontale des triangles** de la maquette, par échantillonnage (10 000 points au plus). Il faut au moins **95 %** de l'intérieur de l'emprise couvert et au plus **5 %** de débordement (cour comblée, aile inventée, décalage), hors d'une bande de **1 m** le long des bords. Ce réglage de 1 m est prudent mais **n'est pas encore justifié** par la précision publiée de chaque source : il devra l'être avant toute certification. Toutes les emprises de la référence doivent être chargées ; sinon la validation est différée, pas rejetée. Une maquette murs seuls (sans toiture ni terrasse) ne couvre rien en projection et est rejetée. Coût mesuré : environ 15 ms sur poste de travail pour l'Hôtel de Ville (592 sommets, 3 cours), une seule fois par maquette (résultat mémorisé) ; non mesuré sur téléphone.
+- **Pas de double silhouette** : si une autre référence active (ensemble ou partie) remplace déjà une emprise, une seconde maquette complète sur la même emprise est différée.
 
-**Ce qui est vérifié, et comment :**
+**Ce qui est vérifié, et comment :** quatre niveaux distincts, qui prouvent des choses différentes.
 
-| Comportement | Test unitaire (Node) | Scène Babylon réelle (NullEngine, `npm run test:heritage-scene`) | Navigateur | Android |
+| Comportement | Unitaire Node | Scène Babylon NullEngine | Flux `main.ts` réel (Chromium, WebGL SwiftShader) | Android |
 | --- | --- | --- | --- | --- |
-| Index plusieurs-à-plusieurs, lecture stricte | oui | — | — | non |
-| Mêmes triangles et mêmes bâtiments après séparation (tuile de l'Hôtel de Ville) | — | oui | — | non |
-| Masquage sans toucher les voisins | oui | oui | non (aucune maquette publiée) | non |
-| `scene.pickWithRay` sélectionne le monument via l'extrusion invisible ; sans prédicat Babylon l'ignore | — | oui | non | non |
-| Extrusion masquée absente des maillages rendus, maquette rendue | — | oui | non | non |
-| Changement de LOD sans double affichage | oui | oui | non | non |
-| 25 allers-retours : aucun maillage ni géométrie orphelins | — | oui | non | non |
-| Tuile déchargée puis rechargée pendant que la maquette est active | oui | oui | non | non |
-| Maquette absente ou décalée : extrusion conservée, pas de rechargement en boucle | oui | oui | non | non |
-| Application sans erreur console, monuments affichés sans trou | — | — | oui (Chromium headless, SwiftShader) | non |
+| Index plusieurs-à-plusieurs, lecture stricte | oui | oui (2 références sur l'emprise de l'Hôtel de Ville) | — | non |
+| Polygones : cour comblée, forme fausse de même boîte, murs seuls, décalage | oui (formes synthétiques) | oui (emprise réelle : pavé plein rejeté, débordement 91,9 % ; toiture exacte acceptée à 100 % ; décalage de 6 m rejeté) | — | non |
+| Mêmes triangles et mêmes bâtiments après séparation | — | oui | — | non |
+| Masquage sans toucher les voisins | oui | oui | oui (capture) | non |
+| Sélection via l'extrusion invisible | oui (prédicat) | oui (`pickWithRay`) | **oui : tap au centre, fiche « Hôtel de ville » ouverte, avec et sans maquette** | non |
+| Changement de LOD sans double affichage | oui | oui | — | non |
+| 25 allers-retours sans maillage ni géométrie orphelins | — | oui | — | non |
+| Tuile rechargée pendant que la maquette est active | oui | oui | — | non |
+| Fichier absent, réseau coupé puis rétabli, JSON tronqué, triangle mal formé | — | oui | — | non |
+| Niveau changé pendant une requête en vol | — | oui (réponse périmée jetée) | — | non |
+| Mode quartiers sur le même tap | — | — | **non testé** : `quarters.json` est produit par la CI et absent du build local | non |
 
-La maquette des essais est un **faux** marqué `test-fixture`, défini dans les scripts d'essai et jamais publié. L'index des modèles reste vide : la substitution n'a donc **jamais** tourné en jeu avec une vraie maquette.
+Les maquettes des essais sont des **faux** marqués `test-fixture` : un pavé ou une toiture plate triangulée sur le polygone IGN. Dans le flux navigateur (`scripts/browser/check_heritage_main_flow.mjs`, hors CI), ils sont injectés par **interception réseau** ; le dossier de l'Hôtel de Ville y est aussi passé à `publicationAllowed=true` dans la seule réponse interceptée. Le dépôt n'est pas modifié, l'index des modèles reste vide, et **aucun modèle d'archive réel n'a traversé cette chaîne**. Résultat du flux réel : 65 → 64 draw calls (−2 extrusion, +1 maquette), sélection identique. Captures : [avec la maquette factice](preuves/r02-flux-main-maquette-factice.png), [sans maquette](preuves/r02-flux-main-sans-maquette.png).
+
+### Corrections R02 restantes : D4, D5, D6
+
+Définitions reprises de la navette R02 (section R02-D) ; **aucune n'est implémentée** dans cette PR.
+
+- **D4, remplacement partiel par sous-ensemble.** Remplacer le booléen `fullReplacement` par une liste de parties certifiées (`partId`, emprise 2D, `sourceIds`, statut) ; ne masquer que la portion d'extrusion couverte par une partie chargée. Tant que la découpe n'est pas fiable, ne rien masquer et superposer la pièce experte avec un léger décalage contrôlé, plutôt que de créer des trous. Fichiers : `src/architectureModels.ts`, `src/heritageFootprints.ts`, `src/buildings.ts`, schéma de `models/index.json`. Manque : découpe géométrique des extrusions par partie, et une première partie réellement certifiée. Réussite : une seule façade certifiée affichée sans masquer le reste, cours et LOD compris, deux monuments sur une emprise sans double silhouette ni double sélection.
+- **D5, repère des modèles.** Master en EPSG:2154 avec une origine propre (`originL93`) et sommets relatifs ; le chargeur applique la transformation vers la scène depuis `registration/PA########.json`. Manque : un calage réel (points d'appui et résidus). Réussite : changer `CENTER` dans `src/geo.ts` ne déplace pas une maquette par rapport à son emprise.
+- **D6, LOD avec hystérésis.** Seuils montants et descendants distincts (exemple à calibrer : 700 m / 600 m) et chargement du niveau suivant seulement quand le précédent est prêt. Réussite : aucun aller-retour de chargement pendant une orbite à rayon constant proche d'un seuil.
 
 ### Coût mesuré des maillages séparés
 
@@ -136,6 +149,17 @@ Conclusion limitée : environ **+8 draw calls (+7 %)** en vue fixe sur l'Hôtel 
 
 ### Registre des cotes transcrites
 
-`public/data/metropole/architecture/measurements/PA00086319.json` consigne les cotes **lues** sur la planche BHdV CC64_PL34 (plan de la 14e assise du corps central, façade sur la place, 1878), avec la zone exacte de l'image, le lecteur et le statut. Exemples : hauteur d'assise 0,42 m, demi-façades 29,45 m et 26,05 m, travée 3,86 m, trumeaux 0,46 m. **Ce ne sont pas des cotes vérifiées du bâtiment actuel** : la feuille n'est ni étalonnée ni géoréférencée, et la chaîne de cotes de la demi-façade gauche ne se referme pas encore sur sa cote générale (environ 24,8 m lus contre 29,45 m inscrits). Le garde-fou du dossier (aucune planche BHdV dans `measurements` de `dossiers.json`) est conservé. Aucune géométrie du moteur n'est dérivée de ces lectures.
+`public/data/metropole/architecture/measurements/PA00086319.json` consigne les cotes **lues** sur la planche BHdV CC64_PL34 (plan de la 14e assise du corps central, façade sur la place, 1878), avec la zone exacte de l'image, le lecteur et le statut.
 
-**Limite de la présente livraison :** aucun modèle certifié n'est encore disponible. La lecture des vrais cahiers de calepinage est une première étape documentaire, pas l'achèvement de l'Hôtel de Ville ou une promesse d'exactitude au millimètre.
+**Contrôle de fermeture : atteint.** La première lecture (environ 24,8 m contre 29,45 m) s'arrêtait à l'axe S ; la chaîne se poursuit au-delà. Chaque moitié est désormais transcrite segment par segment, avec ses deux extrémités :
+
+- moitié gauche : 0,76 + 0,46 + 1,04 + 0,46 + 8,18 + 0,46 + 1,04 + 0,46 + 3,86 + 0,46 + 3,86 + 0,46 + 3,86 + 0,46 + 3,63 = **29,45** (cote inscrite 29,45) ;
+- moitié droite : 0,23 + 0,46 + 3,86 + 0,46 + 3,86 + 0,46 + 3,86 + 0,46 + 1,04 + 0,46 + 8,18 + 0,46 + 1,04 + 0,46 + 0,76 = **26,05** (cote inscrite 26,05).
+
+La jonction 3,63 + 0,23 redonne l'entraxe courant de 3,86, et la façade est symétrique autour de cette travée centrale : 55,50 m entre les bases des tourelles (3,66 chacune, total 62,82 m sous réserve que les cotes des tourelles soient prises sur la même ligne). Ces contrôles sont **recalculés** par les tests à partir des segments, jamais recopiés.
+
+Cela valide la **lecture** du dessin, **pas l'état actuel** : la feuille n'est ni étalonnée ni géoréférencée, la position verticale de l'assise est inconnue, et la comparaison avec l'emprise IGN (généralisée à environ 1 m) n'isole pas le corps central. Le garde-fou du dossier (aucune planche BHdV dans `measurements` de `dossiers.json`) est conservé.
+
+**Première géométrie partielle :** `public/data/metropole/architecture/reference/PA00086319/cc64-pl34-assise14-rythme.json`, dérivée par `scripts/derive_cc64_rhythm.py` du seul registre. C'est le rythme à une dimension de la façade (32 intervalles, 62,82 m), au statut `partial-non-certified` : pas de profondeurs, pas de hauteur, pas de calage, et **aucun code du moteur ne le lit** (vérifié par test). Ce n'est pas une façade.
+
+**Restant à faire pour l'Hôtel de Ville :** lire CC16_pl39 (tourelle, baies), CC76_PL04 (profils), la planche 5 Carnavalet et le plan Deslandes ; établir les profondeurs (0,535 et 0,47 lues, repères à fixer) et la hauteur des assises ; caler la feuille en EPSG:2154 sur plusieurs points avec résidus ; confronter au LiDAR. Le toit MNH accepté (98,26 %, 3 490 triangles) est conservé tel quel.

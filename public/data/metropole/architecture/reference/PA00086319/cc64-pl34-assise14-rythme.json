@@ -1,0 +1,249 @@
+{
+ "schema": 1,
+ "ref": "PA00086319",
+ "kind": "facade-rhythm-1d",
+ "status": "partial-non-certified",
+ "source": "bhdv-cc64-pl34",
+ "derivedFrom": "public/data/metropole/architecture/measurements/PA00086319.json",
+ "generatedBy": "scripts/derive_cc64_rhythm.py",
+ "axis": "le long de la façade sur la place, de gauche à droite sur la feuille",
+ "origin": "bord gauche de la base de la tourelle gauche (14e assise)",
+ "unit": "m (cotes du dessin de 1878)",
+ "georeferenced": false,
+ "verticalPosition": null,
+ "courseHeight": 0.42,
+ "depths": null,
+ "usedByEngine": false,
+ "limits": [
+  "Les deux bases de tourelle (3,66) sont supposées sur la même ligne que les chaînes ; à confirmer.",
+  "Aucune profondeur de saillie ni de niche, aucune hauteur : pas un volume.",
+  "Non comparé à l'état actuel ; non calé en EPSG:2154."
+ ],
+ "intervals": [
+  {
+   "start": 0.0,
+   "end": 3.66,
+   "length": 3.66,
+   "element": "tourelle-gauche-base",
+   "from": "corps-central-boccador/facade-place/tourelle/base-totale"
+  },
+  {
+   "start": 3.66,
+   "end": 4.42,
+   "length": 0.76,
+   "element": "L-a",
+   "from": "cc64-assise14-moitie-gauche#1"
+  },
+  {
+   "start": 4.42,
+   "end": 4.88,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-gauche#2"
+  },
+  {
+   "start": 4.88,
+   "end": 5.92,
+   "length": 1.04,
+   "element": "entre-saillies",
+   "from": "cc64-assise14-moitie-gauche#3"
+  },
+  {
+   "start": 5.92,
+   "end": 6.38,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-gauche#4"
+  },
+  {
+   "start": 6.38,
+   "end": 14.56,
+   "length": 8.18,
+   "element": "travee-large",
+   "from": "cc64-assise14-moitie-gauche#5"
+  },
+  {
+   "start": 14.56,
+   "end": 15.02,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-gauche#6"
+  },
+  {
+   "start": 15.02,
+   "end": 16.06,
+   "length": 1.04,
+   "element": "entre-saillies",
+   "from": "cc64-assise14-moitie-gauche#7"
+  },
+  {
+   "start": 16.06,
+   "end": 16.52,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-gauche#8"
+  },
+  {
+   "start": 16.52,
+   "end": 20.38,
+   "length": 3.86,
+   "element": "travee",
+   "from": "cc64-assise14-moitie-gauche#9"
+  },
+  {
+   "start": 20.38,
+   "end": 20.84,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-gauche#10"
+  },
+  {
+   "start": 20.84,
+   "end": 24.7,
+   "length": 3.86,
+   "element": "travee",
+   "from": "cc64-assise14-moitie-gauche#11"
+  },
+  {
+   "start": 24.7,
+   "end": 25.16,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-gauche#12"
+  },
+  {
+   "start": 25.16,
+   "end": 29.02,
+   "length": 3.86,
+   "element": "travee",
+   "from": "cc64-assise14-moitie-gauche#13"
+  },
+  {
+   "start": 29.02,
+   "end": 29.48,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-gauche#14"
+  },
+  {
+   "start": 29.48,
+   "end": 33.11,
+   "length": 3.63,
+   "element": "travee-centrale-partie-gauche",
+   "from": "cc64-assise14-moitie-gauche#15"
+  },
+  {
+   "start": 33.11,
+   "end": 33.34,
+   "length": 0.23,
+   "element": "travee-centrale-partie-droite",
+   "from": "cc64-assise14-moitie-droite#1"
+  },
+  {
+   "start": 33.34,
+   "end": 33.8,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-droite#2"
+  },
+  {
+   "start": 33.8,
+   "end": 37.66,
+   "length": 3.86,
+   "element": "travee",
+   "from": "cc64-assise14-moitie-droite#3"
+  },
+  {
+   "start": 37.66,
+   "end": 38.12,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-droite#4"
+  },
+  {
+   "start": 38.12,
+   "end": 41.98,
+   "length": 3.86,
+   "element": "travee",
+   "from": "cc64-assise14-moitie-droite#5"
+  },
+  {
+   "start": 41.98,
+   "end": 42.44,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-droite#6"
+  },
+  {
+   "start": 42.44,
+   "end": 46.3,
+   "length": 3.86,
+   "element": "travee",
+   "from": "cc64-assise14-moitie-droite#7"
+  },
+  {
+   "start": 46.3,
+   "end": 46.76,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-droite#8"
+  },
+  {
+   "start": 46.76,
+   "end": 47.8,
+   "length": 1.04,
+   "element": "entre-saillies",
+   "from": "cc64-assise14-moitie-droite#9"
+  },
+  {
+   "start": 47.8,
+   "end": 48.26,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-droite#10"
+  },
+  {
+   "start": 48.26,
+   "end": 56.44,
+   "length": 8.18,
+   "element": "travee-large",
+   "from": "cc64-assise14-moitie-droite#11"
+  },
+  {
+   "start": 56.44,
+   "end": 56.9,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-droite#12"
+  },
+  {
+   "start": 56.9,
+   "end": 57.94,
+   "length": 1.04,
+   "element": "entre-saillies",
+   "from": "cc64-assise14-moitie-droite#13"
+  },
+  {
+   "start": 57.94,
+   "end": 58.4,
+   "length": 0.46,
+   "element": "trumeau",
+   "from": "cc64-assise14-moitie-droite#14"
+  },
+  {
+   "start": 58.4,
+   "end": 59.16,
+   "length": 0.76,
+   "element": "retour avant tourelle",
+   "from": "cc64-assise14-moitie-droite#15"
+  },
+  {
+   "start": 59.16,
+   "end": 62.82,
+   "length": 3.66,
+   "element": "tourelle-droite-base",
+   "from": "corps-central-boccador/facade-place/tourelle/base-totale"
+  }
+ ],
+ "length": 62.82
+}

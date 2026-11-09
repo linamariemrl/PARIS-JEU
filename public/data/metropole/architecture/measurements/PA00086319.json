@@ -8,14 +8,17 @@
     "transcribed-ambiguous": "Cote inscrite, mais un chiffre au moins reste douteux ; ne pas utiliser en géométrie.",
     "not-yet-transcribed": "Cote non encore lue ; value reste null."
   },
-  "notice": "Aucune de ces valeurs n'est une cote vérifiée sur le bâtiment actuel. Ce sont des lectures de cotes inscrites sur des dessins d'exécution de 1878. Elles ne sont pas encore géoréférencées, et la chaîne de cotes de la demi-façade gauche ne se referme pas encore sur sa cote générale. Aucune géométrie du moteur n'en est dérivée.",
+  "notice": "Aucune de ces valeurs n'est une cote vérifiée sur le bâtiment actuel. Ce sont des lectures de cotes inscrites sur un dessin d'exécution de 1878, au niveau de la 14e assise seulement. Les deux chaînes de cotes se referment exactement sur leurs cotes générales et la façade est symétrique, ce qui valide la LECTURE, pas l'état actuel. Feuille non étalonnée graphiquement, non géoréférencée ; position verticale de l'assise inconnue.",
   "sources": [
     {
       "sourceId": "bhdv-cc64-pl34",
       "sheet": "CC64_PL34 — Attachement de maçonnerie n° 97, Exercice 1878, Annexe n° 316 ; Riffaud et Cie entrepreneurs ; Ballu et Deperthes architectes ; Salard inspecteur",
       "title": "Bâtiment central, Boccador, rez-de-chaussée — Façade sur la place de l'Hôtel-de-Ville — Plan de la 14e assise",
       "image": "https://bibliotheques-specialisees.paris.fr/in/dz/caf/ed9/621/CC64_PL34.xml",
-      "imagePixels": [12650, 8139],
+      "imagePixels": [
+        12650,
+        8139
+      ],
       "dateRepresented": "1878",
       "scale": "non relevée : aucune échelle graphique lue à ce jour",
       "consulted": "2026-11-09"
@@ -31,7 +34,15 @@
       "inscription": "Plan de la 14e Assise (Hauteur 0,42) (sauf les morceaux cotés dans des ronds)",
       "sourceId": "bhdv-cc64-pl34",
       "sheetLocator": "titre du plan supérieur, centre de la feuille",
-      "imageCrop": {"level": 13, "box": [0.44, 0.295, 0.68, 0.315]},
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.44,
+          0.295,
+          0.68,
+          0.315
+        ]
+      },
       "extentEstablished": true,
       "dateRepresented": "1878",
       "currentStateVerified": false,
@@ -48,13 +59,21 @@
       "inscription": "29m.45",
       "sourceId": "bhdv-cc64-pl34",
       "sheetLocator": "ligne de cote générale sous le plan « Moitié à gauche de la façade », à gauche de l'axe S",
-      "imageCrop": {"level": 13, "box": [0.38, 0.475, 0.58, 0.505]},
-      "extentEstablished": false,
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.38,
+          0.475,
+          0.58,
+          0.505
+        ]
+      },
+      "extentEstablished": true,
       "dateRepresented": "1878",
       "currentStateVerified": false,
       "uncertaintyMeters": null,
       "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
-      "notes": "Contrôle de fermeture NON atteint : la chaîne de cotes partielles lue (tourelle 1,2? + 1,16 + 1,2?, puis 0,76 + 0,46 + 1,04 + 0,46 + 8,18 + 0,46 + 1,04 + 0,46 + 3,86 + 0,46 + 3,86) totalise environ 24,8 m. Les extrémités de la ligne 29,45 restent donc à établir."
+      "notes": "Fermeture exacte : chaîne de 15 segments, du bord droit de la base de la tourelle gauche à la ligne de rappel de la travée centrale (voir chains[0]). La première lecture (24,8 m) s'arrêtait à l'axe S et omettait 0,46 + 3,86 + 0,46 + 3,63."
     },
     {
       "elementId": "corps-central-boccador/facade-place/moitie-droite/longueur-generale",
@@ -65,13 +84,21 @@
       "inscription": "26.05",
       "sourceId": "bhdv-cc64-pl34",
       "sheetLocator": "ligne de cote générale sous le plan « Moitié à droite de la façade »",
-      "imageCrop": {"level": 14, "box": [0.52, 0.868, 0.58, 0.88]},
-      "extentEstablished": false,
+      "imageCrop": {
+        "level": 14,
+        "box": [
+          0.52,
+          0.868,
+          0.58,
+          0.88
+        ]
+      },
+      "extentEstablished": true,
       "dateRepresented": "1878",
       "currentStateVerified": false,
       "uncertaintyMeters": null,
       "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
-      "notes": "Ne pas additionner à 29,45 pour obtenir une façade totale : les deux lignes n'ont pas d'extrémités établies et leur dissymétrie n'est pas expliquée."
+      "notes": "Fermeture exacte : chaîne de 15 segments, de la travée centrale (0,23) au bord gauche de la base de la tourelle droite (voir chains[1])."
     },
     {
       "elementId": "corps-central-boccador/facade-place/travee-courante/entraxe",
@@ -82,7 +109,15 @@
       "inscription": "3.86 (répété sur les deux moitiés)",
       "sourceId": "bhdv-cc64-pl34",
       "sheetLocator": "chaîne de cotes inférieure, travées proches de l'axe S, moitiés gauche et droite",
-      "imageCrop": {"level": 14, "box": [0.455, 0.455, 0.56, 0.492]},
+      "imageCrop": {
+        "level": 14,
+        "box": [
+          0.455,
+          0.455,
+          0.56,
+          0.492
+        ]
+      },
       "extentEstablished": false,
       "dateRepresented": "1878",
       "currentStateVerified": false,
@@ -99,7 +134,15 @@
       "inscription": "0.46",
       "sourceId": "bhdv-cc64-pl34",
       "sheetLocator": "chaîne de cotes inférieure, saillies rectangulaires",
-      "imageCrop": {"level": 14, "box": [0.17, 0.455, 0.275, 0.492]},
+      "imageCrop": {
+        "level": 14,
+        "box": [
+          0.17,
+          0.455,
+          0.275,
+          0.492
+        ]
+      },
       "extentEstablished": true,
       "dateRepresented": "1878",
       "currentStateVerified": false,
@@ -116,7 +159,15 @@
       "inscription": "1.04",
       "sourceId": "bhdv-cc64-pl34",
       "sheetLocator": "chaîne de cotes inférieure, entre deux saillies de 0,46 (niche cintrée cotée 0,47)",
-      "imageCrop": {"level": 14, "box": [0.17, 0.455, 0.275, 0.492]},
+      "imageCrop": {
+        "level": 14,
+        "box": [
+          0.17,
+          0.455,
+          0.275,
+          0.492
+        ]
+      },
       "extentEstablished": true,
       "dateRepresented": "1878",
       "currentStateVerified": false,
@@ -133,7 +184,15 @@
       "inscription": "8.18",
       "sourceId": "bhdv-cc64-pl34",
       "sheetLocator": "chaîne de cotes inférieure, moitié gauche (et moitié droite, même valeur)",
-      "imageCrop": {"level": 14, "box": [0.265, 0.455, 0.37, 0.492]},
+      "imageCrop": {
+        "level": 14,
+        "box": [
+          0.265,
+          0.455,
+          0.37,
+          0.492
+        ]
+      },
       "extentEstablished": false,
       "dateRepresented": "1878",
       "currentStateVerified": false,
@@ -147,23 +206,618 @@
       "value": null,
       "unit": "m",
       "status": "transcribed-ambiguous",
-      "inscription": "1.2? / 1.16 / 1.2? ; diagonales 0.50 ; intérieur 1.84",
+      "inscription": "1.2? / 1.16 / 1.2? ; total 3.66 ; diagonales 0.50 ; intérieur 1.84",
       "sourceId": "bhdv-cc64-pl34",
       "sheetLocator": "tourelle octogonale d'angle, moitié gauche",
-      "imageCrop": {"level": 14, "box": [0.095, 0.465, 0.185, 0.5]},
+      "imageCrop": {
+        "level": 14,
+        "box": [
+          0.095,
+          0.465,
+          0.185,
+          0.5
+        ]
+      },
       "extentEstablished": false,
       "dateRepresented": "1878",
       "currentStateVerified": false,
       "uncertaintyMeters": null,
       "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
-      "notes": "Le dernier chiffre des deux segments extérieurs (1,25 / 1,26 / 1,28) est surchargé ; value laissée à null."
+      "notes": "Total 3,66 lisible : les deux segments extérieurs totalisent 2,50 m (1,25 chacun si symétriques), mais chacun reste surchargé ; value laissée à null."
+    },
+    {
+      "elementId": "corps-central-boccador/facade-place/tourelle/base-totale",
+      "property": "overall_length",
+      "value": 3.66,
+      "unit": "m",
+      "status": "transcribed-legible",
+      "inscription": "3.66",
+      "sourceId": "bhdv-cc64-pl34",
+      "sheetLocator": "sous la base de la tourelle gauche, et sous celle de droite",
+      "imageCrop": {
+        "level": 14,
+        "box": [
+          0.075,
+          0.47,
+          0.2,
+          0.505
+        ]
+      },
+      "extentEstablished": true,
+      "dateRepresented": "1878",
+      "currentStateVerified": false,
+      "uncertaintyMeters": null,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": ""
     }
   ],
   "gaps": [
-    "Élévations : aucune hauteur de niveau, de corniche, de baie ou de toiture n'est lue sur cette feuille (plan d'assise uniquement).",
+    "Élévations : aucune hauteur de niveau, de corniche, de baie ou de toiture n'est lue sur cette feuille (plan d'assise uniquement) ; position verticale de la 14e assise inconnue.",
+    "Profondeurs des saillies (0,535 répété) et des niches (0,47) : lues mais repères de départ non établis, non transcrites en valeur.",
     "Échelle graphique, orientation et calage EPSG:2154 de la feuille : non établis.",
-    "Contrôle de fermeture de la demi-façade gauche : non atteint (≈ 24,8 m lus contre 29,45 m inscrits).",
-    "État actuel : aucune comparaison avec le LiDAR HD ou une photogrammétrie actuelle.",
+    "État actuel : comparaison avec l'emprise IGN non concluante (emprise généralisée à environ 1 m, corps central non isolé) ; pas de comparaison LiDAR ni photogrammétrique.",
     "Feuilles CC16_pl39, CC76_PL04, planche 5 Carnavalet (Wuhrer) et plan Deslandes : non transcrites dans ce registre."
+  ],
+  "chains": [
+    {
+      "chainId": "cc64-assise14-moitie-gauche",
+      "title": "Moitié à gauche de la façade, chaîne inférieure",
+      "sourceId": "bhdv-cc64-pl34",
+      "imageLevel": 13,
+      "direction": "de gauche à droite sur la feuille",
+      "start": "ligne de rappel au bord droit de la base de la tourelle gauche (croix commune à la cote 3,66 de la tourelle et au départ de 0,76)",
+      "end": "ligne de rappel commune aux flèches de 3,63 et de 29,45 ; une cote 0,23 est inscrite au-delà",
+      "segments": [
+        {
+          "order": 1,
+          "value": 0.76,
+          "unit": "m",
+          "element": "L-a",
+          "note": "retour après tourelle",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.17,
+              0.455,
+              0.275,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 2,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "saillie",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.17,
+              0.455,
+              0.275,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 3,
+          "value": 1.04,
+          "unit": "m",
+          "element": "entre-saillies",
+          "note": "niche cintrée 0,47",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.17,
+              0.455,
+              0.275,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 4,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "saillie",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.17,
+              0.455,
+              0.275,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 5,
+          "value": 8.18,
+          "unit": "m",
+          "element": "travee-large",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.265,
+              0.455,
+              0.37,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 6,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.36,
+              0.455,
+              0.465,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 7,
+          "value": 1.04,
+          "unit": "m",
+          "element": "entre-saillies",
+          "note": "niche cintrée 0,47",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.36,
+              0.455,
+              0.465,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 8,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.36,
+              0.455,
+              0.465,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 9,
+          "value": 3.86,
+          "unit": "m",
+          "element": "travee",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.36,
+              0.455,
+              0.465,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 10,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.455,
+              0.455,
+              0.56,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 11,
+          "value": 3.86,
+          "unit": "m",
+          "element": "travee",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.455,
+              0.455,
+              0.56,
+              0.492
+            ]
+          }
+        },
+        {
+          "order": 12,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.52,
+              0.44,
+              0.76,
+              0.5
+            ]
+          }
+        },
+        {
+          "order": 13,
+          "value": 3.86,
+          "unit": "m",
+          "element": "travee",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.52,
+              0.44,
+              0.76,
+              0.5
+            ]
+          }
+        },
+        {
+          "order": 14,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.52,
+              0.44,
+              0.76,
+              0.5
+            ]
+          }
+        },
+        {
+          "order": 15,
+          "value": 3.63,
+          "unit": "m",
+          "element": "travee-centrale-partie-gauche",
+          "note": "se poursuit par 0,23 sur la moitié droite",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.52,
+              0.44,
+              0.76,
+              0.5
+            ]
+          }
+        }
+      ],
+      "inscribedTotal": 29.45,
+      "inscribedTotalCrop": {
+        "level": 13,
+        "box": [
+          0.38,
+          0.475,
+          0.58,
+          0.505
+        ]
+      },
+      "sumOfSegments": 29.45,
+      "closure": {
+        "difference": 0.0,
+        "status": "closed"
+      },
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09"
+    },
+    {
+      "chainId": "cc64-assise14-moitie-droite",
+      "title": "Moitié à droite de la façade, chaîne inférieure",
+      "sourceId": "bhdv-cc64-pl34",
+      "imageLevel": 13,
+      "direction": "de gauche à droite sur la feuille",
+      "start": "ligne de rappel de départ de 0,23 (prolongement de la travée centrale)",
+      "end": "ligne de rappel au bord gauche de la base de la tourelle droite",
+      "segments": [
+        {
+          "order": 1,
+          "value": 0.23,
+          "unit": "m",
+          "element": "travee-centrale-partie-droite",
+          "note": "complète 3,63 de la moitié gauche",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.29,
+              0.84,
+              0.57,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 2,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.29,
+              0.84,
+              0.57,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 3,
+          "value": 3.86,
+          "unit": "m",
+          "element": "travee",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.29,
+              0.84,
+              0.57,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 4,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.29,
+              0.84,
+              0.57,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 5,
+          "value": 3.86,
+          "unit": "m",
+          "element": "travee",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.29,
+              0.84,
+              0.57,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 6,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.29,
+              0.84,
+              0.57,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 7,
+          "value": 3.86,
+          "unit": "m",
+          "element": "travee",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.29,
+              0.84,
+              0.57,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 8,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.56,
+              0.84,
+              0.87,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 9,
+          "value": 1.04,
+          "unit": "m",
+          "element": "entre-saillies",
+          "note": "niche cintrée 0,47",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.56,
+              0.84,
+              0.87,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 10,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.56,
+              0.84,
+              0.87,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 11,
+          "value": 8.18,
+          "unit": "m",
+          "element": "travee-large",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.56,
+              0.84,
+              0.87,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 12,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.56,
+              0.84,
+              0.87,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 13,
+          "value": 1.04,
+          "unit": "m",
+          "element": "entre-saillies",
+          "note": "niche cintrée 0,47",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.56,
+              0.84,
+              0.87,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 14,
+          "value": 0.46,
+          "unit": "m",
+          "element": "trumeau",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.56,
+              0.84,
+              0.87,
+              0.885
+            ]
+          }
+        },
+        {
+          "order": 15,
+          "value": 0.76,
+          "unit": "m",
+          "element": "retour avant tourelle",
+          "note": "",
+          "imageCrop": {
+            "level": 13,
+            "box": [
+              0.56,
+              0.84,
+              0.87,
+              0.885
+            ]
+          }
+        }
+      ],
+      "inscribedTotal": 26.05,
+      "inscribedTotalCrop": {
+        "level": 14,
+        "box": [
+          0.52,
+          0.868,
+          0.58,
+          0.88
+        ]
+      },
+      "sumOfSegments": 26.05,
+      "closure": {
+        "difference": 0.0,
+        "status": "closed"
+      },
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09"
+    }
+  ],
+  "derived": [
+    {
+      "id": "travee-centrale",
+      "value": 3.86,
+      "unit": "m",
+      "formula": "3,63 (moitié gauche) + 0,23 (moitié droite)",
+      "status": "derived-from-closed-chains",
+      "check": "égale à l'entraxe courant 3,86 lu ailleurs, ce qui confirme la jonction des deux moitiés"
+    },
+    {
+      "id": "facade-entre-tourelles",
+      "value": 55.5,
+      "unit": "m",
+      "formula": "29,45 + 26,05",
+      "status": "derived-from-closed-chains",
+      "check": "chaîne symétrique autour de la travée centrale : 2 × 25,82 + 3,86 = 55,50"
+    },
+    {
+      "id": "facade-tourelles-comprises",
+      "value": 62.82,
+      "unit": "m",
+      "formula": "3,66 + 55,50 + 3,66",
+      "status": "derived-ambiguous-endpoints",
+      "check": "suppose que les cotes 3,66 des deux tourelles sont prises sur la même ligne que les chaînes ; à confirmer"
+    }
   ]
 }

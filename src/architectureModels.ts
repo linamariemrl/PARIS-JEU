@@ -2,8 +2,8 @@ import {Mesh,Scene,VertexData} from '@babylonjs/core';
 import type {BuildingMaterials} from './buildings';
 import {priorityHeritageRole} from './heritagePriorities';
 import {ArchitectureDossiers} from './architectureDossiers';
-import {HeritageSwap,heritageFootprints,boxOfPositions,unionBox} from './heritageFootprints';
-import type {Box2} from './heritageFootprints';
+import {HeritageSwap,heritageFootprints,modelShapeFromParts} from './heritageFootprints';
+import type {ModelShape} from './heritageFootprints';
 
 /** Bascule unique partagée avec la construction des tuiles (R02-D1/D2/D7).
  * Les extrusions des emprises listées dans `heritage-footprints.json` sont
@@ -21,7 +21,7 @@ interface ModelPart{name:string;kind:'wall'|'roof'|'detail';
 interface ModelFile{schema:1;ref:string;units:'m';
  coordinates:'paris-local-xyz';tier:ModelLod['tier'];
  sourceIds:string[];parts:ModelPart[];}
-interface Rendered{tier:ModelLod['tier'];meshes:Mesh[];box:Box2;}
+interface Rendered{tier:ModelLod['tier'];meshes:Mesh[];shape:ModelShape;}
 const prefix='data/metropole/architecture/models/';
 /** Modèles mesurés, non schématiques. L'index est vide tant qu'aucun
  * relevé coté + contrôle géométrique n'a été effectivement réalisé.
@@ -95,6 +95,11 @@ export class ArchitecturalModelLibrary{
       !part.positions.every(p=>Number.isFinite(p)&&Math.abs(p)<85000)||
       !part.indices.every(i=>Number.isInteger(i)&&i>=0&&
         i<part.positions.length/3))return false;
+   // Triangle mal formé (sommet répété) : fichier incohérent, rejeté.
+   for(let k=0;k<part.indices.length;k+=3){
+    const a=part.indices[k],b=part.indices[k+1],c=part.indices[k+2];
+    if(a===b||b===c||a===c)return false;
+   }
    vertices+=part.positions.length/3;
    triangles+=part.indices.length/3;
   }
@@ -114,15 +119,22 @@ export class ArchitecturalModelLibrary{
     throw Error('Maillage sans provenance ou hors limites techniques');
    if(this.wanted.get(model.ref)!==lod.tier)return;
    // D7, étape 2 : valider l'emprise AVANT de créer le moindre maillage.
-   let box:Box2|null=null;
-   for(const part of obj.parts)box=unionBox(box,boxOfPositions(part.positions));
-   if(!box)throw Error('Sommets non finis');
-   if(!extrusionSwap.footprintBox(model.ref)){
-    // Rien à comparer ni à masquer : l'extrusion n'est pas chargée.
+   // Projection horizontale réelle des triangles (pas seulement la boîte).
+   const shape=modelShapeFromParts(obj.parts);
+   if(!shape)throw Error('Sommets non finis');
+   if(!extrusionSwap.allLoaded(model.ref)){
+    // Rien à comparer ni à masquer tant que toutes les extrusions de la
+    // référence ne sont pas chargées : réessayer, ne pas rejeter.
     this.retryAfter.set(model.ref,performance.now()+5000);
     return;
    }
-   if(!extrusionSwap.accepts(model.ref,box)){
+   if(extrusionSwap.conflicts(model.ref)){
+    // Une autre maquette (ensemble ou partie) occupe déjà l'emprise :
+    // pas de double silhouette ; réessayer quand elle sera retirée.
+    this.retryAfter.set(model.ref,performance.now()+2000);
+    return;
+   }
+   if(!extrusionSwap.accepts(model.ref,shape)){
     this.rejected.add(model.ref+'@'+lod.tier);
     throw Error('Maquette hors de l\'emprise IGN attendue');
    }
@@ -145,9 +157,9 @@ export class ArchitecturalModelLibrary{
    // seulement alors masquer l'extrusion. En cas d'échec, l'extrusion
    // reste visible et la maquette est détruite par le bloc finally.
    const previous=this.loaded.get(model.ref);
-   if(!extrusionSwap.activate(model.ref,box))
+   if(!extrusionSwap.activate(model.ref,shape))
     throw Error('Emprise IGN refusée au moment de la bascule');
-   this.loaded.set(model.ref,{tier:lod.tier,meshes,box});
+   this.loaded.set(model.ref,{tier:lod.tier,meshes,shape});
    this.retryAfter.delete(model.ref);
    previous?.meshes.forEach(m=>m.dispose());
    meshes=[];

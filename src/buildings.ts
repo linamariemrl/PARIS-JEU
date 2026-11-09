@@ -1,6 +1,7 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
 import {extrusionSwap} from './architectureModels';
-import {heritageFootprints,boxOfPositions} from './heritageFootprints';
+import {heritageFootprints,footprintShape} from './heritageFootprints';
+import type {FootprintShape} from './heritageFootprints';
 import earcut from 'earcut';
 import { project } from './geo';
 import {terrainHeight} from './terrain';
@@ -192,7 +193,8 @@ export function createMaterials(scene:Scene):BuildingMaterials{
     politicalWall,politicalRoof,culturalWall,culturalRoof,financialWall,financialRoof};
 }
 function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
-                batch:Batch,mat:StandardMaterial,heritageIgnId?:string):Mesh|null{
+                batch:Batch,mat:StandardMaterial,heritageIgnId?:string,
+                footprint?:FootprintShape|null):Mesh|null{
   if(!batch.indices.length)return null;
   const vd=new VertexData();
   vd.positions=batch.positions;
@@ -210,9 +212,9 @@ function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
   mesh.freezeWorldMatrix();
   if(heritageIgnId){
     // R02-D1/D2 : maillage propre, bascule par visibilité seulement.
-    const box=boxOfPositions(batch.positions);
-    if(box){
-      extrusionSwap.register(heritageIgnId,mesh,box);
+    // Emprise IGN réelle (contour et cours), pas la boîte du maillage.
+    if(footprint){
+      extrusionSwap.register(heritageIgnId,mesh,footprint);
       mesh.onDisposeObservable.addOnce(()=>
         extrusionSwap.unregister(heritageIgnId,mesh));
     }
@@ -266,8 +268,10 @@ function tileBatches(materials:BuildingMaterials){
     }
     for(const [id,own] of separate){
       const [wall,roof]=materialsOf(own.b);
-      for(const mesh of [asMesh(scene,tile,'wall',own.walls,wall,id),
-                         asMesh(scene,tile,'roof',own.roofs,roof,id)])
+      const footprint=footprintShape(own.b.polygons.map(p=>
+        p.map(r=>projected(r,own.b.localCoordinates))));
+      for(const mesh of [asMesh(scene,tile,'wall',own.walls,wall,id,footprint),
+                         asMesh(scene,tile,'roof',own.roofs,roof,id,footprint)])
         if(mesh)result.push(mesh);
     }
     return result;
