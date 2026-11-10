@@ -48,44 +48,39 @@ class LandmarkInventory026(unittest.TestCase):
         self.assertIn("if(!footprintContains(b,n.x,n.z))continue;",heritage)
         self.assertIn("this.byRef.get(ref)",heritage)
 
-    def test_palette_and_both_build_pipelines(self):
-        b=read("src/buildings.ts")
-        for x in ["monuments-beige-pierre","institutions-orange-pierre",
-                  "culture-violet-clair","finances-bleu-pierre"]:
-            self.assertIn(x,b)
-        # Les deux chaînes de construction (4e synchrone, métropole
-        # progressive) passent par la même palette et les mêmes lots.
+    def test_major_beige_only_and_both_build_pipelines(self):
+        buildings=read("src/buildings.ts")
+        self.assertEqual(self.catalog["palette"]["major"],"#ded0b9")
+        self.assertNotIn("political",self.catalog["palette"])
+        for forbidden in ("institutions-orange-pierre","culture-violet-clair",
+                          "finances-bleu-pierre","politicalWall","culturalWall",
+                          "financialWall"):
+            self.assertNotIn(forbidden,buildings)
+        self.assertIn("monuments-beige-pierre",buildings)
         for name in ("createTile","createTileProgressive"):
-            body=function_body(b,name)
+            body=function_body(buildings,name)
             self.assertIn("tileBatches(materials)",body,name)
             self.assertIn("build(scene,tile)",body,name)
             self.assertIn("choose(b)",body,name)
-        palette=function_body(b,"tileBatches")
-        for pair in ["['wall',s.walls,materials.wall]","['roof',s.roofs,materials.roof]",
-                     "['wall',s.beigeWalls,materials.heritageWall]",
-                     "['roof',s.beigeRoofs,materials.heritageRoof]",
-                     "['wall',s.orangeWalls,materials.politicalWall]",
-                     "['roof',s.orangeRoofs,materials.politicalRoof]",
-                     "['wall',s.violetWalls,materials.culturalWall]",
-                     "['roof',s.violetRoofs,materials.culturalRoof]",
-                     "['wall',s.blueWalls,materials.financialWall]",
-                     "['roof',s.blueRoofs,materials.financialRoof]"]:
-            self.assertEqual(palette.count(pair),1,pair)
-        # Lots fusionnés ET maillages séparés des monuments : même rôle,
-        # même couleur (aucun monument ne change de teinte en étant isolé).
-        self.assertEqual(palette.count("b.heritageRole==='cultural'"),2)
-        self.assertIn("[materials.culturalWall,materials.culturalRoof]",palette)
-        self.assertIn("[s.violetWalls,s.violetRoofs]",palette)
-        categories=read("src/heritageCategories.ts")
-        self.assertIn("priorityHeritageRole(ref)",categories)
-        self.assertIn("return 'touristic'",categories)
-        refs=read("src/heritagePriorities.ts")
-        actual=set(re.findall(r"PA\d{8}",refs))
-        self.assertEqual(actual,{x["ref"] for x in self.catalog["linked"]})
-        # La Bourse de Commerce, lieu d'exposition, n'est plus présentée
-        # comme une place boursière en activité.
-        self.assertEqual(next(x["role"] for x in self.catalog["linked"]
-                              if x["ref"]=="PA00085784"),"cultural")
+        palette=function_body(buildings,"tileBatches")
+        self.assertIn("isMajorHeritageRef(b.heritageRef)",palette)
+        self.assertIn("[s.beigeWalls,s.beigeRoofs]",palette)
+        self.assertIn("[materials.heritageWall,materials.heritageRoof]",palette)
+        priority=read("src/heritagePriorities.ts")
+        refs=set(re.findall(r"PA\d{8}",priority))
+        self.assertEqual(refs,{x["ref"] for x in self.catalog["linked"]})
+        self.assertIn("export function isMajorHeritageRef",priority)
+
+    def test_index_for_all_arrondissements(self):
+        idx=json.loads(read("public/data/metropole/places/monuments-paris-index.json"))
+        self.assertEqual(idx["schema"],1)
+        self.assertEqual(idx["includedCount"],len(idx["entries"]))
+        self.assertGreater(idx["includedCount"],140)
+        self.assertEqual(set(map(int,idx["byArrondissement"])),set(range(1,21)))
+        self.assertEqual(sum(idx["byArrondissement"].values()),idx["includedCount"])
+        ids=[e[0] for e in idx["entries"]]
+        self.assertEqual(len(ids),len(set(ids)))
+        self.assertTrue({r["ref"] for r in self.catalog["linked"]}.issubset(set(ids)))
 
     def test_catalogue_open_only_on_request(self):
         main=read("src/main.ts")
