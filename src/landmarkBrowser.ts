@@ -43,6 +43,7 @@ export class LandmarkBrowser{
  private visible=30;
  private filter='';
  private role='';
+ private arrondissement=0;
  private openState=false;
  constructor(private readonly atlas:HeritageAtlas,
    private readonly goTo:(ref:string,x:number,z:number)=>void,
@@ -55,6 +56,10 @@ export class LandmarkBrowser{
   });
   $('landmark-category').addEventListener('change',event=>{
    this.role=(event.target as HTMLSelectElement).value;
+   this.visible=30;this.render();
+  });
+  $('landmark-arrondissement').addEventListener('change',event=>{
+   this.arrondissement=Number((event.target as HTMLSelectElement).value)||0;
    this.visible=30;this.render();
   });
   $('landmark-more').addEventListener('click',()=>{
@@ -94,6 +99,11 @@ export class LandmarkBrowser{
     if(idx.schema!==1||!Array.isArray(idx.entries)||
        idx.entries.length!==idx.includedCount)
       throw Error('Index géographique incomplet');
+    const arrondissementByRef=new Map(idx.entries.map(
+      ([ref,arr])=>[ref,arr] as const));
+    for(const item of data.linked){
+      if(item.ref)item.arrondissement=arrondissementByRef.get(item.ref);
+    }
     const major=new Set(data.linked.map(e=>e.ref));
     this.extraNotices=idx.entries.filter(([ref])=>!major.has(ref))
       .map(([ref,arrondissement,name])=>({
@@ -115,6 +125,7 @@ export class LandmarkBrowser{
   if(!this.catalog)return;
   const entries=[...this.catalog.linked,...this.catalog.pending,...this.extraNotices]
    .filter(item=>(!this.role||item.role===this.role)&&
+     (!this.arrondissement||item.arrondissement===this.arrondissement)&&
      (!this.filter||fold(item.name).includes(this.filter)));
   $('landmark-status').textContent=entries.length+' résultats · '+
     this.parisCount+' notices POP dans les vingt arrondissements · '+
