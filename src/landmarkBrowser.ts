@@ -9,6 +9,8 @@ interface CatalogEntry{
  priority:string;match:string;ref?:string;
  /** État de la fiche Histoire officielle (R09), si elle existe. */
  fiche?:FicheStatus;base?:string;
+ /** Autres noms officiels (recherche) et état signalé par la notice. */
+ aliases?:string[];etat?:string[];
 }
 interface CatalogDocument{
  schema:number;linked:CatalogEntry[];pending:CatalogEntry[];
@@ -126,13 +128,16 @@ export class LandmarkBrowser{
    // vérifiées absentes du corpus d'origine (Inventaire général, labels…).
    try{
     const fiches=await ficheIndex();
-    for(const item of [...data.linked,...this.extraNotices])
-     if(item.ref)item.fiche=fiches.get(item.ref)?.statut;
+    for(const item of [...data.linked,...this.extraNotices]){
+     const e=item.ref?fiches.get(item.ref):undefined;
+     if(e){item.fiche=e.statut;item.aliases=e.noms;item.etat=e.etat;}
+    }
     const known=new Set([...data.linked,...this.extraNotices].map(i=>i.ref));
     for(const e of fiches.values()){
      if(known.has(e.ref)||!e.arrondissement)continue;
      this.extraNotices.push({ref:e.ref,name:e.titre,arrondissement:e.arrondissement,
       priority:'documenté',match:'notice-POP-vérifiée',fiche:e.statut,
+      aliases:e.noms,etat:e.etat,
       sourceUrl:'https://pop.culture.gouv.fr/notice/merimee/'+e.ref});
     }
     this.parisCount=this.extraNotices.length+data.linked.filter(i=>i.ref).length;
@@ -153,7 +158,8 @@ export class LandmarkBrowser{
      (!this.ficheFilter||(this.ficheFilter==='documentee'?item.fiche==='documentee':
        this.ficheFilter==='recit'?item.fiche==='documentee'||item.fiche==='recit-officiel-partiel':
        item.fiche!=='documentee'))&&
-     (!this.filter||fold(item.name).includes(this.filter)));
+     (!this.filter||fold(item.name).includes(this.filter)||
+       !!item.aliases?.some(a=>fold(a).includes(this.filter))));
   $('landmark-status').textContent=entries.length+' résultats · '+
     this.parisCount+' notices POP vérifiées dans les vingt arrondissements · '+
     this.catalog.linked.length+' majeures POP · '+
@@ -169,6 +175,7 @@ export class LandmarkBrowser{
    kind.textContent=(item.role?roleName[item.role]:'Patrimoine documenté')+
      (item.arrondissement?' · '+item.arrondissement+'e arr.':'')+
      (item.ref?' · POP '+item.ref:' · emprise à confirmer')+
+     (item.etat?.length?' · '+item.etat.join(', ')+' (notice)':'')+
      (item.fiche?' · '+statusLabel[item.fiche]:'');
    const dossier=this.architecture?.forReference(item.ref);
    if(dossier?.documents.length)

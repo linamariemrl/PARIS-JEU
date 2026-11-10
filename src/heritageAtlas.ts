@@ -249,7 +249,9 @@ export class HeritageAtlas{
   line('Époque',period);
   if(notice?.address)line('Lieu',notice.address);
   if(notice?.author)line('Auteur(s) mentionné(s) par POP',notice.author);
-  line('Protection mentionnée par POP',notice?.protection);
+  // « arrêté », « liste », « décret » : nature de l'acte, pas niveau de
+  // protection (classé/inscrit), qui figure dans la fiche Histoire.
+  line('Nature de l’acte de protection (POP)',notice?.protection);
   line('Usage indiqué par la notice',notice?.currentUse);
   section.append(overview);
   const heading=document.createElement('h3');

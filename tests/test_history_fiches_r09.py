@@ -69,7 +69,7 @@ class HistoryFiches(unittest.TestCase):
             for k, v in n.items():
                 if k in ('ref', 'source', 'wgs84', 'arrondissement'):
                     continue
-                values += v if isinstance(v, list) else [str(v)]
+                values += v if isinstance(v, list) else [str(v), *self.mod.as_list(v)]
             for sentence in f.get('reperes', []):
                 body = sentence.split(':', 1)[1] if ':' in sentence else sentence
                 found = [v for v in values if v and self.mod.clean(str(v)) in sentence]
@@ -112,6 +112,55 @@ class HistoryFiches(unittest.TestCase):
             self.assertLess(path.stat().st_size, 450_000, path.name)
         self.assertFalse((PLACES / 'pop-notices-paris.json').exists(),
                          'le fichier intermédiaire ne doit pas être publié')
+
+
+class InventoryControls(unittest.TestCase):
+    """R09 lot 3 : contrôles qualité reproductibles, signalés et non corrigés en silence."""
+    @classmethod
+    def setUpClass(cls):
+        spec = importlib.util.spec_from_file_location('audit', ROOT / 'scripts/audit_pop_inventory.py')
+        cls.mod = importlib.util.module_from_spec(spec)
+        spec.loader.exec_module(cls.mod)
+        cls.published = json.loads((ROOT / 'data/heritage/controles-pop-paris.json').read_text(encoding='utf-8'))
+
+    def test_report_equals_regeneration(self):
+        status = {r['url']: r['http'] for r in self.published['liens']}
+        doc = self.mod.audit(status)
+        doc['liensVerifiesLe'] = self.published['liensVerifiesLe']
+        self.assertEqual(doc, self.published)
+        self.assertTrue(self.published['liensVerifiesLe'])
+        self.assertEqual(self.published['resume']['liensVerifies'], self.published['resume']['liens'])
+
+    def test_invalid_pop_points_never_reach_the_map(self):
+        # POP publie [0, 0] ou des latitudes erronées (43,8°) : ces points sont écartés.
+        rejected = {r['ref'] for r in self.published['pointPOPinvalideEcarte']}
+        self.assertGreaterEqual(len(rejected), 90)
+        index = json.loads((PLACES / 'fiches/index.json').read_text(encoding='utf-8'))['entrees']
+        for e in index:
+            if 'x' in e:
+                self.assertLess(abs(e['x']), 13_000, e['ref'])
+                self.assertLess(abs(e['z']), 9_000, e['ref'])
+            if e['ref'] in rejected:
+                self.assertNotIn('x', e, e['ref'])
+        self.assertEqual(self.published['resume']['pointJeuEloigneDuPointPOP'], 0)
+
+    def test_aliases_and_destroyed_sites_come_from_the_notice(self):
+        notices = {n['ref']: n for n in json.loads(
+            (ROOT / 'data/heritage/pop-notices-paris.json').read_text(encoding='utf-8'))['notices']}
+        index = json.loads((PLACES / 'fiches/index.json').read_text(encoding='utf-8'))['entrees']
+        for e in index:
+            n = notices[e['ref']]
+            for alias in e.get('noms', []):
+                self.assertIn(alias, n['appellations'])
+            for state in e.get('etat', []):
+                self.assertIn(state, n['etat'])
+        self.assertEqual(sum(1 for e in index if e.get('etat')),
+                         self.published['resume']['sitesDetruitsOuFragmentaires'])
+
+    def test_legal_act_is_not_displayed_as_protection_level(self):
+        src = (ROOT / 'src/heritageAtlas.ts').read_text(encoding='utf-8')
+        self.assertNotIn("'Protection mentionnée par POP'", src)
+        self.assertIn('Nature de l’acte de protection (POP)', src)
 
 
 class FarMajorsBeige(unittest.TestCase):

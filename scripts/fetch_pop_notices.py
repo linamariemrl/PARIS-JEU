@@ -144,8 +144,13 @@ def compact(n: dict) -> dict:
             continue
         out[name] = v
     coor = n.get('POP_COORDONNEES') or {}
-    if isinstance(coor.get('lat'), (int, float)) and isinstance(coor.get('lon'), (int, float)):
-        out['wgs84'] = [round(coor['lon'], 7), round(coor['lat'], 7)]
+    lat, lon = coor.get('lat'), coor.get('lon')
+    # POP publie parfois [0, 0] pour « non géolocalisé » : point écarté.
+    if isinstance(lat, (int, float)) and isinstance(lon, (int, float)) and \
+            2.2 < lon < 2.48 and 48.80 < lat < 48.91:
+        out['wgs84'] = [round(lon, 7), round(lat, 7)]
+    elif coor:
+        out['pointRejete'] = [lon, lat]
     out['arrondissement'] = arrondissement(n)
     out['source'] = 'https://pop.culture.gouv.fr/notice/merimee/' + n['REF']
     return out

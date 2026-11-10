@@ -92,6 +92,12 @@ def summary(n: dict, arr: int | None) -> list[str]:
     deno = as_list(n.get('denominations'))
     if deno:
         out.append('La notice officielle le désigne comme : ' + join_fr(deno) + '.')
+    alts = [a for a in as_list(n.get('appellations')) if a.lower() not in clean(n.get('titre') or '').lower()]
+    if alts:
+        out.append('Autres appellations officielles : ' + join_fr(alts) + '.')
+    etat = as_list(n.get('etat'))
+    if etat:
+        out.append('État signalé par la notice : ' + join_fr(etat) + '.')
     adr = n.get('adresseNormalisee') or n.get('adresse')
     if adr and arr:
         out.append(f'Il se situe {clean(adr)}, dans le {arr}e arrondissement.'
@@ -183,6 +189,12 @@ def build():
         entry = {'ref': n['ref'], 'shard': key, 'titre': f['titre'], 'statut': f['statut'],
                  'arrondissement': arr, 'localisation': located_by,
                  'dansIndexDuJeu': n['ref'] in in_game}
+        alts = [a for a in as_list(n.get('appellations')) if a.lower() not in f['titre'].lower()]
+        if alts:
+            entry['noms'] = alts
+        gone = sorted(set(as_list(n.get('etat'))) & {'détruit', 'vestiges', 'fragment'})
+        if gone:
+            entry['etat'] = gone
         if n.get('wgs84'):
             lon, lat = n['wgs84']
             entry['x'] = round((lon - LON) * MX, 1)

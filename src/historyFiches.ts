@@ -13,6 +13,8 @@ export interface Fiche{
 export interface FicheEntry{
  ref:string;shard:string;titre:string;statut:FicheStatus;
  arrondissement:number|null;dansIndexDuJeu:boolean;x?:number;z?:number;
+ /** Autres appellations officielles (APPL) et état « détruit/vestiges ». */
+ noms?:string[];etat?:string[];
 }
 interface FicheIndex{schema:1;entrees:FicheEntry[];statistiques:unknown;}
 
