@@ -1,10 +1,14 @@
 import type {HeritageAtlas} from './heritageAtlas';
 import type {HeritageRole} from './heritageCategories';
 import type {ArchitectureDossiers} from './architectureDossiers';
+import {ficheIndex,statusLabel} from './historyFiches';
+import type {FicheStatus} from './historyFiches';
 
 interface CatalogEntry{
  name:string;role?:HeritageRole;sourceUrl:string;arrondissement?:number;
  priority:string;match:string;ref?:string;
+ /** État de la fiche Histoire officielle (R09), si elle existe. */
+ fiche?:FicheStatus;base?:string;
 }
 interface CatalogDocument{
  schema:number;linked:CatalogEntry[];pending:CatalogEntry[];
@@ -44,6 +48,7 @@ export class LandmarkBrowser{
  private filter='';
  private role='';
  private arrondissement=0;
+ private ficheFilter='';
  private openState=false;
  constructor(private readonly atlas:HeritageAtlas,
    private readonly goTo:(ref:string,x:number,z:number)=>void,
@@ -60,6 +65,10 @@ export class LandmarkBrowser{
   });
   $('landmark-arrondissement').addEventListener('change',event=>{
    this.arrondissement=Number((event.target as HTMLSelectElement).value)||0;
+   this.visible=30;this.render();
+  });
+  $('landmark-fiche').addEventListener('change',event=>{
+   this.ficheFilter=(event.target as HTMLSelectElement).value;
    this.visible=30;this.render();
   });
   $('landmark-more').addEventListener('click',()=>{
@@ -113,6 +122,21 @@ export class LandmarkBrowser{
       }));
     this.parisCount=idx.includedCount;
    }catch(e){console.warn('Index du patrimoine parisien indisponible',e);}
+   // Fiches Histoire officielles : état de chaque fiche, et notices POP
+   // vérifiées absentes du corpus d'origine (Inventaire général, labels…).
+   try{
+    const fiches=await ficheIndex();
+    for(const item of [...data.linked,...this.extraNotices])
+     if(item.ref)item.fiche=fiches.get(item.ref)?.statut;
+    const known=new Set([...data.linked,...this.extraNotices].map(i=>i.ref));
+    for(const e of fiches.values()){
+     if(known.has(e.ref)||!e.arrondissement)continue;
+     this.extraNotices.push({ref:e.ref,name:e.titre,arrondissement:e.arrondissement,
+      priority:'documenté',match:'notice-POP-vérifiée',fiche:e.statut,
+      sourceUrl:'https://pop.culture.gouv.fr/notice/merimee/'+e.ref});
+    }
+    this.parisCount=this.extraNotices.length+data.linked.filter(i=>i.ref).length;
+   }catch(e){console.warn('Fiches Histoire indisponibles',e);}
 
   }catch(e){
    console.warn('Inventaire des monuments indisponible',e);
@@ -126,9 +150,12 @@ export class LandmarkBrowser{
   const entries=[...this.catalog.linked,...this.catalog.pending,...this.extraNotices]
    .filter(item=>(!this.role||item.role===this.role)&&
      (!this.arrondissement||item.arrondissement===this.arrondissement)&&
+     (!this.ficheFilter||(this.ficheFilter==='documentee'?item.fiche==='documentee':
+       this.ficheFilter==='recit'?item.fiche==='documentee'||item.fiche==='recit-officiel-partiel':
+       item.fiche!=='documentee'))&&
      (!this.filter||fold(item.name).includes(this.filter)));
   $('landmark-status').textContent=entries.length+' résultats · '+
-    this.parisCount+' notices POP dans les vingt arrondissements · '+
+    this.parisCount+' notices POP vérifiées dans les vingt arrondissements · '+
     this.catalog.linked.length+' majeures POP · '+
     this.catalog.pending.length+' lieux prioritaires non appariés. '+
     'Les points POP ne certifient pas les emprises IGN.';
@@ -141,7 +168,8 @@ export class LandmarkBrowser{
    const kind=document.createElement('small');
    kind.textContent=(item.role?roleName[item.role]:'Patrimoine documenté')+
      (item.arrondissement?' · '+item.arrondissement+'e arr.':'')+
-     (item.ref?' · POP '+item.ref:' · emprise à confirmer');
+     (item.ref?' · POP '+item.ref:' · emprise à confirmer')+
+     (item.fiche?' · '+statusLabel[item.fiche]:'');
    const dossier=this.architecture?.forReference(item.ref);
    if(dossier?.documents.length)
     kind.textContent+=' · '+dossier.documents.length+' documents architecturaux';
