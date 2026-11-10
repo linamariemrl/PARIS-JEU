@@ -3,16 +3,19 @@ import type {HeritageRole} from './heritageCategories';
 import type {ArchitectureDossiers} from './architectureDossiers';
 
 interface CatalogEntry{
- name:string;role:HeritageRole;sourceUrl:string;
+ name:string;role?:HeritageRole;sourceUrl:string;arrondissement?:number;
  priority:string;match:string;ref?:string;
 }
 interface CatalogDocument{
  schema:number;linked:CatalogEntry[];pending:CatalogEntry[];
 }
-const color:Record<HeritageRole,string>={
- political:'#eac49f',touristic:'#ded0b9',
- cultural:'#c8b9df',financial:'#b3cce3'
-};
+interface ParisIndex{
+ schema:1;includedCount:number;entries:Array<[string,number,string]>;
+}
+const MAJOR_BEIGE='#ded0b9';
+const NEUTRAL_GREY='#bcbcbc';
+const fold=(s:string)=>s.toLocaleLowerCase('fr').normalize('NFD')
+ .replace(/[\u0300-\u036f]/g,'');
 const roleName:Record<HeritageRole,string>={
  political:'Politique',touristic:'Touristique',
  cultural:'Culturel',financial:'Économique'
@@ -34,6 +37,8 @@ const trusted=(value:string):string|null=>{
  */
 export class LandmarkBrowser{
  private catalog:CatalogDocument|null=null;
+ private extraNotices:CatalogEntry[]=[];
+ private parisCount=0;
  private loading:Promise<void>|null=null;
  private visible=30;
  private filter='';
@@ -45,7 +50,7 @@ export class LandmarkBrowser{
   $('landmark-open').addEventListener('click',()=>void this.open());
   $('landmark-close').addEventListener('click',()=>this.close());
   $('landmark-search').addEventListener('input',event=>{
-   this.filter=(event.target as HTMLInputElement).value.trim().toLocaleLowerCase('fr');
+   this.filter=fold((event.target as HTMLInputElement).value.trim());
    this.visible=30;this.render();
   });
   $('landmark-category').addEventListener('change',event=>{
@@ -80,6 +85,25 @@ export class LandmarkBrowser{
       !Array.isArray(data.pending)||data.linked.length<100)
      throw Error('Inventaire incomplet');
    this.catalog=data;
+   // Corpus complémentaire limité géographiquement aux vingt arrondissements.
+   try{
+    const response=await fetch(import.meta.env.BASE_URL+
+      'data/metropole/places/monuments-paris-index.json');
+    if(!response.ok)throw Error('Index des arrondissements absent');
+    const idx=await response.json() as ParisIndex;
+    if(idx.schema!==1||!Array.isArray(idx.entries)||
+       idx.entries.length!==idx.includedCount)
+      throw Error('Index géographique incomplet');
+    const major=new Set(data.linked.map(e=>e.ref));
+    this.extraNotices=idx.entries.filter(([ref])=>!major.has(ref))
+      .map(([ref,arrondissement,name])=>({
+        ref,name,arrondissement,priority:'documenté',
+        match:'point-POP-localisé',
+        sourceUrl:'https://pop.culture.gouv.fr/notice/merimee/'+ref
+      }));
+    this.parisCount=idx.includedCount;
+   }catch(e){console.warn('Index du patrimoine parisien indisponible',e);}
+
   }catch(e){
    console.warn('Inventaire des monuments indisponible',e);
    $('landmark-status').textContent='Inventaire temporairement inaccessible.';
@@ -89,21 +113,24 @@ export class LandmarkBrowser{
   const root=$('landmark-list');
   root.replaceChildren();
   if(!this.catalog)return;
-  const entries=[...this.catalog.linked,...this.catalog.pending]
+  const entries=[...this.catalog.linked,...this.catalog.pending,...this.extraNotices]
    .filter(item=>(!this.role||item.role===this.role)&&
-     (!this.filter||item.name.toLocaleLowerCase('fr').includes(this.filter)));
-  $('landmark-status').textContent=entries.length+' édifices recensés, '+
-    this.catalog.linked.length+' notices POP vérifiées dans le jeu. '+
-    'Seuls les édifices identifiés par une emprise peuvent être colorés.';
+     (!this.filter||fold(item.name).includes(this.filter)));
+  $('landmark-status').textContent=entries.length+' résultats · '+
+    this.parisCount+' notices POP dans les vingt arrondissements · '+
+    this.catalog.linked.length+' majeures POP · '+
+    this.catalog.pending.length+' lieux prioritaires non appariés. '+
+    'Les points POP ne certifient pas les emprises IGN.';
   for(const item of entries.slice(0,this.visible)){
    const row=document.createElement('div');row.className='landmark-entry';
    const dot=document.createElement('span');dot.className='landmark-dot';
-   dot.style.backgroundColor=color[item.role];
+   dot.style.backgroundColor=item.priority==='majeur'?MAJOR_BEIGE:NEUTRAL_GREY;
    const content=document.createElement('div');content.className='landmark-text';
    const name=document.createElement('strong');name.textContent=item.name;
    const kind=document.createElement('small');
-   kind.textContent=roleName[item.role]+(item.ref?' · POP '+item.ref:
-     ' · emprise à confirmer');
+   kind.textContent=(item.role?roleName[item.role]:'Patrimoine documenté')+
+     (item.arrondissement?' · '+item.arrondissement+'e arr.':'')+
+     (item.ref?' · POP '+item.ref:' · emprise à confirmer');
    const dossier=this.architecture?.forReference(item.ref);
    if(dossier?.documents.length)
     kind.textContent+=' · '+dossier.documents.length+' documents architecturaux';
