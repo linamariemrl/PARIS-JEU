@@ -235,7 +235,9 @@ export class HeritageAtlas{
    line('Domaine',heritageRoleLabel[building.heritageRole]);
   line('Époque',period);
   if(notice?.address)line('Lieu',notice.address);
-  if(notice?.author&&!story)line('Architecte / auteur',notice.author);
+  if(notice?.author)line('Auteur(s) mentionné(s) par POP',notice.author);
+  line('Protection mentionnée par POP',notice?.protection);
+  line('Usage indiqué par la notice',notice?.currentUse);
   section.append(overview);
   const heading=document.createElement('h3');
   heading.textContent='En quelques lignes';
@@ -250,9 +252,14 @@ export class HeritageAtlas{
   const summary=story?.history??description??(
    fromArea&&!/dénomination ne constitue|désigné dans OpenStreetMap/i.test(fromArea)?
     fromArea:undefined);
+  // Une date POP est un repère documentaire, pas un événement à inventer.
+  const fallback=notice?.date?.trim()?
+   'La notice POP/Mérimée mentionne les repères chronologiques : '+
+    notice.date.trim()+'. Aucun récit historique plus détaillé n’est encore sourcé.':
+   'L’histoire de ce lieu n’est pas encore documentée avec assez de précision pour en proposer un résumé fiable.';
   p.textContent=summary?
    (summary.length<=380?summary:summary.slice(0,377).replace(/\s+\S*$/,'')+'…'):
-   'L’histoire de ce lieu n’est pas encore documentée avec assez de précision pour en proposer un résumé fiable.';
+   fallback;
   section.append(p);
   const url=story?.sourceUrl??notice?.sourceUrl??area?.sourceUrl;
   if(url){
