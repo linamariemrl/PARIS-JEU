@@ -1,5 +1,6 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
 import {extrusionSwap} from './architectureModels';
+import {isMajorHeritageRef} from './heritagePriorities';
 import {heritageFootprints,footprintShape} from './heritageFootprints';
 import type {FootprintShape} from './heritageFootprints';
 import earcut from 'earcut';
@@ -17,7 +18,7 @@ interface Batch {
   faceToBuilding:number[];
 }
 const empty=():Batch=>({positions:[],indices:[],faceToBuilding:[]});
-export type BuildingMaterials={wall:StandardMaterial;roof:StandardMaterial;heritageWall:StandardMaterial;heritageRoof:StandardMaterial;politicalWall:StandardMaterial;politicalRoof:StandardMaterial;culturalWall:StandardMaterial;culturalRoof:StandardMaterial;financialWall:StandardMaterial;financialRoof:StandardMaterial};
+export type BuildingMaterials={wall:StandardMaterial;roof:StandardMaterial;heritageWall:StandardMaterial;heritageRoof:StandardMaterial};
 
 function tri(out:Batch,a:XYZ,b:XYZ,c:XYZ,id:number){
   const start=out.positions.length/3;
@@ -165,32 +166,8 @@ export function createMaterials(scene:Scene):BuildingMaterials{
   heritageRoof.diffuseColor=new Color3(.78,.71,.62);
   heritageRoof.specularColor=Color3.Black();
   heritageRoof.backFaceCulling=false;heritageRoof.freeze();
-  const politicalWall=new StandardMaterial('institutions-orange-pierre',scene);
-  politicalWall.diffuseColor=new Color3(.92,.78,.63);
-  politicalWall.specularColor=Color3.Black();
-  politicalWall.backFaceCulling=false;politicalWall.freeze();
-  const politicalRoof=new StandardMaterial('institutions-orange-toit',scene);
-  politicalRoof.diffuseColor=new Color3(.83,.69,.56);
-  politicalRoof.specularColor=Color3.Black();
-  politicalRoof.backFaceCulling=false;politicalRoof.freeze();
-  const culturalWall=new StandardMaterial('culture-violet-clair',scene);
-  culturalWall.diffuseColor=new Color3(.81,.76,.88);
-  culturalWall.specularColor=Color3.Black();
-  culturalWall.backFaceCulling=false;culturalWall.freeze();
-  const culturalRoof=new StandardMaterial('culture-violet-toit',scene);
-  culturalRoof.diffuseColor=new Color3(.73,.68,.81);
-  culturalRoof.specularColor=Color3.Black();
-  culturalRoof.backFaceCulling=false;culturalRoof.freeze();
-  const financialWall=new StandardMaterial('finances-bleu-pierre',scene);
-  financialWall.diffuseColor=new Color3(.70,.80,.89);
-  financialWall.specularColor=Color3.Black();
-  financialWall.backFaceCulling=false;financialWall.freeze();
-  const financialRoof=new StandardMaterial('finances-bleu-toit',scene);
-  financialRoof.diffuseColor=new Color3(.60,.72,.84);
-  financialRoof.specularColor=Color3.Black();
-  financialRoof.backFaceCulling=false;financialRoof.freeze();
-  return {wall,roof,heritageWall,heritageRoof,
-    politicalWall,politicalRoof,culturalWall,culturalRoof,financialWall,financialRoof};
+  // Les usages sont documentés dans les fiches ; seule l'importance colore.
+  return {wall,roof,heritageWall,heritageRoof};
 }
 function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
                 batch:Batch,mat:StandardMaterial,heritageIgnId?:string,
@@ -226,9 +203,7 @@ function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
  * quelques draw calls supplémentaires évitent toute réécriture d'indices
  * lors du remplacement par une maquette experte. */
 function tileBatches(materials:BuildingMaterials){
-  const shared={walls:empty(),roofs:empty(),beigeWalls:empty(),beigeRoofs:empty(),
-    orangeWalls:empty(),orangeRoofs:empty(),blueWalls:empty(),blueRoofs:empty(),
-    violetWalls:empty(),violetRoofs:empty()};
+  const shared={walls:empty(),roofs:empty(),beigeWalls:empty(),beigeRoofs:empty()};
   const separate=new Map<string,{walls:Batch;roofs:Batch;b:Building}>();
   const footprints=heritageFootprints();
   const choose=(b:Building):[Batch,Batch]=>{
@@ -238,17 +213,13 @@ function tileBatches(materials:BuildingMaterials){
       return [own.walls,own.roofs];
     }
     const s=shared;
-    return b.heritageRole==='political'?[s.orangeWalls,s.orangeRoofs]:
-      b.heritageRole==='cultural'?[s.violetWalls,s.violetRoofs]:
-      b.heritageRole==='financial'?[s.blueWalls,s.blueRoofs]:
-      b.heritageRef?[s.beigeWalls,s.beigeRoofs]:[s.walls,s.roofs];
+    return isMajorHeritageRef(b.heritageRef)?
+      [s.beigeWalls,s.beigeRoofs]:[s.walls,s.roofs];
   };
   const materialsOf=(b:Building):[StandardMaterial,StandardMaterial]=>
-    b.heritageRole==='political'?[materials.politicalWall,materials.politicalRoof]:
-    b.heritageRole==='cultural'?[materials.culturalWall,materials.culturalRoof]:
-    b.heritageRole==='financial'?[materials.financialWall,materials.financialRoof]:
-    b.heritageRef?[materials.heritageWall,materials.heritageRoof]:
-    [materials.wall,materials.roof];
+    isMajorHeritageRef(b.heritageRef)?
+      [materials.heritageWall,materials.heritageRoof]:
+      [materials.wall,materials.roof];
   const build=(scene:Scene,tile:TileFile):Mesh[]=>{
     const s=shared;
     const result:Mesh[]=[];
@@ -256,12 +227,6 @@ function tileBatches(materials:BuildingMaterials){
       ['wall',s.walls,materials.wall],['roof',s.roofs,materials.roof],
       ['wall',s.beigeWalls,materials.heritageWall],
       ['roof',s.beigeRoofs,materials.heritageRoof],
-      ['wall',s.orangeWalls,materials.politicalWall],
-      ['roof',s.orangeRoofs,materials.politicalRoof],
-      ['wall',s.violetWalls,materials.culturalWall],
-      ['roof',s.violetRoofs,materials.culturalRoof],
-      ['wall',s.blueWalls,materials.financialWall],
-      ['roof',s.blueRoofs,materials.financialRoof]
     ] as const){
       const mesh=asMesh(scene,tile,kind,geometry,material);
       if(mesh)result.push(mesh);
