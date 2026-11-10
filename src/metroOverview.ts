@@ -6,6 +6,8 @@ const PREFIX=import.meta.env.BASE_URL+'data/metropole/overview/';
 interface TileRef {id:string;ix:number;iz:number;offset:number;count:number;}
 interface Group {
  id:string;gx:number;gz:number;count:number;bytes:number;tiles:TileRef[];
+ /** Indices des emprises de monuments MAJEURS (teinte beige, R09). */
+ majors?:number[];
 }
 interface Manifest {
  schema:2;tileMeters:number;cellsPerGroup:number;quantizationMeters:number;
@@ -23,6 +25,11 @@ interface VisibleGroup {
  group:Group;
 }
 const retryAfterMs=15_000;
+/** Teinte beige unique des monuments majeurs, identique de près et de loin :
+ * facteurs appliqués aux teintes grises des silhouettes (murs .90, toits .76)
+ * pour retrouver le beige des maquettes proches (.87,.80,.69 / .78,.71,.62). */
+const MAJOR_WALL=[.87/.90,.80/.90,.69/.90,1];
+const MAJOR_ROOF=[.78/.76,.71/.76,.62/.76,1];
 const SAMPLED_ROOFS_PER_GROUP=2400;
 const roofStride=(count:number)=>
  Math.max(1,Math.ceil(count/SAMPLED_ROOFS_PER_GROUP));
@@ -51,6 +58,8 @@ export class MetroOverview {
  private overviewMaterial:StandardMaterial;
  private roofMaterial:StandardMaterial;
  private roofsOnly=false;
+ /** Monuments majeurs beiges en panorama (atlas agrégé au-delà de 5 km). */
+ private majorPanorama:Mesh|null=null;
  private roofLODEnabled=true;
  private panoramicAtlas=false;
  private lastUpdate=0;
@@ -101,6 +110,7 @@ export class MetroOverview {
     }
    }
    this.manifest=m;
+   void this.loadMajorPanorama();
    window.addEventListener('online',()=>void this.prefetchRaw());
    this.report();
    // Les 33 petits fichiers sont préchargés en réserve CPU uniquement,
@@ -218,12 +228,14 @@ export class MetroOverview {
      group.roof.setEnabled(false);
     }
     this.coverage.showExcept([]);
+    this.majorPanorama?.setEnabled(true);
     this.report();
    }
    return;
   }
   if(this.panoramicAtlas){
    this.panoramicAtlas=false;
+   this.majorPanorama?.setEnabled(false);
    this.roofsOnly=false;
    this.lastUpdate=0;
    this.lastX=Infinity;
@@ -368,6 +380,31 @@ export class MetroOverview {
   }
  }
 
+ private async loadMajorPanorama():Promise<void>{
+  try{
+   const response=await fetch(PREFIX+'majors.json');
+   if(!response.ok)return;
+   const doc=await response.json() as {schema:number;boxes:number[][]};
+   if(doc.schema!==1||!Array.isArray(doc.boxes)||!doc.boxes.length)return;
+   const panoramaMatrices=new Float32Array(doc.boxes.length*16);
+   doc.boxes.forEach(([x,z,w,d,h,angle],i)=>{
+    const c=Math.cos(angle),s=Math.sin(angle),k=i*16;
+    panoramaMatrices[k]=w*c;panoramaMatrices[k+2]=w*s;panoramaMatrices[k+5]=h;
+    panoramaMatrices[k+8]=-d*s;panoramaMatrices[k+10]=d*c;
+    panoramaMatrices[k+12]=x;panoramaMatrices[k+13]=terrainHeight(x,z)+h/2;panoramaMatrices[k+14]=z;panoramaMatrices[k+15]=1;
+   });
+   const beige=new Color4(.87,.80,.69,1),roof=new Color4(.78,.71,.62,1);
+   const mesh=MeshBuilder.CreateBox('monuments-majeurs-panorama',
+    {size:1,faceColors:[beige,beige,beige,beige,roof,roof]},this.scene);
+   mesh.material=this.overviewMaterial;
+   mesh.isPickable=false;
+   mesh.thinInstanceSetBuffer('matrix',panoramaMatrices,16,true);
+   mesh.thinInstanceRefreshBoundingInfo();
+   mesh.freezeWorldMatrix();
+   mesh.setEnabled(this.panoramicAtlas);
+   this.majorPanorama=mesh;
+  }catch(error){console.warn('Monuments majeurs du panorama',error);}
+ }
  private writeTile(matrix:Float32Array,data:DataView,tile:TileRef,hide:boolean):void{
   const step=this.manifest?.quantizationMeters??.25;
   const unit=this.manifest?.tileMeters??800;
@@ -424,21 +461,37 @@ export class MetroOverview {
    // Matrices dynamiques : les substitutions IGN/LOD doivent mettre à jour
    // le GPU. Un buffer statique provoque des superpositions scintillantes.
    mesh.thinInstanceSetBuffer('matrix',matrices,16,false);
+   const majors=(group.majors??[]).filter(i=>Number.isInteger(i)&&i>=0&&i<group.count);
+   if(majors.length){
+    const colors=new Float32Array(group.count*4).fill(1);
+    for(const i of majors)colors.set(MAJOR_WALL,i*4);
+    mesh.thinInstanceSetBuffer('color',colors,4,true);
+   }
    mesh.thinInstanceRefreshBoundingInfo();
    const roof=MeshBuilder.CreateGround('toits-legers-'+group.id,
      {width:1,height:1},this.scene);
    roof.material=this.roofMaterial;
    roof.isPickable=false;
    const stride=roofStride(group.count);
-   const sampleSize=roofCount(group.count);
+   // Les monuments majeurs sont toujours dans l'échantillon des toits légers :
+   // un monument beige ne disparaît pas au dézoom.
+   const extra=majors.filter(i=>i%stride!==0);
+   const sampleSize=roofCount(group.count)+extra.length;
    const sampledIndices=new Uint32Array(sampleSize);
    const sampledRoofBuffer=new Float32Array(sampleSize*16);
+   const regular=roofCount(group.count);
    for(let i=0;i<sampleSize;i++){
-    const original=i*stride;
+    const original=i<regular?i*stride:extra[i-regular];
     sampledIndices[i]=original;
     sampledRoofBuffer.set(rooftops.subarray(original*16,original*16+16),i*16);
    }
    roof.thinInstanceSetBuffer('matrix',sampledRoofBuffer,16,false);
+   if(majors.length){
+    const majorSet=new Set(majors);
+    const colors=new Float32Array(sampleSize*4).fill(1);
+    for(let i=0;i<sampleSize;i++)if(majorSet.has(sampledIndices[i]))colors.set(MAJOR_ROOF,i*4);
+    roof.thinInstanceSetBuffer('color',colors,4,true);
+   }
    roof.thinInstanceRefreshBoundingInfo();
    let hidden=0;
    for(const tile of group.tiles){

@@ -213,11 +213,15 @@ function tileBatches(materials:BuildingMaterials){
       return [own.walls,own.roofs];
     }
     const s=shared;
-    return isMajorHeritageRef(b.heritageRef)?
-      [s.beigeWalls,s.beigeRoofs]:[s.walls,s.roofs];
+    return major(b)?[s.beigeWalls,s.beigeRoofs]:[s.walls,s.roofs];
   };
+  // R09 : beige si le point POP est dans l'emprise OU si la table des
+  // emprises (même source que le LOD lointain) rattache l'emprise à un
+  // majeur, cours fermées comprises : même couleur de près et de loin.
+  const major=(b:Building)=>isMajorHeritageRef(b.heritageRef)||
+    footprints.refsOf(b.id).some(isMajorHeritageRef);
   const materialsOf=(b:Building):[StandardMaterial,StandardMaterial]=>
-    isMajorHeritageRef(b.heritageRef)?
+    major(b)?
       [materials.heritageWall,materials.heritageRoof]:
       [materials.wall,materials.roof];
   const build=(scene:Scene,tile:TileFile):Mesh[]=>{
