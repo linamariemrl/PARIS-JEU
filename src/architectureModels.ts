@@ -1,7 +1,7 @@
 import {Mesh,Scene,VertexData} from '@babylonjs/core';
 import type {StandardMaterial} from '@babylonjs/core';
 import type {BuildingMaterials} from './buildings';
-import {priorityHeritageRole} from './heritagePriorities';
+import {isMajorHeritageRef} from './heritagePriorities';
 import {ArchitectureDossiers} from './architectureDossiers';
 import {HeritageSwap,heritageFootprints,modelShapeFromParts,footprintShape}
  from './heritageFootprints';
@@ -121,14 +121,11 @@ export class ArchitecturalModelLibrary{
   if(shape)this.parts.set(key,shape);
   return shape;
  }
- private material(ref:string,kind:ModelPart['kind']){
+ private material(ref:string,kind:ModelPart['kind']):StandardMaterial{
   const roof=kind==='roof';
-  switch(priorityHeritageRole(ref)){
-   case 'political':return roof?this.materials.politicalRoof:this.materials.politicalWall;
-   case 'cultural':return roof?this.materials.culturalRoof:this.materials.culturalWall;
-   case 'financial':return roof?this.materials.financialRoof:this.materials.financialWall;
-   default:return roof?this.materials.heritageRoof:this.materials.heritageWall;
-  }
+  if(isMajorHeritageRef(ref))
+   return roof?this.materials.heritageRoof:this.materials.heritageWall;
+  return roof?this.materials.roof:this.materials.wall;
  }
  /** Partie superposée à l'extrusion : même teinte, léger décalage de
   * profondeur seulement (aucune géométrie déplacée), pour éviter le
