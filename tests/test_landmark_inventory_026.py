@@ -82,6 +82,20 @@ class LandmarkInventory026(unittest.TestCase):
         self.assertEqual(len(ids),len(set(ids)))
         self.assertTrue({r["ref"] for r in self.catalog["linked"]}.issubset(set(ids)))
 
+    def test_index_is_reproducible_from_boundaries(self):
+        import runpy
+        code=runpy.run_path(str(ROOT/"scripts/prepare_paris_monument_index.py"))
+        expected=json.loads(read("public/data/metropole/places/monuments-paris-index.json"))
+        self.assertEqual(code["compute"](),expected)
+
+    def test_history_audit_covers_every_paris_notice(self):
+        import runpy
+        code=runpy.run_path(str(ROOT/"scripts/audit_paris_histories.py"))
+        rows=code["audit"]()
+        index=json.loads(read("public/data/metropole/places/monuments-paris-index.json"))
+        self.assertEqual(sum(v["total"] for v in rows.values()),index["includedCount"])
+        self.assertEqual(set(rows),{str(i) for i in range(1,21)})
+
     def test_catalogue_open_only_on_request(self):
         main=read("src/main.ts")
         index=read("index.html")
