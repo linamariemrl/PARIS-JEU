@@ -19,9 +19,11 @@ class Heritage026(unittest.TestCase):
    self.assertIn(v,heritage)
   buildings=read("src/buildings.ts")
   palette=function_body(buildings,"tileBatches")
-  # Un monument reste beige qu'il soit dans un lot fusionné ou isolé.
-  self.assertIn("b.heritageRef?[s.beigeWalls,s.beigeRoofs]",palette)
-  self.assertIn("b.heritageRef?[materials.heritageWall,materials.heritageRoof]",palette)
+  # Beige uniquement pour le corpus explicite des majeurs.
+  self.assertIn("isMajorHeritageRef(b.heritageRef)",palette)
+  self.assertIn("[s.beigeWalls,s.beigeRoofs]",palette)
+  self.assertIn("[materials.heritageWall,materials.heritageRoof]",palette)
+  self.assertIn("[materials.wall,materials.roof]",palette)
   # La sélection lit faceToBuilding, indépendamment de la géométrie et de
   # la visibilité : prédicat dédié qui exige isEnabled() mais pas isVisible.
   pick=function_body(read("src/heritageFootprints.ts"),"isBuildingPickProxy")
@@ -31,8 +33,8 @@ class Heritage026(unittest.TestCase):
   self.assertIn("scene.pick(x,y,isBuildingPickProxy)",read("src/main.ts"))
   code,output=run_behaviour_test()
   self.assertEqual(code,0,output)
-  self.assertIn("politicalWall",read("src/buildings.ts"))
-  self.assertIn("financialWall",read("src/buildings.ts"))
+  self.assertNotIn("politicalWall",read("src/buildings.ts"))
+  self.assertNotIn("financialWall",read("src/buildings.ts"))
   self.assertIn("tagHeritageBuilding(building)",read("src/metroTiles.ts"))
   self.assertIn("data.buildings.forEach(tagHeritageBuilding)",read("src/tileManager.ts"))
  def test_areas_use_retrieved_not_invented_geometry(self):
