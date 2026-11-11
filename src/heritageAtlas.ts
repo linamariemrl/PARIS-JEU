@@ -1,4 +1,5 @@
 import {Color3,Mesh,MeshBuilder,Scene,Vector3} from '@babylonjs/core';
+import {MONUMENT_BEIGE_RGB} from './monumentPalette';
 import type {Building} from './types';
 import {storyForMonument,storyForReference} from './monumentStories';
 import {roleOfHeritage,heritageRoleLabel} from './heritageCategories';
@@ -322,7 +323,7 @@ export class HeritageAtlas{
       pts.push(pts[0].clone());
     const mesh=MeshBuilder.CreateLines('contour-patrimoine-'+area.id,
      {points:pts},this.scene);
-    mesh.color=new Color3(.78,.69,.54);
+    mesh.color=new Color3(...MONUMENT_BEIGE_RGB);
     mesh.isPickable=false;
     this.lines.push(mesh);
    }
