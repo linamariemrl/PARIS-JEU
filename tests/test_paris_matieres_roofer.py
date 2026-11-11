@@ -53,7 +53,7 @@ class ParisMatieresRoofer(unittest.TestCase):
         self.assertEqual(len(geo["coordinates"][0]), 2)
         from shapely.geometry import shape
         self.assertAlmostEqual(shape(geo).area, 375.0)
-        self.doc["georeferencement"]["emprise2154"][0][0][2] = [652030, 6862000]
+        self.doc["georeferencement"]["emprise2154"][0][1][0] = [653000, 6863000]
         with self.assertRaisesRegex(ValueError, "invalide"):
             mr.footprint_geometry(self.doc)
 
