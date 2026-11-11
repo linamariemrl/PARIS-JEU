@@ -8,8 +8,9 @@ ni `main`, ni le fichier d'index des maquettes n'ont été modifiés par R14.
 
 Le fichier
 [`PA00086319-open-views-r14.json`](../public/data/metropole/architecture/evidence/PA00086319-open-views-r14.json)
-recense **5 documents distincts** : un plan historique daté de 1878 et
-**4 photographies réelles**, dont **2 de 2026**. Ce sont des documents
+recense **8 documents distincts** : un plan historique daté de 1878 et
+**7 photographies réelles**, dont **3 de 2026**, couvrant les façades ouest,
+nord, est et sud. Ce sont des documents
 d'entrée pour une photogrammétrie ultérieure : **0 caméra calibrée,
 0 correspondance métrique validée, 0 segment 3D triangulé**.
 
@@ -26,6 +27,9 @@ pour une reconstruction SfM/MVS.
 | [Façade, août 2026](https://commons.wikimedia.org/wiki/File:H%C3%B4tel_de_Ville_de_Paris_-_Fa%C3%A7ade_-_Ao%C3%BBt_2026.jpg) | 6 août 2026 | Façade ouest | CC BY-SA 4.0 | EXIF publiées ; coordonnées et pose inconnues |
 | [Détail de façade](https://commons.wikimedia.org/wiki/File:H%C3%B4tel_de_Ville_de_Paris_d%C3%A9tail_fa%C3%A7ade.jpg) | 14 juillet 2012 | Entrée principale, détail | CC0 1.0 | Coordonnées de caméra publiées, orientation inconnue |
 | [Hôtel de ville - Paris](https://commons.wikimedia.org/wiki/File:H%C3%B4tel_de_ville_-_Paris.jpg) | 15 mai 2012 | Vue sud-ouest | CC BY-SA 3.0 | Coordonnées d'objet, **pas** position caméra attestée |
+| [Façade nord, mai 2026](https://commons.wikimedia.org/wiki/File:H%C3%B4tel_Ville_-_Paris_IV_(FR75)_-_2026-05-30_-_1.jpg) | 30 mai 2026 | Nord | CC BY-SA 4.0 | Coordonnées caméra et cap indicatif publiés, mais **pose 3D non calibrée** |
+| [Rue de Lobau, façade est](https://commons.wikimedia.org/wiki/File:P1270262_Place_St-Gervais_rue_de_Lobau_hotel_de_ville_rwk.jpg) | 9 août 2014 | Est | CC BY-SA 4.0 | Position caméra non attestée |
+| [Vue depuis la Seine](https://commons.wikimedia.org/wiki/File:Paris_town_hall_Seine.jpg) | 9 avril 2011 | Sud | CC0 1.0 | Coordonnées caméra publiées, pose 3D inconnue |
 
 **Licences :** attribution, indication des modifications et partage à
 l'identique à examiner fichier par fichier avant l'incorporation de données
