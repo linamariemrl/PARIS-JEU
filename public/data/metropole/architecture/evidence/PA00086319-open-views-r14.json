@@ -4,7 +4,7 @@
   "building": "Hôtel de Ville de Paris",
   "reviewDate": "2026-11-11",
   "status": "source-verified-unregistered",
-  "purpose": "Inventaire initial de sources ouvertes pour triangulation documentaire future, sans extraction de maillage ni correction spatiale.",
+  "purpose": "Corpus multi-façades de sources ouvertes (ouest, nord, est, sud) pour confrontation documentaire et triangulation future, sans extraction de maillage ni correction spatiale.",
   "sources": [
     {
       "id": "bhdv-cc64-pl34",
@@ -81,6 +81,54 @@
       "cameraPoseVerified": false,
       "featureMatchesMeasured": 0,
       "usage": "Prise de vue sud-ouest ; les coordonnées affichées concernent l'objet photographié et non une position de caméra établie."
+    },
+    {
+      "id": "commons-north-2026-may",
+      "kind": "current-photograph",
+      "facade": "nord",
+      "captured": "2026-05-30",
+      "author": "Chabe01",
+      "license": "CC-BY-SA-4.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:H%C3%B4tel_Ville_-_Paris_IV_(FR75)_-_2026-05-30_-_1.jpg",
+      "cameraPositionWgs84": [
+        2.352469,
+        48.857278
+      ],
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Vue récente de la façade nord, géolocalisation et orientation indicative publiées ; ce cap photographique ne constitue pas une pose 3D calibrée."
+    },
+    {
+      "id": "commons-east-2014",
+      "kind": "current-photograph",
+      "facade": "est, rue de Lobau",
+      "captured": "2014-08-09",
+      "author": "Mbzt",
+      "license": "CC-BY-SA-4.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:P1270262_Place_St-Gervais_rue_de_Lobau_hotel_de_ville_rwk.jpg",
+      "cameraPositionWgs84": null,
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Façade est vue depuis la place Saint-Gervais ; géolocalisation de caméra non attestée sur la page."
+    },
+    {
+      "id": "commons-south-2011",
+      "kind": "current-photograph",
+      "facade": "sud, vue depuis la Seine",
+      "captured": "2011-04-09",
+      "author": "Jebulon",
+      "license": "CC0-1.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Paris_town_hall_Seine.jpg",
+      "cameraPositionWgs84": [
+        2.3505,
+        48.855
+      ],
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Vue sur la façade sud depuis la Seine ; orientation et calibration non contrôlées, vérifier tout changement depuis 2011."
     }
   ],
   "registration": {
