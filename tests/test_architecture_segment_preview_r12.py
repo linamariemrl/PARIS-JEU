@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 ORIGIN = ROOT / "public/data/metropole/architecture/measurements/PA00086319.json"
 PROOF = ROOT / "public/data/metropole/architecture/measurements/PA00086319-boccador-assise14-proof.json"
 PREVIEW = ROOT / "public/previews/hotel-de-ville-assise1878.html"
+SOURCES = ROOT / "public/data/metropole/architecture/evidence/PA00086319-open-views-r14.json"
 
 
 class MeasuredSegments1878(unittest.TestCase):
@@ -24,6 +25,7 @@ class MeasuredSegments1878(unittest.TestCase):
         cls.original = json.loads(ORIGIN.read_text(encoding="utf8"))
         cls.proof = json.loads(PROOF.read_text(encoding="utf8"))
         cls.html = PREVIEW.read_text(encoding="utf8")
+        cls.sources = json.loads(SOURCES.read_text(encoding="utf8"))
 
     def test_exact_thirty_archival_segments_in_source_order(self):
         src = self.original
@@ -86,6 +88,16 @@ class MeasuredSegments1878(unittest.TestCase):
         for target in ('id="scene"', 'id="track"', 'id="range"',
                        'id="focus"', 'id="yaw"', 'id="detail"'):
             self.assertIn(target, html)
+
+    def test_documented_r14_sources_in_preview_without_fictitious_poses(self):
+        self.assertIn('id="vues-ouvertes-r14"', self.html)
+        self.assertIn("caméras", self.html)
+        for item in self.sources["sources"]:
+            self.assertIn('data-source-id="' + item["id"] + '"', self.html)
+            self.assertIn(item["sourcePage"].replace("&", "&amp;"), self.html)
+            self.assertIn(item["license"], self.html)
+            self.assertFalse(item["cameraPoseVerified"])
+            self.assertEqual(item["featureMatchesMeasured"], 0)
 
     def test_inline_interaction_javascript_is_syntactically_valid(self):
         node = shutil.which("node")
