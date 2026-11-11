@@ -22,8 +22,9 @@ from paris_matieres import BASE, ROOT, directory, parse_id
 
 OUT = ROOT / "cache/paris-matieres/lidar-hd"
 DALL = re.compile(r"^LHD_FXX_[0-9]{4}_[0-9]{4}$")
-DENY = ("earth.google.", "maps.google.", "googleapis.com", "gstatic.com",
-        "bing.com", "virtualearth.net", "apple.com", "here.com")
+DENY = ("earth.google.com", "maps.google.com", "maps.googleapis.com",
+        "streetview.googleapis.com", "maps.gstatic.com", "bing.com",
+        "virtualearth.net", "apple.com", "here.com")
 USER_AGENT = "PARIS-Matieres/0.1 (outil libre, delai et cache)"
 MAX_METADATA = 4 * 1024 * 1024
 
