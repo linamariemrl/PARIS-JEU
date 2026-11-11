@@ -1,0 +1,34 @@
+name: Aperçu architectural de la PR — Hôtel de Ville 1878
+
+on:
+  pull_request:
+    paths:
+      - 'public/previews/**'
+      - 'public/data/metropole/architecture/measurements/PA00086319*'
+      - 'tests/test_architecture_segment_preview_r12.py'
+      - '.github/workflows/architecture-preview-pr.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  preview-documentaire:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Vérifier l'exactitude des cotes et le JavaScript interactif
+        run: python -m unittest tests.test_architecture_segment_preview_r12 -v
+      - name: Fournir une prévisualisation autonome sans publication
+        uses: actions/upload-artifact@v4
+        with:
+          name: PARIS-Apercu-Hotel-de-Ville-1878
+          path: public/previews/hotel-de-ville-assise1878.html
+          retention-days: 30
+          if-no-files-found: error
