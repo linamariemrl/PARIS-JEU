@@ -1,6 +1,7 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
 import {extrusionSwap} from './architectureModels';
 import {isMajorHeritageRef} from './heritagePriorities';
+import {MONUMENT_BEIGE_RGB} from './monumentPalette';
 import {heritageFootprints,footprintShape} from './heritageFootprints';
 import type {FootprintShape} from './heritageFootprints';
 import earcut from 'earcut';
@@ -158,12 +159,13 @@ export function createMaterials(scene:Scene):BuildingMaterials{
   roof.specularColor=Color3.Black();
   roof.backFaceCulling=false;
   roof.freeze();
+  const [br,bg,bb]=MONUMENT_BEIGE_RGB;
   const heritageWall=new StandardMaterial('monuments-beige-pierre',scene);
-  heritageWall.diffuseColor=new Color3(.87,.80,.69);
+  heritageWall.diffuseColor=new Color3(br,bg,bb);
   heritageWall.specularColor=Color3.Black();
   heritageWall.backFaceCulling=false;heritageWall.freeze();
   const heritageRoof=new StandardMaterial('monuments-beige-toits',scene);
-  heritageRoof.diffuseColor=new Color3(.78,.71,.62);
+  heritageRoof.diffuseColor=new Color3(br,bg,bb);
   heritageRoof.specularColor=Color3.Black();
   heritageRoof.backFaceCulling=false;heritageRoof.freeze();
   // Les usages sont documentés dans les fiches ; seule l'importance colore.
