@@ -58,6 +58,39 @@ python scripts/paris_matieres.py prepare bat:BATIMENT0000000305564422
 python scripts/paris_matieres_roofer.py prepare bat:BATIMENT0000000305564422
 ```
 
+### Acquisition automatisée de la dalle officielle (J1)
+
+Le programme `scripts/paris_matieres_sources.py` exploite l'URL d'index
+**WFS IGN** déjà enregistrée dans `unite.json`. Il exige une référence
+de dalle exacte ; aucune correspondance approximative n'est autorisée.
+Le mode normal interroge uniquement la métadonnée (sans télécharger le
+nuage) :
+
+```bash
+python scripts/paris_matieres_sources.py bat:BATIMENT0000000305564422
+```
+
+Pour acquérir expressément **une seule dalle**, en respectant un plafond
+de bande passante, utiliser :
+
+```bash
+python scripts/paris_matieres_sources.py bat:BATIMENT0000000305564422 \
+  --telecharger --limite-mo 1024
+```
+
+Le fichier LAS/LAZ doit commencer par la signature `LASF` ; le
+programme calcule une empreinte SHA-256, crée le fichier source
+`LHD_FXX_0652_6862.source.json` et réutilise le cache uniquement si
+l'empreinte et l'URL concordent. En cas de réponse invalide ou de
+dépassement de quota, le téléchargement partiel est écarté. Le
+téléchargement effectif dépend de l'accessibilité des serveurs IGN et de
+l'existence de la dalle : **aucune acquisition réelle n'a été exécutée
+ni attestée depuis cette session**.
+
+La présence d'une URL dans le WFS officiel documente sa provenance,
+mais ne suffit pas à conclure qu'un rendu 3D est géométriquement juste.
+La reconstruction et ses erreurs doivent encore être mesurées.
+
 Le pilote attendu est Notre-Dame, bâtiment
 `BATIMENT0000000305564422`, dalle IGN
 `LHD_FXX_0652_6862` (à obtenir légalement depuis l'index WFS IGN).
@@ -108,12 +141,15 @@ présentée comme reconstruite à ce stade.
 - `tests/test_paris_matieres.py` : reprise, ordre des unités, cas sans
   dalle, identifiants sûrs, rejet des faux retours, absence de téléchargement ;
 - `tests/test_paris_matieres_roofer.py` : emprises avec cour, EPSG:2154,
-  origine LiDAR et empreinte, construction contrôlée de la commande Roofer.
+  origine LiDAR et empreinte, construction contrôlée de la commande Roofer ;
+- `tests/test_paris_matieres_sources.py` : métadonnées WFS à dalle exacte,
+  URL d'imagerie interdite refusée, intégrité du cache et aucun accès
+  réseau dans les tests.
 
 Commandes :
 
 ```bash
-python -m unittest tests.test_paris_matieres tests.test_paris_matieres_roofer -v
+python -m unittest tests.test_paris_matieres tests.test_paris_matieres_roofer tests.test_paris_matieres_sources -v
 ```
 
 Les outils refuseront les entrées incohérentes, au lieu de générer
