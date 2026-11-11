@@ -1,0 +1,707 @@
+{
+ "schema": 1,
+ "ref": "PA00086319",
+ "collection": "ark:/73873/pf0000712758",
+ "generatedBy": "scripts/inventory_bhdv_cc64.py",
+ "note": "Titres du catalogue BHdV, non vérifiés sur les images. Deux numérotations coexistent : assises de socle et assises au-dessus de l'assise en Corgoloin ; ne pas les additionner sans avoir établi leur correspondance.",
+ "plates": [
+  {
+   "plate": 1,
+   "ark": "ark:/73873/pf0000712758/0001",
+   "title": "218 : Rez-de-chaussée du bâtiment du Boccador, détail du socle sur la place de l'Hôtel de Ville : plan général de la 1ère assise du socle ; modifications sous les piles U et S",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/192/6f7/599/CC64_PL01.xml",
+   "pixels": [
+    12623,
+    8191
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [
+     1
+    ],
+    "numbering": "socle"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 2,
+   "ark": "ark:/73873/pf0000712758/0002",
+   "title": "219 : Rez-de-chaussée, bâtiment du Boccador, détail de la 2e assise de socle sur la place de l'Hôtel de Ville : plan général de la 2e assise, détail de l'une des baies",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/b8d/d94/922/CC64_PL02.xml",
+   "pixels": [
+    12656,
+    8210
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [
+     2
+    ],
+    "numbering": "socle"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 3,
+   "ark": "ark:/73873/pf0000712758/0003",
+   "title": "220 : Rez-de-chaussée, bâtiment du Boccador, détail du socle sur la place de l'Hôtel de Ville : plan général de la 3e assise, détail de l'une des baies",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/636/a13/114/CC64_PL03.xml",
+   "pixels": [
+    12655,
+    8236
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [
+     3
+    ],
+    "numbering": "socle"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 4,
+   "ark": "ark:/73873/pf0000712758/0004",
+   "title": "228 : Rez-de-chaussée, bâtiment central (Boccador) : détail des assises en doublures de la pierre d'Hauteville et complément des façades : plans",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/b9a/8d8/7bf/CC64_PL04.xml",
+   "pixels": [
+    12599,
+    8179
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 5,
+   "ark": "ark:/73873/pf0000712758/0005",
+   "title": "252 : Rez-de-chaussée, bâtiment du Boccador, partie de façade haut droit des échauguettes avec retour sur les passages : plans des 3e, 4e et 5e assises, coupes, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/a40/497/578/CC64_PL05.xml",
+   "pixels": [
+    12613,
+    8165
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     3,
+     4,
+     5
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 6,
+   "ark": "ark:/73873/pf0000712758/0006",
+   "title": "275 : Rez-de-chaussée, bâtiment central Boccador : plan de l'assise de socle du grand vestibule",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/09b/d10/a9c/CC64_PL06.xml",
+   "pixels": [
+    12591,
+    8184
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "socle"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 7,
+   "ark": "ark:/73873/pf0000712758/0007",
+   "title": "276 : Rez-de-chaussée, bâtiment central Boccador : plans, détails",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/14d/5e8/085/CC64_PL07.xml",
+   "pixels": [
+    12596,
+    8242
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 8,
+   "ark": "ark:/73873/pf0000712758/0008",
+   "title": "286 : Rez-de-chaussée, bâtiment central Boccador : plan de la 1ère assise au-dessus de l'assise en Corgoloin, coupe, élévaiton",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/231/565/eb0/CC64_PL08.xml",
+   "pixels": [
+    12601,
+    8016
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     1
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 9,
+   "ark": "ark:/73873/pf0000712758/0009",
+   "title": "287 : Rez-de-chaussée, bâtiment central Boccador : détail en plan des façades au droit des échauguettes côté gauche : plans des 1ère, 2e, et 3e assises, coupes, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/84b/a34/0d2/CC64_PL09.xml",
+   "pixels": [
+    12669,
+    8208
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     1,
+     2,
+     3
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 10,
+   "ark": "ark:/73873/pf0000712758/0010",
+   "title": "288 : Rez-de-chaussée, bâtiment central Boccador : détail en plan des façades au droit des échauguettes côté droit : plans des 1ère, 2e, et 3e assises, coupes, élévations, détail du mur EE",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/985/b20/bde/CC64_PL10.xml",
+   "pixels": [
+    12688,
+    8227
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     1,
+     2,
+     3
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 11,
+   "ark": "ark:/73873/pf0000712758/0011",
+   "title": "286 : Rez-de-chaussée, bâtiment central Boccador : plan général du béton du grand vestibule ; plan d'un refouillement",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/f29/0a1/17a/CC64_PL11.xml",
+   "pixels": [
+    12529,
+    8191
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 12,
+   "ark": "ark:/73873/pf0000712758/0012",
+   "title": "287 : Bâtiment central Boccador, détail des 3 premières asssies en Charentenay du passage à droite et mur en retour : plans, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/b99/760/48e/CC64_PL12.xml",
+   "pixels": [
+    12795,
+    8333
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 13,
+   "ark": "ark:/73873/pf0000712758/0013",
+   "title": "323 : Bâtiment central Boccador, rez-de-chaussée, détail des 3 premières asssies en Charentenay, passage à gauche et mur en retour : plans, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/893/797/423/CC64_PL13.xml",
+   "pixels": [
+    12676,
+    8347
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 14,
+   "ark": "ark:/73873/pf0000712758/0014",
+   "title": "360 : Bâtiment central Boccador, rez-de-chaussée, détail de la 1ère assise au-dessus de l'assise en Corgoloin : plan d'ensemble, coupes, élévation",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/b1f/042/4c2/CC64_PL14.xml",
+   "pixels": [
+    12599,
+    8229
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     1
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 15,
+   "ark": "ark:/73873/pf0000712758/0015",
+   "title": "372 : Rez-de-chaussée, bâtiment central Boccador : plans des 4e, 5e et 6e assises, coupes, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/723/74e/06a/CC64_PL15.xml",
+   "pixels": [
+    12769,
+    8343
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     4,
+     5,
+     6
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 16,
+   "ark": "ark:/73873/pf0000712758/0016",
+   "title": "373 : Rez-de-chaussée, bâtiment central Boccador : plans de la 3e à la 6e assise, coupes, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/2a5/8ef/1aa/CC64_PL16.xml",
+   "pixels": [
+    12651,
+    8320
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     3,
+     4,
+     5,
+     6
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 17,
+   "ark": "ark:/73873/pf0000712758/0017",
+   "title": "385 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 2e assise au-dessus de l'assise de Corgoloin, coupes, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/b93/80e/7dc/CC64_PL17.xml",
+   "pixels": [
+    12683,
+    8201
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     2
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 18,
+   "ark": "ark:/73873/pf0000712758/0018",
+   "title": "394 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 3e assise au-dessus de l'assise de Corgoloin, coupes",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/c8c/6f6/a74/CC64_PL18.xml",
+   "pixels": [
+    12669,
+    8379
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     3
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 19,
+   "ark": "ark:/73873/pf0000712758/0019",
+   "title": "413 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 4e assise au-dessus de l'assise de Corgoloin, élévations, détail",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/50b/64e/5df/CC64_PL19.xml",
+   "pixels": [
+    12537,
+    8166
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     4
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 20,
+   "ark": "ark:/73873/pf0000712758/0020",
+   "title": "436 : Rez-de-chaussée, bâtiment central, façade sur la place de l'Hôtel de Ville, angle de l'échauguette retour sur le passage : plan des 7e et 8e assises, coupes, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/987/8f2/d4c/CC64_PL20.xml",
+   "pixels": [
+    12612,
+    8268
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [
+     7,
+     8
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 21,
+   "ark": "ark:/73873/pf0000712758/0021",
+   "title": "441 : Rez-de-chaussée, bâtiment central, façade place de l'Hôtel de Ville, angle de l'échauguette retour sur le passage : plans des 7e et 8e assises ; détail de la façade, place de l'Hôtel de Ville",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/c3c/6b5/31f/CC64_PL21.xml",
+   "pixels": [
+    12726,
+    8301
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [
+     7,
+     8
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 22,
+   "ark": "ark:/73873/pf0000712758/0022",
+   "title": "455 : Vestibule du Boccador, détail des colonnes du rez-de-chaussée : élévation d'ensemble, profils grandeur d'exécution",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/7cb/3dd/2bb/CC64_PL22.xml",
+   "pixels": [
+    12630,
+    8205
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 23,
+   "ark": "ark:/73873/pf0000712758/0023",
+   "title": "509 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 5e assise au-dessus de l'assise en Corgoloin, coupe, élévation",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/2c6/fbf/cf1/CC64_PL23.xml",
+   "pixels": [
+    12745,
+    8251
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     5
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 24,
+   "ark": "ark:/73873/pf0000712758/0024",
+   "title": "541 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 6e assise au-dessus de l'assise de socle en Corgoloin, élévation, détail",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/5dd/783/850/CC64_PL24.xml",
+   "pixels": [
+    12668,
+    8283
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     6
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 25,
+   "ark": "ark:/73873/pf0000712758/0025",
+   "title": "542 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 7e assise au-dessus de l'assise de socle en Corgoloin, coupe, élévation",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/865/490/76d/CC64_PL25.xml",
+   "pixels": [
+    12741,
+    8247
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     7
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 26,
+   "ark": "ark:/73873/pf0000712758/0026",
+   "title": "545 : Détail des chambranles des baies du grand vestibule Boccador : profil grandeur d'exécution, élévation d'ensemble, élévation aa",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/bcc/98e/ee2/CC64_PL26.xml",
+   "pixels": [
+    12678,
+    8239
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 27,
+   "ark": "ark:/73873/pf0000712758/0027",
+   "title": "554 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 8e assise au-dessus du Corgoloin, coupe, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/d7a/4f4/327/CC64_PL27.xml",
+   "pixels": [
+    12725,
+    8241
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     8
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 28,
+   "ark": "ark:/73873/pf0000712758/0028",
+   "title": "555 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 9e assise au-dessus du Corgoloin, coupe, élévations ; détail d'une platebande au-dessus des portes",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/fc7/733/651/CC64_PL28.xml",
+   "pixels": [
+    12661,
+    8235
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     9
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 29,
+   "ark": "ark:/73873/pf0000712758/0029",
+   "title": "572 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 10e assise au-dessus du Corgoloin, coupes, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/4a5/030/5fe/CC64_PL29.xml",
+   "pixels": [
+    12748,
+    8309
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     10
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 30,
+   "ark": "ark:/73873/pf0000712758/0030",
+   "title": "573 : Bâtiment central, vestibule du Boccador : détail des tympans des baies dans les pignons extrêmes : élévation du tympan côté vestibule, élévation de la double face côté du passage, plans",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/6bd/e16/e30/CC64_PL30.xml",
+   "pixels": [
+    12588,
+    8259
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 31,
+   "ark": "ark:/73873/pf0000712758/0031",
+   "title": "594 : Rez-de-chaussée, bâtiment central Boccador, grand vestibule : plan de la 11e assise au-dessus du Corgoloin, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/d28/412/94c/CC64_PL31.xml",
+   "pixels": [
+    12759,
+    8265
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     11
+    ],
+    "numbering": "au-dessus-du-corgoloin"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 32,
+   "ark": "ark:/73873/pf0000712758/0032",
+   "title": "595 : Arcs du passage côté du Préfet sur la place de l'Hôtel de Ville : plan général, coupes, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/b7a/8d8/6fc/CC64_PL32.xml",
+   "pixels": [
+    12668,
+    8160
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 33,
+   "ark": "ark:/73873/pf0000712758/0033",
+   "title": "630 : Bâtiment central Boccador, rez-de-chaussée, grand vestibule, façade sur la place de l'Hôtel de Ville dans la hauteur des 10e, 11e, 12e et 13e assises : plans, coupes, élévations",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/3bf/3a3/bd1/CC64_PL33.xml",
+   "pixels": [
+    12687,
+    8297
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [
+     10,
+     11,
+     12,
+     13
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 34,
+   "ark": "ark:/73873/pf0000712758/0034",
+   "title": "631 : Bâtiment central Boccador, rez-de-chaussée, façade sur la place de l'Hôtel de Ville : plans de la 14e assise, coupe",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/caf/ed9/621/CC64_PL34.xml",
+   "pixels": [
+    12650,
+    8139
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [
+     14
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": true
+  },
+  {
+   "plate": 35,
+   "ark": "ark:/73873/pf0000712758/0035",
+   "title": "636 : Bâtiment central Boccador, rez-de-chaussée, détail du mur du grand vestibule attenant au couloir de l'escalier Henri II : plan d'ensemble de la 10e assise, élévation d'ensemble",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/805/d2d/b11/CC64_PL35.xml",
+   "pixels": [
+    12807,
+    8295
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     10
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 36,
+   "ark": "ark:/73873/pf0000712758/0036",
+   "title": "637 : Bâtiment central Boccador, rez-de-chaussée, détail du mur du grand vestibule attenant au couloir de l'escalier Henri II : plan des 11e, 12e et 13e assises, coupe, élévations ; ventilation…",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/afe/07a/68a/CC64_PL36.xml",
+   "pixels": [
+    12606,
+    8232
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [
+     11,
+     12,
+     13
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 37,
+   "ark": "ark:/73873/pf0000712758/0037",
+   "title": "638 : Bâtiment central Boccador, rez-de-chaussée, façade sur la place de l'Hôtel de Ville : plans de la 11e assise, coupes",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/35a/d1f/4d1/CC64_PL37.xml",
+   "pixels": [
+    12577,
+    8243
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [
+     11
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 38,
+   "ark": "ark:/73873/pf0000712758/0038",
+   "title": "639 : Bâtiment central Boccador, rez-de-chaussée, façade sur la place de l'Hôtel de Ville : détails de la 16e assise, acrotère au-dessus de la corniche de l'entresol : plans, coupe",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/9aa/17d/ed1/CC64_PL38.xml",
+   "pixels": [
+    12603,
+    8083
+   ],
+   "facadeOnPlace": true,
+   "coursesInTitle": {
+    "numbers": [
+     16
+    ],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  },
+  {
+   "plate": 39,
+   "ark": "ark:/73873/pf0000712758/0039",
+   "title": "708 : Bâtiment central Boccador, rez-de-chaussée, petit vestibule à gauche du passage à la cour des bureaux : plan des assises, coupe, élévations, détail",
+   "deepZoom": "https://bibliotheques-specialisees.paris.fr/in/dz/720/4dc/80f/CC64_PL39.xml",
+   "pixels": [
+    12553,
+    8102
+   ],
+   "facadeOnPlace": false,
+   "coursesInTitle": {
+    "numbers": [],
+    "numbering": "non-precise"
+   },
+   "transcribed": false
+  }
+ ]
+}

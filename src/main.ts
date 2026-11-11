@@ -25,6 +25,8 @@ import {HeritageAtlas} from './heritageAtlas';
 import {LandmarkBrowser} from './landmarkBrowser';
 import {ArchitectureDossiers} from './architectureDossiers';
 import {ArchitecturalModelLibrary} from './architectureModels';
+import {loadHeritageFootprints,isBuildingPickProxy} from './heritageFootprints';
+import {installBenchProbe} from './benchProbe';
 import {UrbanAtlas,type QuarterRecord} from './urbanAtlas';
 import {QuarterOverlay,quarterAreaKm2} from './quarterSelection';
 import {neighborhoodHistory,administrativeParis} from './neighborhoodHistory';
@@ -392,7 +394,7 @@ try{
   camera.onTap=(x,y)=>{
     const requestId=++tapSequence;
     if(quarterMode){
-      const hit=scene.pick(x,y,mesh=>mesh.isPickable&&(
+      const hit=scene.pick(x,y,mesh=>mesh.isPickable&&mesh.isEnabled()&&(
         mesh===ground||mesh.name==='terrain-RGE-ALTI-IGN'||
         Boolean(mesh.metadata)||mesh.name==='infrastructure-road'||
         mesh.name.startsWith('routes-metropole-proches-')));
@@ -411,7 +413,10 @@ try{
       else quarterHint.textContent='Aucun quartier administratif à cet endroit.';
       return;
     }
-    const hit=scene.pick(x,y,mesh=>mesh.isPickable&&Boolean(mesh.metadata));
+    // R02-D2 : prédicat dédié, qui ne teste PAS isVisible. Une extrusion
+    // remplacée par une maquette reste invisible mais sélectionnable ;
+    // les maquettes expertes, elles, ne sont jamais sélectionnables.
+    const hit=scene.pick(x,y,isBuildingPickProxy);
     const selected=hit?.pickedMesh&&hit.faceId>=0?
       getPickedBuilding(hit.pickedMesh as Mesh,hit.faceId):null;
     if(selected){select(selected);return;}
@@ -537,6 +542,16 @@ try{
     ()=>camera.captureView(quality.value as GameView['quality']),applySavedView);
   window.addEventListener('resize',()=>engine.resize());
   let lastFps=0,lastClock=0,lastAux=0,previous=performance.now();
+  installBenchProbe(()=>{
+    const c=camera.camera,m=metro as unknown as {active?:Map<string,unknown>;inFlight?:Set<string>};
+    const o=overview as unknown as {visible?:Set<string>;roofsOnly?:boolean};
+    return {alpha:c.alpha,beta:c.beta,radius:c.radius,x:c.target.x,z:c.target.z,
+      quality:el<HTMLSelectElement>('quality').value,meshes:scene.meshes.length,
+      activeMeshes:scene.getActiveMeshes().length,metroExactTiles:m.active?.size??null,
+      metroInFlight:m.inFlight?.size??null,overviewGroups:o.visible?.size??null,
+      overviewRoofsOnly:o.roofsOnly??null,status:el('metropole-status').textContent,
+      selection:el('selection-title').textContent};
+  });
   engine.runRenderLoop(()=>{
     const now=performance.now();
     const dt=Math.min(.05,Math.max(0,(now-previous)/1000));
@@ -610,7 +625,11 @@ try{
         [surfaces.init(),metroTrees.init(),trees.init()]),
       overview.init(),coverage.init().then(()=>showCounts()),
       // Classification patrimoniale avant création des volumes proches.
-      heritage.init().then(()=>{
+      // La table des emprises patrimoniales (R02-D3) doit précéder la
+      // construction des tuiles : elle décide des maillages séparés.
+      Promise.all([heritage.init(),loadHeritageFootprints(
+        import.meta.env.BASE_URL+
+        'data/metropole/architecture/heritage-footprints.json')]).then(()=>{
         landmarkBrowser.refresh();
         return Promise.all([metro.init(),manager.init()]);
       }).catch((err:unknown)=>{

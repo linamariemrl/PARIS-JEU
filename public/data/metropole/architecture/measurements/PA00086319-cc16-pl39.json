@@ -1,0 +1,61 @@
+{
+  "schema": 1,
+  "ref": "PA00086319",
+  "sourceId": "bhdv-cc16-pl39",
+  "sheet": "CC16_PL39 — Attachement de maçonnerie n° 112, Exercice 1878, Annexe n° 298 ; Riffaud et Cie ; Ballu et Deperthes ; Salard inspecteur",
+  "title": "Rez-de-chaussée, bâtiment central, tourelle côté du Préfet — plan de la 13e assise, élévations développées, coupes, fermetures des baies A, B, C",
+  "image": "https://bibliotheques-specialisees.paris.fr/in/dz/104/bde/5f3/CC16_PL39.xml",
+  "imagePixels": [
+    12645,
+    8249
+  ],
+  "dateRepresented": "1878",
+  "consulted": "2026-11-09",
+  "note": "Le présent attachement est à répéter pour la tourelle côté des Bureaux (inscription sur la feuille) : les deux tourelles sont donc décrites comme identiques à cette assise, ce qui est cohérent avec la symétrie lue sur CC64_PL34 sans la démontrer.",
+  "measurements": [
+    {
+      "elementId": "corps-central/tourelle-prefet/assise-13/hauteur",
+      "property": "course_height",
+      "value": 0.36,
+      "unit": "m",
+      "status": "transcribed-legible",
+      "inscription": "Plan de la 13e Assise Hauteur 0m,36",
+      "sourceId": "bhdv-cc16-pl39",
+      "sheetLocator": "titre du plan, centre haut de la feuille",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.42,
+          0.22,
+          0.66,
+          0.25
+        ]
+      },
+      "extentEstablished": true,
+      "dateRepresented": "1878",
+      "currentStateVerified": false,
+      "uncertaintyMeters": null,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Assise immédiatement inférieure à la 14e assise de CC64_PL34 (0,42 m) si la numérotation des assises est commune au rez-de-chaussée du corps central : hypothèse non vérifiée."
+    }
+  ],
+  "notTranscribed": [
+    {
+      "what": "Chaîne de cotes du plan, partie droite (3,24 ; 3,61 ; 5,12 ; 3,99 ; 4,76 ; 3,38 ; 1,47 …)",
+      "imageCrop": {
+        "level": 12,
+        "box": [
+          0.55,
+          0.27,
+          0.99,
+          0.36
+        ]
+      },
+      "why": "Mur différent de la façade sur la place lue sur CC64_PL34 (aucune travée de 3,86) ; attribution des segments et extrémités non établies."
+    },
+    {
+      "what": "Élévations développées (e f, c d), coupes (k l, s t, m n, o p, X Z, a b), fermetures des baies A, B, C",
+      "why": "Hauteurs de pierres d'assise, non de niveaux ; non lues à ce jour."
+    }
+  ]
+}

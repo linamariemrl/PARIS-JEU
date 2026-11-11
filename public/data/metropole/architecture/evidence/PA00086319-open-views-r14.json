@@ -1,0 +1,152 @@
+{
+  "schema": "paris-architecture-evidence/1",
+  "ref": "PA00086319",
+  "building": "Hôtel de Ville de Paris",
+  "reviewDate": "2026-11-11",
+  "status": "source-verified-unregistered",
+  "purpose": "Corpus multi-façades de sources ouvertes (ouest, nord, est, sud) pour confrontation documentaire et triangulation future, sans extraction de maillage ni correction spatiale.",
+  "sources": [
+    {
+      "id": "bhdv-cc64-pl34",
+      "kind": "historical-plan",
+      "facade": "ouest, corps central Boccador",
+      "captured": "1878",
+      "author": "Théodore Ballu et Édouard Deperthes",
+      "license": "public-domain",
+      "sourcePage": "https://bibliotheques-specialisees.paris.fr/in/imageReader.xhtml?ark=73873%2Fpf0000712758%2F0034%2Fv0001.simple.selectedTab%3Drecord.hidesidebar&id=ark%3A%2F73873%2Fpf0000712758%2F0034&selectedTab=record&updateUrl=updateUrl",
+      "cameraPositionWgs84": null,
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Cotes historiques seulement : l'ouvrage de 2026 doit être vérifié séparément."
+    },
+    {
+      "id": "commons-west-2026-june",
+      "kind": "current-photograph",
+      "facade": "ouest",
+      "captured": "2026-06-27",
+      "author": "Julian Lupyan",
+      "license": "CC0-1.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:H%C3%B4tel_de_Ville,_Paris,_France.jpg",
+      "cameraPositionWgs84": [
+        2.35125,
+        48.856692
+      ],
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Vue actuelle ; coordonnées de prise de vue publiées, orientation et focale calibrée non établies."
+    },
+    {
+      "id": "commons-west-2026-august",
+      "kind": "current-photograph",
+      "facade": "ouest",
+      "captured": "2026-08-06",
+      "author": "ZeusUpsistos (Arthur Weidmann, métadonnées EXIF)",
+      "license": "CC-BY-SA-4.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:H%C3%B4tel_de_Ville_de_Paris_-_Fa%C3%A7ade_-_Ao%C3%BBt_2026.jpg",
+      "cameraPositionWgs84": null,
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Vue récente ; métadonnées d'appareil publiées, position et extrinsèques non certifiés."
+    },
+    {
+      "id": "commons-west-detail-2012",
+      "kind": "current-photograph",
+      "facade": "ouest, entrée principale et détails",
+      "captured": "2012-07-14",
+      "author": "Jebulon",
+      "license": "CC0-1.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:H%C3%B4tel_de_Ville_de_Paris_d%C3%A9tail_fa%C3%A7ade.jpg",
+      "cameraPositionWgs84": [
+        2.351718,
+        48.856608
+      ],
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Détails en photo avec géolocalisation publiée ; vérifier modifications depuis 2012."
+    },
+    {
+      "id": "commons-southwest-2012",
+      "kind": "current-photograph",
+      "facade": "sud-ouest",
+      "captured": "2012-05-15",
+      "author": "Citevia",
+      "license": "CC-BY-SA-3.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:H%C3%B4tel_de_ville_-_Paris.jpg",
+      "cameraPositionWgs84": null,
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Prise de vue sud-ouest ; les coordonnées affichées concernent l'objet photographié et non une position de caméra établie."
+    },
+    {
+      "id": "commons-north-2026-may",
+      "kind": "current-photograph",
+      "facade": "nord",
+      "captured": "2026-05-30",
+      "author": "Chabe01",
+      "license": "CC-BY-SA-4.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:H%C3%B4tel_Ville_-_Paris_IV_(FR75)_-_2026-05-30_-_1.jpg",
+      "cameraPositionWgs84": [
+        2.352469,
+        48.857278
+      ],
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Vue récente de la façade nord, géolocalisation et orientation indicative publiées ; ce cap photographique ne constitue pas une pose 3D calibrée."
+    },
+    {
+      "id": "commons-east-2014",
+      "kind": "current-photograph",
+      "facade": "est, rue de Lobau",
+      "captured": "2014-08-09",
+      "author": "Mbzt",
+      "license": "CC-BY-SA-4.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:P1270262_Place_St-Gervais_rue_de_Lobau_hotel_de_ville_rwk.jpg",
+      "cameraPositionWgs84": null,
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Façade est vue depuis la place Saint-Gervais ; géolocalisation de caméra non attestée sur la page."
+    },
+    {
+      "id": "commons-south-2011",
+      "kind": "current-photograph",
+      "facade": "sud, vue depuis la Seine",
+      "captured": "2011-04-09",
+      "author": "Jebulon",
+      "license": "CC0-1.0",
+      "sourcePage": "https://commons.wikimedia.org/wiki/File:Paris_town_hall_Seine.jpg",
+      "cameraPositionWgs84": [
+        2.3505,
+        48.855
+      ],
+      "cameraBearingDeg": null,
+      "cameraPoseVerified": false,
+      "featureMatchesMeasured": 0,
+      "usage": "Vue sur la façade sud depuis la Seine ; orientation et calibration non contrôlées, vérifier tout changement depuis 2011."
+    }
+  ],
+  "registration": {
+    "reference": "public/data/metropole/architecture/registration/PA00086319.json",
+    "status": "unregistered",
+    "verifiedTiePoints": 0,
+    "independentControlPoints": 0,
+    "verifiedExtrinsicCameraPoses": 0,
+    "triangulatedSegments": 0,
+    "modelPublished": false
+  },
+  "unknowns": [
+    "Correspondances de points entre vues avec parallaxe suffisante",
+    "Intrinsèques et extrinsèques calibrées des caméras",
+    "Points de contrôle mesurés EPSG:2154 avec source et incertitude",
+    "Position et orientation de CC64_PL34 dans le bâtiment actuel",
+    "Altitude NGF de la XIVe assise",
+    "Dimensions en profondeur, décor et changements depuis 1878"
+  ],
+  "rights": "Les photographies sous CC BY-SA nécessitent attribution et respect des clauses de partage à l'identique si une œuvre dérivée est distribuée. Aucun fichier image n'est incorporé au jeu par ce registre."
+}

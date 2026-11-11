@@ -51,14 +51,43 @@
     <strong>MONUMENTS DE PARIS</strong>
     <button id="landmark-close" type="button" aria-label="Fermer l’inventaire">×</button>
   </div>
-  <p>Rôles des édifices prioritaires · localisations documentées uniquement</p>
+  <p>Monuments majeurs en beige · autres notices POP en gris neutre · source vérifiable</p>
   <input id="landmark-search" type="search" placeholder="Rechercher un édifice…" aria-label="Rechercher un monument"/>
   <select id="landmark-category" aria-label="Filtrer par catégorie">
     <option value="">Toutes les catégories</option>
-    <option value="political">Politique · orange clair</option>
-    <option value="touristic">Touristique · beige</option>
-    <option value="cultural">Culturel · violet clair</option>
-    <option value="financial">Économique · bleu clair</option>
+    <option value="political">Politique</option>
+    <option value="touristic">Touristique</option>
+    <option value="cultural">Culturel</option>
+    <option value="financial">Économique</option>
+  </select>
+  <select id="landmark-fiche" aria-label="Filtrer selon l’état de la fiche Histoire">
+    <option value="">Toutes les fiches</option>
+    <option value="recit">Avec récit historique officiel</option>
+    <option value="documentee">Fiches documentées</option>
+    <option value="a-completer">Fiches à compléter</option>
+  </select>
+  <select id="landmark-arrondissement" aria-label="Filtrer les monuments par arrondissement">
+    <option value="">Tous les arrondissements</option>
+    <option value="1">1e arrondissement</option>
+    <option value="2">2e arrondissement</option>
+    <option value="3">3e arrondissement</option>
+    <option value="4">4e arrondissement</option>
+    <option value="5">5e arrondissement</option>
+    <option value="6">6e arrondissement</option>
+    <option value="7">7e arrondissement</option>
+    <option value="8">8e arrondissement</option>
+    <option value="9">9e arrondissement</option>
+    <option value="10">10e arrondissement</option>
+    <option value="11">11e arrondissement</option>
+    <option value="12">12e arrondissement</option>
+    <option value="13">13e arrondissement</option>
+    <option value="14">14e arrondissement</option>
+    <option value="15">15e arrondissement</option>
+    <option value="16">16e arrondissement</option>
+    <option value="17">17e arrondissement</option>
+    <option value="18">18e arrondissement</option>
+    <option value="19">19e arrondissement</option>
+    <option value="20">20e arrondissement</option>
   </select>
   <small id="landmark-status" role="status">Inventaire documentaire…</small>
   <div id="landmark-list" aria-label="Bâtiments et monuments importants"></div>

@@ -1,0 +1,1561 @@
+{
+ "label": "branche",
+ "date": "2026-11-09T22:33:45.561Z",
+ "renderer": "Chromium headless, WebGL SwiftShader (logiciel)",
+ "viewport": "412x860",
+ "errors": [],
+ "stopped": null,
+ "complete": true,
+ "segments": [
+  {
+   "name": "démarrage",
+   "frames": 86,
+   "frameMs": {
+    "p50": 28,
+    "p95": 1451,
+    "p99": 2645,
+    "max": 5161
+   },
+   "longTasks": {
+    "count": 4,
+    "totalMs": 4463,
+    "maxMs": 2134
+   },
+   "draws": {
+    "median": 113,
+    "min": 18
+   },
+   "trianglesMedian": 1671724,
+   "drawDrops": 21,
+   "heapMB": 131,
+   "gpuBufMB": 35.5,
+   "state": {
+    "before": {
+     "alpha": -1.5707963267948966,
+     "beta": 0.85,
+     "radius": 1100,
+     "x": 0,
+     "z": 0,
+     "quality": "medium",
+     "meshes": 23,
+     "activeMeshes": 18,
+     "metroExactTiles": 0,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "Métropole : index des bâtiments en préparation…",
+     "selection": "Lieu sélectionné"
+    },
+    "after": {
+     "alpha": -1.5707963267948966,
+     "beta": 0.85,
+     "radius": 1100,
+     "x": 0,
+     "z": 0,
+     "quality": "medium",
+     "meshes": 296,
+     "activeMeshes": 131,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "9 713 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Lieu sélectionné"
+    }
+   },
+   "settleMs": 40605,
+   "settled": true
+  },
+  {
+   "name": "Hôtel de ville : arrivée",
+   "frames": 21,
+   "frameMs": {
+    "p50": 776,
+    "p95": 1452,
+    "p99": 1452,
+    "max": 1509
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 86,
+    "min": 86
+   },
+   "trianglesMedian": 1619835,
+   "drawDrops": 0,
+   "heapMB": 130,
+   "gpuBufMB": 35.8,
+   "state": {
+    "before": {
+     "alpha": -1.5707963267948966,
+     "beta": 0.85,
+     "radius": 1100,
+     "x": 0,
+     "z": 0,
+     "quality": "medium",
+     "meshes": 296,
+     "activeMeshes": 131,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "9 713 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Lieu sélectionné"
+    },
+    "after": {
+     "alpha": -1.5707963267948966,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -85.9,
+     "z": 214.2,
+     "quality": "medium",
+     "meshes": 294,
+     "activeMeshes": 86,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "9 299 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Hôtel de ville"
+    }
+   },
+   "selection": "Hôtel de ville",
+   "settleMs": 15068,
+   "settled": true
+  },
+  {
+   "name": "Hôtel de ville : orbite 360°",
+   "frames": 59,
+   "frameMs": {
+    "p50": 620,
+    "p95": 1219,
+    "p99": 1263,
+    "max": 1279
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 90,
+    "min": 82
+   },
+   "trianglesMedian": 1606637,
+   "drawDrops": 0,
+   "heapMB": 136,
+   "gpuBufMB": 35.8,
+   "state": {
+    "before": {
+     "alpha": -1.5707963267948966,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -85.9,
+     "z": 214.2,
+     "quality": "medium",
+     "meshes": 294,
+     "activeMeshes": 86,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "9 299 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Hôtel de ville"
+    },
+    "after": {
+     "alpha": 5.061909360654923,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -85.9,
+     "z": 214.2,
+     "quality": "medium",
+     "meshes": 294,
+     "activeMeshes": 86,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "9 299 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Hôtel de ville"
+    }
+   },
+   "orbitDegrees": 370,
+   "drags": 5
+  },
+  {
+   "name": "Hôtel de ville : dézoom complet",
+   "frames": 34,
+   "frameMs": {
+    "p50": 683,
+    "p95": 1394,
+    "p99": 1608,
+    "max": 1779
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 197,
+    "min": 86
+   },
+   "trianglesMedian": 1618036,
+   "drawDrops": 0,
+   "heapMB": 138,
+   "gpuBufMB": 37.9,
+   "state": {
+    "before": {
+     "alpha": 5.061909360654923,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -85.9,
+     "z": 214.2,
+     "quality": "medium",
+     "meshes": 294,
+     "activeMeshes": 86,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "9 299 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Hôtel de ville"
+    },
+    "after": {
+     "alpha": 5.061909360654923,
+     "beta": 0.83,
+     "radius": 19447.188005791937,
+     "x": -85.9,
+     "z": 214.2,
+     "quality": "medium",
+     "meshes": 296,
+     "activeMeshes": 258,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "9 299 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Hôtel de ville"
+    }
+   },
+   "radiusReached": 14252,
+   "settleMs": 4015,
+   "settled": true
+  },
+  {
+   "name": "Hôtel de ville : retour proche",
+   "frames": 39,
+   "frameMs": {
+    "p50": 610,
+    "p95": 1545,
+    "p99": 1713,
+    "max": 1750
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 193,
+    "min": 86
+   },
+   "trianglesMedian": 767082,
+   "drawDrops": 0,
+   "heapMB": 139,
+   "gpuBufMB": 37.9,
+   "state": {
+    "before": {
+     "alpha": 5.061909360654923,
+     "beta": 0.83,
+     "radius": 19447.188005791937,
+     "x": -85.9,
+     "z": 214.2,
+     "quality": "medium",
+     "meshes": 296,
+     "activeMeshes": 258,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "9 299 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Hôtel de ville"
+    },
+    "after": {
+     "alpha": 5.061909360654923,
+     "beta": 0.83,
+     "radius": 617.9566739865785,
+     "x": -85.9,
+     "z": 214.2,
+     "quality": "medium",
+     "meshes": 296,
+     "activeMeshes": 86,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "9 299 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Hôtel de ville"
+    }
+   },
+   "radiusReached": 850,
+   "settleMs": 4013,
+   "settled": true
+  },
+  {
+   "name": "Cathédrale Notre-Dame : arrivée",
+   "frames": 23,
+   "frameMs": {
+    "p50": 659,
+    "p95": 1116,
+    "p99": 1335,
+    "max": 1365
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 87,
+    "min": 86
+   },
+   "trianglesMedian": 1674843,
+   "drawDrops": 0,
+   "heapMB": 145,
+   "gpuBufMB": 37.5,
+   "state": {
+    "before": {
+     "alpha": 5.061909360654923,
+     "beta": 0.83,
+     "radius": 617.9566739865785,
+     "x": -85.9,
+     "z": 214.2,
+     "quality": "medium",
+     "meshes": 296,
+     "activeMeshes": 86,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "9 299 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Hôtel de ville"
+    },
+    "after": {
+     "alpha": 5.061909360654923,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -267.2,
+     "z": -173.7,
+     "quality": "medium",
+     "meshes": 288,
+     "activeMeshes": 89,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 898 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Cathédrale Notre-Dame"
+    }
+   },
+   "selection": "Cathédrale Notre-Dame",
+   "settleMs": 13054,
+   "settled": true
+  },
+  {
+   "name": "Cathédrale Notre-Dame : orbite 360°",
+   "frames": 60,
+   "frameMs": {
+    "p50": 664,
+    "p95": 1272,
+    "p99": 1325,
+    "max": 1336
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 81,
+    "min": 61
+   },
+   "trianglesMedian": 1669997,
+   "drawDrops": 0,
+   "heapMB": 131,
+   "gpuBufMB": 37.5,
+   "state": {
+    "before": {
+     "alpha": 5.061909360654923,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -267.2,
+     "z": -173.7,
+     "quality": "medium",
+     "meshes": 288,
+     "activeMeshes": 89,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 898 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Cathédrale Notre-Dame"
+    },
+    "after": {
+     "alpha": 11.647140115304557,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -267.2,
+     "z": -173.7,
+     "quality": "medium",
+     "meshes": 288,
+     "activeMeshes": 76,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 898 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Cathédrale Notre-Dame"
+    }
+   },
+   "orbitDegrees": 368,
+   "drags": 5
+  },
+  {
+   "name": "Cathédrale Notre-Dame : dézoom complet",
+   "frames": 32,
+   "frameMs": {
+    "p50": 680,
+    "p95": 1175,
+    "p99": 1203,
+    "max": 1328
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 175,
+    "min": 76
+   },
+   "trianglesMedian": 1592714,
+   "drawDrops": 0,
+   "heapMB": 129,
+   "gpuBufMB": 37.5,
+   "state": {
+    "before": {
+     "alpha": 11.647140115304557,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -267.2,
+     "z": -173.7,
+     "quality": "medium",
+     "meshes": 288,
+     "activeMeshes": 76,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 898 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Cathédrale Notre-Dame"
+    },
+    "after": {
+     "alpha": 11.647140115304557,
+     "beta": 0.83,
+     "radius": 19447.23409481832,
+     "x": -267.2,
+     "z": -173.7,
+     "quality": "medium",
+     "meshes": 288,
+     "activeMeshes": 249,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "8 898 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Cathédrale Notre-Dame"
+    }
+   },
+   "radiusReached": 14253,
+   "settleMs": 4018,
+   "settled": true
+  },
+  {
+   "name": "Cathédrale Notre-Dame : retour proche",
+   "frames": 40,
+   "frameMs": {
+    "p50": 643,
+    "p95": 1440,
+    "p99": 1485,
+    "max": 2046
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 159,
+    "min": 75
+   },
+   "trianglesMedian": 764434,
+   "drawDrops": 0,
+   "heapMB": 128,
+   "gpuBufMB": 37.5,
+   "state": {
+    "before": {
+     "alpha": 11.647140115304557,
+     "beta": 0.83,
+     "radius": 19447.23409481832,
+     "x": -267.2,
+     "z": -173.7,
+     "quality": "medium",
+     "meshes": 288,
+     "activeMeshes": 249,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "8 898 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Cathédrale Notre-Dame"
+    },
+    "after": {
+     "alpha": 11.647140115304557,
+     "beta": 0.83,
+     "radius": 617.213844540542,
+     "x": -267.2,
+     "z": -173.7,
+     "quality": "medium",
+     "meshes": 288,
+     "activeMeshes": 75,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 898 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Cathédrale Notre-Dame"
+    }
+   },
+   "radiusReached": 877,
+   "settleMs": 4022,
+   "settled": true
+  },
+  {
+   "name": "Théâtre national de l'Opéra : arrivée",
+   "frames": 43,
+   "frameMs": {
+    "p50": 567,
+    "p95": 917,
+    "p99": 1242,
+    "max": 1735
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 29,
+    "min": 8
+   },
+   "trianglesMedian": 659562,
+   "drawDrops": 3,
+   "heapMB": 156,
+   "gpuBufMB": 36.7,
+   "state": {
+    "before": {
+     "alpha": 11.647140115304557,
+     "beta": 0.83,
+     "radius": 617.213844540542,
+     "x": -267.2,
+     "z": -173.7,
+     "quality": "medium",
+     "meshes": 288,
+     "activeMeshes": 75,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 898 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Cathédrale Notre-Dame"
+    },
+    "after": {
+     "alpha": 11.647140115304557,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -1604.8,
+     "z": 1948.3,
+     "quality": "medium",
+     "meshes": 305,
+     "activeMeshes": 39,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 297 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Théâtre national de l'Opéra, dit opéra Garnier"
+    }
+   },
+   "selection": "Théâtre national de l'Opéra, dit opéra Garnier",
+   "settleMs": 20106,
+   "settled": true
+  },
+  {
+   "name": "Théâtre national de l'Opéra : orbite 360°",
+   "frames": 59,
+   "frameMs": {
+    "p50": 389,
+    "p95": 667,
+    "p99": 760,
+    "max": 827
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 44,
+    "min": 30
+   },
+   "trianglesMedian": 725803,
+   "drawDrops": 0,
+   "heapMB": 159,
+   "gpuBufMB": 36.7,
+   "state": {
+    "before": {
+     "alpha": 11.647140115304557,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -1604.8,
+     "z": 1948.3,
+     "quality": "medium",
+     "meshes": 305,
+     "activeMeshes": 39,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 297 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Théâtre national de l'Opéra, dit opéra Garnier"
+    },
+    "after": {
+     "alpha": 18.214845802754365,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -1604.8,
+     "z": 1948.3,
+     "quality": "medium",
+     "meshes": 305,
+     "activeMeshes": 42,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 297 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Théâtre national de l'Opéra, dit opéra Garnier"
+    }
+   },
+   "orbitDegrees": 367,
+   "drags": 5
+  },
+  {
+   "name": "Théâtre national de l'Opéra : dézoom complet",
+   "frames": 39,
+   "frameMs": {
+    "p50": 395,
+    "p95": 749,
+    "p99": 801,
+    "max": 982
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 99,
+    "min": 42
+   },
+   "trianglesMedian": 732719,
+   "drawDrops": 0,
+   "heapMB": 163,
+   "gpuBufMB": 36.7,
+   "state": {
+    "before": {
+     "alpha": 18.214845802754365,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -1604.8,
+     "z": 1948.3,
+     "quality": "medium",
+     "meshes": 305,
+     "activeMeshes": 42,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 297 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Théâtre national de l'Opéra, dit opéra Garnier"
+    },
+    "after": {
+     "alpha": 18.214845802754365,
+     "beta": 0.83,
+     "radius": 19879.894581698183,
+     "x": -1604.8,
+     "z": 1948.3,
+     "quality": "medium",
+     "meshes": 305,
+     "activeMeshes": 267,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "8 297 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Théâtre national de l'Opéra, dit opéra Garnier"
+    }
+   },
+   "radiusReached": 14257,
+   "settleMs": 4017,
+   "settled": true
+  },
+  {
+   "name": "Théâtre national de l'Opéra : retour proche",
+   "frames": 37,
+   "frameMs": {
+    "p50": 550,
+    "p95": 1747,
+    "p99": 1800,
+    "max": 1901
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 95,
+    "min": 41
+   },
+   "trianglesMedian": 634058,
+   "drawDrops": 0,
+   "heapMB": 165,
+   "gpuBufMB": 36.7,
+   "state": {
+    "before": {
+     "alpha": 18.214845802754365,
+     "beta": 0.83,
+     "radius": 19879.894581698183,
+     "x": -1604.8,
+     "z": 1948.3,
+     "quality": "medium",
+     "meshes": 305,
+     "activeMeshes": 267,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "8 297 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Théâtre national de l'Opéra, dit opéra Garnier"
+    },
+    "after": {
+     "alpha": 18.214845802754365,
+     "beta": 0.83,
+     "radius": 617.3222612945456,
+     "x": -1604.8,
+     "z": 1948.3,
+     "quality": "medium",
+     "meshes": 305,
+     "activeMeshes": 41,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 297 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Théâtre national de l'Opéra, dit opéra Garnier"
+    }
+   },
+   "radiusReached": 901,
+   "settleMs": 4025,
+   "settled": true
+  },
+  {
+   "name": "Tour Eiffel : arrivée",
+   "frames": 44,
+   "frameMs": {
+    "p50": 416,
+    "p95": 574,
+    "p99": 1000,
+    "max": 1063
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 31,
+    "min": 10
+   },
+   "trianglesMedian": 1367303,
+   "drawDrops": 7,
+   "heapMB": 182,
+   "gpuBufMB": 39.2,
+   "state": {
+    "before": {
+     "alpha": 18.214845802754365,
+     "beta": 0.83,
+     "radius": 617.3222612945456,
+     "x": -1604.8,
+     "z": 1948.3,
+     "quality": "medium",
+     "meshes": 305,
+     "activeMeshes": 41,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 297 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Théâtre national de l'Opéra, dit opéra Garnier"
+    },
+    "after": {
+     "alpha": 18.214845802754365,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -4335.8,
+     "z": 418.29999999999995,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 35,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 846 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Tour Eiffel"
+    }
+   },
+   "selection": "Tour Eiffel",
+   "settleMs": 15065,
+   "settled": true
+  },
+  {
+   "name": "Tour Eiffel : orbite 360°",
+   "frames": 59,
+   "frameMs": {
+    "p50": 542,
+    "p95": 1069,
+    "p99": 1309,
+    "max": 1402
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 38,
+    "min": 31
+   },
+   "trianglesMedian": 1465178,
+   "drawDrops": 0,
+   "heapMB": 184,
+   "gpuBufMB": 39.2,
+   "state": {
+    "before": {
+     "alpha": 18.214845802754365,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -4335.8,
+     "z": 418.29999999999995,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 35,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 846 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Tour Eiffel"
+    },
+    "after": {
+     "alpha": 24.782551490204238,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -4335.8,
+     "z": 418.29999999999995,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 36,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 846 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Tour Eiffel"
+    }
+   },
+   "orbitDegrees": 367,
+   "drags": 5
+  },
+  {
+   "name": "Tour Eiffel : dézoom complet",
+   "frames": 33,
+   "frameMs": {
+    "p50": 646,
+    "p95": 1178,
+    "p99": 1183,
+    "max": 1268
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 47,
+    "min": 36
+   },
+   "trianglesMedian": 1469562,
+   "drawDrops": 0,
+   "heapMB": 186,
+   "gpuBufMB": 39.2,
+   "state": {
+    "before": {
+     "alpha": 24.782551490204238,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -4335.8,
+     "z": 418.29999999999995,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 36,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 846 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Tour Eiffel"
+    },
+    "after": {
+     "alpha": 24.782551490204238,
+     "beta": 0.83,
+     "radius": 19447.371562091637,
+     "x": -4335.8,
+     "z": 418.29999999999995,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 225,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "8 846 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Tour Eiffel"
+    }
+   },
+   "radiusReached": 14254,
+   "settleMs": 4017,
+   "settled": true
+  },
+  {
+   "name": "Tour Eiffel : retour proche",
+   "frames": 40,
+   "frameMs": {
+    "p50": 520,
+    "p95": 978,
+    "p99": 1113,
+    "max": 1646
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 48,
+    "min": 35
+   },
+   "trianglesMedian": 638658,
+   "drawDrops": 0,
+   "heapMB": 133,
+   "gpuBufMB": 39.5,
+   "state": {
+    "before": {
+     "alpha": 24.782551490204238,
+     "beta": 0.83,
+     "radius": 19447.371562091637,
+     "x": -4335.8,
+     "z": 418.29999999999995,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 225,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "8 846 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Tour Eiffel"
+    },
+    "after": {
+     "alpha": 24.782551490204238,
+     "beta": 0.83,
+     "radius": 616.7354367232207,
+     "x": -4335.8,
+     "z": 418.29999999999995,
+     "quality": "medium",
+     "meshes": 269,
+     "activeMeshes": 35,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 2,
+     "overviewRoofsOnly": false,
+     "status": "8 846 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Tour Eiffel"
+    }
+   },
+   "radiusReached": 899,
+   "settleMs": 4028,
+   "settled": true
+  },
+  {
+   "name": "Arc de Triomphe de l'Etoile : arrivée",
+   "frames": 30,
+   "frameMs": {
+    "p50": 563,
+    "p95": 881,
+    "p99": 888,
+    "max": 1589
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 29,
+    "min": 11
+   },
+   "trianglesMedian": 1038156,
+   "drawDrops": 1,
+   "heapMB": 147,
+   "gpuBufMB": 39.8,
+   "state": {
+    "before": {
+     "alpha": 24.782551490204238,
+     "beta": 0.83,
+     "radius": 616.7354367232207,
+     "x": -4335.8,
+     "z": 418.29999999999995,
+     "quality": "medium",
+     "meshes": 269,
+     "activeMeshes": 35,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 2,
+     "overviewRoofsOnly": false,
+     "status": "8 846 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Tour Eiffel"
+    },
+    "after": {
+     "alpha": 24.782551490204238,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -4296.5,
+     "z": 2142.7,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 33,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 958 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Arc de Triomphe de l'Etoile"
+    }
+   },
+   "selection": "Arc de Triomphe de l'Etoile",
+   "settleMs": 14054,
+   "settled": true
+  },
+  {
+   "name": "Arc de Triomphe de l'Etoile : orbite 360°",
+   "frames": 59,
+   "frameMs": {
+    "p50": 483,
+    "p95": 980,
+    "p99": 1093,
+    "max": 1186
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 35,
+    "min": 28
+   },
+   "trianglesMedian": 1094798,
+   "drawDrops": 0,
+   "heapMB": 148,
+   "gpuBufMB": 39.8,
+   "state": {
+    "before": {
+     "alpha": 24.782551490204238,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -4296.5,
+     "z": 2142.7,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 33,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 958 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Arc de Triomphe de l'Etoile"
+    },
+    "after": {
+     "alpha": 31.46725326415579,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -4296.5,
+     "z": 2142.7,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 31,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 958 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Arc de Triomphe de l'Etoile"
+    }
+   },
+   "orbitDegrees": 370,
+   "drags": 5
+  },
+  {
+   "name": "Arc de Triomphe de l'Etoile : dézoom complet",
+   "frames": 37,
+   "frameMs": {
+    "p50": 477,
+    "p95": 810,
+    "p99": 893,
+    "max": 944
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 41,
+    "min": 31
+   },
+   "trianglesMedian": 1057358,
+   "drawDrops": 0,
+   "heapMB": 151,
+   "gpuBufMB": 39.8,
+   "state": {
+    "before": {
+     "alpha": 31.46725326415579,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -4296.5,
+     "z": 2142.7,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 31,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "8 958 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Arc de Triomphe de l'Etoile"
+    },
+    "after": {
+     "alpha": 31.46725326415579,
+     "beta": 0.83,
+     "radius": 19879.851408277733,
+     "x": -4296.5,
+     "z": 2142.7,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 220,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "8 958 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Arc de Triomphe de l'Etoile"
+    }
+   },
+   "radiusReached": 14254,
+   "settleMs": 4017,
+   "settled": true
+  },
+  {
+   "name": "Arc de Triomphe de l'Etoile : retour proche",
+   "frames": 45,
+   "frameMs": {
+    "p50": 426,
+    "p95": 875,
+    "p99": 1104,
+    "max": 1709
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 38,
+    "min": 31
+   },
+   "trianglesMedian": 644654,
+   "drawDrops": 0,
+   "heapMB": 153,
+   "gpuBufMB": 39.8,
+   "state": {
+    "before": {
+     "alpha": 31.46725326415579,
+     "beta": 0.83,
+     "radius": 19879.851408277733,
+     "x": -4296.5,
+     "z": 2142.7,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 220,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "8 958 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Arc de Triomphe de l'Etoile"
+    },
+    "after": {
+     "alpha": 31.46725326415579,
+     "beta": 0.83,
+     "radius": 616.3632174778404,
+     "x": -4296.5,
+     "z": 2142.7,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 31,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 2,
+     "overviewRoofsOnly": false,
+     "status": "8 958 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Arc de Triomphe de l'Etoile"
+    }
+   },
+   "radiusReached": 892,
+   "settleMs": 4016,
+   "settled": true
+  },
+  {
+   "name": "Basilique du Sacré-Coeur : arrivée",
+   "frames": 44,
+   "frameMs": {
+    "p50": 519,
+    "p95": 955,
+    "p99": 1074,
+    "max": 1266
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 31,
+    "min": 12
+   },
+   "trianglesMedian": 1182574,
+   "drawDrops": 1,
+   "heapMB": 149,
+   "gpuBufMB": 45.3,
+   "state": {
+    "before": {
+     "alpha": 31.46725326415579,
+     "beta": 0.83,
+     "radius": 616.3632174778404,
+     "x": -4296.5,
+     "z": 2142.7,
+     "quality": "medium",
+     "meshes": 267,
+     "activeMeshes": 31,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 2,
+     "overviewRoofsOnly": false,
+     "status": "8 958 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Arc de Triomphe de l'Etoile"
+    },
+    "after": {
+     "alpha": 31.46725326415579,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -742.3000000000002,
+     "z": 3436.1,
+     "quality": "medium",
+     "meshes": 276,
+     "activeMeshes": 42,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "10 968 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel"
+    }
+   },
+   "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel",
+   "settleMs": 21091,
+   "settled": true
+  },
+  {
+   "name": "Basilique du Sacré-Coeur : orbite 360°",
+   "frames": 59,
+   "frameMs": {
+    "p50": 565,
+    "p95": 1145,
+    "p99": 1169,
+    "max": 1173
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 41,
+    "min": 31
+   },
+   "trianglesMedian": 1295191,
+   "drawDrops": 0,
+   "heapMB": 150,
+   "gpuBufMB": 45.3,
+   "state": {
+    "before": {
+     "alpha": 31.46725326415579,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -742.3000000000002,
+     "z": 3436.1,
+     "quality": "medium",
+     "meshes": 276,
+     "activeMeshes": 42,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "10 968 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel"
+    },
+    "after": {
+     "alpha": 38.0349589516055,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -742.3000000000002,
+     "z": 3436.1,
+     "quality": "medium",
+     "meshes": 276,
+     "activeMeshes": 38,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "10 968 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel"
+    }
+   },
+   "orbitDegrees": 367,
+   "drags": 5
+  },
+  {
+   "name": "Basilique du Sacré-Coeur : dézoom complet",
+   "frames": 37,
+   "frameMs": {
+    "p50": 540,
+    "p95": 973,
+    "p99": 1146,
+    "max": 1383
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 54,
+    "min": 38
+   },
+   "trianglesMedian": 1153004,
+   "drawDrops": 0,
+   "heapMB": 150,
+   "gpuBufMB": 45.3,
+   "state": {
+    "before": {
+     "alpha": 38.0349589516055,
+     "beta": 0.83,
+     "radius": 630,
+     "x": -742.3000000000002,
+     "z": 3436.1,
+     "quality": "medium",
+     "meshes": 276,
+     "activeMeshes": 38,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "10 968 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel"
+    },
+    "after": {
+     "alpha": 38.0349589516055,
+     "beta": 0.83,
+     "radius": 19682.81531019947,
+     "x": -742.3000000000002,
+     "z": 3436.1,
+     "quality": "medium",
+     "meshes": 276,
+     "activeMeshes": 217,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "10 968 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel"
+    }
+   },
+   "radiusReached": 14288,
+   "settleMs": 4030,
+   "settled": true
+  },
+  {
+   "name": "Basilique du Sacré-Coeur : retour proche",
+   "frames": 40,
+   "frameMs": {
+    "p50": 566,
+    "p95": 974,
+    "p99": 1503,
+    "max": 1709
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 53,
+    "min": 38
+   },
+   "trianglesMedian": 1153004,
+   "drawDrops": 0,
+   "heapMB": 150,
+   "gpuBufMB": 45.3,
+   "state": {
+    "before": {
+     "alpha": 38.0349589516055,
+     "beta": 0.83,
+     "radius": 19682.81531019947,
+     "x": -742.3000000000002,
+     "z": 3436.1,
+     "quality": "medium",
+     "meshes": 276,
+     "activeMeshes": 217,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 0,
+     "overviewRoofsOnly": true,
+     "status": "10 968 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel"
+    },
+    "after": {
+     "alpha": 38.0349589516055,
+     "beta": 0.83,
+     "radius": 617.0416757464858,
+     "x": -742.3000000000002,
+     "z": 3436.1,
+     "quality": "medium",
+     "meshes": 276,
+     "activeMeshes": 38,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "10 968 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel"
+    }
+   },
+   "radiusReached": 878,
+   "settleMs": 4018,
+   "settled": true
+  },
+  {
+   "name": "mode Rue",
+   "frames": 19,
+   "frameMs": {
+    "p50": 570,
+    "p95": 1187,
+    "p99": 1187,
+    "max": 1409
+   },
+   "longTasks": {
+    "count": 0,
+    "totalMs": 0,
+    "maxMs": 0
+   },
+   "draws": {
+    "median": 38,
+    "min": 37
+   },
+   "trianglesMedian": 1126774,
+   "drawDrops": 0,
+   "heapMB": 150,
+   "gpuBufMB": 45.3,
+   "state": {
+    "before": {
+     "alpha": 38.0349589516055,
+     "beta": 0.83,
+     "radius": 617.0416757464858,
+     "x": -742.3000000000002,
+     "z": 3436.1,
+     "quality": "medium",
+     "meshes": 276,
+     "activeMeshes": 38,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "10 968 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel"
+    },
+    "after": {
+     "alpha": 38.0349589516055,
+     "beta": 0.83,
+     "radius": 616.3373870432783,
+     "x": -742.3000000000002,
+     "z": 3436.1,
+     "quality": "medium",
+     "meshes": 276,
+     "activeMeshes": 38,
+     "metroExactTiles": 10,
+     "metroInFlight": 0,
+     "overviewGroups": 1,
+     "overviewRoofsOnly": false,
+     "status": "10 968 bâtiments en géométrie IGN exacte / 287 075 répertoriés",
+     "selection": "Basilique du Sacré-Coeur, ses annexes et le square Louise-Michel"
+    }
+   }
+  }
+ ]
+}

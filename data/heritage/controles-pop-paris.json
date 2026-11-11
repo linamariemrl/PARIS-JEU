@@ -1,0 +1,4316 @@
+{
+ "schema": 1,
+ "generatedBy": "scripts/audit_pop_inventory.py",
+ "regle": "Signalements à examiner : aucune donnée corrigée automatiquement.",
+ "resume": {
+  "notices": 2057,
+  "localisationCommuneContrePoint": 22,
+  "pointJeuEloigneDuPointPOP": 0,
+  "arrondissementIndexJeuDifferent": 22,
+  "nomsMultiples": 77,
+  "sitesDetruitsOuFragmentaires": 37,
+  "pointPOPinvalideEcarte": 109,
+  "noticesMHsansProtection": 14,
+  "acteAfficheCommeProtection": 2270,
+  "doublonsTitreArrondissement": 72,
+  "pointsQuasiConfondus": 10,
+  "lieuxPrioritairesSansReference": 55,
+  "liens": 128,
+  "liensVerifies": 128,
+  "liensEnErreur": 5
+ },
+ "localisationCommuneContrePoint": [
+  {
+   "ref": "ACR0000706",
+   "titre": "Maine-Montparnasse II",
+   "commune": 14,
+   "point": 15
+  },
+  {
+   "ref": "PA00085997",
+   "titre": "Place des Victoires : le sol",
+   "commune": 1,
+   "point": 2
+  },
+  {
+   "ref": "PA00086253",
+   "titre": "Colonne commémorative dite Colonne de Juillet",
+   "commune": 4,
+   "point": 12
+  },
+  {
+   "ref": "PA00086550",
+   "titre": "Métropolitain, station République",
+   "commune": 11,
+   "point": 10
+  },
+  {
+   "ref": "PA00086576",
+   "titre": "Métropolitain, station Bastille",
+   "commune": 12,
+   "point": 11
+  },
+  {
+   "ref": "PA00086658",
+   "titre": "Pont de Bir-Hakeim",
+   "commune": 15,
+   "point": 16
+  },
+  {
+   "ref": "PA00086659",
+   "titre": "Pont Mirabeau",
+   "commune": 15,
+   "point": 16
+  },
+  {
+   "ref": "PA00086724",
+   "titre": "Métropolitain, station Monceau",
+   "commune": 17,
+   "point": 8
+  },
+  {
+   "ref": "PA00086727",
+   "titre": "Métropolitain, station Villiers",
+   "commune": 17,
+   "point": 8
+  },
+  {
+   "ref": "PA00086750",
+   "titre": "Métropolitain, station Barbès-Rochechouart",
+   "commune": 18,
+   "point": 19
+  },
+  {
+   "ref": "PA00086752",
+   "titre": "Métropolitain, station Pigalle",
+   "commune": 18,
+   "point": 9
+  },
+  {
+   "ref": "PA00086753",
+   "titre": "Métropolitain, station Place de Clichy",
+   "commune": 18,
+   "point": 9
+  },
+  {
+   "ref": "PA00086784",
+   "titre": "Métropolitain, station Alexandre-Dumas",
+   "commune": 20,
+   "point": 11
+  },
+  {
+   "ref": "PA00086785",
+   "titre": "Métropolitain, station Avron",
+   "commune": 20,
+   "point": 11
+  },
+  {
+   "ref": "PA00086787",
+   "titre": "Métropolitain, station Philippe-Auguste",
+   "commune": 20,
+   "point": 11
+  },
+  {
+   "ref": "PA00088428",
+   "titre": "Fontaine Maubuée",
+   "commune": 5,
+   "point": 4
+  },
+  {
+   "ref": "PA00088794",
+   "titre": "Passerelle Debilly",
+   "commune": 7,
+   "point": 16
+  },
+  {
+   "ref": "PA00088800",
+   "titre": "Pont d'Iéna",
+   "commune": 7,
+   "point": 16
+  },
+  {
+   "ref": "PA00125441",
+   "titre": "Canal Saint-Martin",
+   "commune": 11,
+   "point": 10
+  },
+  {
+   "ref": "PA75040007",
+   "titre": "Maison",
+   "commune": 4,
+   "point": 14
+  },
+  {
+   "ref": "PA75130004",
+   "titre": "Carrière des Capucins",
+   "commune": 13,
+   "point": 5
+  },
+  {
+   "ref": "PA75200003",
+   "titre": "Eaux de Belleville",
+   "commune": 20,
+   "point": 19
+  }
+ ],
+ "pointJeuEloigneDuPointPOP": [],
+ "arrondissementIndexJeuDifferent": [
+  {
+   "ref": "PA00085997",
+   "titre": "Place des Victoires : le sol",
+   "indexJeu": 2,
+   "pop": 1
+  },
+  {
+   "ref": "PA00086002",
+   "titre": "Statue de Louis XIV",
+   "indexJeu": 2,
+   "pop": 1
+  },
+  {
+   "ref": "PA00086253",
+   "titre": "Colonne commémorative dite Colonne de Juillet",
+   "indexJeu": 12,
+   "pop": 4
+  },
+  {
+   "ref": "PA00086550",
+   "titre": "Métropolitain, station République",
+   "indexJeu": 10,
+   "pop": 11
+  },
+  {
+   "ref": "PA00086576",
+   "titre": "Métropolitain, station Bastille",
+   "indexJeu": 11,
+   "pop": 12
+  },
+  {
+   "ref": "PA00086658",
+   "titre": "Pont de Bir-Hakeim",
+   "indexJeu": 16,
+   "pop": 15
+  },
+  {
+   "ref": "PA00086659",
+   "titre": "Pont Mirabeau",
+   "indexJeu": 16,
+   "pop": 15
+  },
+  {
+   "ref": "PA00086724",
+   "titre": "Métropolitain, station Monceau",
+   "indexJeu": 8,
+   "pop": 17
+  },
+  {
+   "ref": "PA00086727",
+   "titre": "Métropolitain, station Villiers",
+   "indexJeu": 8,
+   "pop": 17
+  },
+  {
+   "ref": "PA00086750",
+   "titre": "Métropolitain, station Barbès-Rochechouart",
+   "indexJeu": 19,
+   "pop": 18
+  },
+  {
+   "ref": "PA00086752",
+   "titre": "Métropolitain, station Pigalle",
+   "indexJeu": 9,
+   "pop": 18
+  },
+  {
+   "ref": "PA00086753",
+   "titre": "Métropolitain, station Place de Clichy",
+   "indexJeu": 9,
+   "pop": 18
+  },
+  {
+   "ref": "PA00086784",
+   "titre": "Métropolitain, station Alexandre-Dumas",
+   "indexJeu": 11,
+   "pop": 20
+  },
+  {
+   "ref": "PA00086785",
+   "titre": "Métropolitain, station Avron",
+   "indexJeu": 11,
+   "pop": 20
+  },
+  {
+   "ref": "PA00086787",
+   "titre": "Métropolitain, station Philippe-Auguste",
+   "indexJeu": 11,
+   "pop": 20
+  },
+  {
+   "ref": "PA00088428",
+   "titre": "Fontaine Maubuée",
+   "indexJeu": 4,
+   "pop": 5
+  },
+  {
+   "ref": "PA00088794",
+   "titre": "Passerelle Debilly",
+   "indexJeu": 16,
+   "pop": 7
+  },
+  {
+   "ref": "PA00088800",
+   "titre": "Pont d'Iéna",
+   "indexJeu": 16,
+   "pop": 7
+  },
+  {
+   "ref": "PA00125441",
+   "titre": "Canal Saint-Martin",
+   "indexJeu": 10,
+   "pop": 11
+  },
+  {
+   "ref": "PA75040007",
+   "titre": "Maison",
+   "indexJeu": 14,
+   "pop": 4
+  },
+  {
+   "ref": "PA75130004",
+   "titre": "Carrière des Capucins",
+   "indexJeu": 5,
+   "pop": 13
+  },
+  {
+   "ref": "PA75200003",
+   "titre": "Eaux de Belleville",
+   "indexJeu": 19,
+   "pop": 20
+  }
+ ],
+ "nomsMultiples": [
+  {
+   "ref": "EA75000008",
+   "titre": "Îlot des Hautes Formes",
+   "appellations": [
+    "Les Hautes Formes"
+   ]
+  },
+  {
+   "ref": "IA00063165",
+   "titre": "Ecole maternelle et école primaire de garçons et de filles",
+   "appellations": [
+    "Lycée technique du vêtement"
+   ]
+  },
+  {
+   "ref": "PA00085790",
+   "titre": "Colonne Vendôme",
+   "appellations": [
+    "colonne monumentale",
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00085839",
+   "titre": "Ancien hôtel de Soissons",
+   "appellations": [
+    "colonne astronomique"
+   ]
+  },
+  {
+   "ref": "PA00085846",
+   "titre": "Immeuble en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085847",
+   "titre": "Immeuble en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085968",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085969",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085970",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085971",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085972",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085973",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085974",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085975",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085976",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085977",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085978",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085979",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085980",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085981",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085982",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085983",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085984",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085985",
+   "titre": "Immeuble, en bordure du Palais-Royal",
+   "appellations": [
+    "annexe de la Banque de France"
+   ]
+  },
+  {
+   "ref": "PA00085992",
+   "titre": "Palais du Louvre et jardin des Tuileries",
+   "appellations": [
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00085993",
+   "titre": "Domaine du Palais-Royal (ancien Palais Cardinal), comprenant Conseil d'Etat, Conseil Constitutionnel, Ministère de la Culture, théâtre de la Comédie Française",
+   "appellations": [
+    "Domaine national du Palais-Royal"
+   ]
+  },
+  {
+   "ref": "PA00086002",
+   "titre": "Statue de Louis XIV",
+   "appellations": [
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00086006",
+   "titre": "Statue de Henri IV",
+   "appellations": [
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00086030",
+   "titre": "Ancien hôtel de Mondragon",
+   "appellations": [
+    "Banque de Paris et des Pays-Bas"
+   ]
+  },
+  {
+   "ref": "PA00086043",
+   "titre": "Immeuble",
+   "appellations": [
+    "annexe du Ministère de la Culture"
+   ]
+  },
+  {
+   "ref": "PA00086083",
+   "titre": "Mairie annexe du deuxième arrondissement",
+   "appellations": [
+    "Tribunal d'Instance"
+   ]
+  },
+  {
+   "ref": "PA00086125",
+   "titre": "Hôtel Carnavalet (ancien)",
+   "appellations": [
+    "Musée Carnavalet"
+   ]
+  },
+  {
+   "ref": "PA00086129",
+   "titre": "Hôtel Donon",
+   "appellations": [
+    "Musée Cognacq-Jay"
+   ]
+  },
+  {
+   "ref": "PA00086135",
+   "titre": "Hôtel Guénégaud dit aussi Hôtel Pénautier",
+   "appellations": [
+    "Musée de la Chasse et de la Nature"
+   ]
+  },
+  {
+   "ref": "PA00086143",
+   "titre": "Hôtel Le Pelletier de Saint-Fargeau",
+   "appellations": [
+    "Annexe du Musée Carnavalet"
+   ]
+  },
+  {
+   "ref": "PA00086147",
+   "titre": "Ancien Hôtel de Marle dit aussi Hôtel de Noirmoutier",
+   "appellations": [
+    "Centre culturel suédois"
+   ]
+  },
+  {
+   "ref": "PA00086151",
+   "titre": "Hôtel de Montmorency",
+   "appellations": [
+    "Ecole Nationale des Impôts"
+   ]
+  },
+  {
+   "ref": "PA00086215",
+   "titre": "Maison",
+   "appellations": [
+    "Annexe du Lycée Victor-Hugo"
+   ]
+  },
+  {
+   "ref": "PA00086219",
+   "titre": "Maison",
+   "appellations": [
+    "Hôtel de Jaucourt"
+   ]
+  },
+  {
+   "ref": "PA00086253",
+   "titre": "Colonne commémorative dite Colonne de Juillet",
+   "appellations": [
+    "colonne monumentale",
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00086272",
+   "titre": "Hôtel Arnaud ou de Rohan-Guéménée (ancien)",
+   "appellations": [
+    "Musée Victor Hugo"
+   ]
+  },
+  {
+   "ref": "PA00086276",
+   "titre": "Hôtel d'Aumont",
+   "appellations": [
+    "Tribunal administratif de la Ville de Paris"
+   ]
+  },
+  {
+   "ref": "PA00086292",
+   "titre": "Hôtel Jeanne d'Albret",
+   "appellations": [
+    "Direction des Affaires Culturelles de Paris"
+   ]
+  },
+  {
+   "ref": "PA00086296",
+   "titre": "Hôtel Lamoignon ou ancien hôtel d'Angoulême",
+   "appellations": [
+    "Bibliothèque Historique de la Ville de Paris"
+   ]
+  },
+  {
+   "ref": "PA00086316",
+   "titre": "Hôtel de Sens",
+   "appellations": [
+    "Bibliothèque Forney"
+   ]
+  },
+  {
+   "ref": "PA00086345",
+   "titre": "Immeuble situé 22 rue Geoffroy-l'Asnier",
+   "appellations": [
+    "Maison Rousseau"
+   ]
+  },
+  {
+   "ref": "PA00086362",
+   "titre": "Immeuble",
+   "appellations": [
+    "Bibliothèque Polonaise"
+   ]
+  },
+  {
+   "ref": "PA00086512",
+   "titre": "Porte Saint-Denis",
+   "appellations": [
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00086513",
+   "titre": "Porte Saint-Martin",
+   "appellations": [
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00086582",
+   "titre": "Pavillons du Togo et du Cameroun issus de l'exposition coloniale internationale de 1931",
+   "appellations": [
+    "Ancien musée du Bois, actuellement Institut International Bouddhique"
+   ]
+  },
+  {
+   "ref": "PA00086603",
+   "titre": "Pavillon XVIIIe siècle",
+   "appellations": [
+    "Pavillon de Julienne"
+   ]
+  },
+  {
+   "ref": "PA00088431",
+   "titre": "Ancien hôtel de Cluny et Palais des Thermes, actuellement Musée National du Moyen Âge",
+   "appellations": [
+    "Musée de Cluny"
+   ]
+  },
+  {
+   "ref": "PA00088435",
+   "titre": "Hôtel de Nesmond (ancien)",
+   "appellations": [
+    "Siège de l'association La Demeure Historique"
+   ]
+  },
+  {
+   "ref": "PA00088476",
+   "titre": "Institut national des Jeunes Sourds",
+   "appellations": [
+    "Centre de rééducation"
+   ]
+  },
+  {
+   "ref": "PA00088490",
+   "titre": "Académie de Médecine (ancienne)",
+   "appellations": [
+    "chapelle de l'hôpital de la Charité",
+    "cathédrale catholique ukrainienne Saint-Vladimir-le-Grand"
+   ]
+  },
+  {
+   "ref": "PA00088491",
+   "titre": "Ancienne académie royale de médecine",
+   "appellations": [
+    "Institut des langues anglophones"
+   ]
+  },
+  {
+   "ref": "PA00088526",
+   "titre": "Hôtel de Brancas (ancien)",
+   "appellations": [
+    "Institut Français d'Architecture"
+   ]
+  },
+  {
+   "ref": "PA00088649",
+   "titre": "Monument du Maréchal Ney",
+   "appellations": [
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00088669",
+   "titre": "Ecole coloniale (ancienne)",
+   "appellations": [
+    "Institut international d'administration publique"
+   ]
+  },
+  {
+   "ref": "PA00088718",
+   "titre": "Hôtel de la Rochefoucauld-Doudeauville ou de Boisgelin",
+   "appellations": [
+    "Ambassade d'Italie"
+   ]
+  },
+  {
+   "ref": "PA00088720",
+   "titre": "Hôtel Mailly-Nesle",
+   "appellations": [
+    "Documentation Française"
+   ]
+  },
+  {
+   "ref": "PA00088759",
+   "titre": "Hôtel (ancien)",
+   "appellations": [
+    "Institution Sainte-Marie"
+   ]
+  },
+  {
+   "ref": "PA00088785",
+   "titre": "Immeuble",
+   "appellations": [
+    "Lycée Italien"
+   ]
+  },
+  {
+   "ref": "PA00088788",
+   "titre": "Mairie du 7e arrondissement",
+   "appellations": [
+    "ancien hôtel de Villars",
+    "ancien tribunal d'Instance",
+    "mairie annexe du septième arrondissement"
+   ]
+  },
+  {
+   "ref": "PA00088792",
+   "titre": "Noviciat des Dominicains (ancien)",
+   "appellations": [
+    "Comité d'Artillerie"
+   ]
+  },
+  {
+   "ref": "PA00088809",
+   "titre": "Chapelle expiatoire",
+   "appellations": [
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00088820",
+   "titre": "Ancien hôtel Cail, actuellement mairie du 8e arrondissement",
+   "appellations": [
+    "Mairie annexe du huitième arrondissement",
+    "Tribunal d'instance"
+   ]
+  },
+  {
+   "ref": "PA00088822",
+   "titre": "Hôtel Cartier",
+   "appellations": [
+    "Siège de l'Automobile Club de France"
+   ]
+  },
+  {
+   "ref": "PA00088827",
+   "titre": "Hôtel Marbeuf (ancien)",
+   "appellations": [
+    "Ambassade du Japon"
+   ]
+  },
+  {
+   "ref": "PA00088830",
+   "titre": "Hôtel du Plessis-Bellière",
+   "appellations": [
+    "Siège de l'Automobile Club de France"
+   ]
+  },
+  {
+   "ref": "PA00088875",
+   "titre": "Obélisque de Louqsor",
+   "appellations": [
+    "domaine national"
+   ]
+  },
+  {
+   "ref": "PA00088876",
+   "titre": "Palais de l'Elysée",
+   "appellations": [
+    "domaine national",
+    "résidence présidentielle"
+   ]
+  },
+  {
+   "ref": "PA00088902",
+   "titre": "Conservatoire national supérieur d'art dramatique",
+   "appellations": [
+    "Ancien conservatoire National de Musique et de Déclamation"
+   ]
+  },
+  {
+   "ref": "PA00088989",
+   "titre": "Mairie annexe du neuvième arrondissement",
+   "appellations": [
+    "Tribunal d'Instance"
+   ]
+  },
+  {
+   "ref": "PA00135368",
+   "titre": "Cathédrale orthodoxe grecque Saint-Stéphane",
+   "appellations": [
+    "Eglise orthodoxe grecque"
+   ]
+  },
+  {
+   "ref": "PA75010017",
+   "titre": "Ancienne mairie du 1er arrondissement de Paris et beffroi de Saint-Germain-l’Auxerrois",
+   "appellations": [
+    "Mairie du Louvre"
+   ]
+  },
+  {
+   "ref": "PA75160011",
+   "titre": "Maison de la Radio",
+   "appellations": [
+    "Maison de Radio-France"
+   ]
+  }
+ ],
+ "sitesDetruitsOuFragmentaires": [
+  {
+   "ref": "IA00077127",
+   "titre": "ensemble d'édifices à cour commune",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077128",
+   "titre": "ensemble d'édifices à cour commune",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077129",
+   "titre": "Cinéma Paramount Bastille",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077130",
+   "titre": "Maison",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077131",
+   "titre": "Immeuble dit la Tour d'Argent",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077132",
+   "titre": "Immeuble",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077133",
+   "titre": "Immeuble",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077134",
+   "titre": "Immeuble",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077135",
+   "titre": "Immeuble",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077136",
+   "titre": "Immeuble",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077137",
+   "titre": "Immeuble",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "IA00077138",
+   "titre": "Gare de la Bastille",
+   "etat": [
+    "détruit"
+   ]
+  },
+  {
+   "ref": "PA00085799",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00085800",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "fragment"
+   ]
+  },
+  {
+   "ref": "PA00085801",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00085802",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086018",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086019",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086106",
+   "titre": "Vestiges de l'ancienne chapelle Saint-Julien-des-Enfants-Rouges",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086112",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086116",
+   "titre": "Restes de l'ancienne fontaine Popincourt",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086262",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086263",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086264",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086265",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086266",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00086475",
+   "titre": "Prison de la Force (restes de la)",
+   "etat": [
+    "fragment"
+   ]
+  },
+  {
+   "ref": "PA00088421",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00088422",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00088423",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00088424",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00088489",
+   "titre": "Abbaye Saint-Germain-des-Prés",
+   "etat": [
+    "fragment"
+   ]
+  },
+  {
+   "ref": "PA00088511",
+   "titre": "Enceinte de Philippe-Auguste (voir aussi : Passage de la cour du Commerce Saint-André)",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00088512",
+   "titre": "Enceinte de Philippe-Auguste (voir aussi : Hôtel des Monnaies)",
+   "etat": [
+    "fragment"
+   ]
+  },
+  {
+   "ref": "PA00088513",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00088514",
+   "titre": "Enceinte de Philippe-Auguste",
+   "etat": [
+    "vestiges"
+   ]
+  },
+  {
+   "ref": "PA00088977",
+   "titre": "Immeuble",
+   "etat": [
+    "détruit"
+   ]
+  }
+ ],
+ "pointPOPinvalideEcarte": [
+  {
+   "ref": "EA75000001",
+   "titre": "Chapelle Notre-Dame-du-Bon-Conseil",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000003",
+   "titre": "Synagogue Don Isaac Abravanel",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000004",
+   "titre": "Église Saint-Eloi",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000005",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000006",
+   "titre": "Église Saint-Marcel",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000008",
+   "titre": "Îlot des Hautes Formes",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000009",
+   "titre": "Église Notre-Dame-de-la-Sagesse",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000010",
+   "titre": "Église Notre-Dame-du-Rosaire",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000011",
+   "titre": "Immeuble d'habitation Maine-Montparnasse II",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000012",
+   "titre": "Synagogue",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000013",
+   "titre": "Église paroissiale Saint-Léon",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000014",
+   "titre": "Église Notre-Dame-de-la-Salette",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000015",
+   "titre": "Église Notre-Dame-de-l'Arche-d'Alliance",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000016",
+   "titre": "Église Saint-Ferdinand des Ternes",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000017",
+   "titre": "Chapelle Saint-Joseph des Épinettes",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000019",
+   "titre": "Église Notre-Dame-de-l'Assomption des Buttes Chaumont",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000020",
+   "titre": "Immeubles dits Les Orgues de Flandre",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "EA75000021",
+   "titre": "Synagogue dite temple israélite de Belleville",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063160",
+   "titre": "Magasin de commerce (Immeuble à appartements) dit Magasin à la Belle Fermière",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063161",
+   "titre": "Magasin de commerce de meubles dit Magasin Winphen, puis le Bihan",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063162",
+   "titre": "fontaine Trogneux, puis de Charonne",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063163",
+   "titre": "Magasin de commerce de meubles dit Magasin Gouffé, puis l'Univers du Cuir",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063164",
+   "titre": "Magasin de commerce (Immeuble à appartements) dit Magasin Félix Potin, puis Monoprix",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063165",
+   "titre": "Ecole maternelle et école primaire de garçons et de filles",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063166",
+   "titre": "Fontaine dite Fontaine de la Roquette",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063167",
+   "titre": "Immeuble, Maison, Atelier de Maître (Immeuble en série (Série de 6) , Atelier de Fabrication et de Stockage de Meubles)",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063168",
+   "titre": "Maison, Immeuble de Commerçant, de Tapissier, d'Ebéniste, de Mercier",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063169",
+   "titre": "ensemble d'édifices à cour commune",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063170",
+   "titre": "Immeuble, Atelier",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063171",
+   "titre": "ensemble d'édifices à cour commune dit Cour du Bel Air",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063172",
+   "titre": "ensemble d'édifices à cour commune dit Cour de l'Etoile d'Or",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063173",
+   "titre": "ensemble d'édifices à cour commune dit Cour de la Maison Brûlée",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063174",
+   "titre": "Maison",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063175",
+   "titre": "Maison, Atelier d'Ebéniste",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063176",
+   "titre": "Maison, Atelier, Immeuble d'Ebéniste",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063177",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063178",
+   "titre": "Ensemble d'édifices à cour commune dit cour Saint-Joseph et cour Jacques Vigues",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063179",
+   "titre": "Immeuble, atelier d'ébéniste dit cour des Bourguignons et manufacture Krieger",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063180",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063181",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063182",
+   "titre": "Immeuble, Atelier de Fondeur",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063183",
+   "titre": "Immeuble (Immeuble à appartements)",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063184",
+   "titre": "Immeuble (Immeuble à appartements)",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063185",
+   "titre": "Immeuble (Immeuble à appartements)",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063186",
+   "titre": "Immeuble (Immeuble à appartements)",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063187",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063188",
+   "titre": "Immeuble, Atelier d'Ebéniste",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063189",
+   "titre": "immeuble à appartements, immeuble de bureaux, usine de transformation des métaux dits Etablissement Léon Mager",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063190",
+   "titre": "Atelier, Magasin de commerce dit Magasin Berc Antoine",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063191",
+   "titre": "Atelier dit Cour de Juin",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063192",
+   "titre": "Atelier, Maison dit Cour de Février",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063193",
+   "titre": "Ensemble d'édifices à cour commune dite Cour Saint-Louis",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063194",
+   "titre": "Atelier",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063195",
+   "titre": "Maison, Atelier de Menuisier",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063196",
+   "titre": "Immeuble, Atelier",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063197",
+   "titre": "Immeuble, Atelier",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063198",
+   "titre": "immeuble, atelier dit cour Hennel",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00063199",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077127",
+   "titre": "ensemble d'édifices à cour commune",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077128",
+   "titre": "ensemble d'édifices à cour commune",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077129",
+   "titre": "Cinéma Paramount Bastille",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077130",
+   "titre": "Maison",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077131",
+   "titre": "Immeuble dit la Tour d'Argent",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077132",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077133",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077134",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077135",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077136",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077137",
+   "titre": "Immeuble",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA00077138",
+   "titre": "Gare de la Bastille",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "IA75000334",
+   "titre": "Montmartre aux artistes",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "JAR0000198",
+   "titre": "Jardin du Palais-Royal",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "JAR0000199",
+   "titre": "Jardins de l'école du Breuil",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "JAR0000200",
+   "titre": "Parc de Bagatelle",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "JAR0000201",
+   "titre": "Parc floral de Paris",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "JAR0000202",
+   "titre": "Jardin des Tuileries",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "JAR0000452",
+   "titre": "Arboretum de Paris",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "JAR0000453",
+   "titre": "Jardins des Serres d'Auteuil",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "JAR0000551",
+   "titre": "Jardin des Plantes et grandes serres",
+   "pointPOP": [
+    48.866667,
+    2.333333
+   ]
+  },
+  {
+   "ref": "MDI069",
+   "titre": "BnF | Arsenal",
+   "pointPOP": [
+    2.362915,
+    43.850614
+   ]
+  },
+  {
+   "ref": "MDI070",
+   "titre": "Musée Clemenceau",
+   "pointPOP": [
+    2.285095,
+    43.859206
+   ]
+  },
+  {
+   "ref": "MDI073",
+   "titre": "Musée Pasteur",
+   "pointPOP": [
+    2.310814,
+    43.840346
+   ]
+  },
+  {
+   "ref": "MDI076",
+   "titre": "Maison de Victor Hugo",
+   "pointPOP": [
+    2.366132,
+    43.854821
+   ]
+  },
+  {
+   "ref": "MDI077",
+   "titre": "Maison d'Auguste Comte",
+   "pointPOP": [
+    2.339371,
+    43.85106
+   ]
+  },
+  {
+   "ref": "MDI078",
+   "titre": "Musée national Gustave Moreau",
+   "pointPOP": [
+    2.334416,
+    43.877912
+   ]
+  },
+  {
+   "ref": "MDI079",
+   "titre": "Maison de Balzac",
+   "pointPOP": [
+    2.280847,
+    43.855356
+   ]
+  },
+  {
+   "ref": "MDI179",
+   "titre": "Musée Curie",
+   "pointPOP": [
+    2.344972,
+    43.844315
+   ]
+  },
+  {
+   "ref": "MDI206",
+   "titre": "Musée Eugène Delacroix",
+   "pointPOP": [
+    2.335642,
+    43.854445
+   ]
+  },
+  {
+   "ref": "MDI243",
+   "titre": "Musée national Jean-Jacques Henner",
+   "pointPOP": [
+    2.307711,
+    43.883041
+   ]
+  },
+  {
+   "ref": "MDI248",
+   "titre": "Musée Yves Saint Laurent",
+   "pointPOP": [
+    2.29952,
+    43.865621
+   ]
+  },
+  {
+   "ref": "MDI266",
+   "titre": "Maison Gainsbourg",
+   "pointPOP": [
+    2.331143,
+    43.857431
+   ]
+  },
+  {
+   "ref": "MDI276",
+   "titre": "Atelier-musée Chana Orloff",
+   "pointPOP": [
+    2.332619,
+    43.826161
+   ]
+  },
+  {
+   "ref": "PA00079845",
+   "titre": "Aqueduc des Eaux de Rungis",
+   "pointPOP": [
+    2.3321724702872,
+    48.7994615865885
+   ]
+  },
+  {
+   "ref": "PA00086579",
+   "titre": "Métropolitain, station Nation",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PA75040009",
+   "titre": "Tribunal de commerce de Paris",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PA75050010",
+   "titre": "Ancien institut du Radium",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PA75070009",
+   "titre": "Appartements de Charlotte Perriand",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PA75110005",
+   "titre": "Temple du Foyer de l’âme",
+   "pointPOP": [
+    2,
+    48.00000000000001
+   ]
+  },
+  {
+   "ref": "PA75130007",
+   "titre": "Église Sainte-Anne",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PA75140025",
+   "titre": "Tombeau d’Antoine Chrysostome Quatremère de Quincy",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PJR75000001",
+   "titre": "square du Champ de Mars",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PJR75000002",
+   "titre": "jardin de l'esplanade des Invalides",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PJR75000003",
+   "titre": "jardin du cinéma La Pagode",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PJR75000004",
+   "titre": "square Sainte-Clotilde",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PJR75000005",
+   "titre": "jardin du ministère de l'Agriculture",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PJR75000006",
+   "titre": "jardin de l'U.N.E.S.C.O. (Organisation Nations Unies pour Education Science Culture)",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PJR75000007",
+   "titre": "jardin des Missions Etrangères",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PJR75000008",
+   "titre": "jardin public Babylone",
+   "pointPOP": [
+    0,
+    0
+   ]
+  },
+  {
+   "ref": "PJR75000009",
+   "titre": "jardin du musée Rodin",
+   "pointPOP": [
+    0,
+    0
+   ]
+  }
+ ],
+ "noticesMHsansProtection": [
+  {
+   "ref": "PA00086011",
+   "titre": "Boutique"
+  },
+  {
+   "ref": "PA00086116",
+   "titre": "Restes de l'ancienne fontaine Popincourt"
+  },
+  {
+   "ref": "PA00086573",
+   "titre": "Immeubles"
+  },
+  {
+   "ref": "PA00086620",
+   "titre": "Immeuble"
+  },
+  {
+   "ref": "PA00086640",
+   "titre": "Ancien palais d'Orléans, actuellement siège de la Confédération Générale du Travail-Force Ouvrière"
+  },
+  {
+   "ref": "PA00088730",
+   "titre": "Ancien hôtel de Ravannes"
+  },
+  {
+   "ref": "PA00088977",
+   "titre": "Immeuble"
+  },
+  {
+   "ref": "PA00125441",
+   "titre": "Canal Saint-Martin"
+  },
+  {
+   "ref": "PA75040007",
+   "titre": "Maison"
+  },
+  {
+   "ref": "PA75050003",
+   "titre": "Carrière des Capucins"
+  },
+  {
+   "ref": "PA75090006",
+   "titre": "Immeuble"
+  },
+  {
+   "ref": "PA75130004",
+   "titre": "Carrière des Capucins"
+  },
+  {
+   "ref": "PA75130009",
+   "titre": "Pavillon Jean de Julienne"
+  },
+  {
+   "ref": "PA75150002",
+   "titre": "Caisse d'allocations familiales de Paris"
+  }
+ ],
+ "acteAfficheCommeProtection": [
+  {
+   "ref": "PA00079845",
+   "titre": "Aqueduc des Eaux de Rungis (également sur communes de Rungis, Fresnes, L'Hay-les-Roses, Cachan, Gentilly et Paris 14)",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079846",
+   "titre": "Église Saint-Denys",
+   "valeur": "liste"
+  },
+  {
+   "ref": "PA00079847",
+   "titre": "Immeuble",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079848",
+   "titre": "Maison des Gardes de l'ancien château",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079850",
+   "titre": "Château du Piple",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079851",
+   "titre": "Hôtel de Malestroit (ancien)",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079852",
+   "titre": "Presbytère",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079853",
+   "titre": "Aqueduc gallo-romain (restes)",
+   "valeur": "liste"
+  },
+  {
+   "ref": "PA00079855",
+   "titre": "Hospice Raspail (ancien)",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079856",
+   "titre": "Maison Renaissance (ancien Fief des Arcs)",
+   "valeur": "liste"
+  },
+  {
+   "ref": "PA00079857",
+   "titre": "Château de Coeuilly",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079858",
+   "titre": "Église Saint-Saturnin",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079859",
+   "titre": "Château de Bercy (ancien)",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079860",
+   "titre": "Château de Conflans (ancien)",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079861",
+   "titre": "Pavillon d'Antoine de Navarre",
+   "valeur": "liste"
+  },
+  {
+   "ref": "PA00079862",
+   "titre": "Château des Rets",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079863",
+   "titre": "Église Saint-Pierre-Saint-Paul",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079864",
+   "titre": "Fort de Champigny",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079865",
+   "titre": "Église Sainte-Colombe",
+   "valeur": "arrêté"
+  },
+  {
+   "ref": "PA00079866",
+   "titre": "Pavillon du 18s",
+   "valeur": "arrêté"
+  }
+ ],
+ "doublonsTitreArrondissement": [
+  {
+   "titre": "ancien debit de boisson",
+   "arrondissement": 10,
+   "refs": [
+    "PA00086486",
+    "PA00086487"
+   ]
+  },
+  {
+   "titre": "ancien hotel",
+   "arrondissement": 2,
+   "refs": [
+    "PA00086039",
+    "PA00086040",
+    "PA00086041"
+   ]
+  },
+  {
+   "titre": "ancien hotel",
+   "arrondissement": 4,
+   "refs": [
+    "PA00086320",
+    "PA00086323"
+   ]
+  },
+  {
+   "titre": "ancien hotel rambouillet de la sabliere ou hotel clairambault",
+   "arrondissement": 2,
+   "refs": [
+    "PA00086035",
+    "PA00086036"
+   ]
+  },
+  {
+   "titre": "ancienne boulangerie",
+   "arrondissement": 4,
+   "refs": [
+    "PA00086242",
+    "PA00086244"
+   ]
+  },
+  {
+   "titre": "ancienne epicerie",
+   "arrondissement": 1,
+   "refs": [
+    "PA00085803",
+    "PA00085804"
+   ]
+  },
+  {
+   "titre": "boucherie",
+   "arrondissement": 15,
+   "refs": [
+    "PA00086644",
+    "PA00086645"
+   ]
+  },
+  {
+   "titre": "boulangerie",
+   "arrondissement": 7,
+   "refs": [
+    "PA00088674",
+    "PA00088675",
+    "PA00088676",
+    "PA00088677"
+   ]
+  },
+  {
+   "titre": "boulangerie",
+   "arrondissement": 11,
+   "refs": [
+    "PA00086525",
+    "PA00086526",
+    "PA00086527"
+   ]
+  },
+  {
+   "titre": "boulangerie",
+   "arrondissement": 12,
+   "refs": [
+    "PA00086562",
+    "PA00086563"
+   ]
+  },
+  {
+   "titre": "boulangerie",
+   "arrondissement": 15,
+   "refs": [
+    "PA00086646",
+    "PA00086648"
+   ]
+  },
+  {
+   "titre": "boulangerie",
+   "arrondissement": 18,
+   "refs": [
+    "PA00086735",
+    "PA00086737"
+   ]
+  },
+  {
+   "titre": "boulangerie",
+   "arrondissement": 19,
+   "refs": [
+    "PA00086762",
+    "PA00086763"
+   ]
+  },
+  {
+   "titre": "boulangerie patisserie",
+   "arrondissement": 14,
+   "refs": [
+    "PA00086610",
+    "PA00086611"
+   ]
+  },
+  {
+   "titre": "boutique",
+   "arrondissement": 3,
+   "refs": [
+    "PA00086102",
+    "PA00086103",
+    "PA00086104"
+   ]
+  },
+  {
+   "titre": "boutique",
+   "arrondissement": 4,
+   "refs": [
+    "PA00086246",
+    "PA00086247",
+    "PA00086248"
+   ]
+  },
+  {
+   "titre": "cafe bar",
+   "arrondissement": 1,
+   "refs": [
+    "PA00085786",
+    "PA00085788"
+   ]
+  },
+  {
+   "titre": "chapelle notre dame du bon conseil",
+   "arrondissement": 7,
+   "refs": [
+    "ACR0000723",
+    "EA75000001"
+   ]
+  },
+  {
+   "titre": "chapelle saint joseph des epinettes",
+   "arrondissement": 17,
+   "refs": [
+    "ACR0000713",
+    "EA75000017"
+   ]
+  },
+  {
+   "titre": "cremerie",
+   "arrondissement": 7,
+   "refs": [
+    "PA00088682",
+    "PA00088683"
+   ]
+  },
+  {
+   "titre": "cremerie",
+   "arrondissement": 15,
+   "refs": [
+    "PA00086650",
+    "PA00086651"
+   ]
+  },
+  {
+   "titre": "eglise notre dame de l arche d alliance",
+   "arrondissement": 15,
+   "refs": [
+    "ACR0000707",
+    "EA75000015"
+   ]
+  },
+  {
+   "titre": "eglise notre dame de la sagesse",
+   "arrondissement": 13,
+   "refs": [
+    "ACR0000702",
+    "EA75000009"
+   ]
+  },
+  {
+   "titre": "eglise notre dame de la salette",
+   "arrondissement": 15,
+   "refs": [
+    "ACR0000708",
+    "EA75000014"
+   ]
+  },
+  {
+   "titre": "eglise saint eloi",
+   "arrondissement": 12,
+   "refs": [
+    "ACR0000694",
+    "EA75000004"
+   ]
+  },
+  {
+   "titre": "eglise saint marcel",
+   "arrondissement": 13,
+   "refs": [
+    "ACR0000703",
+    "EA75000006"
+   ]
+  },
+  {
+   "titre": "enceinte de philippe auguste",
+   "arrondissement": 1,
+   "refs": [
+    "PA00085799",
+    "PA00085800",
+    "PA00085801",
+    "PA00085802"
+   ]
+  },
+  {
+   "titre": "enceinte de philippe auguste",
+   "arrondissement": 2,
+   "refs": [
+    "PA00086018",
+    "PA00086019"
+   ]
+  },
+  {
+   "titre": "enceinte de philippe auguste",
+   "arrondissement": 4,
+   "refs": [
+    "PA00086262",
+    "PA00086263",
+    "PA00086264",
+    "PA00086265",
+    "PA00086266"
+   ]
+  },
+  {
+   "titre": "enceinte de philippe auguste",
+   "arrondissement": 5,
+   "refs": [
+    "PA00088421",
+    "PA00088422",
+    "PA00088423",
+    "PA00088424"
+   ]
+  },
+  {
+   "titre": "enceinte de philippe auguste",
+   "arrondissement": 6,
+   "refs": [
+    "PA00088513",
+    "PA00088514"
+   ]
+  },
+  {
+   "titre": "ensemble d edifices a cour commune",
+   "arrondissement": 12,
+   "refs": [
+    "IA00077127",
+    "IA00077128"
+   ]
+  },
+  {
+   "titre": "hotel",
+   "arrondissement": 7,
+   "refs": [
+    "PA00088748",
+    "PA00088749",
+    "PA00088751",
+    "PA00088753",
+    "PA00088757",
+    "PA00088802"
+   ]
+  },
+  {
+   "titre": "hotel",
+   "arrondissement": 8,
+   "refs": [
+    "PA00088839",
+    "PA00088840"
+   ]
+  },
+  {
+   "titre": "hotel",
+   "arrondissement": 16,
+   "refs": [
+    "PA00086677",
+    "PA00086678"
+   ]
+  },
+  {
+   "titre": "hotel ancien",
+   "arrondissement": 4,
+   "refs": [
+    "PA00086321",
+    "PA00086322",
+    "PA00086325",
+    "PA00086326",
+    "PA00086327"
+   ]
+  },
+  {
+   "titre": "hotel particulier",
+   "arrondissement": 17,
+   "refs": [
+    "PA00086732",
+    "PA75170006"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 1,
+   "refs": [
+    "PA00085844",
+    "PA00085845",
+    "PA00085853",
+    "PA00085854",
+    "PA00085855",
+    "PA00085856",
+    "PA00085857",
+    "PA00085858",
+    "PA00085859",
+    "PA00085860",
+    "PA00085861",
+    "PA00085862",
+    "PA00085863",
+    "PA00085864",
+    "PA00085865",
+    "PA00085866",
+    "PA00085867",
+    "PA00085868",
+    "PA00085869",
+    "PA00085870",
+    "PA00085871",
+    "PA00085872",
+    "PA00085873",
+    "PA00085874",
+    "PA00085876",
+    "PA00085877",
+    "PA00085878",
+    "PA00085879",
+    "PA00085880",
+    "PA00085882",
+    "PA00085883",
+    "PA00085884",
+    "PA00085885",
+    "PA00085886",
+    "PA00085887",
+    "PA00085888",
+    "PA00085889",
+    "PA00085890",
+    "PA00085891",
+    "PA00085892",
+    "PA00085894",
+    "PA00085896",
+    "PA00085897",
+    "PA00085898",
+    "PA00085899",
+    "PA00085900",
+    "PA00085901",
+    "PA00085902",
+    "PA00085903",
+    "PA00085917",
+    "PA00085918",
+    "PA00085919",
+    "PA00085920",
+    "PA00085921",
+    "PA00085922",
+    "PA00085923",
+    "PA00085924",
+    "PA00085925",
+    "PA00085926",
+    "PA00085927",
+    "PA00085928",
+    "PA00085929",
+    "PA00085931",
+    "PA00085933",
+    "PA00085934",
+    "PA00085935",
+    "PA00085936",
+    "PA00085937",
+    "PA00085938",
+    "PA00085939",
+    "PA00085940",
+    "PA00085941",
+    "PA00085942",
+    "PA00085943",
+    "PA00085944",
+    "PA00085945",
+    "PA00085946",
+    "PA00085947",
+    "PA00085948",
+    "PA00085949",
+    "PA00085950",
+    "PA00085951",
+    "PA00085952",
+    "PA00085953",
+    "PA00085954",
+    "PA00085955",
+    "PA00085956",
+    "PA00085957",
+    "PA00085958",
+    "PA00085959",
+    "PA00085960",
+    "PA00085961",
+    "PA00085962",
+    "PA00085963",
+    "PA00085964",
+    "PA00085965",
+    "PA00085966",
+    "PA00085967",
+    "PA00086008",
+    "PA00133003",
+    "PA00133005",
+    "PA00133006",
+    "PA00135361",
+    "PA00135362",
+    "PA75010007",
+    "PA75010008",
+    "PA75010009",
+    "PA75010010",
+    "PA75010013"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 2,
+   "refs": [
+    "PA00086022",
+    "PA00086043",
+    "PA00086044",
+    "PA00086047",
+    "PA00086048",
+    "PA00086049",
+    "PA00086050",
+    "PA00086051",
+    "PA00086053",
+    "PA00086054",
+    "PA00086056",
+    "PA00086060",
+    "PA00086061",
+    "PA00086065",
+    "PA00086066",
+    "PA00086069",
+    "PA00086070",
+    "PA00086071",
+    "PA00086072",
+    "PA00086076",
+    "PA00086078",
+    "PA00086079",
+    "PA00086080",
+    "PA00086096",
+    "PA00086099",
+    "PA00125452",
+    "PA00132976",
+    "PA00132977",
+    "PA00132978",
+    "PA00132984",
+    "PA00133007",
+    "PA00135363",
+    "PA00135364",
+    "PA75020003",
+    "PA75020004",
+    "PA75020005",
+    "PA75020008",
+    "PA75020009",
+    "PA75020011",
+    "PA75020012",
+    "PA75020013",
+    "PA75020014"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 3,
+   "refs": [
+    "PA00086166",
+    "PA00086167",
+    "PA00086168",
+    "PA00086171",
+    "PA00086172",
+    "PA00086173",
+    "PA00086174",
+    "PA00086175",
+    "PA00086176",
+    "PA00086177",
+    "PA00086178",
+    "PA00086179",
+    "PA00086180",
+    "PA00086181",
+    "PA00086182",
+    "PA00086183",
+    "PA00086184",
+    "PA00086185",
+    "PA00086186",
+    "PA00086187",
+    "PA00086188",
+    "PA00086189",
+    "PA00086190",
+    "PA00086191",
+    "PA00086192",
+    "PA00086193",
+    "PA00086194",
+    "PA00086195",
+    "PA00086196",
+    "PA00086197",
+    "PA00086198",
+    "PA00086199",
+    "PA00086200",
+    "PA00086201",
+    "PA00086202",
+    "PA00086203",
+    "PA00086205",
+    "PA00086206",
+    "PA00086207",
+    "PA00086208",
+    "PA00086209",
+    "PA00086210",
+    "PA00086211",
+    "PA00086212",
+    "PA75030002",
+    "PA75030004"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 4,
+   "refs": [
+    "PA00086328",
+    "PA00086329",
+    "PA00086331",
+    "PA00086333",
+    "PA00086335",
+    "PA00086337",
+    "PA00086338",
+    "PA00086339",
+    "PA00086340",
+    "PA00086342",
+    "PA00086344",
+    "PA00086346",
+    "PA00086348",
+    "PA00086350",
+    "PA00086351",
+    "PA00086352",
+    "PA00086353",
+    "PA00086354",
+    "PA00086355",
+    "PA00086357",
+    "PA00086358",
+    "PA00086359",
+    "PA00086360",
+    "PA00086361",
+    "PA00086362",
+    "PA00086363",
+    "PA00086364",
+    "PA00086365",
+    "PA00086366",
+    "PA00086367",
+    "PA00086368",
+    "PA00086369",
+    "PA00086370",
+    "PA00086371",
+    "PA00086372",
+    "PA00086373",
+    "PA00086374",
+    "PA00086375",
+    "PA00086376",
+    "PA00086377",
+    "PA00086378",
+    "PA00086379",
+    "PA00086380",
+    "PA00086381",
+    "PA00086382",
+    "PA00086383",
+    "PA00086384",
+    "PA00086385",
+    "PA00086386",
+    "PA00086387",
+    "PA00086388",
+    "PA00086389",
+    "PA00086390",
+    "PA00086391",
+    "PA00086392",
+    "PA00086393",
+    "PA00086394",
+    "PA00086395",
+    "PA00086396",
+    "PA00086398",
+    "PA00086400",
+    "PA00086401",
+    "PA00086402",
+    "PA00086403",
+    "PA00086404",
+    "PA00086405",
+    "PA00086406",
+    "PA00086407",
+    "PA00086408",
+    "PA00086409",
+    "PA00086410",
+    "PA00086411",
+    "PA00086412",
+    "PA00086413",
+    "PA00086414",
+    "PA00086415",
+    "PA00086416",
+    "PA00086417",
+    "PA00086418",
+    "PA00086419",
+    "PA00086420",
+    "PA00086421",
+    "PA00086422",
+    "PA00086423",
+    "PA00086424",
+    "PA00086425",
+    "PA00086426",
+    "PA00086427",
+    "PA00086428",
+    "PA00086429",
+    "PA00086430",
+    "PA00086431",
+    "PA00086432",
+    "PA00086433",
+    "PA00086434",
+    "PA00086435",
+    "PA00086436",
+    "PA00086437",
+    "PA00086438",
+    "PA00086439",
+    "PA00086441",
+    "PA00086442",
+    "PA00086443",
+    "PA00086444",
+    "PA00086449",
+    "PA00086450",
+    "PA00086451",
+    "PA00086452",
+    "PA00086453",
+    "PA00086454",
+    "PA00086455",
+    "PA00086456",
+    "PA00086457",
+    "PA00086458",
+    "PA00086459",
+    "PA00086460",
+    "PA00086464",
+    "PA00086465",
+    "PA00135366",
+    "PA75040002",
+    "PA75040003"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 5,
+   "refs": [
+    "PA00088440",
+    "PA00088441",
+    "PA00088442",
+    "PA00088443",
+    "PA00088444",
+    "PA00088445",
+    "PA00088446",
+    "PA00088448",
+    "PA00088449",
+    "PA00088450",
+    "PA00088451",
+    "PA00088452",
+    "PA00088454",
+    "PA00088455",
+    "PA00088456",
+    "PA00088457",
+    "PA00088458",
+    "PA00088459",
+    "PA00088460",
+    "PA00088461",
+    "PA00088462",
+    "PA00088463",
+    "PA00088464",
+    "PA00088465",
+    "PA00088466",
+    "PA00088467",
+    "PA00088468",
+    "PA00088469",
+    "PA00088470",
+    "PA00088472",
+    "PA00088473",
+    "PA00088474",
+    "PA00088487",
+    "PA75050007"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 6,
+   "refs": [
+    "PA00088551",
+    "PA00088552",
+    "PA00088554",
+    "PA00088555",
+    "PA00088556",
+    "PA00088557",
+    "PA00088558",
+    "PA00088561",
+    "PA00088568",
+    "PA00088572",
+    "PA00088573",
+    "PA00088574",
+    "PA00088575",
+    "PA00088576",
+    "PA00088577",
+    "PA00088578",
+    "PA00088579",
+    "PA00088581",
+    "PA00088582",
+    "PA00088584",
+    "PA00088585",
+    "PA00088587",
+    "PA00088589",
+    "PA00088591",
+    "PA00088592",
+    "PA00088596",
+    "PA00088598",
+    "PA00088599",
+    "PA00088600",
+    "PA00088601",
+    "PA00088602",
+    "PA00088603",
+    "PA00088604",
+    "PA00088605",
+    "PA00088606",
+    "PA00088607",
+    "PA00088608",
+    "PA00088609",
+    "PA00088610",
+    "PA00088611",
+    "PA00088612",
+    "PA00088613",
+    "PA00088614",
+    "PA00088615",
+    "PA00088616",
+    "PA00088620",
+    "PA00088621",
+    "PA00088626",
+    "PA00088633",
+    "PA00088634",
+    "PA00088635",
+    "PA00088637",
+    "PA00088640",
+    "PA00088643",
+    "PA00088644",
+    "PA00088645",
+    "PA75060002",
+    "PA75060005",
+    "PA75060008",
+    "PA75060010",
+    "PA75060011",
+    "PA75060012",
+    "PA75060013"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 7,
+   "refs": [
+    "PA00088761",
+    "PA00088763",
+    "PA00088764",
+    "PA00088766",
+    "PA00088767",
+    "PA00088770",
+    "PA00088772",
+    "PA00088779",
+    "PA00088780",
+    "PA00088781",
+    "PA00088782",
+    "PA00088783",
+    "PA00088785",
+    "PA00132979"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 8,
+   "refs": [
+    "PA00088841",
+    "PA00088842",
+    "PA00088844",
+    "PA00088845",
+    "PA00088846",
+    "PA00088847",
+    "PA00088848",
+    "PA00088849",
+    "PA00088850",
+    "PA00088852",
+    "PA00088853",
+    "PA00088854",
+    "PA00088855",
+    "PA00088856",
+    "PA00088857",
+    "PA00088858",
+    "PA00088859",
+    "PA00088860",
+    "PA00088861",
+    "PA00088862",
+    "PA00088863",
+    "PA00088864",
+    "PA00088865",
+    "PA00088866",
+    "PA00088867",
+    "PA00088888",
+    "PA00088889",
+    "PA00088890",
+    "PA00088894",
+    "PA00088898",
+    "PA75080004",
+    "PA75080005",
+    "PA75080007",
+    "PA75080012",
+    "PA75080014"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 9,
+   "refs": [
+    "PA00088920",
+    "PA00088921",
+    "PA00088923",
+    "PA00088925",
+    "PA00088928",
+    "PA00088929",
+    "PA00088930",
+    "PA00088931",
+    "PA00088932",
+    "PA00088933",
+    "PA00088934",
+    "PA00088935",
+    "PA00088937",
+    "PA00088938",
+    "PA00088939",
+    "PA00088940",
+    "PA00088941",
+    "PA00088942",
+    "PA00088945",
+    "PA00088946",
+    "PA00088948",
+    "PA00088949",
+    "PA00088950",
+    "PA00088951",
+    "PA00088952",
+    "PA00088953",
+    "PA00088954",
+    "PA00088955",
+    "PA00088956",
+    "PA00088957",
+    "PA00088958",
+    "PA00088959",
+    "PA00088960",
+    "PA00088961",
+    "PA00088962",
+    "PA00088963",
+    "PA00088965",
+    "PA00088966",
+    "PA00088967",
+    "PA00088968",
+    "PA00088969",
+    "PA00088972",
+    "PA00088973",
+    "PA00088975",
+    "PA00088976",
+    "PA00088977",
+    "PA00088978",
+    "PA00088979",
+    "PA00088980",
+    "PA00088981",
+    "PA00088983",
+    "PA00088984",
+    "PA00088985",
+    "PA00088986",
+    "PA75090002",
+    "PA75090005",
+    "PA75090006"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 10,
+   "refs": [
+    "PA00086503",
+    "PA00086518",
+    "PA00086519",
+    "PA00086520",
+    "PA00086521",
+    "PA75100001",
+    "PA75100002",
+    "PA75100003",
+    "PA75100004",
+    "PA75100005",
+    "PA75100006",
+    "PA75100009"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 11,
+   "refs": [
+    "IA00063177",
+    "IA00063180",
+    "IA00063181",
+    "IA00063187",
+    "PA00086537",
+    "PA00086538",
+    "PA00086539",
+    "PA00125443"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 12,
+   "refs": [
+    "EA75000005",
+    "IA00063199",
+    "IA00077132",
+    "IA00077133",
+    "IA00077134",
+    "IA00077135",
+    "IA00077136",
+    "IA00077137"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 14,
+   "refs": [
+    "PA00086620",
+    "PA00086621",
+    "PA00086622",
+    "PA00086623",
+    "PA00086641",
+    "PA75140006",
+    "PA75140007",
+    "PA75140010",
+    "PA75140015",
+    "PA75140016",
+    "PA75140017"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 15,
+   "refs": [
+    "PA00086653",
+    "PA00086654",
+    "PA00125447",
+    "PA00125448"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 16,
+   "refs": [
+    "PA00086684",
+    "PA00086685",
+    "PA00086688",
+    "PA00086689",
+    "PA00086715",
+    "PA00135369",
+    "PA75160001"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 17,
+   "refs": [
+    "PA75170002",
+    "PA75170004"
+   ]
+  },
+  {
+   "titre": "immeuble",
+   "arrondissement": 18,
+   "refs": [
+    "PA00086742",
+    "PA00086743",
+    "PA00086745"
+   ]
+  },
+  {
+   "titre": "immeuble atelier",
+   "arrondissement": 12,
+   "refs": [
+    "IA00063170",
+    "IA00063196",
+    "IA00063197"
+   ]
+  },
+  {
+   "titre": "immeuble en bordure du palais royal",
+   "arrondissement": 1,
+   "refs": [
+    "PA00085846",
+    "PA00085847",
+    "PA00085848",
+    "PA00085849",
+    "PA00085850",
+    "PA00085904",
+    "PA00085905",
+    "PA00085906",
+    "PA00085907",
+    "PA00085908",
+    "PA00085909",
+    "PA00085910",
+    "PA00085911",
+    "PA00085912",
+    "PA00085913",
+    "PA00085914",
+    "PA00085915",
+    "PA00085968",
+    "PA00085969",
+    "PA00085970",
+    "PA00085971",
+    "PA00085972",
+    "PA00085973",
+    "PA00085974",
+    "PA00085975",
+    "PA00085976",
+    "PA00085977",
+    "PA00085978",
+    "PA00085979",
+    "PA00085980",
+    "PA00085981",
+    "PA00085982",
+    "PA00085983",
+    "PA00085984",
+    "PA00085985",
+    "PA75010014"
+   ]
+  },
+  {
+   "titre": "immeuble immeuble a appartements",
+   "arrondissement": 11,
+   "refs": [
+    "IA00063183",
+    "IA00063184",
+    "IA00063185",
+    "IA00063186"
+   ]
+  },
+  {
+   "titre": "immeubles",
+   "arrondissement": 1,
+   "refs": [
+    "PA00085852",
+    "PA00085895",
+    "PA00085930",
+    "PA00133004",
+    "PA75010004",
+    "PA75010005"
+   ]
+  },
+  {
+   "titre": "immeubles",
+   "arrondissement": 2,
+   "refs": [
+    "PA00086045",
+    "PA00086046",
+    "PA00086052",
+    "PA00086055",
+    "PA00086057",
+    "PA00086059",
+    "PA00086067",
+    "PA00086075",
+    "PA00086077"
+   ]
+  },
+  {
+   "titre": "immeubles",
+   "arrondissement": 9,
+   "refs": [
+    "PA00088970",
+    "PA00088971"
+   ]
+  },
+  {
+   "titre": "immeubles",
+   "arrondissement": 11,
+   "refs": [
+    "PA00086540",
+    "PA00086557"
+   ]
+  },
+  {
+   "titre": "immeubles",
+   "arrondissement": 12,
+   "refs": [
+    "ACR0000695",
+    "PA00086573"
+   ]
+  },
+  {
+   "titre": "maison",
+   "arrondissement": 3,
+   "refs": [
+    "PA00086214",
+    "PA00086215",
+    "PA00086216",
+    "PA00086217",
+    "PA00086218",
+    "PA00086219",
+    "PA00086220",
+    "PA00086221",
+    "PA00086222",
+    "PA00086223",
+    "PA00086225",
+    "PA00086226"
+   ]
+  },
+  {
+   "titre": "maison",
+   "arrondissement": 4,
+   "refs": [
+    "PA00086330",
+    "PA00086336",
+    "PA00086341",
+    "PA00086347",
+    "PA00086349",
+    "PA00086356",
+    "PA00086397",
+    "PA00086399",
+    "PA00086440",
+    "PA00086445",
+    "PA00086446",
+    "PA00086447",
+    "PA00086461",
+    "PA00086462",
+    "PA00086463",
+    "PA75040007"
+   ]
+  },
+  {
+   "titre": "maison",
+   "arrondissement": 6,
+   "refs": [
+    "PA00088547",
+    "PA00088548",
+    "PA00088549",
+    "PA00088550",
+    "PA00088553",
+    "PA00088559",
+    "PA00088562",
+    "PA00088564",
+    "PA00088567",
+    "PA00088569",
+    "PA00088570",
+    "PA00088571",
+    "PA00088586",
+    "PA00088588",
+    "PA00088593",
+    "PA00088594",
+    "PA00088595",
+    "PA00088597",
+    "PA00088617",
+    "PA00088618",
+    "PA00088622",
+    "PA00088623",
+    "PA00088624",
+    "PA00088629",
+    "PA00088630",
+    "PA00088632",
+    "PA00088636",
+    "PA00088639",
+    "PA00088642"
+   ]
+  },
+  {
+   "titre": "maison",
+   "arrondissement": 7,
+   "refs": [
+    "PA00088762",
+    "PA00088771",
+    "PA00088773",
+    "PA00088774",
+    "PA00088775",
+    "PA00088776",
+    "PA00088777",
+    "PA00088778",
+    "PA00088784"
+   ]
+  },
+  {
+   "titre": "maison",
+   "arrondissement": 11,
+   "refs": [
+    "IA00063174",
+    "PA00086542",
+    "PA00086543"
+   ]
+  },
+  {
+   "titre": "metropolitain station nation",
+   "arrondissement": 12,
+   "refs": [
+    "PA00086579",
+    "PA00086580"
+   ]
+  },
+  {
+   "titre": "parc de bagatelle",
+   "arrondissement": 16,
+   "refs": [
+    "JAR0000200",
+    "PA00086708"
+   ]
+  },
+  {
+   "titre": "pharmacie",
+   "arrondissement": 7,
+   "refs": [
+    "PA00088795",
+    "PA00088796",
+    "PA00088797"
+   ]
+  },
+  {
+   "titre": "synagogue",
+   "arrondissement": 4,
+   "refs": [
+    "PA00086477",
+    "PA00086478"
+   ]
+  },
+  {
+   "titre": "synagogue don isaac abravanel",
+   "arrondissement": 11,
+   "refs": [
+    "ACR0000693",
+    "EA75000003"
+   ]
+  }
+ ],
+ "pointsQuasiConfondus": [
+  [
+   "PA00085793",
+   "PA75010004"
+  ],
+  [
+   "PA00085997",
+   "PA00086002"
+  ],
+  [
+   "PA00086052",
+   "PA00086053"
+  ],
+  [
+   "PA00086155",
+   "PA00086219"
+  ],
+  [
+   "PA00086250",
+   "PA75040011"
+  ],
+  [
+   "PA00086620",
+   "PA75040007"
+  ],
+  [
+   "PA00086638",
+   "PA75140018"
+  ],
+  [
+   "PA00086645",
+   "PA75150005"
+  ],
+  [
+   "PA00088589",
+   "PA75060013"
+  ],
+  [
+   "PA00125440",
+   "PA00125441"
+  ]
+ ],
+ "lieuxPrioritairesSansReference": [
+  {
+   "nom": "Palais Bourbon — Assemblée nationale",
+   "source": "https://www.assemblee-nationale.fr/dyn/en/visite/info-pratiques"
+  },
+  {
+   "nom": "Hôtel de Lassay — présidence de l’Assemblée nationale",
+   "source": "https://www.assemblee-nationale.fr/dyn/en/visite/info-pratiques"
+  },
+  {
+   "nom": "Immeuble Jacques Chaban-Delmas — Assemblée nationale",
+   "source": "https://www.assemblee-nationale.fr/dyn/en/visite/info-pratiques"
+  },
+  {
+   "nom": "Immeuble Olympe de Gouges — Assemblée nationale",
+   "source": "https://www.assemblee-nationale.fr/dyn/en/visite/info-pratiques"
+  },
+  {
+   "nom": "Petit Luxembourg — présidence du Sénat",
+   "source": "https://www.senat.fr/connaitre-le-senat/patrimoine/le-petit-luxembourg.html"
+  },
+  {
+   "nom": "Ministère de l’Économie et des Finances, Bercy",
+   "source": "https://www.economie.gouv.fr/saef/decouvrir-les-fonds/les-guides-des-sources/le-batiment-du-grand-bercy"
+  },
+  {
+   "nom": "École militaire",
+   "source": "https://parisjetaime.com/eng/article/institutional-buildings-a126"
+  },
+  {
+   "nom": "Observatoire de Paris",
+   "source": "https://parisjetaime.com/eng/article/institutional-buildings-a126"
+  },
+  {
+   "nom": "Centre Pompidou",
+   "source": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710"
+  },
+  {
+   "nom": "Opéra Bastille",
+   "source": "https://parisjetaime.com/article/coulisses-a972"
+  },
+  {
+   "nom": "Institut du monde arabe",
+   "source": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710"
+  },
+  {
+   "nom": "Bibliothèque nationale de France — François-Mitterrand",
+   "source": "https://www.bnf.fr/fr/le-site-francois-mitterrand"
+  },
+  {
+   "nom": "Philharmonie de Paris",
+   "source": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710"
+  },
+  {
+   "nom": "Cité des sciences et de l’industrie",
+   "source": "https://parisjetaime.com/convention/article/monuments-et-musees-a-visiter-a-paris-a1327"
+  },
+  {
+   "nom": "Fondation Louis Vuitton",
+   "source": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710"
+  },
+  {
+   "nom": "Musée du quai Branly — Jacques Chirac",
+   "source": "https://parisjetaime.com/article/les-monuments-parisiens-un-patrimoine-exceptionnel-a024"
+  },
+  {
+   "nom": "Musée d’Art moderne de Paris",
+   "source": "https://parisjetaime.com/article/les-musees-les-plus-visites-a943"
+  },
+  {
+   "nom": "Palais de Tokyo",
+   "source": "https://parisjetaime.com/article/les-monuments-parisiens-un-patrimoine-exceptionnel-a024"
+  },
+  {
+   "nom": "Palais Galliera",
+   "source": "https://parisjetaime.com/convention/article/monuments-et-musees-a-visiter-a-paris-a1327"
+  },
+  {
+   "nom": "Musée Cernuschi",
+   "source": "https://parisjetaime.com/convention/article/monuments-et-musees-a-visiter-a-paris-a1327"
+  },
+  {
+   "nom": "Musée de l’Orangerie",
+   "source": "https://parisjetaime.com/article/musees-et-monuments-ouverts-le-1er-janvier-a537"
+  },
+  {
+   "nom": "Musée Grévin",
+   "source": "https://parisjetaime.com/article/les-musees-les-plus-visites-a943"
+  },
+  {
+   "nom": "Le Grand Rex",
+   "source": "https://www.paris.fr/pages/l-art-deco-celebre-ses-100-ans-decouvrez-des-batiments-parisiens-remarquables-32065"
+  },
+  {
+   "nom": "Cinémathèque française",
+   "source": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710"
+  },
+  {
+   "nom": "La BnF Richelieu — Salle Ovale",
+   "source": "https://www.bnf.fr/fr/le-site-richelieu-un-palais-au-coeur-de-paris"
+  },
+  {
+   "nom": "Musée de l’Homme",
+   "source": "https://parisjetaime.com/convention/article/monuments-et-musees-a-visiter-a-paris-a1327"
+  },
+  {
+   "nom": "Galeries Lafayette Haussmann",
+   "source": "https://parisjetaime.com/article/grands-magasins-a-paris-a145"
+  },
+  {
+   "nom": "Printemps Haussmann",
+   "source": "https://parisjetaime.com/article/grands-magasins-a-paris-a145"
+  },
+  {
+   "nom": "Le Bon Marché Rive Gauche",
+   "source": "https://parisjetaime.com/article/grands-magasins-a-paris-a145"
+  },
+  {
+   "nom": "Palais Brongniart (fonction événementielle actuelle)",
+   "source": "https://www.paris.fr/pages/1-lieu-3-histoires-le-palais-brongniart-35063"
+  },
+  {
+   "nom": "Tour Montparnasse",
+   "source": "https://parisjetaime.com/article/musees-et-monuments-ouverts-le-1er-janvier-a537"
+  },
+  {
+   "nom": "Station F — Halle Freyssinet",
+   "source": "https://cdn.paris.fr/paris/2021/12/21/f0d203cc64ff00fded7373eaffc3067d.pdf"
+  },
+  {
+   "nom": "Passage Jouffroy",
+   "source": "https://parisjetaime.com/article/paris-insolite-les-passages-couverts-a1801"
+  },
+  {
+   "nom": "Passage Verdeau",
+   "source": "https://parisjetaime.com/article/paris-insolite-les-passages-couverts-a1801"
+  },
+  {
+   "nom": "Arc de Triomphe du Carrousel",
+   "source": "https://www.paris.fr/pages/tout-savoir-sur-le-patrimoine-parisien-22969"
+  },
+  {
+   "nom": "Obélisque de Louxor — place de la Concorde",
+   "source": "https://parisjetaime.com/article/les-monuments-parisiens-un-patrimoine-exceptionnel-a024"
+  },
+  {
+   "nom": "Colonne Vendôme",
+   "source": "https://www.paris.fr/monuments-places-ponts"
+  },
+  {
+   "nom": "Fontaine des Innocents",
+   "source": "https://www.paris.fr/pages/tout-savoir-sur-le-patrimoine-parisien-22969"
+  },
+  {
+   "nom": "Moulin Rouge",
+   "source": "https://parisjetaime.com/article/50-incontournables-parisiens-en-un-week-end-a1012"
+  },
+  {
+   "nom": "Pyramide du Louvre",
+   "source": "https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710"
+  },
+  {
+   "nom": "Mairie de Paris Centre",
+   "source": "https://www.paris.fr/lieux/mairie-de-paris-centre-3716"
+  },
+  {
+   "nom": "Mairie du 5e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 6e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 9e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 10e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 11e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 12e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 13e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 14e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 15e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 16e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 17e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 18e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 19e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  },
+  {
+   "nom": "Mairie du 20e arrondissement de Paris",
+   "source": "https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097"
+  }
+ ],
+ "liens": [
+  {
+   "ref": "JAR0000551",
+   "url": "https://www.mnhn.fr",
+   "http": 403
+  },
+  {
+   "ref": "JAR0000551",
+   "url": "https://www.mnhn.fr/fr/grandes-serres-du-jardin-des-plantes",
+   "http": 403
+  },
+  {
+   "ref": "PA00085795",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00085796",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00085805",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00085808",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00085808_CMH_1930.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00085817",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00085817_CMH_1990.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00085821",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00085830",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00085830_CMH_1933.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00085833",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00085833_CMH_1930.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00085839",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00085991",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086001",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086005",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086005_IMH_1990.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086011",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086011_radiation.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086045",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086045_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086046",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086046_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086048",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086048_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086055",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086055_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086057",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086057_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086058",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086058_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086059",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086059_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086061",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086061_IMH_1975",
+   "http": 404
+  },
+  {
+   "ref": "PA00086067",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086067_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086075",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086075_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086077",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086077_IMH_1975.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086082",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086082_IMH_1981.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086155",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086207",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086207_IMH_1974.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086216",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086216_IMH_1926.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086237",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086237_IMH_1984.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086246",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086246_IMH_1984.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086250",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086252",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086257",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086259",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086278",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086295",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086304",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086304_CMH_1954.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086360",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086360_IMH_1974.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086367",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086367_IMH_1974.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086386",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086386_IMH_1974.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086477",
+   "url": "http://www.culture.gouv.fr/documentation/memoire/VISITES/archirelxx/lieu_frameset.htm",
+   "http": 200
+  },
+  {
+   "ref": "PA00086479",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086488",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086488_CMH_2016.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086512",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086513",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086514",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086514_IMH_1989.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086569",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086569_CMH_2016.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086573",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086573_RAD_2016.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086582",
+   "url": "http://www.culture.gouv.fr/documentation/memoire/VISITES/archirelxx/lieu_frameset.htm",
+   "http": 200
+  },
+  {
+   "ref": "PA00086586",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086586_IMH_1962.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086614",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086614_CMH_2016.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086637",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086637_IMH_1984.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086642",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086642_CMH_IMH.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086652",
+   "url": "http://www.culture.gouv.fr/documentation/memoire/VISITES/archirelxx/lieu_frameset.htm",
+   "http": 200
+  },
+  {
+   "ref": "PA00086674",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086674_CMH_2016.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086705",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086705_IMH_1979.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086740",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086740_IMH_1966.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00086767",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086767_IMH_1979.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088414",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088415",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088415_IMH_1957.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088419",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088431",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088473",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088473_IMH_1928.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088481",
+   "url": "http://www.culture.gouv.fr/documentation/memoire/VISITES/archirelxx/lieu_frameset.htm",
+   "http": 200
+  },
+  {
+   "ref": "PA00088488",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088488_IMH_1992.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088497",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088497_IMH_1926.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088508",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088508_IMH_1994.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088509",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088565",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088565_IMH_1972.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088585",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088585_IMH_1962.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088599",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088599_IMH_1946.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088611",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088611_IMH_1947.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088634",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088634_IMH_1948.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088652",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088653",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088687",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088696",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088696_IMH_1926.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088713",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088713_CMH_1928.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088714",
+   "url": "https://mediatheque-patrimoine.culture.gouv.fr/sites/mediatheque/files/documents/liste_mh_1862_0.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088720",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088720_IMH_1928.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088730",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088730_RAD_2014.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088807",
+   "url": "http://www.culture.gouv.fr/documentation/memoire/VISITES/archirelxx/lieu_frameset.htm",
+   "http": 200
+  },
+  {
+   "ref": "PA00088876",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088876_CMH_1916.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088880",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088880_CMH_1937.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088882",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088882_IMH_1983.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088889",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088889_IMH_1991.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088906",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088906_CMH_2016.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088913",
+   "url": "https://doi.org/10.4000/lha.224",
+   "http": 200
+  },
+  {
+   "ref": "PA00088936",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088936_IMH_1956.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088969",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088969_CMH_1945.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088980",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088980_IMH_1977.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088981",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088981_IMH_1977.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00088982",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00088982_IMH_1977.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00089013",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00089013_IMH_1991.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA00133011",
+   "url": "http://www.culture.gouv.fr/documentation/memoire/VISITES/archirelxx/lieu_frameset.htm",
+   "http": 200
+  },
+  {
+   "ref": "PA75020008",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75020008_IMH_1997.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75020010",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75020010_IMH_2001.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75020014",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75020014_IMH_2015.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75030003",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75030003_CMH_2014.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75040002",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75040002_IMH_1999.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75040008",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75040008_IMH_2014.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75050009",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75050009_IMH_2011.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75060010",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75060010_IMH_2011.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75060012",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75060012_IMH_2014.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75070005",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75070005_IMH_2013.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75070006",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75070006_IMH_2014.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75070007",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75070007_IMH_2015.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75080008",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75080008_IMH_2011.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75080009",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75080009_IMH_2011.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75080011",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75080011_IMH_2014.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75100007",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75100007_IMH_2002.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75100008",
+   "url": "https://doi.org/10.4000/insitu.4578",
+   "http": 200
+  },
+  {
+   "ref": "PA75100009",
+   "url": "https://www.shap.fr/bulletins/256-2013-3eme-livraison",
+   "http": 404
+  },
+  {
+   "ref": "PA75100009",
+   "url": "https://www.franceculture.fr/emissions/une-histoire-particuliere-un-recit-documentaire-en-deux-parties/",
+   "http": 404
+  },
+  {
+   "ref": "PA75130006",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75130006_IMH_2013.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75140002",
+   "url": "http://www.culture.gouv.fr/documentation/memoire/VISITES/archirelxx/lieu_frameset.htm",
+   "http": 200
+  },
+  {
+   "ref": "PA75140014",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75140014_IMH_2012.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75140016",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75140016_IMH_2014.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75150004",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75150004_IMH_2011.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75160004",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75160004_IMH_2006.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75160006",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75160006_IMH_2012.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75170005",
+   "url": "http://www.culture.gouv.fr/documentation/memoire/VISITES/archirelxx/lieu_frameset.htm",
+   "http": 200
+  },
+  {
+   "ref": "PA75180001",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75180001_IMH_2012.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75180002",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75180002_CMH_IMH.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75190005",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA75190005_IMH_2015.pdf",
+   "http": 200
+  },
+  {
+   "ref": "PA75200002",
+   "url": "http://www.culture.gouv.fr/documentation/memoire/VISITES/archirelxx/lieu_frameset.htm",
+   "http": 200
+  }
+ ],
+ "liensEnErreur": [
+  {
+   "ref": "JAR0000551",
+   "url": "https://www.mnhn.fr",
+   "http": 403
+  },
+  {
+   "ref": "JAR0000551",
+   "url": "https://www.mnhn.fr/fr/grandes-serres-du-jardin-des-plantes",
+   "http": 403
+  },
+  {
+   "ref": "PA00086061",
+   "url": "http://www.culture.gouv.fr/Wave/image/merimee/PDF/PA00086061_IMH_1975",
+   "http": 404
+  },
+  {
+   "ref": "PA75100009",
+   "url": "https://www.shap.fr/bulletins/256-2013-3eme-livraison",
+   "http": 404
+  },
+  {
+   "ref": "PA75100009",
+   "url": "https://www.franceculture.fr/emissions/une-histoire-particuliere-un-recit-documentaire-en-deux-parties/",
+   "http": 404
+  }
+ ],
+ "liensVerifiesLe": "2026-11-10T02:06:51+00:00"
+}

@@ -1,0 +1,339 @@
+{
+  "schema": "paris-architecture-segments/1",
+  "ref": "PA00086319",
+  "building": "Hôtel de Ville de Paris",
+  "part": "corps central Boccador, façade côté place, XIVe assise (1878)",
+  "sourceId": "bhdv-cc64-pl34",
+  "sourceSheet": "CC64_PL34",
+  "sourceDate": 1878,
+  "sourceUrl": "https://bibliotheques-specialisees.paris.fr/in/dz/caf/ed9/621/CC64_PL34.xml",
+  "basis": "Cotes transcrites du dessin historique d'exécution; non vérifiées in situ",
+  "status": "drawing-local-unregistered",
+  "publishedModel": false,
+  "geometry": "ribbon-2d-planar-course",
+  "geoRegistration": null,
+  "currentFacadeVerified": false,
+  "courseHeightM": 0.42,
+  "totalLengthM": 55.5,
+  "chains": [
+    {
+      "id": "cc64-assise14-moitie-gauche",
+      "inscribedTotalM": 29.45,
+      "closureDifferenceM": 0
+    },
+    {
+      "id": "cc64-assise14-moitie-droite",
+      "inscribedTotalM": 26.05,
+      "closureDifferenceM": 0
+    }
+  ],
+  "segments": [
+    {
+      "order": 1,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "L-a",
+      "description": "retour après tourelle",
+      "startM": 0,
+      "endM": 0.76,
+      "lengthM": 0.76
+    },
+    {
+      "order": 2,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "saillie",
+      "startM": 0.76,
+      "endM": 1.22,
+      "lengthM": 0.46
+    },
+    {
+      "order": 3,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "entre-saillies",
+      "description": "niche cintrée 0,47",
+      "startM": 1.22,
+      "endM": 2.26,
+      "lengthM": 1.04
+    },
+    {
+      "order": 4,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "saillie",
+      "startM": 2.26,
+      "endM": 2.72,
+      "lengthM": 0.46
+    },
+    {
+      "order": 5,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee-large",
+      "description": "",
+      "startM": 2.72,
+      "endM": 10.9,
+      "lengthM": 8.18
+    },
+    {
+      "order": 6,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 10.9,
+      "endM": 11.36,
+      "lengthM": 0.46
+    },
+    {
+      "order": 7,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "entre-saillies",
+      "description": "niche cintrée 0,47",
+      "startM": 11.36,
+      "endM": 12.4,
+      "lengthM": 1.04
+    },
+    {
+      "order": 8,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 12.4,
+      "endM": 12.86,
+      "lengthM": 0.46
+    },
+    {
+      "order": 9,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee",
+      "description": "",
+      "startM": 12.86,
+      "endM": 16.72,
+      "lengthM": 3.86
+    },
+    {
+      "order": 10,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 16.72,
+      "endM": 17.18,
+      "lengthM": 0.46
+    },
+    {
+      "order": 11,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee",
+      "description": "",
+      "startM": 17.18,
+      "endM": 21.04,
+      "lengthM": 3.86
+    },
+    {
+      "order": 12,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 21.04,
+      "endM": 21.5,
+      "lengthM": 0.46
+    },
+    {
+      "order": 13,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee",
+      "description": "",
+      "startM": 21.5,
+      "endM": 25.36,
+      "lengthM": 3.86
+    },
+    {
+      "order": 14,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 25.36,
+      "endM": 25.82,
+      "lengthM": 0.46
+    },
+    {
+      "order": 15,
+      "chain": "cc64-assise14-moitie-gauche",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee-centrale-partie-gauche",
+      "description": "se poursuit par 0,23 sur la moitié droite",
+      "startM": 25.82,
+      "endM": 29.45,
+      "lengthM": 3.63
+    },
+    {
+      "order": 16,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee-centrale-partie-droite",
+      "description": "complète 3,63 de la moitié gauche",
+      "startM": 29.45,
+      "endM": 29.68,
+      "lengthM": 0.23
+    },
+    {
+      "order": 17,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 29.68,
+      "endM": 30.14,
+      "lengthM": 0.46
+    },
+    {
+      "order": 18,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee",
+      "description": "",
+      "startM": 30.14,
+      "endM": 34,
+      "lengthM": 3.86
+    },
+    {
+      "order": 19,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 34,
+      "endM": 34.46,
+      "lengthM": 0.46
+    },
+    {
+      "order": 20,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee",
+      "description": "",
+      "startM": 34.46,
+      "endM": 38.32,
+      "lengthM": 3.86
+    },
+    {
+      "order": 21,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 38.32,
+      "endM": 38.78,
+      "lengthM": 0.46
+    },
+    {
+      "order": 22,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee",
+      "description": "",
+      "startM": 38.78,
+      "endM": 42.64,
+      "lengthM": 3.86
+    },
+    {
+      "order": 23,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 42.64,
+      "endM": 43.1,
+      "lengthM": 0.46
+    },
+    {
+      "order": 24,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "entre-saillies",
+      "description": "niche cintrée 0,47",
+      "startM": 43.1,
+      "endM": 44.14,
+      "lengthM": 1.04
+    },
+    {
+      "order": 25,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 44.14,
+      "endM": 44.6,
+      "lengthM": 0.46
+    },
+    {
+      "order": 26,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "travee-large",
+      "description": "",
+      "startM": 44.6,
+      "endM": 52.78,
+      "lengthM": 8.18
+    },
+    {
+      "order": 27,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 52.78,
+      "endM": 53.24,
+      "lengthM": 0.46
+    },
+    {
+      "order": 28,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "entre-saillies",
+      "description": "niche cintrée 0,47",
+      "startM": 53.24,
+      "endM": 54.28,
+      "lengthM": 1.04
+    },
+    {
+      "order": 29,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "trumeau",
+      "description": "",
+      "startM": 54.28,
+      "endM": 54.74,
+      "lengthM": 0.46
+    },
+    {
+      "order": 30,
+      "chain": "cc64-assise14-moitie-droite",
+      "sourceId": "bhdv-cc64-pl34",
+      "element": "retour avant tourelle",
+      "description": "",
+      "startM": 54.74,
+      "endM": 55.5,
+      "lengthM": 0.76
+    }
+  ],
+  "unknowns": [
+    "Orientation et placement EPSG:2154",
+    "Altitude absolue de la XIVe assise",
+    "Profondeurs des saillies, murs et ouvertures",
+    "Façade actuelle et modifications depuis 1878",
+    "Forme 3D des travées et ornements"
+  ]
+}

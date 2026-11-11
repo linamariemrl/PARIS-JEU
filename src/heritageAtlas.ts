@@ -1,10 +1,12 @@
 import {Color3,Mesh,MeshBuilder,Scene,Vector3} from '@babylonjs/core';
+import {MONUMENT_BEIGE_RGB} from './monumentPalette';
 import type {Building} from './types';
 import {storyForMonument,storyForReference} from './monumentStories';
 import {roleOfHeritage,heritageRoleLabel} from './heritageCategories';
 import {project} from './geo';
 import {terrainHeight} from './terrain';
 import type {ArchitectureDossiers} from './architectureDossiers';
+import {ficheFor,ficheIndex,renderFiche} from './historyFiches';
 
 interface Notice{
  ref:string;x:number;z:number;name:string;category?:string;
@@ -78,6 +80,18 @@ export class HeritageAtlas{
     }
    }
   }catch(e){console.warn('Notices Culture non disponibles',e);}
+  // R09 : notices POP officielles absentes du corpus d'origine (Inventaire
+  // général, labels, jardins…), localisées par leur point POP.
+  try{
+   for(const e of (await ficheIndex()).values()){
+    if(this.byRef.has(e.ref)||!Number.isFinite(e.x)||!Number.isFinite(e.z))continue;
+    const n:Notice={ref:e.ref,x:e.x!,z:e.z!,name:e.titre,
+     sourceUrl:'https://pop.culture.gouv.fr/notice/merimee/'+e.ref};
+    this.byRef.set(n.ref,n);
+    const bucket=this.grid.get(key(n.x,n.z))??[];
+    bucket.push(n);this.grid.set(key(n.x,n.z),bucket);
+   }
+  }catch(e){console.warn('Notices POP complémentaires',e);}
   try{
    const response=await fetch(import.meta.env.BASE_URL+
      'data/metropole/places/heritage-areas.json');
@@ -235,7 +249,11 @@ export class HeritageAtlas{
    line('Domaine',heritageRoleLabel[building.heritageRole]);
   line('Époque',period);
   if(notice?.address)line('Lieu',notice.address);
-  if(notice?.author&&!story)line('Architecte / auteur',notice.author);
+  if(notice?.author)line('Auteur(s) mentionné(s) par POP',notice.author);
+  // « arrêté », « liste », « décret » : nature de l'acte, pas niveau de
+  // protection (classé/inscrit), qui figure dans la fiche Histoire.
+  line('Nature de l’acte de protection (POP)',notice?.protection);
+  line('Usage indiqué par la notice',notice?.currentUse);
   section.append(overview);
   const heading=document.createElement('h3');
   heading.textContent='En quelques lignes';
@@ -250,10 +268,16 @@ export class HeritageAtlas{
   const summary=story?.history??description??(
    fromArea&&!/dénomination ne constitue|désigné dans OpenStreetMap/i.test(fromArea)?
     fromArea:undefined);
+  // Une date POP est un repère documentaire, pas un événement à inventer.
+  const fallback=notice?.date?.trim()?
+   'La notice POP/Mérimée mentionne les repères chronologiques : '+
+    notice.date.trim()+'. Aucun récit historique plus détaillé n’est encore sourcé.':
+   'L’histoire de ce lieu n’est pas encore documentée avec assez de précision pour en proposer un résumé fiable.';
   p.textContent=summary?
    (summary.length<=380?summary:summary.slice(0,377).replace(/\s+\S*$/,'')+'…'):
-   'L’histoire de ce lieu n’est pas encore documentée avec assez de précision pour en proposer un résumé fiable.';
+   fallback;
   section.append(p);
+  const usedFallback=!summary;
   const url=story?.sourceUrl??notice?.sourceUrl??area?.sourceUrl;
   if(url){
    try{
@@ -279,6 +303,13 @@ export class HeritageAtlas{
   }
   this.architecture?.appendTo(section,ref);
   target.replaceChildren(section);
+  // Fiche Histoire officielle, chargée à la demande (par arrondissement).
+  if(ref)void ficheFor(ref).then(fiche=>{
+   if(!fiche||!section.isConnected)return;
+   // Le texte de repli « non documenté » contredirait le récit officiel.
+   if(usedFallback&&fiche.historique){p.remove();heading.remove();}
+   section.append(renderFiche(fiche));
+  });
  }
  private drawBoundaries():void{
   for(const area of this.areas){
@@ -292,7 +323,7 @@ export class HeritageAtlas{
       pts.push(pts[0].clone());
     const mesh=MeshBuilder.CreateLines('contour-patrimoine-'+area.id,
      {points:pts},this.scene);
-    mesh.color=new Color3(.78,.69,.54);
+    mesh.color=new Color3(...MONUMENT_BEIGE_RGB);
     mesh.isPickable=false;
     this.lines.push(mesh);
    }

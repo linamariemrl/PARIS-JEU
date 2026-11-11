@@ -76,7 +76,19 @@ def record(building, ix, iz, tile_size):
     return struct.pack("<hhHHHh", *nums)
 
 
+def major_footprints():
+    """Emprises IGN des monuments MAJEURS (beige), d'après la table des
+    emprises patrimoniales et la liste des références majeures du jeu.
+    Même source que la scène proche : couleur cohérente à toute distance."""
+    import re
+    refs = set(re.findall(r'"(PA\d{8})"', (ROOT / "src/heritagePriorities.ts").read_text(encoding="utf-8")))
+    table = json.loads((ROOT / "public/data/metropole/architecture/heritage-footprints.json")
+                       .read_text(encoding="utf-8"))
+    return {i for e in table["entries"] if e["ref"] in refs for i in e["ignIds"]}
+
+
 def main():
+    majors = major_footprints()
     manifest = json.loads((SOURCE / "manifest.json").read_text(encoding="utf-8"))
     if manifest["schema"] != 2 or manifest["buildingsStoredIn4e"] != 2696:
         raise ValueError("Manifeste métropolitain incorrect")
@@ -86,15 +98,17 @@ def main():
     for tile in manifest["tiles"]:
         ix, iz = int(tile["ix"]), int(tile["iz"])
         key = (ix // CELLS, iz // CELLS)
-        entry = groups.setdefault(key, {"tiles": [], "data": bytearray(), "count": 0})
+        entry = groups.setdefault(key, {"tiles": [], "data": bytearray(), "count": 0, "majors": []})
         path = SOURCE / "tiles" / (tile["id"] + ".json")
         document = json.loads(path.read_text(encoding="utf-8"))
         buildings = document["buildings"]
         if document["id"] != tile["id"] or len(buildings) != tile["count"]:
             raise ValueError("Tuile IGN incohérente : " + tile["id"])
         offset = entry["count"]
-        for building in buildings:
+        for k, building in enumerate(buildings):
             entry["data"].extend(record(building, ix, iz, size))
+            if building["id"] in majors:
+                entry["majors"].append(offset + k)
         entry["count"] += len(buildings)
         total += len(buildings)
         entry["tiles"].append({"id": tile["id"], "ix": ix, "iz": iz,
@@ -116,10 +130,26 @@ def main():
         output["groups"].append({
             "id": f"{gx}_{gz}", "gx": gx, "gz": gz,
             "count": entry["count"], "bytes": len(payload),
-            "tiles": entry["tiles"]})
+            "majors": entry["majors"], "tiles": entry["tiles"]})
+    # Boîtes absolues des majeurs pour le panorama (> 5 km), où les groupes
+    # de silhouettes sont remplacés par l'atlas agrégé : le beige y reste.
+    boxes = []
+    for (gx, gz), entry in sorted(groups.items()):
+        for i in entry["majors"]:
+            tile = next(t for t in entry["tiles"] if t["offset"] <= i < t["offset"] + t["count"])
+            x, z, w, d, h, a = struct.unpack_from("<hhHHHh", entry["data"], i * 12)
+            boxes.append([round(tile["ix"] * size + x * STEP, 2), round(tile["iz"] * size + z * STEP, 2),
+                          round(w * STEP, 2), round(d * STEP, 2), round(h * STEP, 2),
+                          round(a * math.pi / 32768, 5)])
+    (TARGET / "majors.json").write_text(json.dumps({
+        "schema": 1, "role": "monuments majeurs (beige) pour le panorama",
+        "fields": ["x", "z", "largeur", "profondeur", "hauteur", "angle"], "boxes": boxes},
+        separators=(",", ":")) + "\n", encoding="utf-8")
     (TARGET / "manifest.json").write_text(
         json.dumps(output, ensure_ascii=False, separators=(",", ":")) + "\n",
         encoding="utf-8")
+    print(f"Monuments majeurs beiges dans le LOD : "
+          f"{sum(len(e['majors']) for e in groups.values())}")
     print(f"LOD IGN : {total} enveloppes, {len(groups)} groupes, "
           f"{total * 12 / 1e6:.2f} Mo binaires")
 

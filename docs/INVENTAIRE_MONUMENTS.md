@@ -1,12 +1,20 @@
 # PARIS — Inventaire vérifié des édifices majeurs
 
-**Statut :** inventaire prioritaire et ouvert ; ne prétend pas recenser les milliers de monuments, de commerces et de bâtiments publics de Paris. **Version du moteur conservée : 0.26.3**, sans prétention à une reconstruction architecturale parfaite.
+> **Mise à jour R09, sur une branche non publiée :** le catalogue peut
+> rechercher les 1 889 points POP géolocalisés dans Paris intra-muros,
+> ainsi que les 55 candidats majeurs en attente d'appariement.
+> Les 140 références majeures POP demeurent la sélection colorée **beige**.
+> Les autres édifices sont neutres. Les catégories ci-dessous indiquent
+> des fonctions, plus des couleurs. Voir [l'audit R09](INVENTAIRE_PARIS_R09.md).
 
-Les notices **POP/Mérimée** sont des points géoréférencés et des données historiques, pas des modèles de surface détaillés. Un point peut provenir d'une propriété classée entière, d'une partie protégée ou d'un ensemble. **La classification visuelle des volumes** n'est appliquée que si ce point se trouve **dans une emprise IGN**, avec les réserves d'identité et de protection. Les lieux sans maillage apparié restent au catalogue, mais ne sont pas colorés artificiellement. La teinte correspond au rôle prioritaire du bâtiment ; les usages secondaires sont expliqués en fiche et ne servent pas à déduire une affectation actuelle non attestée.
+
+**Statut :** inventaire prioritaire et ouvert ; ne prétend pas recenser les milliers de monuments, de commerces et de bâtiments publics de Paris. **Version publique préservée : 0.26.4**, sans prétention à une reconstruction architecturale parfaite.
+
+Les notices **POP/Mérimée** sont des points géoréférencés et des données historiques, pas des modèles de surface détaillés. Un point peut provenir d'une propriété classée entière, d'une partie protégée ou d'un ensemble. **La classification visuelle des volumes** n'est appliquée que si ce point se trouve **dans une emprise IGN**, avec les réserves d'identité et de protection. Les lieux sans maillage apparié restent au catalogue, mais ne sont pas colorés artificiellement. La teinte beige identifie uniquement les monuments majeurs ; les usages secondaires sont expliqués en fiche et ne servent pas à déduire une affectation actuelle non attestée.
 
 **Sources transversales :** [POP/Mérimée](https://pop.culture.gouv.fr/), [patrimoine Ville de Paris](https://www.paris.fr/pages/tout-savoir-sur-le-patrimoine-parisien-22969), [office de tourisme](https://parisjetaime.com/article/50-incontournables-parisiens-en-un-week-end-a1012), [archives municipales](https://archives.paris.fr/recherches/presentation-des-fonds/administration-communale/batiments-publics), [grands magasins](https://parisjetaime.com/article/grands-magasins-a-paris-a145), [BnF](https://www.bnf.fr/fr/le-site-francois-mitterrand).
 
-## Institutions politiques, judiciaires et administratives — orange clair
+## Institutions politiques, judiciaires et administratives — rôle politique
 
 **28 références officielles POP identifiées**, 23 autres édifices ou sites à apparier géométriquement.
 
@@ -67,7 +75,7 @@ Les notices **POP/Mérimée** sont des points géoréférencés et des données 
 - [Mairie du 19e arrondissement de Paris](https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097)
 - [Mairie du 20e arrondissement de Paris](https://www.paris.fr/pages/connaissez-vous-vraiment-votre-mairie-d-arrondissement-30097)
 
-## Patrimoine touristique — beige clair
+## Patrimoine touristique — rôle touristique clair
 
 **30 références officielles POP identifiées**, 6 autres édifices ou sites à apparier géométriquement.
 
@@ -113,7 +121,7 @@ Les notices **POP/Mérimée** sont des points géoréférencés et des données 
 - [Moulin Rouge](https://parisjetaime.com/article/50-incontournables-parisiens-en-un-week-end-a1012)
 - [Pyramide du Louvre](https://parisjetaime.com/article/des-creations-architecturales-remarquables-a710)
 
-## Édifices culturels et artistiques — violet clair
+## Édifices culturels et artistiques — rôle culturel
 
 **53 références officielles POP identifiées**, 18 autres édifices ou sites à apparier géométriquement.
 
@@ -194,7 +202,7 @@ Les notices **POP/Mérimée** sont des points géoréférencés et des données 
 - [La BnF Richelieu — Salle Ovale](https://www.bnf.fr/fr/le-site-richelieu-un-palais-au-coeur-de-paris)
 - [Musée de l’Homme](https://parisjetaime.com/convention/article/monuments-et-musees-a-visiter-a-paris-a1327)
 
-## Économie, commerce, banques et grands transports — bleu clair
+## Économie, commerce, banques et grands transports — rôle économique
 
 **29 références officielles POP identifiées**, 8 autres édifices ou sites à apparier géométriquement.
 
