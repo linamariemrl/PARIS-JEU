@@ -37,17 +37,19 @@ jobs:
           git rev-parse refs/remotes/origin/claude/practical-archimedes-n57pkx > passation/SHA-PR14.txt
           git for-each-ref --format='%(refname) %(objectname)' refs/remotes/origin refs/tags > passation/REFERENCES.txt
           sha256sum passation/PARIS-historique-complet.bundle passation/PARIS-etat-branche-PR14.zip > passation/SHA256SUMS.txt
-          printf '%s\n' 'Source: https://github.com/meyameya677-sketch/Paris-le-jeu' 'Cible souhaitée: https://github.com/linamariemrl/REPRISE-PARIS' 'Export autonome, aucune écriture effectuée dans la cible.' 'Pour réimporter, conserver les SHA originaux et les branches; ne pas forcer sur une branche déjà existante.' > passation/LIRE-AVANT-IMPORT.txt
+          printf '%s\n' 'Source actuelle: https://github.com/linamariemrl/PARIS-JEU' 'Provenance historique: https://github.com/meyameya677-sketch/Paris-le-jeu' 'Cible souhaitée: https://github.com/linamariemrl/REPRISE-PARIS' 'Export autonome, aucune écriture effectuée dans la cible.' 'Pour réimporter, conserver les SHA originaux et les branches; ne pas forcer sur une branche déjà existante.' > passation/LIRE-AVANT-IMPORT.txt
           ls -lh passation/
-      - name: Exporter le contexte décisionnel de la PR source
+      - name: Exporter le contexte décisionnel de la PR actuelle
         env:
           GH_TOKEN: ${{ github.token }}
+          ACTIVE_PR: ${{ github.event.pull_request.number || 1 }}
         shell: bash
         run: |
           set -euo pipefail
-          gh api "repos/${GITHUB_REPOSITORY}/pulls/14" --jq '{number,title,body,state,head:.head.sha,base:.base.sha,html_url}' > passation/PR14-resume.json
-          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/14/comments?per_page=100" --jq '.[] | {id,html_url,created_at,updated_at,user:.user.login,body}' > passation/PR14-commentaires.jsonl
-          wc -l passation/PR14-commentaires.jsonl
+          gh api "repos/${GITHUB_REPOSITORY}/pulls/${ACTIVE_PR}" --jq '{number,title,body,state,head:.head.sha,base:.base.sha,html_url}' > passation/PR-active-resume.json
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/${ACTIVE_PR}/comments?per_page=100" --jq '.[] | {id,html_url,created_at,updated_at,user:.user.login,body}' > passation/PR-active-commentaires.jsonl
+          wc -l passation/PR-active-commentaires.jsonl
+          printf 'PR archivée dans ce dépôt : %s\n' "${ACTIVE_PR}" > passation/PR-active.txt
       - name: Livrer les fichiers sans déployer ni fusionner
         uses: actions/upload-artifact@v4
         with:
