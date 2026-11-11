@@ -30,8 +30,8 @@ class ReviewR14(unittest.TestCase):
         r = self.check()
         self.assertEqual(r["errors"], [], r)
         self.assertEqual(r["status"], "sources-documented-not-triangulated")
-        self.assertEqual((r["sourceCount"], r["photoCount"], r["historicalPlanCount"]), (5, 4, 1))
-        self.assertEqual(r["publishedCameraPositions"], 2)
+        self.assertEqual((r["sourceCount"], r["photoCount"], r["historicalPlanCount"]), (8, 7, 1))
+        self.assertEqual(r["publishedCameraPositions"], 4)
         self.assertEqual(r["calibratedCameraPoses"], 0)
         self.assertEqual(r["certifiedSegments"], 0)
 
