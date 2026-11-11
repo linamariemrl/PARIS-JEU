@@ -5,11 +5,10 @@
   "generatedFrom": "public/data/metropole/places/monuments.json",
   "matchPolicy": "Les références POP colorent une emprise IGN seulement lorsque le point officiel est inclus. Les candidats hors POP sont recensés mais NON teints automatiquement.",
   "palette": {
-    "political": "orange clair",
-    "touristic": "beige",
-    "cultural": "violet clair",
-    "financial": "bleu clair"
+    "major": "#ded0b9",
+    "nonMajor": "blanc/gris neutre"
   },
+  "colorPolicy": "Beige pour les seuls monuments majeurs, sans couleurs différenciées selon leurs fonctions.",
   "linked": [
     {
       "ref": "PA00086319",

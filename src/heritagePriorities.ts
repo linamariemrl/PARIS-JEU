@@ -160,4 +160,7 @@ for(const [role,values] of Object.entries(classes)){
 export function priorityHeritageRole(ref:string|undefined):HeritageRole|undefined{
  return ref?byReference.get(ref):undefined;
 }
+export function isMajorHeritageRef(ref:string|undefined):boolean{
+ return Boolean(ref&&byReference.has(ref));
+}
 export const documentedPriorityCount=byReference.size;

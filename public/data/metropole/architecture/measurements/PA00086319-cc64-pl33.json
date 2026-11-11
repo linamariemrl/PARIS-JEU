@@ -1,0 +1,197 @@
+{
+  "schema": 1,
+  "ref": "PA00086319",
+  "sourceId": "bhdv-cc64-pl33",
+  "sheet": "CC64_PL33 — n° 630, Attachement de maçonnerie n° 96, Exercice 1878, Annexe n° 295 ; Riffaud et Cie ; Ballu et Deperthes ; Salard",
+  "title": "Bâtiment central, Boccador, rez-de-chaussée, grand vestibule — façade sur la place de l'Hôtel-de-Ville dans la hauteur des 10e, 11e, 12e et 13e assises en pierre de Charentenay",
+  "ark": "ark:/73873/pf0000712758/0033",
+  "image": "https://bibliotheques-specialisees.paris.fr/in/dz/3bf/3a3/bd1/CC64_PL33.xml",
+  "imagePixels": [
+    12687,
+    8297
+  ],
+  "dateRepresented": "1878",
+  "consulted": "2026-11-09",
+  "documentStatus": "Source non encore listée dans dossiers.json : à y ajouter avec sa notice avant toute utilisation géométrique.",
+  "measurements": [
+    {
+      "elementId": "corps-central-boccador/facade-place/arc-baie-milieu/corde-1",
+      "property": "inscribed_dimension",
+      "value": 3.28,
+      "unit": "m",
+      "status": "transcribed-legible",
+      "inscription": "3.28",
+      "sourceId": "bhdv-cc64-pl33",
+      "sheetLocator": "Élévation extérieure de la baie du milieu suivant a a",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.13,
+          0.21,
+          0.4,
+          0.38
+        ]
+      },
+      "extentEstablished": false,
+      "dateRepresented": "1878",
+      "currentStateVerified": false,
+      "uncertaintyMeters": null,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Valeur lisible ; ce qu'elle mesure (corde, demi-ouverture, rayon, hauteur) n'est pas établi."
+    },
+    {
+      "elementId": "corps-central-boccador/facade-place/arc-baie-milieu/corde-2",
+      "property": "inscribed_dimension",
+      "value": 3.38,
+      "unit": "m",
+      "status": "transcribed-legible",
+      "inscription": "3.38",
+      "sourceId": "bhdv-cc64-pl33",
+      "sheetLocator": "Élévation extérieure de la baie du milieu suivant a a",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.13,
+          0.21,
+          0.4,
+          0.38
+        ]
+      },
+      "extentEstablished": false,
+      "dateRepresented": "1878",
+      "currentStateVerified": false,
+      "uncertaintyMeters": null,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Valeur lisible ; ce qu'elle mesure (corde, demi-ouverture, rayon, hauteur) n'est pas établi."
+    },
+    {
+      "elementId": "corps-central-boccador/facade-place/arc-baie-milieu/corde-3",
+      "property": "inscribed_dimension",
+      "value": 3.63,
+      "unit": "m",
+      "status": "transcribed-legible",
+      "inscription": "3.63",
+      "sourceId": "bhdv-cc64-pl33",
+      "sheetLocator": "Élévation extérieure de la baie du milieu suivant a a",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.13,
+          0.21,
+          0.4,
+          0.38
+        ]
+      },
+      "extentEstablished": false,
+      "dateRepresented": "1878",
+      "currentStateVerified": false,
+      "uncertaintyMeters": null,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Valeur lisible ; ce qu'elle mesure (corde, demi-ouverture, rayon, hauteur) n'est pas établi."
+    },
+    {
+      "elementId": "corps-central-boccador/facade-place/arc-baie-milieu/corde-4",
+      "property": "inscribed_dimension",
+      "value": 3.79,
+      "unit": "m",
+      "status": "transcribed-legible",
+      "inscription": "3.79",
+      "sourceId": "bhdv-cc64-pl33",
+      "sheetLocator": "Élévation extérieure de la baie du milieu suivant a a",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.13,
+          0.21,
+          0.4,
+          0.38
+        ]
+      },
+      "extentEstablished": false,
+      "dateRepresented": "1878",
+      "currentStateVerified": false,
+      "uncertaintyMeters": null,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Valeur lisible ; ce qu'elle mesure (corde, demi-ouverture, rayon, hauteur) n'est pas établi."
+    },
+    {
+      "elementId": "corps-central-boccador/facade-place/arc-baie-milieu/cote-basse",
+      "property": "inscribed_dimension",
+      "value": 2.35,
+      "unit": "m",
+      "status": "transcribed-legible",
+      "inscription": "2.35",
+      "sourceId": "bhdv-cc64-pl33",
+      "sheetLocator": "Élévation extérieure de la baie du milieu suivant a a",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.13,
+          0.21,
+          0.4,
+          0.38
+        ]
+      },
+      "extentEstablished": false,
+      "dateRepresented": "1878",
+      "currentStateVerified": false,
+      "uncertaintyMeters": null,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Valeur lisible ; ce qu'elle mesure (corde, demi-ouverture, rayon, hauteur) n'est pas établi."
+    },
+    {
+      "elementId": "corps-central-boccador/facade-place/arc-baie-milieu/cote-haute",
+      "property": "inscribed_dimension",
+      "value": 2.7,
+      "unit": "m",
+      "status": "transcribed-legible",
+      "inscription": "2.7",
+      "sourceId": "bhdv-cc64-pl33",
+      "sheetLocator": "Élévation extérieure de la baie du milieu suivant a a",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.13,
+          0.21,
+          0.4,
+          0.38
+        ]
+      },
+      "extentEstablished": false,
+      "dateRepresented": "1878",
+      "currentStateVerified": false,
+      "uncertaintyMeters": null,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Valeur lisible ; ce qu'elle mesure (corde, demi-ouverture, rayon, hauteur) n'est pas établi."
+    },
+    {
+      "elementId": "corps-central-boccador/facade-place/arc-baie-milieu/fleche",
+      "property": "inscribed_dimension",
+      "value": 1.765,
+      "unit": "m",
+      "status": "transcribed-legible",
+      "inscription": "1.765",
+      "sourceId": "bhdv-cc64-pl33",
+      "sheetLocator": "Élévation extérieure de la baie du milieu suivant a a",
+      "imageCrop": {
+        "level": 13,
+        "box": [
+          0.13,
+          0.21,
+          0.4,
+          0.38
+        ]
+      },
+      "extentEstablished": false,
+      "dateRepresented": "1878",
+      "currentStateVerified": false,
+      "uncertaintyMeters": null,
+      "readBy": "Claude (lecture visuelle de la tuile Deep Zoom), 2026-11-09",
+      "notes": "Valeur lisible ; ce qu'elle mesure (corde, demi-ouverture, rayon, hauteur) n'est pas établi."
+    }
+  ],
+  "findings": [
+    "Le plan de la 10e assise ne porte pas de hauteur dans son titre (contrairement aux 13e et 14e assises).",
+    "La valeur 3,63 apparaît aussi dans la chaîne de CC64_PL34 ; aucune correspondance n'est revendiquée : élément différent (arc) et extrémités non établies."
+  ]
+}

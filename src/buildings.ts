@@ -1,5 +1,9 @@
 import { Color3, Mesh, MeshBuilder, Scene, StandardMaterial, VertexData, Vector3 } from '@babylonjs/core';
-import {applyArchitecturalMask} from './architectureModels';
+import {extrusionSwap} from './architectureModels';
+import {isMajorHeritageRef} from './heritagePriorities';
+import {MONUMENT_BEIGE_RGB} from './monumentPalette';
+import {heritageFootprints,footprintShape} from './heritageFootprints';
+import type {FootprintShape} from './heritageFootprints';
 import earcut from 'earcut';
 import { project } from './geo';
 import {terrainHeight} from './terrain';
@@ -15,7 +19,7 @@ interface Batch {
   faceToBuilding:number[];
 }
 const empty=():Batch=>({positions:[],indices:[],faceToBuilding:[]});
-export type BuildingMaterials={wall:StandardMaterial;roof:StandardMaterial;heritageWall:StandardMaterial;heritageRoof:StandardMaterial;politicalWall:StandardMaterial;politicalRoof:StandardMaterial;culturalWall:StandardMaterial;culturalRoof:StandardMaterial;financialWall:StandardMaterial;financialRoof:StandardMaterial};
+export type BuildingMaterials={wall:StandardMaterial;roof:StandardMaterial;heritageWall:StandardMaterial;heritageRoof:StandardMaterial};
 
 function tri(out:Batch,a:XYZ,b:XYZ,c:XYZ,id:number){
   const start=out.positions.length/3;
@@ -155,43 +159,21 @@ export function createMaterials(scene:Scene):BuildingMaterials{
   roof.specularColor=Color3.Black();
   roof.backFaceCulling=false;
   roof.freeze();
+  const [br,bg,bb]=MONUMENT_BEIGE_RGB;
   const heritageWall=new StandardMaterial('monuments-beige-pierre',scene);
-  heritageWall.diffuseColor=new Color3(.87,.80,.69);
+  heritageWall.diffuseColor=new Color3(br,bg,bb);
   heritageWall.specularColor=Color3.Black();
   heritageWall.backFaceCulling=false;heritageWall.freeze();
   const heritageRoof=new StandardMaterial('monuments-beige-toits',scene);
-  heritageRoof.diffuseColor=new Color3(.78,.71,.62);
+  heritageRoof.diffuseColor=new Color3(br,bg,bb);
   heritageRoof.specularColor=Color3.Black();
   heritageRoof.backFaceCulling=false;heritageRoof.freeze();
-  const politicalWall=new StandardMaterial('institutions-orange-pierre',scene);
-  politicalWall.diffuseColor=new Color3(.92,.78,.63);
-  politicalWall.specularColor=Color3.Black();
-  politicalWall.backFaceCulling=false;politicalWall.freeze();
-  const politicalRoof=new StandardMaterial('institutions-orange-toit',scene);
-  politicalRoof.diffuseColor=new Color3(.83,.69,.56);
-  politicalRoof.specularColor=Color3.Black();
-  politicalRoof.backFaceCulling=false;politicalRoof.freeze();
-  const culturalWall=new StandardMaterial('culture-violet-clair',scene);
-  culturalWall.diffuseColor=new Color3(.81,.76,.88);
-  culturalWall.specularColor=Color3.Black();
-  culturalWall.backFaceCulling=false;culturalWall.freeze();
-  const culturalRoof=new StandardMaterial('culture-violet-toit',scene);
-  culturalRoof.diffuseColor=new Color3(.73,.68,.81);
-  culturalRoof.specularColor=Color3.Black();
-  culturalRoof.backFaceCulling=false;culturalRoof.freeze();
-  const financialWall=new StandardMaterial('finances-bleu-pierre',scene);
-  financialWall.diffuseColor=new Color3(.70,.80,.89);
-  financialWall.specularColor=Color3.Black();
-  financialWall.backFaceCulling=false;financialWall.freeze();
-  const financialRoof=new StandardMaterial('finances-bleu-toit',scene);
-  financialRoof.diffuseColor=new Color3(.60,.72,.84);
-  financialRoof.specularColor=Color3.Black();
-  financialRoof.backFaceCulling=false;financialRoof.freeze();
-  return {wall,roof,heritageWall,heritageRoof,
-    politicalWall,politicalRoof,culturalWall,culturalRoof,financialWall,financialRoof};
+  // Les usages sont documentés dans les fiches ; seule l'importance colore.
+  return {wall,roof,heritageWall,heritageRoof};
 }
 function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
-                batch:Batch,mat:StandardMaterial):Mesh|null{
+                batch:Batch,mat:StandardMaterial,heritageIgnId?:string,
+                footprint?:FootprintShape|null):Mesh|null{
   if(!batch.indices.length)return null;
   const vd=new VertexData();
   vd.positions=batch.positions;
@@ -199,43 +181,81 @@ function asMesh(scene:Scene,tile:TileFile,kind:'wall'|'roof',
   const normals:number[]=[];
   VertexData.ComputeNormals(batch.positions,batch.indices,normals);
   vd.normals=normals;
-  const mesh=new Mesh('batiments-'+kind+'-'+tile.id,scene);
+  const mesh=new Mesh('batiments-'+kind+'-'+tile.id+
+    (heritageIgnId?'-'+heritageIgnId:''),scene);
   vd.applyToMesh(mesh);
   mesh.material=mat;
   mesh.isPickable=true;
-  mesh.metadata={buildings:tile.buildings,faceToBuilding:batch.faceToBuilding};
-  applyArchitecturalMask(mesh);
+  mesh.metadata={buildings:tile.buildings,faceToBuilding:batch.faceToBuilding,
+    heritageIgnId};
   mesh.freezeWorldMatrix();
+  if(heritageIgnId){
+    // R02-D1/D2 : maillage propre, bascule par visibilité seulement.
+    // Emprise IGN réelle (contour et cours), pas la boîte du maillage.
+    if(footprint){
+      extrusionSwap.register(heritageIgnId,mesh,footprint);
+      mesh.onDisposeObservable.addOnce(()=>
+        extrusionSwap.unregister(heritageIgnId,mesh));
+    }
+  }
   return mesh;
 }
+/** Lots fusionnés par matériau + un couple mur/toit propre à chaque
+ * emprise IGN listée dans `heritage-footprints.json` (R02-D1). Ces
+ * quelques draw calls supplémentaires évitent toute réécriture d'indices
+ * lors du remplacement par une maquette experte. */
+function tileBatches(materials:BuildingMaterials){
+  const shared={walls:empty(),roofs:empty(),beigeWalls:empty(),beigeRoofs:empty()};
+  const separate=new Map<string,{walls:Batch;roofs:Batch;b:Building}>();
+  const footprints=heritageFootprints();
+  const choose=(b:Building):[Batch,Batch]=>{
+    if(footprints.isTracked(b.id)){
+      let own=separate.get(b.id);
+      if(!own){own={walls:empty(),roofs:empty(),b};separate.set(b.id,own);}
+      return [own.walls,own.roofs];
+    }
+    const s=shared;
+    return major(b)?[s.beigeWalls,s.beigeRoofs]:[s.walls,s.roofs];
+  };
+  // R09 : beige si le point POP est dans l'emprise OU si la table des
+  // emprises (même source que le LOD lointain) rattache l'emprise à un
+  // majeur, cours fermées comprises : même couleur de près et de loin.
+  const major=(b:Building)=>isMajorHeritageRef(b.heritageRef)||
+    footprints.refsOf(b.id).some(isMajorHeritageRef);
+  const materialsOf=(b:Building):[StandardMaterial,StandardMaterial]=>
+    major(b)?
+      [materials.heritageWall,materials.heritageRoof]:
+      [materials.wall,materials.roof];
+  const build=(scene:Scene,tile:TileFile):Mesh[]=>{
+    const s=shared;
+    const result:Mesh[]=[];
+    for(const [kind,geometry,material] of [
+      ['wall',s.walls,materials.wall],['roof',s.roofs,materials.roof],
+      ['wall',s.beigeWalls,materials.heritageWall],
+      ['roof',s.beigeRoofs,materials.heritageRoof],
+    ] as const){
+      const mesh=asMesh(scene,tile,kind,geometry,material);
+      if(mesh)result.push(mesh);
+    }
+    for(const [id,own] of separate){
+      const [wall,roof]=materialsOf(own.b);
+      const footprint=footprintShape(own.b.polygons.map(p=>
+        p.map(r=>projected(r,own.b.localCoordinates))));
+      for(const mesh of [asMesh(scene,tile,'wall',own.walls,wall,id,footprint),
+                         asMesh(scene,tile,'roof',own.roofs,roof,id,footprint)])
+        if(mesh)result.push(mesh);
+    }
+    return result;
+  };
+  return {choose,build};
+}
 export function createTile(scene:Scene,tile:TileFile,materials:BuildingMaterials):Mesh[]{
-  const walls=empty(),roofs=empty(),beigeWalls=empty(),beigeRoofs=empty();
-  const orangeWalls=empty(),orangeRoofs=empty(),blueWalls=empty(),blueRoofs=empty();
-  const violetWalls=empty(),violetRoofs=empty();
-  const choose=(b:Building):[Batch,Batch]=>b.heritageRole==='political'?
-    [orangeWalls,orangeRoofs]:b.heritageRole==='cultural'?
-    [violetWalls,violetRoofs]:b.heritageRole==='financial'?
-    [blueWalls,blueRoofs]:b.heritageRef?[beigeWalls,beigeRoofs]:[walls,roofs];
+  const {choose,build}=tileBatches(materials);
   tile.buildings.forEach((b,index)=>{
     const [w,r]=choose(b);
     addBuilding(w,r,b,index);
   });
-  const result:Mesh[]=[];
-  for(const [kind,geometry,material] of [
-    ['wall',walls,materials.wall],['roof',roofs,materials.roof],
-    ['wall',beigeWalls,materials.heritageWall],
-    ['roof',beigeRoofs,materials.heritageRoof],
-    ['wall',orangeWalls,materials.politicalWall],
-    ['roof',orangeRoofs,materials.politicalRoof],
-    ['wall',violetWalls,materials.culturalWall],
-    ['roof',violetRoofs,materials.culturalRoof],
-    ['wall',blueWalls,materials.financialWall],
-    ['roof',blueRoofs,materials.financialRoof]
-  ] as const){
-    const mesh=asMesh(scene,tile,kind,geometry,material);
-    if(mesh)result.push(mesh);
-  }
-  return result;
+  return build(scene,tile);
 }
 
 /** Prépare les géométries exactes sans bloquer le fil de rendu mobile.
@@ -249,13 +269,7 @@ export async function createTileProgressive(
   scene:Scene,tile:TileFile,materials:BuildingMaterials,
   stillWanted:()=>boolean=()=>true
 ):Promise<Mesh[]>{
-  const walls=empty(),roofs=empty(),beigeWalls=empty(),beigeRoofs=empty();
-  const orangeWalls=empty(),orangeRoofs=empty(),blueWalls=empty(),blueRoofs=empty();
-  const violetWalls=empty(),violetRoofs=empty();
-  const choose=(b:Building):[Batch,Batch]=>b.heritageRole==='political'?
-    [orangeWalls,orangeRoofs]:b.heritageRole==='cultural'?
-    [violetWalls,violetRoofs]:b.heritageRole==='financial'?
-    [blueWalls,blueRoofs]:b.heritageRef?[beigeWalls,beigeRoofs]:[walls,roofs];
+  const {choose,build}=tileBatches(materials);
   const batch=100;
   for(let i=0;i<tile.buildings.length;i++){
     if(i>0&&i%batch===0){
@@ -267,22 +281,7 @@ export async function createTileProgressive(
     addBuilding(w,r,b,i);
   }
   if(!stillWanted())return [];
-  const result:Mesh[]=[];
-  for(const [kind,geometry,material] of [
-    ['wall',walls,materials.wall],['roof',roofs,materials.roof],
-    ['wall',beigeWalls,materials.heritageWall],
-    ['roof',beigeRoofs,materials.heritageRoof],
-    ['wall',orangeWalls,materials.politicalWall],
-    ['roof',orangeRoofs,materials.politicalRoof],
-    ['wall',violetWalls,materials.culturalWall],
-    ['roof',violetRoofs,materials.culturalRoof],
-    ['wall',blueWalls,materials.financialWall],
-    ['roof',blueRoofs,materials.financialRoof]
-  ] as const){
-    const mesh=asMesh(scene,tile,kind,geometry,material);
-    if(mesh)result.push(mesh);
-  }
-  return result;
+  return build(scene,tile);
 }
 export function getPickedBuilding(mesh:Mesh,faceId:number):Building|null{
   const m=mesh.metadata as {buildings?:Building[];faceToBuilding?:number[]}|undefined;

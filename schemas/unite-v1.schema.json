@@ -1,0 +1,63 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://meyameya677-sketch.github.io/Paris-le-jeu/schemas/unite-v1.schema.json",
+  "title": "Unité PARIS (bâtiment ou dalle de sol), version 1",
+  "description": "Paquet autonome échangé entre le jeu PARIS et l'outil d'enrichissement graphique. Voir docs/UNITES_EXPORT.md.",
+  "type": "object",
+  "required": ["schema", "id", "type", "versionBase", "etat", "georeferencement", "maquetteBase", "voisins", "sourcesGratuites", "sourcesInterdites"],
+  "properties": {
+    "schema": {"const": "paris-unite/1"},
+    "id": {"type": "string", "pattern": "^(bat:BATIMENT[0-9]{16}|sol:-?[0-9]+_-?[0-9]+)$"},
+    "type": {"enum": ["batiment", "sol"]},
+    "versionBase": {"type": "string", "pattern": "^sha256:[0-9a-f]{16}$",
+      "description": "Empreinte de la géométrie de base. Un retour enrichi doit porter la même valeur."},
+    "creeLe": {"type": ["string", "null"]},
+    "etat": {"enum": ["base", "enrichie", "validee", "integree", "rejetee"]},
+    "georeferencement": {
+      "type": "object",
+      "required": ["crs", "altimetrie", "ancre", "repereLocal"],
+      "properties": {
+        "crs": {"const": "EPSG:2154"},
+        "altimetrie": {"const": "NGF-IGN69"},
+        "ancre": {"type": "object", "required": ["e", "n", "altitude"],
+          "properties": {"e": {"type": "number"}, "n": {"type": "number"}, "altitude": {"type": "number"}}},
+        "repereLocal": {"type": "string"},
+        "emprise2154": {"type": "array"},
+        "emprise4326": {"type": "array"},
+        "bbox2154": {"type": "array", "items": {"type": "number"}, "minItems": 4, "maxItems": 4},
+        "coins2154": {"type": "array"},
+        "bbox4326": {"type": "array"},
+        "repereJeu": {"type": "object"}
+      }
+    },
+    "attributs": {"type": "object"},
+    "relief": {"type": "object"},
+    "surfaces": {"type": "object"},
+    "arbres": {"type": "object"},
+    "batiments": {"type": "array", "items": {"type": "string", "pattern": "^bat:"}},
+    "provenance": {"type": "array"},
+    "maquetteBase": {"type": "object", "required": ["fichier", "triangles"]},
+    "voisins": {"type": "object"},
+    "sourcesGratuites": {"type": "array", "items": {"type": "object", "required": ["id", "nature", "licence"]}},
+    "sourcesInterdites": {"type": "array", "items": {"type": "string"}},
+    "enrichissement": {
+      "description": "Rempli par l'outil externe dans le retour (etat = enrichie).",
+      "type": "object",
+      "required": ["outil", "version", "date", "sources"],
+      "properties": {
+        "outil": {"type": "string"},
+        "version": {"type": "string"},
+        "date": {"type": "string"},
+        "sources": {"type": "array", "minItems": 1,
+          "items": {"type": "object", "required": ["id", "licence"],
+            "properties": {"id": {"type": "string"}, "url": {"type": "string"},
+              "licence": {"type": "string"}, "dateAcquisition": {"type": "string"}}}},
+        "niveauxDeDetail": {"type": "array", "items": {"type": "object",
+          "properties": {"fichier": {"type": "string"}, "distanceMaxM": {"type": "number"},
+            "triangles": {"type": "integer"}}}},
+        "textures": {"type": "object"},
+        "notes": {"type": "string"}
+      }
+    }
+  }
+}

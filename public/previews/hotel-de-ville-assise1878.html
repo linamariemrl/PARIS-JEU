@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="dark">
+<title>PARIS — première chaîne de cotes documentées · Hôtel de Ville, 1878</title>
+<style>
+:root{font-family:system-ui,-apple-system,"Segoe UI",sans-serif;color:#edf0f4;background:#101823;--ink:#e9edf0;--muted:#a9b4c1;--beige:#ded0b9;--stroke:#354759}
+*{box-sizing:border-box}body{margin:0;min-height:100vh}button,input{font:inherit}
+header{padding:19px 18px 15px;background:#192839;border-bottom:1px solid #35485a;display:flex;justify-content:space-between;gap:10px;align-items:center}
+.logo{font-size:1.45rem;letter-spacing:.33em;font-weight:800}.tag{font-size:.7rem;color:#d6dfeb;text-align:right;max-width:185px;line-height:1.4}
+main{max-width:1050px;margin:auto;padding:20px 13px 32px}
+h1{font-size:clamp(1.25rem,4vw,1.9rem);margin:3px 0 9px}h2{font-size:1.05rem;margin:0 0 12px}
+.sub{color:var(--muted);line-height:1.5;margin:0 0 14px}
+.stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin:15px 0}
+.stat{border-radius:12px;background:#1a2a3a;border:1px solid #32485b;padding:13px}
+.value{color:var(--beige);font-size:clamp(1.25rem,4vw,1.65rem);font-weight:750}
+.stat span{display:block;font-size:.74rem;color:#b4c0cb;margin-top:3px}
+.warning{margin:14px 0;padding:13px;border-radius:11px;border:1px solid #8f7960;background:#302b26;color:#eee0cf;line-height:1.5;font-size:.86rem}
+.panel{background:#172536;border:1px solid #31465b;border-radius:16px;padding:15px;margin-top:13px}
+.note{font-size:.79rem;color:#afbdca;line-height:1.5}
+canvas{display:block;width:100%;height:clamp(235px,43vw,385px);background:#0e1a27;border-radius:10px;touch-action:pan-y}
+.controls{display:grid;grid-template-columns:1fr 1fr;gap:17px;margin-top:13px}
+.control label{font-size:.83rem;display:block;color:#cad4dc;margin-bottom:5px}
+input[type=range]{width:100%;accent-color:var(--beige)}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:7px;flex-wrap:wrap}
+.toolbar button,.chip{background:#27394b;color:#e8edf0;border:1px solid #54687b;border-radius:8px;padding:7px 12px;cursor:pointer}
+.toolbar button:focus-visible,.segment:focus-visible{outline:2px solid var(--beige)}
+.track{width:100%;height:48px;display:flex;border:1px solid #627789;border-radius:6px;overflow:hidden;background:#101823;margin:15px 0 9px}
+.segment{background:var(--beige);border:0;border-right:1px solid #344152;min-width:1px;margin:0;padding:0;cursor:pointer;position:relative}
+.segment.sel{outline:3px solid #152637;outline-offset:-3px}
+.track .segment:hover{filter:brightness(1.05)}
+.detail{display:grid;grid-template-columns:1fr auto;gap:10px;background:#23354a;border-radius:11px;padding:13px;margin-top:12px}
+.detail small{display:block;color:#b2bfcb;margin:0 0 4px}
+.detail strong{font-size:1.02rem}.detail .measure{color:var(--beige);font-size:1.35rem;font-weight:750;text-align:right;white-space:nowrap}
+.detail p{grid-column:1/-1;line-height:1.5;margin:0;color:#d4dee7}
+.tablewrap{max-height:265px;overflow:auto;border:1px solid #304657;border-radius:10px;margin-top:13px}
+table{border-collapse:collapse;width:100%;font-size:.83rem}th,td{padding:9px 11px;border-bottom:1px solid #293b4c;text-align:left}th{position:sticky;top:0;background:#263849}tr.active{background:#425065}tr{cursor:pointer}
+footer{color:#9faebd;font-size:.82rem;margin-top:20px;line-height:1.6}
+a{color:#e1c9a4}code{color:#f1ddc0;overflow-wrap:anywhere}
+@media(max-width:480px){.controls{grid-template-columns:1fr}.tag{max-width:130px}.panel{padding:12px}}
+</style>
+</head>
+<body>
+<header><div class="logo">PARIS</div><div class="tag">Architecture documentée<br>PR #14 · Aperçu autonome<br>Non publié dans le jeu</div></header>
+<main>
+<h1>Hôtel de Ville : les premières cotes en géométrie</h1>
+<p class="sub">Relevé lisible d'un <strong>dessin d'exécution de 1878</strong>, pour la 14e assise du corps central Boccador, côté place. Trente segments transcrits ; la largeur est conservée en mètres.</p>
+<div class="stats">
+ <div class="stat"><div class="value">55,50 m</div><span>Deux chaînes cotées réunies</span></div>
+ <div class="stat"><div class="value">30</div><span>Segments documentés</span></div>
+ <div class="stat"><div class="value">0,42 m</div><span>Hauteur déclarée de l'assise</span></div>
+</div>
+<div class="warning"><strong>Important :</strong> ce document montre uniquement des dimensions d'archive de <strong>1878</strong>, pas une façade 3D actuelle. La hauteur absolue, la profondeur, l'orientation et l'ancrage géographique ne sont pas connus. Les fenêtres, les reliefs et les volumes non cotés ne sont pas inventés.</div>
+<section class="panel" aria-label="Vue interactive des cotes">
+ <div class="toolbar"><h2>Ruban coté, sans profondeur imaginée</h2><div><button id="center">Recentrer</button></div></div>
+ <canvas id="scene" role="img" aria-label="Représentation oblique interactive du ruban vertical de la 14e assise, sans épaisseur"></canvas>
+ <div class="controls">
+  <div class="control"><label for="range">Largeur visible : <output id="rangeValue">55,5 m</output></label><input id="range" type="range" min="6" max="55.5" value="55.5" step=".5"></div>
+  <div class="control"><label for="yaw">Angle de vue : <output id="yawValue">18°</output></label><input id="yaw" type="range" min="-55" max="55" value="18"></div>
+  <div class="control"><label for="focus">Déplacement le long de la chaîne</label><input id="focus" type="range" min="0" max="55.5" step=".1" value="27.75"></div>
+  <div class="control"><label>Contrôle de sélection</label><div class="toolbar"><button id="previous">Segment précédent</button><button id="next">Suivant</button></div></div>
+ </div>
+ <p class="note">Glissez horizontalement sur la vue pour déplacer le regard, ou touchez un segment de la frise ci-dessous. La hauteur de 42 cm est représentée à l'échelle métrique : elle devient lisible en zoomant.</p>
+ <div id="track" class="track" role="group" aria-label="Trente segments cotés"></div>
+ <p class="note">Répartition proportionnelle des deux chaînes. Le filet noir entre les plages délimite un segment, il ne représente pas une séparation physique attestée.</p>
+ <div class="detail" id="detail" aria-live="polite"></div>
+</section>
+<section class="panel">
+ <h2>Registre des 30 segments</h2>
+ <p class="note">La fermeture exacte des deux chaînes transcrites est une vérification arithmétique de la lecture. Elle ne certifie ni le calage sur le bâti actuel ni la nature de chaque ouverture.</p>
+ <div class="tablewrap"><table><thead><tr><th>N°</th><th>Type indiqué</th><th>Largeur</th><th>Départ</th></tr></thead><tbody id="records"></tbody></table></div>
+</section>
+<section class="panel">
+ <h2>Provenance et statut</h2>
+ <p class="note"><strong>Source :</strong> CC64_PL34, 1878, « Façade sur la place, plan de la 14e assise » ; mesures transcrites et conservées dans le dossier du projet. Deux chaînes : 29,45 m et 26,05 m, sans écart de fermeture.</p>
+ <p class="note"><strong>À confirmer :</strong> géoréférencement, altitude, profondeurs, comparaison avec les élévations d'archive et avec le bâtiment actuel. Cet aperçu ne peut donc ni remplacer l'emprise IGN du jeu ni se présenter comme une reconstitution architecturale certifiée.</p>
+ <p><a href="https://bibliotheques-specialisees.paris.fr/in/dz/caf/ed9/621/CC64_PL34.xml" target="_blank" rel="noopener noreferrer">Consulter la source d'archive</a></p>
+ <p class="note">Couleur unique appliquée aux surfaces documentaires : <code>#DED0B9</code>. Échelle et catégories ne modifient pas cette teinte.</p>
+</section>
+<footer>PARIS · Démonstrateur géométrique sur branche PR #14 · Aucune modification de la version publique 0.26.4.<br><a href="https://meyameya677-sketch.github.io/Paris-le-jeu/" target="_blank" rel="noopener noreferrer">Ouvrir le jeu public</a></footer>
+</main>
+<script id="evidence" type="application/json">{"schema":"paris-architecture-segments/1","ref":"PA00086319","building":"Hôtel de Ville de Paris","part":"corps central Boccador, façade côté place, XIVe assise (1878)","sourceId":"bhdv-cc64-pl34","sourceSheet":"CC64_PL34","sourceDate":1878,"sourceUrl":"https://bibliotheques-specialisees.paris.fr/in/dz/caf/ed9/621/CC64_PL34.xml","basis":"Cotes transcrites du dessin historique d'exécution; non vérifiées in situ","status":"drawing-local-unregistered","publishedModel":false,"geometry":"ribbon-2d-planar-course","geoRegistration":null,"currentFacadeVerified":false,"courseHeightM":0.42,"totalLengthM":55.5,"chains":[{"id":"cc64-assise14-moitie-gauche","inscribedTotalM":29.45,"closureDifferenceM":0},{"id":"cc64-assise14-moitie-droite","inscribedTotalM":26.05,"closureDifferenceM":0}],"segments":[{"order":1,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"L-a","description":"retour après tourelle","startM":0,"endM":0.76,"lengthM":0.76},{"order":2,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"saillie","startM":0.76,"endM":1.22,"lengthM":0.46},{"order":3,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"entre-saillies","description":"niche cintrée 0,47","startM":1.22,"endM":2.26,"lengthM":1.04},{"order":4,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"saillie","startM":2.26,"endM":2.72,"lengthM":0.46},{"order":5,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"travee-large","description":"","startM":2.72,"endM":10.9,"lengthM":8.18},{"order":6,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":10.9,"endM":11.36,"lengthM":0.46},{"order":7,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"entre-saillies","description":"niche cintrée 0,47","startM":11.36,"endM":12.4,"lengthM":1.04},{"order":8,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":12.4,"endM":12.86,"lengthM":0.46},{"order":9,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"travee","description":"","startM":12.86,"endM":16.72,"lengthM":3.86},{"order":10,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":16.72,"endM":17.18,"lengthM":0.46},{"order":11,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"travee","description":"","startM":17.18,"endM":21.04,"lengthM":3.86},{"order":12,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":21.04,"endM":21.5,"lengthM":0.46},{"order":13,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"travee","description":"","startM":21.5,"endM":25.36,"lengthM":3.86},{"order":14,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":25.36,"endM":25.82,"lengthM":0.46},{"order":15,"chain":"cc64-assise14-moitie-gauche","sourceId":"bhdv-cc64-pl34","element":"travee-centrale-partie-gauche","description":"se poursuit par 0,23 sur la moitié droite","startM":25.82,"endM":29.45,"lengthM":3.63},{"order":16,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"travee-centrale-partie-droite","description":"complète 3,63 de la moitié gauche","startM":29.45,"endM":29.68,"lengthM":0.23},{"order":17,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":29.68,"endM":30.14,"lengthM":0.46},{"order":18,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"travee","description":"","startM":30.14,"endM":34,"lengthM":3.86},{"order":19,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":34,"endM":34.46,"lengthM":0.46},{"order":20,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"travee","description":"","startM":34.46,"endM":38.32,"lengthM":3.86},{"order":21,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":38.32,"endM":38.78,"lengthM":0.46},{"order":22,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"travee","description":"","startM":38.78,"endM":42.64,"lengthM":3.86},{"order":23,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":42.64,"endM":43.1,"lengthM":0.46},{"order":24,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"entre-saillies","description":"niche cintrée 0,47","startM":43.1,"endM":44.14,"lengthM":1.04},{"order":25,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":44.14,"endM":44.6,"lengthM":0.46},{"order":26,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"travee-large","description":"","startM":44.6,"endM":52.78,"lengthM":8.18},{"order":27,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":52.78,"endM":53.24,"lengthM":0.46},{"order":28,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"entre-saillies","description":"niche cintrée 0,47","startM":53.24,"endM":54.28,"lengthM":1.04},{"order":29,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"trumeau","description":"","startM":54.28,"endM":54.74,"lengthM":0.46},{"order":30,"chain":"cc64-assise14-moitie-droite","sourceId":"bhdv-cc64-pl34","element":"retour avant tourelle","description":"","startM":54.74,"endM":55.5,"lengthM":0.76}],"unknowns":["Orientation et placement EPSG:2154","Altitude absolue de la XIVe assise","Profondeurs des saillies, murs et ouvertures","Façade actuelle et modifications depuis 1878","Forme 3D des travées et ornements"]}</script>
+<script>
+(()=>{'use strict';
+const d=JSON.parse(document.getElementById('evidence').textContent);
+const el=id=>document.getElementById(id),scene=el('scene'),ctx=scene.getContext('2d',{alpha:false});
+let selected=0,dragging=false,lastX=0,dragTravel=0;
+const fmt=v=>Number(v).toFixed(2).replace('.',',');
+const cap=s=>s.replace(/-/g,' ');
+const beige='#ded0b9',edges='#2a3543';
+const items=d.segments;
+function select(i){selected=Math.max(0,Math.min(items.length-1,i));const s=items[selected];
+ el('detail').replaceChildren();
+ const box=document.createElement('div'),type=document.createElement('small'),name=document.createElement('strong');
+ type.textContent='Segment '+s.order+' sur '+items.length+' · '+(s.chain.includes('gauche')?'chaîne gauche':'chaîne droite');
+ name.textContent=cap(s.element);box.append(type,name);
+ const m=document.createElement('div');m.className='measure';m.textContent=fmt(s.lengthM)+' m';
+ const p=document.createElement('p');p.textContent='De '+fmt(s.startM)+' à '+fmt(s.endM)+' m · '+(s.description||'Aucune fonction d’ouverture certifiée à cette assise.')+'. Source : CC64_PL34 (1878).';
+ el('detail').append(box,m,p);
+ [...el('track').children].forEach((b,n)=>{b.classList.toggle('sel',n===selected);b.setAttribute('aria-pressed',String(n===selected))});
+ [...el('records').children].forEach((tr,n)=>tr.classList.toggle('active',n===selected));
+ draw();
+}
+function build(){
+ items.forEach((s,i)=>{
+  const button=document.createElement('button');button.type='button';
+  button.className='segment';button.style.width=100*s.lengthM/d.totalLengthM+'%';
+  button.title='Segment '+(i+1)+' : '+fmt(s.lengthM)+' m';button.setAttribute('aria-label',button.title);
+  button.addEventListener('click',()=>{el('focus').value=(s.startM+s.endM)/2;select(i)});
+  el('track').append(button);
+  const tr=document.createElement('tr');for(const v of [s.order,cap(s.element),fmt(s.lengthM)+' m',fmt(s.startM)+' m']){
+   const cell=document.createElement('td');cell.textContent=String(v);tr.append(cell);
+  }
+  tr.addEventListener('click',()=>{el('focus').value=(s.startM+s.endM)/2;select(i)});
+  el('records').append(tr);
+ });
+}
+function draw(){
+ const rect=scene.getBoundingClientRect(),w=Math.max(280,rect.width),h=rect.height||280;
+ const dpr=Math.min(2,devicePixelRatio||1);scene.width=Math.round(w*dpr);scene.height=Math.round(h*dpr);
+ ctx.setTransform(dpr,0,0,dpr,0,0);ctx.fillStyle='#0e1a27';ctx.fillRect(0,0,w,h);
+ const width=Number(el('range').value),focus=Number(el('focus').value),yaw=Number(el('yaw').value)*Math.PI/180;
+ el('rangeValue').textContent=fmt(width)+' m';el('yawValue').textContent=el('yaw').value+'°';
+ const px=(w-48)/width;
+ const project=(x,y)=>({x:w/2+(x-focus)*px*Math.cos(yaw),
+  y:h*.56+(x-focus)*px*Math.sin(yaw)*.24-y*px});
+ ctx.strokeStyle='#2c4053';ctx.lineWidth=1;
+ const zero=project(focus,0);for(let v=-5;v<=5;v++){const yy=zero.y+v*18;
+  ctx.beginPath();ctx.moveTo(0,yy);ctx.lineTo(w,yy);ctx.stroke();}
+ ctx.lineWidth=1.1;
+ const hit=items.filter(s=>s.endM>=focus-width&&s.startM<=focus+width);
+ for(const s of hit){
+  const a=project(s.startM,0),b=project(s.endM,0),c=project(s.endM,d.courseHeightM),e=project(s.startM,d.courseHeightM);
+  ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.lineTo(c.x,c.y);ctx.lineTo(e.x,e.y);ctx.closePath();
+  ctx.fillStyle=beige;ctx.fill();ctx.strokeStyle=s.order===selected+1?'#0b1017':edges;
+  ctx.lineWidth=s.order===selected+1?2.7:1;ctx.stroke();
+ }
+ const bounds=hit.length?project(hit[0].startM,0):project(0,0),right=hit.length?project(hit[hit.length-1].endM,0):project(d.totalLengthM,0);
+ ctx.fillStyle='#b8c7d8';ctx.font='12px system-ui';ctx.fillText('1878 · cotes de la XIVe assise',15,24);
+ ctx.fillText('Longueur documentée : '+fmt(d.totalLengthM)+' m',15,h-16);
+ ctx.textAlign='right';ctx.fillText('Épaisseur/profondeur inconnue',w-15,24);ctx.textAlign='left';
+}
+scene.addEventListener('pointerdown',e=>{dragging=true;dragTravel=0;lastX=e.clientX;scene.setPointerCapture(e.pointerId)});
+scene.addEventListener('pointermove',e=>{if(!dragging)return;const delta=e.clientX-lastX;lastX=e.clientX;dragTravel+=Math.abs(delta);
+ const w=scene.getBoundingClientRect().width;const px=(w-48)/Number(el('range').value);
+ const f=Math.max(0,Math.min(d.totalLengthM,Number(el('focus').value)-delta/(px*Math.cos(Number(el('yaw').value)*Math.PI/180))));
+ el('focus').value=f;draw();});
+scene.addEventListener('pointerup',e=>{if(!dragging)return;dragging=false;if(dragTravel<8){
+ const rect=scene.getBoundingClientRect(),width=Number(el('range').value),f=Number(el('focus').value),yaw=Number(el('yaw').value)*Math.PI/180;
+ const x=f+(e.clientX-rect.left-rect.width/2)/((rect.width-48)/width*Math.cos(yaw));
+ const i=items.findIndex(s=>x>=s.startM&&x<=s.endM);if(i>=0)select(i);
+ }});
+for(const id of ['range','yaw','focus'])el(id).addEventListener('input',draw);
+el('center').addEventListener('click',()=>{el('range').value=55.5;el('focus').value=27.75;el('yaw').value=18;draw()});
+el('previous').addEventListener('click',()=>{select(selected-1);el('focus').value=(items[selected].startM+items[selected].endM)/2;draw()});
+el('next').addEventListener('click',()=>{select(selected+1);el('focus').value=(items[selected].startM+items[selected].endM)/2;draw()});
+window.addEventListener('resize',draw);
+build();select(0);
+})();
+</script>
+</body></html>

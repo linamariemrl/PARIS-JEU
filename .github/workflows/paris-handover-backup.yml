@@ -1,0 +1,58 @@
+name: Passation intégrale PARIS vers REPRISE-PARIS (sans publication)
+
+on:
+  pull_request:
+    paths:
+      - '.github/workflows/paris-handover-backup.yml'
+      - 'docs/PASSATION_REPRISE_PARIS_NOUVEAU_DEPOT.md'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: read
+
+jobs:
+  exporter:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le dépôt et toute son histoire
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Créer bundle Git, instantané PR14 et empreintes
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p passation
+          git fetch --no-tags origin '+refs/heads/*:refs/remotes/origin/*'
+          git fetch origin '+refs/tags/*:refs/tags/*'
+          git rev-parse --verify refs/remotes/origin/main
+          git rev-parse --verify refs/remotes/origin/claude/practical-archimedes-n57pkx
+          git bundle create passation/PARIS-historique-complet.bundle --all
+          git bundle verify passation/PARIS-historique-complet.bundle
+          git archive --format=zip --output=passation/PARIS-etat-branche-PR14.zip refs/remotes/origin/claude/practical-archimedes-n57pkx
+          git rev-parse refs/remotes/origin/main > passation/SHA-main.txt
+          git rev-parse refs/remotes/origin/claude/practical-archimedes-n57pkx > passation/SHA-PR14.txt
+          git for-each-ref --format='%(refname) %(objectname)' refs/remotes/origin refs/tags > passation/REFERENCES.txt
+          sha256sum passation/PARIS-historique-complet.bundle passation/PARIS-etat-branche-PR14.zip > passation/SHA256SUMS.txt
+          printf '%s\n' 'Source: https://github.com/meyameya677-sketch/Paris-le-jeu' 'Cible souhaitée: https://github.com/linamariemrl/REPRISE-PARIS' 'Export autonome, aucune écriture effectuée dans la cible.' 'Pour réimporter, conserver les SHA originaux et les branches; ne pas forcer sur une branche déjà existante.' > passation/LIRE-AVANT-IMPORT.txt
+          ls -lh passation/
+      - name: Exporter le contexte décisionnel de la PR source
+        env:
+          GH_TOKEN: ${{ github.token }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh api "repos/${GITHUB_REPOSITORY}/pulls/14" --jq '{number,title,body,state,head:.head.sha,base:.base.sha,html_url}' > passation/PR14-resume.json
+          gh api --paginate "repos/${GITHUB_REPOSITORY}/issues/14/comments?per_page=100" --jq '.[] | {id,html_url,created_at,updated_at,user:.user.login,body}' > passation/PR14-commentaires.jsonl
+          wc -l passation/PR14-commentaires.jsonl
+      - name: Livrer les fichiers sans déployer ni fusionner
+        uses: actions/upload-artifact@v4
+        with:
+          name: PARIS-passation-integrale
+          path: passation/
+          retention-days: 90
+          if-no-files-found: error
+          compression-level: 1
