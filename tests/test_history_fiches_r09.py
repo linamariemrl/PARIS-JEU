@@ -178,14 +178,29 @@ class FarMajorsBeige(unittest.TestCase):
             self.assertTrue(all(0 <= i < g['count'] for i in g.get('majors', [])))
 
     def test_renderer_uses_one_beige_near_and_far(self):
+        # R11 : une seule source du beige (src/monumentPalette.ts), reprise
+        # de près (buildings.ts), au loin et en panorama (metroOverview.ts)
+        # et dans le catalogue (landmarkBrowser.ts).
+        palette = (ROOT / 'src/monumentPalette.ts').read_text(encoding='utf-8')
+        m = re.search(r"MONUMENT_BEIGE_HEX='#([0-9a-f]{6})'", palette)
+        self.assertTrue(m)
+        rgb = re.search(r'MONUMENT_BEIGE_RGB=\[(\d+)/255,(\d+)/255,(\d+)/255\]', palette)
+        self.assertTrue(rgb)
+        self.assertEqual(tuple(int(m.group(1)[i:i + 2], 16) for i in (0, 2, 4)),
+                         tuple(int(v) for v in rgb.groups()), 'hex et RGB identiques')
+        for name in ('metroOverview', 'buildings', 'landmarkBrowser'):
+            code = (ROOT / f'src/{name}.ts').read_text(encoding='utf-8')
+            self.assertIn("from './monumentPalette'", code, name)
+            self.assertIsNone(re.search(r'\.87\s*,\s*\.80\s*,\s*\.69|#ded0b9', code, re.I),
+                              name + ' : beige recopié au lieu de la source unique')
         src = (ROOT / 'src/metroOverview.ts').read_text(encoding='utf-8')
         self.assertIn("thinInstanceSetBuffer('color',colors,4,true)", src)
-        self.assertIn('MAJOR_WALL=[.87/.90,.80/.90,.69/.90,1]', src)
+        self.assertIn('MAJOR_WALL=[beigeR/', src)
         self.assertIn("'monuments-majeurs-panorama'", src)
         buildings = (ROOT / 'src/buildings.ts').read_text(encoding='utf-8')
-        self.assertIn('heritageWall.diffuseColor=new Color3(.87,.80,.69)', buildings)
+        self.assertIn('heritageWall.diffuseColor=new Color3(br,bg,bb)', buildings)
+        self.assertIn('heritageRoof.diffuseColor=new Color3(br,bg,bb)', buildings)
         self.assertIn('footprints.refsOf(b.id).some(isMajorHeritageRef)', buildings)
-
 
 if __name__ == '__main__':
     unittest.main()
