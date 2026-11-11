@@ -72,5 +72,30 @@ assert.ok(checkRegistration({...good,rmsControlMeters:.001}).length,'erreur de c
 assert.ok(checkRegistration({...good,controlPoints:[ties[0]]}).length,'contrôle non indépendant');
 assert.ok(checkRegistration({...good,tiePoints:[ties[0]]}).length,'un seul point d\'appui');
 assert.ok(checkRegistration({...published,originL93:[1,2,3]}).length,'non calée avec origine');
+// R13 : verrous contre les faux calages de façade et les données invalides.
+assert.ok(checkRegistration({...good,transform:null}).length,'transformation manquante');
+assert.ok(checkRegistration({...good,transform:{...fit,rotation:fit.rotation+.2}}).length,
+ 'rotation incorrecte');
+assert.ok(checkRegistration({...good,transform:{...fit,tx:fit.tx+.02}}).length,
+ 'translation modifiée');
+assert.ok(checkRegistration({...good,originL93:[NaN,6861900,35]}).length,
+ 'origine non finie');
+assert.ok(checkRegistration({...good,originL93:[0,0,35]}).length,
+ 'origine hors Lambert-93');
+assert.ok(checkRegistration({...good,controlPoints:[{...noisy,l93:[NaN,0]}]}).length,
+ 'contrôle non fini');
+assert.ok(checkRegistration({...good,rmsControlMeters:NaN}).length,
+ 'RMS non fini');
+assert.ok(checkRegistration({...good,rmsControlMeters:-1}).length,
+ 'RMS négatif');
+assert.ok(checkRegistration({...good,controlPoints:[{...noisy,id:'autre',drawing:ties[0].drawing}]}).length,
+ 'contrôle à la même position sous un autre nom');
+assert.ok(checkRegistration({...good,tiePoints:[ties[0],ties[0]]}).length,
+ 'points d appui avec identifiants répétés');
+assert.ok(checkRegistration({...published,tiePoints:ties}).length,
+ 'fiche non calée avec points actifs');
+assert.ok(checkRegistration({...good,sourceId:''}).length,'source inconnue');
+assert.ok(checkRegistration({...good,controlPoints:null}).length,'liste invalide');
+
 console.log('Repère EPSG:2154 : Lambert-93 conforme à PROJ (< 1 mm), alignement indépendant de CENTER, '+
  'calage par moindres carrés et fiche PA00086319 non calée vérifiés.');
