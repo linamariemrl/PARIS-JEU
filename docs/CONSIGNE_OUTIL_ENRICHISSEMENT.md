@@ -1,5 +1,15 @@
 # Consigne technique — outil d'enrichissement graphique des unités PARIS
 
+> **DIRECTIVE R11 (11 novembre 2026) — prioritaire :** consulter
+> [la décision architecture multi-vues et monochromie](DECISION_ARCHITECTURE_MULTIVUES_R11.md).
+> La précision des monuments doit venir de la **géométrie photogrammétrique
+> multi-vues, des plans et mesures**. Leur **matériau reste uniformément beige
+> `#DED0B9` dans tous les modes**, y compris après enrichissement. Les clauses
+> antérieures prescrivant des couleurs/textures réalistes pour les monuments
+> sont **remplacées** par R11. L'IGN sert à l'ancrage, aux toits et au contrôle,
+> et non de plafond au détail des façades. Les constructions ordinaires
+> restent neutres en mode Maquette.
+
 Destinataire : l'outil (logiciel, agent ou chaîne de traitement) chargé de transformer
 chaque unité de base du jeu PARIS en unité réaliste, digne d'une navigation 3D
 satellitaire, **sans recourir à Google Earth ni à aucune source fermée**.
