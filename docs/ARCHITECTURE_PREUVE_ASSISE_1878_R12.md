@@ -1,6 +1,6 @@
 # R12 — Première prévisualisation géométrique issue de cotes d'archives
 
-**PR #14, branche de travail uniquement — aucune fusion, aucun changement
+**PR #1 du dépôt `linamariemrl/PARIS-JEU` (héritée de la PR #14 du dépôt source), branche de travail uniquement — aucune fusion, aucun changement
 de la version publique 0.26.4.**
 
 ## Ce qui est réellement visible
@@ -41,14 +41,18 @@ de chaque « travée » à cette assise. Les vues obliques ne doivent pas
   : archive `PARIS-Apercu-Hotel-de-Ville-1878` téléchargeable
   depuis GitHub Actions, sans publier sur GitHub Pages.
 
-**Lien d'aperçu autonome via un service tiers de rendu HTML** (peut
-demander une confirmation d'ouverture et ne constitue ni une
-prévisualisation de l'ensemble du jeu ni un déploiement) :
+**Accès à l'aperçu autonome sur le dépôt actuel** (ni déploiement,
+ni prévisualisation du jeu complet) :
 
-https://raw.githack.com/meyameya677-sketch/Paris-le-jeu/claude/practical-archimedes-n57pkx/public/previews/hotel-de-ville-assise1878.html
+**Fichier actuel dans PARIS-JEU :**
+https://github.com/linamariemrl/PARIS-JEU/blob/claude/practical-archimedes-n57pkx/public/previews/hotel-de-ville-assise1878.html
 
-En cas d'indisponibilité de ce service gratuit, télécharger le fichier
-HTML autonome depuis l'artefact GitHub Actions.
+**Prévisualisation téléchargeable :**
+https://github.com/linamariemrl/PARIS-JEU/actions/workflows/architecture-preview-pr.yml
+
+La vue GitHub montre le fichier source HTML ; pour l'ouvrir directement en navigateur, récupérer l'artefact `PARIS-Apercu-Hotel-de-Ville-1878` depuis le workflow, sans publication du jeu.
+
+Aucune version publique nouvelle n'a été déployée.
 
 ## Étape réellement bloquante pour la façade 3D actuelle
 
