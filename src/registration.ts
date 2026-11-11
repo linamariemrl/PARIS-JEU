@@ -115,34 +115,76 @@ export interface Registration{
  tiePoints:TiePoint[];controlPoints:TiePoint[];
  transform:Similarity|null;rmsControlMeters:number|null;
 }
-/** Une fiche « registered » doit être recalculable : au moins 2 points
- * d'appui, au moins 1 point de contrôle indépendant, une similitude et une
- * erreur de contrôle qui correspondent au recalcul. Une fiche
- * « unregistered » ne porte ni origine, ni transformation, ni résidu. */
+/** Une fiche « registered » doit être recalculable : points d'appui
+ * métriques, contrôle indépendant, origine et transformation cohérentes.
+ * Une valeur numérique seule ne constitue pas une preuve de terrain.
+ * La fiche de 1878 reste « unregistered » sans points mesurés actuels. */
 export function checkRegistration(r:Registration):string[]{
  const errors:string[]=[];
- if(r.schema!==1||!/^PA\d{8}$/.test(r.ref))errors.push('en-tête invalide');
+ if(r.schema!==1||!/^PA\d{8}$/.test(r.ref)||
+    typeof r.sourceId!=='string'||!r.sourceId.trim())
+  errors.push('en-tête invalide');
+ if(!Array.isArray(r.tiePoints)||!Array.isArray(r.controlPoints)){
+  errors.push('listes de points invalides');
+  return errors;
+ }
  if(r.status==='unregistered'){
   if(r.originL93!==null||r.transform!==null||r.rmsControlMeters!==null)
    errors.push('fiche non calée portant des valeurs de calage');
+  if(r.tiePoints.length||r.controlPoints.length)
+   errors.push('points de calage présents sur une fiche non calée');
   return errors;
  }
  if(r.status!=='registered'){errors.push('statut inconnu');return errors;}
+ const finitePair=(a:unknown):a is [number,number]=>
+  Array.isArray(a)&&a.length===2&&
+  a.every(x=>typeof x==='number'&&Number.isFinite(x));
+ const pointValid=(p:TiePoint)=>
+  p!==null&&typeof p==='object'&&typeof p.id==='string'&&
+  p.id.trim().length>0&&finitePair(p.drawing)&&finitePair(p.l93)&&
+  p.l93[0]>0&&p.l93[0]<1300000&&p.l93[1]>6000000&&p.l93[1]<7200000;
+ if(![...r.tiePoints,...r.controlPoints].every(pointValid)){
+  errors.push('coordonnées ou identifiants de point invalides');
+  return errors;
+ }
  const ids=new Set(r.tiePoints.map(p=>p.id));
- if(r.controlPoints.some(p=>ids.has(p.id)))errors.push('contrôle non indépendant');
+ if(ids.size!==r.tiePoints.length||
+    new Set(r.controlPoints.map(p=>p.id)).size!==r.controlPoints.length||
+    r.controlPoints.some(p=>ids.has(p.id)))
+  errors.push('contrôle non indépendant ou identifiants répétés');
+ // Le même point de dessin sous un autre nom ne constitue pas un contrôle.
+ if(r.controlPoints.some(p=>r.tiePoints.some(t=>
+    Math.hypot(p.drawing[0]-t.drawing[0],p.drawing[1]-t.drawing[1])<1e-6)))
+  errors.push('point de contrôle confondu avec un point d appui');
+ if(!Array.isArray(r.originL93)||r.originL93.length!==3||
+    !r.originL93.every(x=>typeof x==='number'&&Number.isFinite(x))||
+    r.originL93[0]<=0||r.originL93[0]>=1300000||
+    r.originL93[1]<=6000000||r.originL93[1]>=7200000)
+  errors.push('origine EPSG:2154 / altitude invalide');
  const fit=fitSimilarity(r.tiePoints);
- if(!fit||r.controlPoints.length<1)errors.push('points insuffisants');
- if(!r.originL93)errors.push('origine absente');
- if(fit&&r.transform){
-  const [e1,n1]=applySimilarity(fit,[0,0]),[e2,n2]=applySimilarity(r.transform,[0,0]);
-  if(Math.hypot(e1-e2,n1-n2)>1e-3||Math.abs(fit.scale-r.transform.scale)>1e-9)
+ if(!fit||r.controlPoints.length<1){
+  errors.push('points insuffisants');
+  return errors;
+ }
+ if(!r.transform||
+    ![r.transform.scale,r.transform.rotation,r.transform.tx,r.transform.ty]
+      .every(v=>typeof v==='number'&&Number.isFinite(v))||
+    r.transform.scale<=0)
+  errors.push('transformation absente ou invalide');
+ else{
+  // Contrôler aussi la rotation, pas seulement la translation et l'échelle.
+  const a=fit.scale*Math.cos(fit.rotation),b=fit.scale*Math.sin(fit.rotation);
+  const c=r.transform.scale*Math.cos(r.transform.rotation);
+  const d=r.transform.scale*Math.sin(r.transform.rotation);
+  if(Math.hypot(a-c,b-d)>1e-9||
+     Math.hypot(fit.tx-r.transform.tx,fit.ty-r.transform.ty)>1e-3)
    errors.push('transformation non conforme au recalcul');
  }
- if(fit&&r.controlPoints.length){
-  const res=residuals(fit,r.controlPoints);
-  const rms=Math.sqrt(res.reduce((a,x)=>a+x.meters**2,0)/res.length);
-  if(r.rmsControlMeters===null||Math.abs(rms-r.rmsControlMeters)>1e-3)
-   errors.push('erreur de contrôle non conforme au recalcul');
- }
+ const res=residuals(fit,r.controlPoints);
+ const rms=Math.sqrt(res.reduce((a,x)=>a+x.meters**2,0)/res.length);
+ if(r.rmsControlMeters===null||!Number.isFinite(r.rmsControlMeters)||
+    r.rmsControlMeters<0||!Number.isFinite(rms)||
+    Math.abs(rms-r.rmsControlMeters)>1e-3)
+  errors.push('erreur de contrôle non conforme au recalcul');
  return errors;
 }
