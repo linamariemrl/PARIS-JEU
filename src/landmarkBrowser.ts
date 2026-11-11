@@ -1,4 +1,5 @@
 import type {HeritageAtlas} from './heritageAtlas';
+import {MONUMENT_BEIGE_HEX} from './monumentPalette';
 import type {HeritageRole} from './heritageCategories';
 import type {ArchitectureDossiers} from './architectureDossiers';
 import {ficheIndex,statusLabel} from './historyFiches';
@@ -18,7 +19,7 @@ interface CatalogDocument{
 interface ParisIndex{
  schema:1;includedCount:number;entries:Array<[string,number,string]>;
 }
-const MAJOR_BEIGE='#ded0b9';
+const MAJOR_BEIGE=MONUMENT_BEIGE_HEX;
 const NEUTRAL_GREY='#bcbcbc';
 const fold=(s:string)=>s.toLocaleLowerCase('fr').normalize('NFD')
  .replace(/[\u0300-\u036f]/g,'');
