@@ -10,7 +10,9 @@ Une unité enrichie n'entre dans le jeu que si elle :
    hauteur plausible ;
 4. déclare chaque source utilisée avec une licence ouverte autorisée,
    sans aucune source interdite (Google Earth/Maps/Street View, Apple, Bing) ;
-5. respecte le budget de poids par unité (affichage mobile).
+5. respecte le budget de poids par unité (affichage mobile) ;
+6. fournit chaque niveau de détail déclaré et un rapport de qualité complet,
+   sans élément inventé (docs/CONSIGNE_OUTIL_ENRICHISSEMENT.md).
 
 Usage : python scripts/check_unit_return.py <dossier-retour> [--base export/unites]
 Code de sortie 0 si accepté, 1 sinon ; rapport JSON sur la sortie standard.
@@ -83,6 +85,30 @@ def triangles(gltf: dict) -> int:
     return n
 
 
+def footprint_errors(base: dict, lo, hi, warnings: list) -> list[str]:
+    errors = []
+    g = base['georeferencement']
+    anc = g['ancre']
+    if base['type'] == 'batiment':
+        e0, n0, e1, n1 = g['bbox2154']
+        hmax = base['attributs']['hauteurM']
+    else:
+        cs = g['coins2154']
+        e0, n0 = min(c[0] for c in cs), min(c[1] for c in cs)
+        e1, n1 = max(c[0] for c in cs), max(c[1] for c in cs)
+        hmax = None
+    # Repère local : X = e - ancre.e ; Z = -(n - ancre.n).
+    if lo[0] < e0 - anc['e'] - TOL_H or hi[0] > e1 - anc['e'] + TOL_H:
+        errors.append('maquette hors emprise (est-ouest)')
+    if lo[2] < -(n1 - anc['n']) - TOL_H or hi[2] > -(n0 - anc['n']) + TOL_H:
+        errors.append('maquette hors emprise (nord-sud)')
+    if lo[1] < -15:
+        errors.append('maquette enterrée de plus de 15 m')
+    if hmax is not None and hi[1] > max(hmax * 1.6, hmax + 25):
+        warnings.append('hauteur %.1f m très supérieure à la hauteur IGN %.1f m : à justifier' % (hi[1], hmax))
+    return errors
+
+
 def check(ret: Path, base_root: Path) -> dict:
     errors, warnings = [], []
     try:
@@ -108,41 +134,40 @@ def check(ret: Path, base_root: Path) -> dict:
             errors.append('source interdite : ' + src.get('id', src.get('url', '?')))
         if not any(l.lower() in str(src.get('licence', '')).lower() for l in LICENCES):
             errors.append('licence non autorisée ou absente : ' + str(src.get('id', '?')))
-    glb = ret / 'enrichi.glb'
     stats = {}
-    if not glb.exists():
-        errors.append('enrichi.glb absent')
-    else:
-        size = glb.stat().st_size
-        stats['octets'] = size
-        if size > BUDGET.get(base['type'], 8_000_000):
-            errors.append('poids %d o > budget %d o' % (size, BUDGET[base['type']]))
+    files = ['enrichi.glb'] + [l.get('fichier') for l in enr.get('niveauxDeDetail', []) if l.get('fichier')]
+    total = 0
+    for name in dict.fromkeys(files):
+        if '/' in name or '\\' in name or not name.endswith('.glb'):
+            errors.append('nom de fichier de niveau de détail invalide : ' + name)
+            continue
+        glb = ret / name
+        if not glb.exists():
+            errors.append(name + ' absent')
+            continue
+        total += glb.stat().st_size
         try:
             gltf, _ = read_glb(glb)
             lo, hi = position_bounds(gltf)
-            stats['triangles'] = triangles(gltf)
-            stats['boite'] = [lo, hi]
-            g = base['georeferencement']
-            anc = g['ancre']
-            if base['type'] == 'batiment':
-                e0, n0, e1, n1 = g['bbox2154']
-                hmax = base['attributs']['hauteurM']
-            else:
-                cs = g['coins2154']
-                e0, n0 = min(c[0] for c in cs), min(c[1] for c in cs)
-                e1, n1 = max(c[0] for c in cs), max(c[1] for c in cs)
-                hmax = None
-            # Repère local : X = e - ancre.e ; Z = -(n - ancre.n).
-            if lo[0] < e0 - anc['e'] - TOL_H or hi[0] > e1 - anc['e'] + TOL_H:
-                errors.append('maquette hors emprise (est-ouest)')
-            if lo[2] < -(n1 - anc['n']) - TOL_H or hi[2] > -(n0 - anc['n']) + TOL_H:
-                errors.append('maquette hors emprise (nord-sud)')
-            if lo[1] < -15:
-                errors.append('maquette enterrée de plus de 15 m')
-            if hmax is not None and hi[1] > max(hmax * 1.6, hmax + 25):
-                warnings.append('hauteur %.1f m très supérieure à la hauteur IGN %.1f m : à justifier' % (hi[1], hmax))
+            stats[name] = {'octets': glb.stat().st_size, 'triangles': triangles(gltf), 'boite': [lo, hi]}
+            errors += [name + ' : ' + e for e in footprint_errors(base, lo, hi, warnings)]
         except (ValueError, KeyError, IndexError, struct.error) as e:
-            errors.append('glTF invalide : %s' % e)
+            errors.append(name + ' : glTF invalide : %s' % e)
+    if total > BUDGET.get(base['type'], 8_000_000) * 1.5:
+        errors.append('poids total %d o > budget' % total)
+    if 'enrichi.glb' in stats and stats['enrichi.glb']['octets'] > BUDGET.get(base['type'], 8_000_000):
+        errors.append('enrichi.glb : poids > budget %d o' % BUDGET[base['type']])
+    try:
+        rq = json.loads((ret / 'rapport-qualite.json').read_text(encoding='utf-8'))
+        if rq.get('unite') != uid or rq.get('versionBase') != base['versionBase']:
+            errors.append('rapport de qualité : unité ou version différente')
+        for k in ('mesures', 'declarations', 'attributions', 'outil'):
+            if not rq.get(k):
+                errors.append('rapport de qualité : ' + k + ' manquant')
+        if (rq.get('declarations') or {}).get('elementsInventes'):
+            errors.append('éléments inventés déclarés : refus (déclarer une hypothèse, ne pas inventer)')
+    except (OSError, ValueError):
+        errors.append('rapport-qualite.json absent ou illisible')
     return {'id': uid, 'accepte': not errors, 'erreurs': errors, 'avertissements': warnings, 'mesures': stats}
 
 

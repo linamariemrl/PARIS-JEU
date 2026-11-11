@@ -92,13 +92,17 @@ Le validateur de retour refuse toute source dont l'URL ou l'identifiant relève 
 
 ## Ce que l'outil doit renvoyer
 
+Consigne technique complète (chaîne de traitement, budgets, niveaux de détail, rapport de qualité) :
+**`docs/CONSIGNE_OUTIL_ENRICHISSEMENT.md`**. Résumé :
+
 Un dossier par unité :
 
 - `unite.json` : la même unité (même `id`, même `versionBase`, même `ancre`), `etat: "enrichie"` et un bloc
   `enrichissement` : `outil`, `version`, `date`, `sources` (chacune avec `id`, `url`, `licence`, date d'acquisition),
   et en option `niveauxDeDetail` et `textures`.
 - `enrichi.glb` : glTF 2.0 dans le **même repère local**, sommets déjà transformés (pas de rotation de nœud),
-  textures intégrées au fichier.
+  textures intégrées au fichier ; `lod1.glb`, `lod2.glb` s'ils sont déclarés.
+- `rapport-qualite.json` : écarts au LiDAR, déclarations (mesuré / procédural), attributions ; aucun élément inventé.
 
 Contrôles appliqués (`scripts/check_unit_return.py`) :
 
@@ -108,7 +112,8 @@ Contrôles appliqués (`scripts/check_unit_return.py`) :
 4. maquette contenue dans l'emprise (tolérance 3 m), pas enterrée de plus de 15 m ;
    avertissement si elle dépasse nettement la hauteur IGN ;
 5. sources déclarées, sous licence ouverte autorisée, aucune source interdite ;
-6. budget de poids : 8 Mo par bâtiment, 16 Mo par dalle de sol (affichage mobile).
+6. budget de poids : 8 Mo par bâtiment, 16 Mo par dalle de sol (affichage mobile) ;
+7. niveaux de détail déclarés présents et valides ; rapport de qualité complet, sans élément inventé.
 
 ## Limites actuelles (déclarées, non masquées)
 

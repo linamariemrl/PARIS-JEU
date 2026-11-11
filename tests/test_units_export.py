@@ -124,7 +124,7 @@ class Units(unittest.TestCase):
         doc, _ = self.u.building_unit(tid, b)
         self.assertEqual(doc['versionBase'], self.bat['versionBase'])
 
-    def _return(self, **change):
+    def _return(self, rapport=None, **change):
         ret = self.tmp / 'retour'
         shutil.rmtree(ret, ignore_errors=True)
         ret.mkdir()
@@ -137,6 +137,10 @@ class Units(unittest.TestCase):
             doc[k] = v
         (ret / 'unite.json').write_text(json.dumps(doc), encoding='utf-8')
         shutil.copy(self.base / 'bat' / NOTRE_DAME / 'base.glb', ret / 'enrichi.glb')
+        (ret / 'rapport-qualite.json').write_text(json.dumps(rapport or {
+            'unite': doc['id'], 'versionBase': self.bat['versionBase'],
+            'mesures': {'ecartLidarRmsM': .2}, 'declarations': {'toit': 'mesure-lidar', 'elementsInventes': []},
+            'attributions': ['© IGN'], 'outil': {'nom': 'test'}}), encoding='utf-8')
         return ret
 
     def test_return_accepted_when_conform(self):
@@ -151,6 +155,20 @@ class Units(unittest.TestCase):
         moved = json.loads(json.dumps(self.bat['georeferencement']))
         moved['ancre']['e'] += 50
         self.assertFalse(self.c.check(self._return(georeferencement=moved), self.base)['accepte'])
+
+    def test_return_rejected_without_quality_report_missing_lod_or_invented_elements(self):
+        ok = self._return()
+        (ok / 'rapport-qualite.json').unlink()
+        self.assertFalse(self.c.check(ok, self.base)['accepte'])
+        lod = dict(json.loads(json.dumps(self._enr())), niveauxDeDetail=[{'fichier': 'lod1.glb'}])
+        self.assertFalse(self.c.check(self._return(enrichissement=lod), self.base)['accepte'])
+        invented = {'unite': 'bat:' + NOTRE_DAME, 'versionBase': self.bat['versionBase'], 'mesures': {'x': 1},
+                    'declarations': {'elementsInventes': ['balcons']}, 'attributions': ['IGN'], 'outil': {'n': 1}}
+        self.assertFalse(self.c.check(self._return(rapport=invented), self.base)['accepte'])
+
+    def _enr(self):
+        return {'outil': 'test', 'version': '1', 'date': '2026-11-11',
+                'sources': [{'id': 'ign-bd-ortho', 'licence': 'Licence Ouverte 2.0'}]}
 
     def test_catalogue_covers_every_building_of_the_game(self):
         out = self.tmp / 'cat'
