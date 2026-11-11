@@ -29,8 +29,9 @@ from urllib.parse import urlparse
 from paris_matieres import BASE, ROOT, directory, parse_id
 
 WORK = ROOT / "travail/paris-matieres"
-DENIED = ("google.com", "googleapis.com", "gstatic.com", "bing.com",
-          "virtualearth.net", "apple.com", "here.com", "earth.google")
+DENIED = ("earth.google.com", "maps.google.com", "maps.googleapis.com",
+          "streetview.googleapis.com", "maps.gstatic.com", "bing.com",
+          "virtualearth.net", "apple.com", "here.com")
 SHA = re.compile(r"^[a-f0-9]{64}$")
 EPSG = "EPSG:2154"
 
