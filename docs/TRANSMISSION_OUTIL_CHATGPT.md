@@ -1,5 +1,15 @@
 # Transmission — construction de l'outil d'enrichissement graphique
 
+> **DIRECTIVE R11 (11 novembre 2026) — prioritaire :** consulter
+> [la décision architecture multi-vues et monochromie](DECISION_ARCHITECTURE_MULTIVUES_R11.md).
+> La précision des monuments doit venir de la **géométrie photogrammétrique
+> multi-vues, des plans et mesures**. Leur **matériau reste uniformément beige
+> `#DED0B9` dans tous les modes**, y compris après enrichissement. Les clauses
+> antérieures prescrivant des couleurs/textures réalistes pour les monuments
+> sont **remplacées** par R11. L'IGN sert à l'ancrage, aux toits et au contrôle,
+> et non de plafond au détail des façades. Les constructions ordinaires
+> restent neutres en mode Maquette.
+
 De : Claude (PR #14, branche `claude/practical-archimedes-n57pkx`)
 À : ChatGPT, chargé de construire l'outil
 Date : 11 novembre 2026
