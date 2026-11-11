@@ -1,5 +1,6 @@
 import {Color3,Color4,Mesh,MeshBuilder,Scene,StandardMaterial} from '@babylonjs/core';
 import {terrainHeight} from './terrain';
+import {MONUMENT_BEIGE_RGB} from './monumentPalette';
 import type {CityCoverage} from './cityCoverage';
 
 const PREFIX=import.meta.env.BASE_URL+'data/metropole/overview/';
@@ -25,11 +26,12 @@ interface VisibleGroup {
  group:Group;
 }
 const retryAfterMs=15_000;
-/** Teinte beige unique des monuments majeurs, identique de près et de loin :
- * facteurs appliqués aux teintes grises des silhouettes (murs .90, toits .76)
- * pour retrouver le beige des maquettes proches (.87,.80,.69 / .78,.71,.62). */
-const MAJOR_WALL=[.87/.90,.80/.90,.69/.90,1];
-const MAJOR_ROOF=[.78/.76,.71/.76,.62/.76,1];
+/** Beige R11 du prototype jusqu'au panorama : un seul matériau de monument.
+ * Les instances sont multipliées par un gris de référence propre aux murs
+ * et aux toits, d'où deux facteurs pour obtenir le MEME résultat visible. */
+const [beigeR,beigeG,beigeB]=MONUMENT_BEIGE_RGB;
+const MAJOR_WALL=[beigeR/.90,beigeG/.90,beigeB/.90,1];
+const MAJOR_ROOF=[beigeR/.76,beigeG/.76,beigeB/.76,1];
 const SAMPLED_ROOFS_PER_GROUP=2400;
 const roofStride=(count:number)=>
  Math.max(1,Math.ceil(count/SAMPLED_ROOFS_PER_GROUP));
@@ -393,7 +395,7 @@ export class MetroOverview {
     panoramaMatrices[k+8]=-d*s;panoramaMatrices[k+10]=d*c;
     panoramaMatrices[k+12]=x;panoramaMatrices[k+13]=terrainHeight(x,z)+h/2;panoramaMatrices[k+14]=z;panoramaMatrices[k+15]=1;
    });
-   const beige=new Color4(.87,.80,.69,1),roof=new Color4(.78,.71,.62,1);
+   const beige=new Color4(beigeR,beigeG,beigeB,1),roof=beige.clone();
    const mesh=MeshBuilder.CreateBox('monuments-majeurs-panorama',
     {size:1,faceColors:[beige,beige,beige,beige,roof,roof]},this.scene);
    mesh.material=this.overviewMaterial;
